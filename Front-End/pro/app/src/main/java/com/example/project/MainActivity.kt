@@ -46,25 +46,28 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-            if (currentDestination != "Login" && currentDestination != "SignUp") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextloginPage") {
                 TopBar(navController)
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
+                    composable("TextloginPage") { TextloginPage(navController) }
                     composable("Home") { MainContentScrollable() }
-                    composable("AccountPage") { AccountPage() }
-                    composable("GreenPage") { GreenPage() }
+                    composable("AlertPage") { AlertPage() }
+                    composable("MyPage") { MyPage() }
+                    composable("SearchPage") { SearchPage() }
+
+                    // 안쓰는거
                     composable("FinancePage") { FinancePage() }
                     composable("AssetPage") { AssetPage() }
                     composable("BenefitPage") { BenefitPage() }
-                    composable("AlertPage") { AlertPage() }
                     composable("ChatBotPage") { ChatBotPage() }
-                    composable("MyPage") { MyPage() }
+
                 }
             }
-            if (currentDestination != "Login" && currentDestination != "SignUp") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextloginPage") {
                 BottomBar(navController)
             }
         }

@@ -97,6 +97,10 @@ fun TemporaryNavigationButtons(navController: NavHostController) {
     Button(onClick = { navController.navigate("SignUp") }) {
         Text("회원가입임시")
     }
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(onClick = { navController.navigate("TextloginPage") }) {
+        Text("텍스트로그인임시")
+    }
 }
 
 @Composable

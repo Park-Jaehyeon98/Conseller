@@ -9,7 +9,9 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     companion object {
         private const val PREF_NAME = "my_pref"
         private const val IS_LOGGED_IN = "is_logged_in"
-        private const val USER_ID = "user_id"
+        private const val USER_IDX = "user_idx"
+        private const val USER_NICKNAME = "user_nickname"
+        private const val USER_TOKEN = "user_token"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -29,15 +31,41 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     }
 
     // 사용자 아이디를 저장하는 메서드
-    fun setUserId(userId: String) {
+    fun setUserId(useridx: String) {
         with(sharedPreferences.edit()) {
-            putString(USER_ID, userId)
+            putString(USER_IDX, useridx)
             apply()
         }
     }
 
     // 저장된 사용자 아이디를 가져오는 메서드
     fun getUserId(): String? {
-        return sharedPreferences.getString(USER_ID, null)
+        return sharedPreferences.getString(USER_IDX, null)
+    }
+
+    // 사용자 닉네임을 저장하는 메서드
+    fun setUserNickname(nickname: String) {
+        with(sharedPreferences.edit()) {
+            putString(USER_NICKNAME, nickname)
+            apply()
+        }
+    }
+
+    // 저장된 사용자 닉네임을 가져오는 메서드
+    fun getUserNickname(): String? {
+        return sharedPreferences.getString(USER_NICKNAME, null)
+    }
+
+    // 사용자 토큰을 저장하는 메서드
+    fun setUserToken(token: String) {
+        with(sharedPreferences.edit()) {
+            putString(USER_TOKEN, token)
+            apply()
+        }
+    }
+
+    // 저장된 사용자 토큰을 가져오는 메서드
+    fun getUserToken(): String? {
+        return sharedPreferences.getString(USER_TOKEN, null)
     }
 }

@@ -1,10 +1,12 @@
 package com.example.project;
 
 import androidx.compose.foundation.layout.*;
+import androidx.compose.material3.ButtonDefaults;
 import androidx.compose.runtime.*;
 import androidx.compose.ui.Alignment;
 import androidx.compose.ui.Modifier;
 import androidx.compose.ui.layout.ContentScale;
+import androidx.compose.ui.text.font.FontWeight;
 import androidx.compose.ui.text.input.PasswordVisualTransformation;
 import androidx.compose.ui.text.input.TextFieldValue;
 import androidx.navigation.NavHostController;

@@ -139,3 +139,81 @@ fun AuctionItem(
         }
     }
 }
+
+@Composable
+fun AuctionItem(
+    image: String,
+    name: String,
+    gifticonTime: String,
+    auctionTime: String,
+    popular: String,
+    upperprice: String,
+    nowprice: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(Color.White)
+            .padding(8.dp)
+    ) {
+        // 65% 이미지
+        Box(
+            modifier = Modifier
+                .weight(0.65f)
+                .fillMaxWidth()
+                .background(Color.Gray),
+            contentAlignment = Alignment.Center
+        ) {
+            // Home 아이콘 임시
+            Icon(Icons.Default.Home, contentDescription = "Image")
+        }
+
+        // 10% 이름 및 유효기간
+        Row(
+            modifier = Modifier.weight(0.1f).fillMaxWidth().padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(name, fontSize = 20.sp)
+            Text("유효기간: $gifticonTime")
+        }
+
+        // 구분 줄
+        Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
+
+        // 5% 경매기간
+        Text("경매기간: $auctionTime", modifier = Modifier
+            .weight(0.1f)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+        )
+
+        // 15% 박스1
+        Box(
+            modifier = Modifier.weight(0.15f).padding(horizontal = 12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // 40% 인기
+                Text("인기: $popular", modifier = Modifier.weight(0.4f))
+
+                // 60% 박스2
+                Column(
+                    modifier = Modifier.weight(0.6f),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    // 30% 즉시구매가
+                    Text("즉시구매가: $upperprice", modifier = Modifier.weight(0.4f))
+
+                    // 70% 현재입찰가
+                    Text("현재입찰가: $nowprice", modifier = Modifier.weight(0.6f))
+                }
+            }
+        }
+    }
+}
+
+
+

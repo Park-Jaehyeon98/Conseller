@@ -41,12 +41,12 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
     val navController = rememberNavController()
 
     // 로그인 여부에 따른 시작 화면 설정
-    val startDestination = if (sharedPreferencesUtil.isLoggedIn()) "Login" else "SignUp"
+    val startDestination = if (sharedPreferencesUtil.isLoggedIn()) "Login" else "TextLoginPage"
 
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextloginPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage") {
                 TopBar(navController)
             }
             Box(modifier = Modifier.weight(1f)) {
@@ -68,7 +68,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
 
                 }
             }
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextloginPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage") {
                 BottomBar(navController)
             }
         }

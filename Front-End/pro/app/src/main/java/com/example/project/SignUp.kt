@@ -11,6 +11,6 @@ fun SignUpPage(navController: NavHostController) {
         // 클릭 시 Home으로 이동
         navController.navigate("Login")
     }) {
-        Text("회원가입이후")
+        Text("회원가입완료")
     }
 }

@@ -31,7 +31,7 @@ fun TopBar(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth().background(Color(201f/255f, 235f/255f, 243f/255f))) {
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth().height(72.dp),
+                modifier = Modifier.fillMaxWidth().height(54.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

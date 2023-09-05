@@ -20,7 +20,7 @@ import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 
-val customBackgroundColor = Color(240, 245, 250)
+val customBackgroundColor = Color(245, 245, 245)
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -53,17 +53,18 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                 NavHost(navController, startDestination = startDestination) {
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
-                    composable("TextloginPage") { TextloginPage(navController) }
-                    composable("Home") { MainContentScrollable() }
+                    composable("TextLoginPage") { TextLoginPage(navController) }
+                    // top bar
                     composable("AlertPage") { AlertPage() }
+                    // bottom bar
+                    composable("Home") { MainContent(navController = navController) }
                     composable("MyPage") { MyPage() }
                     composable("SearchPage") { SearchPage() }
-
-                    // 안쓰는거
-                    composable("FinancePage") { FinancePage() }
-                    composable("AssetPage") { AssetPage() }
-                    composable("BenefitPage") { BenefitPage() }
-                    composable("ChatBotPage") { ChatBotPage() }
+                    // 경 물 스 이
+                    composable("AuctionPage") { AuctionPage() }
+                    composable("BarterPage") { BarterPage() }
+                    composable("StorePage") { StorePage() }
+                    composable("EventPage") { EventPage() }
 
                 }
             }

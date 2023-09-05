@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -59,7 +58,7 @@ fun AuctionPage() {
                     name = "이름${index}",
                     gifticonTime = "유효기간${index}",
                     auctionTime = "경매기간${index}",
-                    popular = "인기${index}",
+                    popular = "인자기${index}",
                     upperprice = "즉시구매가${index}",
                     nowprice = "현재입찰가${index}"
                 )
@@ -73,6 +72,71 @@ fun AuctionPage() {
 fun FilterButton(text: String) {
     Button(onClick = {}) {
         Text(text)
+    }
+}
+
+@Composable
+fun AuctionItem(
+    image: String,
+    name: String,
+    gifticonTime: String,
+    auctionTime: String,
+    popular: String,
+    upperprice: String,
+    nowprice: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .padding(8.dp)
+    ) {
+        // 60% 이미지
+        Box(
+            modifier = Modifier
+                .weight(6f)
+                .fillMaxWidth()
+                .background(Color.Gray),
+            contentAlignment = Alignment.Center
+        ) {
+            // Home 아이콘 임시
+            Icon(Icons.Default.Home, contentDescription = "Image for $name")
+        }
+
+        // 15% 이름과 유효기간
+        Column(
+            modifier = Modifier.weight(1.5f)
+        ) {
+            Text(name, fontSize = 18.sp)
+            Text("유효기간: $gifticonTime")
+        }
+
+        // 10% 경매기간
+        Text("시간: $auctionTime", modifier = Modifier.weight(1f))
+
+        // 15% 박스1
+        Box(
+            modifier = Modifier.weight(1.5f)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // 40% 입찰기
+                Text("입찰기: $popular", modifier = Modifier.weight(4f))
+
+                // 60% 박스2
+                Column(
+                    modifier = Modifier.weight(6f)
+                ) {
+                    // 30% 즉시구매가
+                    Text("즉시구매가: $upperprice", modifier = Modifier.weight(3f))
+
+                    // 70% 현재입찰가
+                    Text("현재입찰가: $nowprice", modifier = Modifier.weight(7f))
+                }
+            }
+        }
     }
 }
 

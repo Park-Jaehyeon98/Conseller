@@ -6,17 +6,13 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import com.example.project.api.AuctionService;
-import com.example.project.api.LoginService;
+import com.example.project.api.ApiService;
 import com.example.project.di.NetworkModule;
-import com.example.project.di.NetworkModule_ProvideAuctionServiceFactory;
-import com.example.project.di.NetworkModule_ProvideLoginServiceFactory;
+import com.example.project.di.NetworkModule_ProvideApiServiceFactory;
 import com.example.project.di.NetworkModule_ProvideRetrofitFactory;
 import com.example.project.di.SharedPreferencesModule;
 import com.example.project.di.SharedPreferencesModule_ProvideSharedPreferencesUtilFactory;
 import com.example.project.sharedpreferences.SharedPreferencesUtil;
-import com.example.project.viewmodels.AuctionViewModel;
-import com.example.project.viewmodels.AuctionViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.example.project.viewmodels.BiometricViewModel;
 import com.example.project.viewmodels.BiometricViewModel_HiltModules_KeyModule_ProvideFactory;
 import dagger.hilt.android.ActivityRetainedLifecycle;
@@ -36,9 +32,7 @@ import dagger.hilt.android.internal.modules.ApplicationContextModule;
 import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
-import dagger.internal.MapBuilder;
 import dagger.internal.Preconditions;
-import dagger.internal.SetBuilder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -393,7 +387,7 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return SetBuilder.<String>newSetBuilder(2).add(AuctionViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(BiometricViewModel_HiltModules_KeyModule_ProvideFactory.provide()).build();
+      return Collections.<String>singleton(BiometricViewModel_HiltModules_KeyModule_ProvideFactory.provide());
     }
 
     @Override
@@ -419,8 +413,6 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     private final ViewModelCImpl viewModelCImpl = this;
 
-    private Provider<AuctionViewModel> auctionViewModelProvider;
-
     private Provider<BiometricViewModel> biometricViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
@@ -436,13 +428,12 @@ public final class DaggerApplication_HiltComponents_SingletonC {
     @SuppressWarnings("unchecked")
     private void initialize(final SavedStateHandle savedStateHandleParam,
         final ViewModelLifecycle viewModelLifecycleParam) {
-      this.auctionViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
-      this.biometricViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.biometricViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
     }
 
     @Override
     public Map<String, Provider<ViewModel>> getHiltViewModelMap() {
-      return MapBuilder.<String, Provider<ViewModel>>newMapBuilder(2).put("com.example.project.viewmodels.AuctionViewModel", ((Provider) auctionViewModelProvider)).put("com.example.project.viewmodels.BiometricViewModel", ((Provider) biometricViewModelProvider)).build();
+      return Collections.<String, Provider<ViewModel>>singletonMap("com.example.project.viewmodels.BiometricViewModel", ((Provider) biometricViewModelProvider));
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -466,11 +457,8 @@ public final class DaggerApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.example.project.viewmodels.AuctionViewModel 
-          return (T) new AuctionViewModel(singletonCImpl.provideAuctionServiceProvider.get());
-
-          case 1: // com.example.project.viewmodels.BiometricViewModel 
-          return (T) new BiometricViewModel(singletonCImpl.provideLoginServiceProvider.get(), singletonCImpl.provideSharedPreferencesUtilProvider.get());
+          case 0: // com.example.project.viewmodels.BiometricViewModel 
+          return (T) new BiometricViewModel(singletonCImpl.provideApiServiceProvider.get(), singletonCImpl.provideSharedPreferencesUtilProvider.get());
 
           default: throw new AssertionError(id);
         }
@@ -553,9 +541,7 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     private Provider<Retrofit> provideRetrofitProvider;
 
-    private Provider<AuctionService> provideAuctionServiceProvider;
-
-    private Provider<LoginService> provideLoginServiceProvider;
+    private Provider<ApiService> provideApiServiceProvider;
 
     private Provider<SharedPreferencesUtil> provideSharedPreferencesUtilProvider;
 
@@ -568,13 +554,12 @@ public final class DaggerApplication_HiltComponents_SingletonC {
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
       this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 1));
-      this.provideAuctionServiceProvider = DoubleCheck.provider(new SwitchingProvider<AuctionService>(singletonCImpl, 0));
-      this.provideLoginServiceProvider = DoubleCheck.provider(new SwitchingProvider<LoginService>(singletonCImpl, 2));
-      this.provideSharedPreferencesUtilProvider = DoubleCheck.provider(new SwitchingProvider<SharedPreferencesUtil>(singletonCImpl, 3));
+      this.provideApiServiceProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 0));
+      this.provideSharedPreferencesUtilProvider = DoubleCheck.provider(new SwitchingProvider<SharedPreferencesUtil>(singletonCImpl, 2));
     }
 
     @Override
-    public void injectApplication(Application application) {
+    public void injectApplication(Application arg0) {
     }
 
     @Override
@@ -606,16 +591,13 @@ public final class DaggerApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.example.project.api.AuctionService 
-          return (T) NetworkModule_ProvideAuctionServiceFactory.provideAuctionService(singletonCImpl.provideRetrofitProvider.get());
+          case 0: // com.example.project.api.ApiService 
+          return (T) NetworkModule_ProvideApiServiceFactory.provideApiService(singletonCImpl.provideRetrofitProvider.get());
 
           case 1: // retrofit2.Retrofit 
           return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit();
 
-          case 2: // com.example.project.api.LoginService 
-          return (T) NetworkModule_ProvideLoginServiceFactory.provideLoginService(singletonCImpl.provideRetrofitProvider.get());
-
-          case 3: // com.example.project.sharedpreferences.SharedPreferencesUtil 
+          case 2: // com.example.project.sharedpreferences.SharedPreferencesUtil 
           return (T) SharedPreferencesModule_ProvideSharedPreferencesUtilFactory.provideSharedPreferencesUtil(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
           default: throw new AssertionError(id);

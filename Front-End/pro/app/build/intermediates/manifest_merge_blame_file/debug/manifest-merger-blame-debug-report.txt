@@ -10,166 +10,163 @@
 10
 11    <!-- 권한 -->
 12    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-12-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:6:5-71
-12-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:6:22-69
-13    <uses-permission android:name="android.permission.INTERNET" />
-13-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:7:5-67
-13-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:7:22-64
-14
-15    <!-- suppress DeprecatedClassUsageInspection -->
-16    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-16-->[androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:25:5-74
-16-->[androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:25:22-71
-17
-18    <permission
-18-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:22:5-24:47
-19        android:name="com.example.project.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-19-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:23:9-81
-20        android:protectionLevel="signature" />
-20-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:24:9-44
-21
-22    <uses-permission android:name="com.example.project.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-22-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:26:5-97
-22-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:26:22-94
-23
-24    <application
-24-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:9:5-31:19
-25        android:name="com.example.project.Application"
-25-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:10:9-36
-26        android:allowBackup="true"
-26-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:11:9-35
-27        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-27-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
-28        android:dataExtractionRules="@xml/data_extraction_rules"
-28-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:12:9-65
-29        android:debuggable="true"
-30        android:extractNativeLibs="false"
-31        android:fullBackupContent="@xml/backup_rules"
-31-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:13:9-54
-32        android:icon="@mipmap/ic_launcher"
-32-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:14:9-43
-33        android:label="@string/app_name"
-33-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:15:9-41
-34        android:roundIcon="@mipmap/ic_launcher_round"
-34-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:16:9-54
-35        android:supportsRtl="true"
-35-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:17:9-35
-36        android:testOnly="true"
-37        android:theme="@style/Theme.Project" >
-37-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:18:9-45
-38        <activity
-38-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:20:9-30:20
-39            android:name="com.example.project.MainActivity"
-39-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:21:13-41
-40            android:exported="true"
-40-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:22:13-36
-41            android:label="@string/app_name"
-41-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:23:13-45
-42            android:theme="@style/Theme.Project" >
-42-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:24:13-49
-43            <intent-filter>
-43-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:25:13-29:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:26:17-69
-44-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:26:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:28:17-77
-46-->C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:28:27-74
-47            </intent-filter>
-48        </activity>
-49        <activity
-49-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
-50            android:name="androidx.compose.ui.tooling.PreviewActivity"
-50-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
-51            android:exported="true" />
-51-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
-52
-53        <provider
-53-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:24:9-32:20
-54            android:name="androidx.startup.InitializationProvider"
-54-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:25:13-67
-55            android:authorities="com.example.project.androidx-startup"
-55-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:26:13-68
-56            android:exported="false" >
-56-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:27:13-37
-57            <meta-data
-57-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:29:13-31:52
-58                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-58-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:30:17-75
-59                android:value="androidx.startup" />
-59-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:31:17-49
-60            <meta-data
-60-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
-61                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-61-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
-62                android:value="androidx.startup" />
-62-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
-63            <meta-data
-63-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
-64                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-64-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
-65                android:value="androidx.startup" />
-65-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
-66        </provider>
-67
-68        <activity
-68-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:23:9-25:39
-69            android:name="androidx.activity.ComponentActivity"
-69-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:24:13-63
-70            android:exported="true" />
-70-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:25:13-36
-71
-72        <uses-library
-72-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:25:9-27:40
-73            android:name="androidx.window.extensions"
-73-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:26:13-54
-74            android:required="false" />
-74-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:27:13-37
-75        <uses-library
-75-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:28:9-30:40
-76            android:name="androidx.window.sidecar"
-76-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:29:13-51
-77            android:required="false" />
-77-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:30:13-37
-78
-79        <receiver
-79-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
-80            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-80-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
-81            android:directBootAware="false"
-81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
-82            android:enabled="true"
-82-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
-83            android:exported="true"
-83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
-84            android:permission="android.permission.DUMP" >
-84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
-85            <intent-filter>
-85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
-86                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
-86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
-87            </intent-filter>
-88            <intent-filter>
-88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
-89                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-89-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
-89-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
-90            </intent-filter>
-91            <intent-filter>
-91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
-92                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-92-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
-92-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
-93            </intent-filter>
-94            <intent-filter>
-94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
-95                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-95-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
-95-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
-96            </intent-filter>
-97        </receiver>
-98    </application>
-99
-100</manifest>
+12-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:6:5-71
+12-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:6:22-69
+13
+14    <!-- suppress DeprecatedClassUsageInspection -->
+15    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+15-->[androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:25:5-74
+15-->[androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:25:22-71
+16
+17    <permission
+17-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:22:5-24:47
+18        android:name="com.example.project.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+18-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:23:9-81
+19        android:protectionLevel="signature" />
+19-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:24:9-44
+20
+21    <uses-permission android:name="com.example.project.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+21-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:26:5-97
+21-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:26:22-94
+22
+23    <application
+23-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:8:5-30:19
+24        android:name="com.example.project.Application"
+24-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:9:9-36
+25        android:allowBackup="true"
+25-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:10:9-35
+26        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+26-->[androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
+27        android:dataExtractionRules="@xml/data_extraction_rules"
+27-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:11:9-65
+28        android:debuggable="true"
+29        android:extractNativeLibs="false"
+30        android:fullBackupContent="@xml/backup_rules"
+30-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:12:9-54
+31        android:icon="@mipmap/ic_launcher"
+31-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:13:9-43
+32        android:label="@string/app_name"
+32-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:14:9-41
+33        android:roundIcon="@mipmap/ic_launcher_round"
+33-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:15:9-54
+34        android:supportsRtl="true"
+34-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:16:9-35
+35        android:testOnly="true"
+36        android:theme="@style/Theme.Project" >
+36-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:17:9-45
+37        <activity
+37-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:19:9-29:20
+38            android:name="com.example.project.MainActivity"
+38-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:20:13-41
+39            android:exported="true"
+39-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:21:13-36
+40            android:label="@string/app_name"
+40-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:22:13-45
+41            android:theme="@style/Theme.Project" >
+41-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:23:13-49
+42            <intent-filter>
+42-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:24:13-28:29
+43                <action android:name="android.intent.action.MAIN" />
+43-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:25:17-69
+43-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:25:25-66
+44
+45                <category android:name="android.intent.category.LAUNCHER" />
+45-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:27:17-77
+45-->C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:27:27-74
+46            </intent-filter>
+47        </activity>
+48        <activity
+48-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+49            android:name="androidx.compose.ui.tooling.PreviewActivity"
+49-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+50            android:exported="true" />
+50-->[androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+51
+52        <provider
+52-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:24:9-32:20
+53            android:name="androidx.startup.InitializationProvider"
+53-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:25:13-67
+54            android:authorities="com.example.project.androidx-startup"
+54-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:26:13-68
+55            android:exported="false" >
+55-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:27:13-37
+56            <meta-data
+56-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:29:13-31:52
+57                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+57-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:30:17-75
+58                android:value="androidx.startup" />
+58-->[androidx.emoji2:emoji2:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\45229c188c835831516f069347101da4\transformed\emoji2-1.4.0\AndroidManifest.xml:31:17-49
+59            <meta-data
+59-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+60                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+60-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+61                android:value="androidx.startup" />
+61-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\de9fc10f670e1bcd99ef03b5a5f16f7c\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+62            <meta-data
+62-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+63                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+63-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+64                android:value="androidx.startup" />
+64-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+65        </provider>
+66
+67        <activity
+67-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:23:9-25:39
+68            android:name="androidx.activity.ComponentActivity"
+68-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:24:13-63
+69            android:exported="true" />
+69-->[androidx.compose.ui:ui-test-manifest:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\ddf7bdfe17ac6346a12b1f9afabc59c2\transformed\ui-test-manifest-1.5.0\AndroidManifest.xml:25:13-36
+70
+71        <uses-library
+71-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:25:9-27:40
+72            android:name="androidx.window.extensions"
+72-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:26:13-54
+73            android:required="false" />
+73-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:27:13-37
+74        <uses-library
+74-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:28:9-30:40
+75            android:name="androidx.window.sidecar"
+75-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:29:13-51
+76            android:required="false" />
+76-->[androidx.window:window:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\c8d9b0b2287bfc717aa742b0b90bd20e\transformed\window-1.0.0\AndroidManifest.xml:30:13-37
+77
+78        <receiver
+78-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+79            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+79-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+80            android:directBootAware="false"
+80-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+81            android:enabled="true"
+81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+82            android:exported="true"
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+83            android:permission="android.permission.DUMP" >
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+84            <intent-filter>
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+85                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+86            </intent-filter>
+87            <intent-filter>
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+88                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+89            </intent-filter>
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+91                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+92            </intent-filter>
+93            <intent-filter>
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+94                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.gradle\caches\transforms-3\b762a9194b9178dfd387696d541eba85\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+95            </intent-filter>
+96        </receiver>
+97    </application>
+98
+99</manifest>

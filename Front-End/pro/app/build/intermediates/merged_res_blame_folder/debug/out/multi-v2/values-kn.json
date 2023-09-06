@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.project.app-mergeDebugResources-69:/values-kn/values-kn.xml",
+            "outputFile": "com.example.project.app-mergeDebugResources-70:/values-kn/values-kn.xml",
             "map": [
                 {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\af6be649f154315a54c9188161bfb491\\transformed\\core-1.10.1\\res\\values-kn\\values-kn.xml",

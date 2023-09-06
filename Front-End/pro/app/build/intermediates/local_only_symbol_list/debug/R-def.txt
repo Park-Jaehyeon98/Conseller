@@ -12,10 +12,12 @@ drawable alert
 drawable auction
 drawable barter
 drawable chatbot
+drawable email
 drawable event
 drawable home
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable lock
 drawable logo
 drawable store
 layout fragment_biometric_prompt_dialog

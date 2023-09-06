@@ -51,9 +51,13 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    // User 관련
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
+                    composable("FindIdPage"){ FindIdPage(navController)}
+                    composable("FindPwPage"){ FindPwPage(navController)}
+                    composable("MakePatternPage"){ MakePatternPage(navController)}
                     // top bar
                     composable("AlertPage") { AlertPage() }
                     // bottom bar

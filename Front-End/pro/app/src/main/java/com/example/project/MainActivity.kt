@@ -61,9 +61,16 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MyPage") { MyPage() }
                     composable("SearchPage") { SearchPage() }
                     // 경 물 스 이
-                    composable("AuctionPage") { AuctionPage() }
+                    composable("AuctionPage") { AuctionPage(navController) }
+                    composable("AuctionDetailPage/{index}") { backStackEntry ->
+                        val index = backStackEntry.arguments?.getString("index")
+                        AuctiondetailPage(index)
+                    }
+
                     composable("BarterPage") { BarterPage() }
+
                     composable("StorePage") { StorePage() }
+
                     composable("EventPage") { EventPage() }
 
                 }

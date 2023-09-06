@@ -21,6 +21,8 @@ import hilt_aggregated_deps._com_example_project_Application_GeneratedInjector;
 import hilt_aggregated_deps._com_example_project_MainActivity_GeneratedInjector;
 import hilt_aggregated_deps._com_example_project_di_NetworkModule;
 import hilt_aggregated_deps._com_example_project_di_SharedPreferencesModule;
+import hilt_aggregated_deps._com_example_project_viewmodels_AuctionViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_example_project_viewmodels_AuctionViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_example_project_viewmodels_BiometricViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_example_project_viewmodels_BiometricViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint;
@@ -66,6 +68,8 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_example_project_MainActivity_GeneratedInjector.class,
         _com_example_project_di_NetworkModule.class,
         _com_example_project_di_SharedPreferencesModule.class,
+        _com_example_project_viewmodels_AuctionViewModel_HiltModules_BindsModule.class,
+        _com_example_project_viewmodels_AuctionViewModel_HiltModules_KeyModule.class,
         _com_example_project_viewmodels_BiometricViewModel_HiltModules_BindsModule.class,
         _com_example_project_viewmodels_BiometricViewModel_HiltModules_KeyModule.class,
         _dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint.class,

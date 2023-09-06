@@ -31,7 +31,7 @@ fun TopBar(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth().background(Color(201f/255f, 235f/255f, 243f/255f))) {
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth().height(54.dp),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -74,7 +74,7 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .height(82.dp)
+            .height(72.dp)
     ) {
         // 그림자 추가를 위한 Box
         Box(

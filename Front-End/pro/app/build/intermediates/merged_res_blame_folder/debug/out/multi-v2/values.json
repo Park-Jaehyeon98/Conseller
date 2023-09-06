@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.project.app-mergeDebugResources-70:/values/values.xml",
+            "outputFile": "com.example.project.app-mergeDebugResources-69:/values/values.xml",
             "map": [
                 {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\3c18484a8a96840dc89492cfe63d9cb0\\transformed\\biometric-1.2.0-alpha05\\res\\values\\values.xml",
@@ -39,6 +39,23 @@
                         "endLines": "132,135,874,9438",
                         "endColumns": "55,47,51,24",
                         "endOffsets": "6030,6186,50146,595829"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\SSAFY\\Desktop\\pro\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "16,119",
+                        "endColumns": "44,69",
+                        "endOffsets": "56,184"
+                    },
+                    "to": {
+                        "startLines": "1574,1621",
+                        "startColumns": "4,4",
+                        "startOffsets": "96325,100521",
+                        "endColumns": "44,69",
+                        "endOffsets": "96365,100586"
                     }
                 },
                 {
@@ -133,23 +150,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\SSAFY\\Desktop\\B207\\S09P22B207\\Front-End\\pro\\app\\src\\main\\res\\values\\colors.xml",
-                    "from": {
-                        "startLines": "7,2,3,4,5,6,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "293,57,105,153,201,247,336",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "330,99,147,195,241,287,373"
-                    },
-                    "to": {
-                        "startLines": "535,761,762,763,774,775,779",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "26503,42692,42739,42786,43530,43575,43783",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "26540,42734,42781,42828,43570,43615,43820"
-                    }
-                },
-                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\e1795be8ea581b6f5a17cddfb2570131\\transformed\\cardview-1.0.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,35,36,37,38,45,47,50,7",
@@ -185,23 +185,6 @@
                         "endLines": "8183,8189,8199,10602,10606",
                         "endColumns": "24,24,24,24,24",
                         "endOffsets": "538469,538647,538931,643330,643457"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\SSAFY\\Desktop\\B207\\S09P22B207\\Front-End\\pro\\app\\src\\main\\res\\values\\themes.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "57",
-                        "endColumns": "77",
-                        "endOffsets": "130"
-                    },
-                    "to": {
-                        "startLines": "5838",
-                        "startColumns": "4",
-                        "startOffsets": "390899",
-                        "endColumns": "76",
-                        "endOffsets": "390971"
                     }
                 },
                 {
@@ -293,23 +276,6 @@
                         "endLines": "414,926,927,928,937,938,939,1421,10368",
                         "endColumns": "55,58,47,55,74,75,71,65,24",
                         "endOffsets": "20042,53528,53576,53632,54371,54447,54519,87304,635915"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\SSAFY\\Desktop\\B207\\S09P22B207\\Front-End\\pro\\app\\src\\main\\res\\values\\strings.xml",
-                    "from": {
-                        "startLines": "1,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "17,122",
-                        "endColumns": "44,69",
-                        "endOffsets": "57,187"
-                    },
-                    "to": {
-                        "startLines": "1574,1621",
-                        "startColumns": "4,4",
-                        "startOffsets": "96325,100521",
-                        "endColumns": "44,69",
-                        "endOffsets": "96365,100586"
                     }
                 },
                 {
@@ -440,6 +406,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\SSAFY\\Desktop\\pro\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "7,2,3,4,5,6,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "286,55,102,149,196,241,328",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "323,97,144,191,236,281,365"
+                    },
+                    "to": {
+                        "startLines": "535,761,762,763,774,775,779",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "26503,42692,42739,42786,43530,43575,43783",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "26540,42734,42781,42828,43570,43615,43820"
+                    }
+                },
+                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\c2452db807b20e0a49d30ea407b16dee\\transformed\\navigation-runtime-2.7.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,10,13",
@@ -456,6 +439,23 @@
                         "endLines": "1433,8153,10154,10157",
                         "endColumns": "52,24,24,24",
                         "endOffsets": "87904,537396,627973,628088"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\SSAFY\\Desktop\\pro\\app\\src\\main\\res\\values\\themes.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "77",
+                        "endOffsets": "128"
+                    },
+                    "to": {
+                        "startLines": "5838",
+                        "startColumns": "4",
+                        "startOffsets": "390899",
+                        "endColumns": "76",
+                        "endOffsets": "390971"
                     }
                 },
                 {

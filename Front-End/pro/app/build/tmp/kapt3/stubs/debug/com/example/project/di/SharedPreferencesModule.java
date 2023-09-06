@@ -1,7 +1,14 @@
 package com.example.project.di;
 
 import android.content.Context;
-import com.example.project.api.ApiService;
+import com.example.project.api.AuctionService;
+import com.example.project.api.BarterService;
+import com.example.project.api.EventService;
+import com.example.project.api.LoginService;
+import com.example.project.api.MainService;
+import com.example.project.api.MyService;
+import com.example.project.api.ReuseService;
+import com.example.project.api.StoreService;
 import com.example.project.sharedpreferences.SharedPreferencesUtil;
 import dagger.Module;
 import dagger.Provides;

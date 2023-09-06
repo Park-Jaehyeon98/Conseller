@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:2:1-33:12
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:2:1-32:12
 MERGED from [com.github.AbyssSpecter:ComposeLock:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3931a63a8779140720b5bb31af439cd0\transformed\ComposeLock-1.0.0\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\7e2034863293e23e18f1babad31b62b2\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -32,9 +32,10 @@ MERGED from [androidx.compose.ui:ui-util-android:1.5.0] C:\Users\SSAFY\.gradle\c
 MERGED from [androidx.compose.ui:ui-unit-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\bad84374930ca29ba501098f7058d4e4\transformed\ui-unit-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-graphics-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3e9ac8e00a8cc6d401e595dc9c31c409\transformed\ui-graphics-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.compose.material:material:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7764e997d68beb8aca11415476f0fb7d\transformed\material-1.4.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.material:material-icons-core:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\33803d5b03683d274915b70e5c6d6d1d\transformed\material-icons-core-1.4.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.material:material-ripple:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\81cfa1ab9834ea5ba234b6a40e653492\transformed\material-ripple-1.4.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material:material-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\949488dc8ac94b801d3db864c9a49691\transformed\material-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3dcf8cf23136b066f7d7f01f1e4e6ec4\transformed\material-icons-core-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7c3d68fd2e50eb9dc2958e845086e57a\transformed\material-icons-extended-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\1cdad8824ef38c7243a19d845e70c3af\transformed\material-ripple-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.animation:animation-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\06e24484954e2b93188c37c11aebdbe8\transformed\animation-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-geometry-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\f5149a4e36ca59376cfca971d3b2aa7d\transformed\ui-geometry-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-text-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8593f5b1a1cff3b555f1d8b9ad8b6f23\transformed\ui-text-release\AndroidManifest.xml:2:1-7:12
@@ -90,28 +91,24 @@ MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\User
 MERGED from [androidx.print:print:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\d205645237ebd42397bcb5506180aad8\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\SSAFY\.gradle\caches\transforms-3\695675fc2774870345a47687a0f31aba\transformed\dagger-lint-aar-2.44\AndroidManifest.xml:16:1-19:12
 	package
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:3:5-51
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.USE_BIOMETRIC
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:6:5-71
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:6:5-71
 MERGED from [androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:22:5-72
 MERGED from [androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:22:5-72
 	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:6:22-69
-uses-permission#android.permission.INTERNET
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:7:5-67
-	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:7:22-64
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:6:22-69
 application
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:9:5-31:19
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:9:5-31:19
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:8:5-30:19
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:8:5-30:19
 MERGED from [com.google.android.material:material:1.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\191c1e5eb9ef44dc6c56cdcdd1f38ecf\transformed\material-1.6.1\AndroidManifest.xml:24:5-20
 MERGED from [com.google.android.material:material:1.6.1] C:\Users\SSAFY\.gradle\caches\transforms-3\191c1e5eb9ef44dc6c56cdcdd1f38ecf\transformed\material-1.6.1\AndroidManifest.xml:24:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\SSAFY\.gradle\caches\transforms-3\40cdb4618511986c782f9f1b71bbb07e\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
@@ -135,53 +132,53 @@ MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\SSAFY\.g
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\SSAFY\.gradle\caches\transforms-3\401dca289302f7d53d7557d6d7f6558e\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\SSAFY\.gradle\caches\transforms-3\401dca289302f7d53d7557d6d7f6558e\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.10.1] C:\Users\SSAFY\.gradle\caches\transforms-3\af6be649f154315a54c9188161bfb491\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:17:9-35
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:16:9-35
 	android:label
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:15:9-41
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:14:9-41
 	android:fullBackupContent
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:13:9-54
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:12:9-54
 	android:roundIcon
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:16:9-54
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:15:9-54
 	tools:targetApi
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:19:9-29
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:18:9-29
 	android:icon
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:14:9-43
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:13:9-43
 	android:allowBackup
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:11:9-35
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:18:9-45
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:17:9-45
 	android:dataExtractionRules
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:12:9-65
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:11:9-65
 	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:10:9-36
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:9:9-36
 activity#com.example.project.MainActivity
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:20:9-30:20
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:19:9-29:20
 	android:label
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:23:13-45
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:22:13-45
 	android:exported
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:22:13-36
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:21:13-36
 	android:theme
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:24:13-49
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:23:13-49
 	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:21:13-41
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:20:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:25:13-29:29
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:24:13-28:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:26:17-69
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:25:17-69
 	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:26:25-66
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:25:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:28:17-77
+ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:27:17-77
 	android:name
-		ADDED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml:28:27-74
+		ADDED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml:27:27-74
 uses-sdk
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 MERGED from [com.github.AbyssSpecter:ComposeLock:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3931a63a8779140720b5bb31af439cd0\transformed\ComposeLock-1.0.0\AndroidManifest.xml:5:5-7:41
 MERGED from [com.github.AbyssSpecter:ComposeLock:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3931a63a8779140720b5bb31af439cd0\transformed\ComposeLock-1.0.0\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:20:5-44
@@ -238,12 +235,14 @@ MERGED from [androidx.compose.ui:ui-graphics-android:1.5.0] C:\Users\SSAFY\.grad
 MERGED from [androidx.compose.ui:ui-graphics-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3e9ac8e00a8cc6d401e595dc9c31c409\transformed\ui-graphics-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\8cc81f2abf225420e44f782a0f810ccc\transformed\ui-tooling-release\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7764e997d68beb8aca11415476f0fb7d\transformed\material-1.4.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7764e997d68beb8aca11415476f0fb7d\transformed\material-1.4.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-icons-core:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\33803d5b03683d274915b70e5c6d6d1d\transformed\material-icons-core-1.4.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-icons-core:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\33803d5b03683d274915b70e5c6d6d1d\transformed\material-icons-core-1.4.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-ripple:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\81cfa1ab9834ea5ba234b6a40e653492\transformed\material-ripple-1.4.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-ripple:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-3\81cfa1ab9834ea5ba234b6a40e653492\transformed\material-ripple-1.4.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\949488dc8ac94b801d3db864c9a49691\transformed\material-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\949488dc8ac94b801d3db864c9a49691\transformed\material-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3dcf8cf23136b066f7d7f01f1e4e6ec4\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\3dcf8cf23136b066f7d7f01f1e4e6ec4\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7c3d68fd2e50eb9dc2958e845086e57a\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\7c3d68fd2e50eb9dc2958e845086e57a\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\1cdad8824ef38c7243a19d845e70c3af\transformed\material-ripple-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\1cdad8824ef38c7243a19d845e70c3af\transformed\material-ripple-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.animation:animation-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\06e24484954e2b93188c37c11aebdbe8\transformed\animation-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.animation:animation-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\06e24484954e2b93188c37c11aebdbe8\transformed\animation-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-geometry-android:1.5.0] C:\Users\SSAFY\.gradle\caches\transforms-3\f5149a4e36ca59376cfca971d3b2aa7d\transformed\ui-geometry-release\AndroidManifest.xml:5:5-44
@@ -353,9 +352,9 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\SSAFY\.gradle\caches\transform
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\SSAFY\.gradle\caches\transforms-3\695675fc2774870345a47687a0f31aba\transformed\dagger-lint-aar-2.44\AndroidManifest.xml:18:3-42
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\SSAFY\.gradle\caches\transforms-3\695675fc2774870345a47687a0f31aba\transformed\dagger-lint-aar-2.44\AndroidManifest.xml:18:3-42
 	android:targetSdkVersion
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\SSAFY\Desktop\pro\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\SSAFY\Desktop\B207\S09P22B207\Front-End\pro\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.USE_FINGERPRINT
 ADDED from [androidx.biometric:biometric:1.2.0-alpha05] C:\Users\SSAFY\.gradle\caches\transforms-3\3c18484a8a96840dc89492cfe63d9cb0\transformed\biometric-1.2.0-alpha05\AndroidManifest.xml:25:5-74
 	android:name

@@ -51,9 +51,13 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    // User 관련
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
+                    composable("FindIdPage"){ FindIdPage(navController)}
+                    composable("FindPwPage"){ FindPwPage(navController)}
+                    composable("MakePatternPage"){ MakePatternPage(navController)}
                     // top bar
                     composable("AlertPage") { AlertPage() }
                     // bottom bar
@@ -61,16 +65,9 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MyPage") { MyPage() }
                     composable("SearchPage") { SearchPage() }
                     // 경 물 스 이
-                    composable("AuctionPage") { AuctionPage(navController) }
-                    composable("AuctionDetailPage/{index}") { backStackEntry ->
-                        val index = backStackEntry.arguments?.getString("index")
-                        AuctiondetailPage(index)
-                    }
-
+                    composable("AuctionPage") { AuctionPage() }
                     composable("BarterPage") { BarterPage() }
-
                     composable("StorePage") { StorePage() }
-
                     composable("EventPage") { EventPage() }
 
                 }

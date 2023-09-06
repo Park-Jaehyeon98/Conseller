@@ -1,12 +1,11 @@
 package com.example.project
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +15,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,42 +27,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.example.project.api.AuctionFilterDTO
-import com.example.project.viewmodels.AuctionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuctionPage(navController: NavHostController) {
-    val viewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by viewModel.auctionItems.collectAsState()
-    val scrollState = rememberScrollState()
-
-    var currentPage by remember { mutableStateOf(1) } // 현재 페이지 초기값
-    val itemsPerPage = 10 // 페이지 당 표시할 항목 수
-
-    val startItemIndex = (currentPage - 1) * itemsPerPage
-    val endItemIndex = startItemIndex + itemsPerPage
-
+fun AuctionPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState)
     ) {
         // 검색창
         var searchText by remember { mutableStateOf("") }
         OutlinedTextField(
             value = searchText,
-            onValueChange = {
-                searchText = it
-                viewModel.searchItems(it)
-            },
+            onValueChange = { searchText = it },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             placeholder = { Text("검색") },
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -77,65 +59,37 @@ fun AuctionPage(navController: NavHostController) {
         ) {
             FilterButton(
                 selectedOption = filter1Selected,
-                options = listOf("대분류", "a", "b", "c")
-            ) {
-                filter1Selected = it
-                filter2Selected = "소분류"
-                viewModel.applyFilter(AuctionFilterDTO(filter1Selected, filter2Selected, filter3Selected, searchText, currentPage))
-            }
+                options = listOf("대분류","a", "b", "c")
+            ) { filter1Selected = it; filter2Selected = "소분류" } // 선택 시 filter2 초기화
 
             FilterButton(
                 selectedOption = filter2Selected,
                 options = when (filter1Selected) {
-                    "a" -> listOf("소분류", "a-1", "a-2", "a-3")
-                    "b" -> listOf("소분류", "b-1", "b-2", "b-3")
-                    "c" -> listOf("소분류", "c-1", "c-2", "c-3")
+                    "a" -> listOf("a-1", "a-2", "a-3")
+                    "b" -> listOf("b-1", "b-2", "b-3")
+                    "c" -> listOf("c-1", "c-2", "c-3")
                     else -> listOf("소분류")
                 }
-            ) {
-                filter2Selected = it
-                viewModel.applyFilter(AuctionFilterDTO(filter1Selected, filter2Selected, filter3Selected, searchText, currentPage))
-            }
+            ) { filter2Selected = it }
 
             FilterButton(
                 selectedOption = filter3Selected,
                 options = listOf("상태선택", "낮은가격순", "낮은입찰순", "미입찰")
-            ) {
-                filter3Selected = it
-                viewModel.applyFilter(AuctionFilterDTO(filter1Selected, filter2Selected, filter3Selected, searchText, currentPage))
-            }
+            ) { filter3Selected = it }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // AuctionItem 넣기
-        auctionItems.forEach { item ->
-            AuctionItem(
-                image = item.image,
-                name = item.name,
-                gifticonTime = item.gifticonTime,
-                auctionTime = item.auctionTime,
-                popular = item.popular,
-                upperprice = item.upperprice,
-                nowprice = item.nowprice,
-                onItemClick = {
-                    navController.navigate("AuctionDetailPage/${item.index}")
-                }
-
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 페이지네이션 컨트롤
-        PaginationControls(
-            totalItems = auctionItems.size,
-            currentPage = currentPage,
-            itemsPerPage = itemsPerPage
-        ) { newPage ->
-            currentPage = newPage
-            viewModel.changePage(newPage)  // 페이지 변경 시 데이터 받기
-        }
+        // AuctionItem 추가
+        AuctionItem(
+            image = "ImageLink",
+            name = "ItemName",
+            gifticonTime = "GifticonTime",
+            auctionTime = "AuctionTime",
+            popular = "Popular",
+            upperprice = "UpperPrice",
+            nowprice = "NowPrice"
+        )
     }
 }
 
@@ -152,17 +106,17 @@ fun FilterButton(
 
     Box(
         modifier = Modifier
-            .width(116.dp)
-            .height(28.dp)
+            .fillMaxWidth(0.3f)
+            .wrapContentSize(Alignment.TopEnd)
             .border(1.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
             .clickable { expanded = true }
-            .padding(horizontal = 6.dp)
+            .padding(8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = selectedOption,modifier = Modifier.weight(1f), fontSize = 16.sp)
+            Text(text = selectedOption)
             Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Arrow Drop Down")
         }
 
@@ -172,7 +126,7 @@ fun FilterButton(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option, fontSize = 16.sp) },
+                    text = { Text(option) },
                     onClick = {
                         onOptionSelected(option)
                         expanded = false
@@ -193,8 +147,7 @@ fun AuctionItem(
     auctionTime: String,
     popular: String,
     upperprice: String,
-    nowprice: String,
-    onItemClick: () -> Unit
+    nowprice: String
 ) {
     Column(
         modifier = Modifier
@@ -202,7 +155,6 @@ fun AuctionItem(
             .height(300.dp)
             .background(Color.White)
             .padding(8.dp)
-            .clickable { onItemClick() }
     ) {
         // 65% 이미지
         Box(
@@ -262,43 +214,5 @@ fun AuctionItem(
     }
 }
 
-@Composable
-fun PaginationControls(
-    totalItems: Int,
-    currentPage: Int,
-    itemsPerPage: Int,
-    onPageSelected: (Int) -> Unit
-) {
-    val totalPages = (totalItems + itemsPerPage - 1) / itemsPerPage
-    val maxPagesToShow = 5
-    val startPage = ((currentPage - 1) / maxPagesToShow) * maxPagesToShow + 1
-    val endPage = minOf(startPage + maxPagesToShow - 1, totalPages)
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        // 이전 페이지 버튼
-        if (startPage > 1) {
-            Button(onClick = { onPageSelected(startPage - 1) }) {
-                Text("이전")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-        }
 
-        // 페이지 번호
-        for (i in startPage..endPage) {
-            Button(onClick = { onPageSelected(i) }) {
-                Text("$i")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-        }
-
-        // 다음 페이지 버튼
-        if (endPage < totalPages) {
-            Button(onClick = { onPageSelected(endPage + 1) }) {
-                Text("다음")
-            }
-        }
-    }
-}

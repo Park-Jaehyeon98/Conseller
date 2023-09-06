@@ -2,7 +2,6 @@ package com.example.project;
 
 import com.example.project.di.NetworkModule;
 import com.example.project.di.SharedPreferencesModule;
-import com.example.project.viewmodels.AuctionViewModel_HiltModules;
 import com.example.project.viewmodels.BiometricViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
@@ -157,7 +156,6 @@ public final class Application_HiltComponents {
       modules = {
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
-          AuctionViewModel_HiltModules.KeyModule.class,
           BiometricViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class
       }
@@ -195,7 +193,6 @@ public final class Application_HiltComponents {
 
   @Subcomponent(
       modules = {
-          AuctionViewModel_HiltModules.BindsModule.class,
           BiometricViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class
       }

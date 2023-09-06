@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.project.app-mergeDebugResources-69:/values-en-rIN/values-en-rIN.xml",
+            "outputFile": "com.example.project.app-mergeDebugResources-70:/values-en-rIN/values-en-rIN.xml",
             "map": [
                 {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\3c18484a8a96840dc89492cfe63d9cb0\\transformed\\biometric-1.2.0-alpha05\\res\\values-en-rIN\\values-en-rIN.xml",

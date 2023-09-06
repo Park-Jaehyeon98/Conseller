@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Copy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,8 +23,7 @@ import androidx.navigation.NavHostController
 @Composable
 fun TextLoginPage(navController: NavHostController) {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,15 +43,24 @@ fun TextLoginPage(navController: NavHostController) {
             // 로그인 아이디 및 비밀번호 텍스트 입력창
             var loginText by remember { mutableStateOf(TextFieldValue("")) }
             var passwordText by remember { mutableStateOf(TextFieldValue("")) }
+            Row(
 
-            BasicTextField(
-                value = loginText,
-                onValueChange = { loginText = it },
+            ){
+                BasicTextField(
+                    value = loginText,
+                    onValueChange = { loginText = it },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(16.dp)
+                )
+            }
+            Spacer(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .background(Color.White)
-                    .padding(16.dp)
+                    .height(1.dp)
+                    .background(Color.Black)
             )
+
 
             BasicTextField(
                 value = passwordText,
@@ -61,26 +68,30 @@ fun TextLoginPage(navController: NavHostController) {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .background(Color.White)
                     .padding(16.dp)
             )
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth(0.8f)
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(text = "아이디")
-                        Text(text = "/비밀번호")
-                        Text(text = "찾기")
-                    }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(1.dp)
+                    .background(Color.Black)
+            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "아이디")
+                Text(text = "/비밀번호")
+                Text(text = "찾기")
+            }
             Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(Color.Blue)
+                onClick = {}, colors = ButtonDefaults.buttonColors(Color.Blue)
             ) {
                 Text("로그인")
             }
             Button(
-                onClick = { navController.navigate("SignUp")},
+                onClick = { navController.navigate("SignUp") },
                 colors = ButtonDefaults.buttonColors(Color.Blue)
             ) {
                 Text("회원가입")
@@ -88,3 +99,4 @@ fun TextLoginPage(navController: NavHostController) {
         }
     }
 }
+

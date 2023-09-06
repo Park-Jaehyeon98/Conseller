@@ -3,7 +3,7 @@ package com.example.project.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.example.project.api.ApiService;
+import com.example.project.api.LoginService;
 import com.example.project.api.PatternVerificationRequest;
 import com.example.project.sharedpreferences.SharedPreferencesUtil;
 import dagger.hilt.android.lifecycle.HiltViewModel;

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.project.app-mergeDebugResources-70:/values-fr-rCA/values-fr-rCA.xml",
+            "outputFile": "com.example.project.app-mergeDebugResources-69:/values-fr-rCA/values-fr-rCA.xml",
             "map": [
                 {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-3\\322113fc361ac4f88c92e77ae0678d38\\transformed\\ui-release\\res\\values-fr-rCA\\values-fr-rCA.xml",

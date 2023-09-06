@@ -1,7 +1,6 @@
 package com.example.project
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -11,14 +10,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 
 val customBackgroundColor = Color(245, 245, 245)
 
@@ -51,24 +48,42 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
-                    // User 관련
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
-                    composable("FindIdPage"){ FindIdPage(navController)}
-                    composable("FindPwPage"){ FindPwPage(navController)}
-                    composable("MakePatternPage"){ MakePatternPage(navController)}
                     // top bar
                     composable("AlertPage") { AlertPage() }
                     // bottom bar
-                    composable("Home") { MainContent(navController = navController) }
+                    composable("Home") { HomePage(navController = navController) }
                     composable("MyPage") { MyPage() }
                     composable("SearchPage") { SearchPage() }
-                    // 경 물 스 이
-                    composable("AuctionPage") { AuctionPage() }
-                    composable("BarterPage") { BarterPage() }
-                    composable("StorePage") { StorePage() }
-                    composable("EventPage") { EventPage() }
+
+                    // 경매
+                    composable("AuctionPage") { AuctionPage(navController) }
+                    composable("AuctionDetailPage/{index}") { backStackEntry ->
+                        val index = backStackEntry.arguments?.getString("index")
+                        AuctiondetailPage(index)
+                    }
+                    composable("AuctionCreatePage") { AuctionCreatePage(navController) }
+                    composable("AuctionCreateDetailPage") { AuctionCreateDetailPage(navController) }
+
+
+                    // 물물
+                    composable("BarterPage") { BarterPage(navController) }
+                    composable("BarterDetailPage/{index}") { backStackEntry ->
+                        val index = backStackEntry.arguments?.getString("index")
+                        BarterdetailPage(index)
+                    }
+                    composable("BarterCreatePage") { BarterCreatePage(navController) }
+                    composable("BarterCreateDetailPage") { BarterCreateDetailPage(navController) }
+
+
+                    // 스토어
+                    composable("StorePage") { StorePage(navController = navController) }
+
+
+                    // 이벤트
+                    composable("EventPage") { EventPage(navController = navController) }
 
                 }
             }

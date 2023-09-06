@@ -6,15 +6,27 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import com.example.project.api.ApiService;
+import com.example.project.api.AuctionService;
+import com.example.project.api.BarterService;
+import com.example.project.api.LoginService;
+import com.example.project.api.MyService;
 import com.example.project.di.NetworkModule;
-import com.example.project.di.NetworkModule_ProvideApiServiceFactory;
+import com.example.project.di.NetworkModule_ProvideAuctionServiceFactory;
+import com.example.project.di.NetworkModule_ProvideBarterServiceFactory;
+import com.example.project.di.NetworkModule_ProvideLoginServiceFactory;
+import com.example.project.di.NetworkModule_ProvideMyServiceFactory;
 import com.example.project.di.NetworkModule_ProvideRetrofitFactory;
 import com.example.project.di.SharedPreferencesModule;
 import com.example.project.di.SharedPreferencesModule_ProvideSharedPreferencesUtilFactory;
 import com.example.project.sharedpreferences.SharedPreferencesUtil;
+import com.example.project.viewmodels.AuctionViewModel;
+import com.example.project.viewmodels.AuctionViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.example.project.viewmodels.BarterViewModel;
+import com.example.project.viewmodels.BarterViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.example.project.viewmodels.BiometricViewModel;
 import com.example.project.viewmodels.BiometricViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.example.project.viewmodels.MygifticonViewModel;
+import com.example.project.viewmodels.MygifticonViewModel_HiltModules_KeyModule_ProvideFactory;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.flags.HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule;
@@ -32,7 +44,9 @@ import dagger.hilt.android.internal.modules.ApplicationContextModule;
 import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
+import dagger.internal.MapBuilder;
 import dagger.internal.Preconditions;
+import dagger.internal.SetBuilder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -387,7 +401,7 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return Collections.<String>singleton(BiometricViewModel_HiltModules_KeyModule_ProvideFactory.provide());
+      return SetBuilder.<String>newSetBuilder(4).add(AuctionViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(BarterViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(BiometricViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(MygifticonViewModel_HiltModules_KeyModule_ProvideFactory.provide()).build();
     }
 
     @Override
@@ -413,7 +427,13 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     private final ViewModelCImpl viewModelCImpl = this;
 
+    private Provider<AuctionViewModel> auctionViewModelProvider;
+
+    private Provider<BarterViewModel> barterViewModelProvider;
+
     private Provider<BiometricViewModel> biometricViewModelProvider;
+
+    private Provider<MygifticonViewModel> mygifticonViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
         ActivityRetainedCImpl activityRetainedCImpl, SavedStateHandle savedStateHandleParam,
@@ -428,12 +448,15 @@ public final class DaggerApplication_HiltComponents_SingletonC {
     @SuppressWarnings("unchecked")
     private void initialize(final SavedStateHandle savedStateHandleParam,
         final ViewModelLifecycle viewModelLifecycleParam) {
-      this.biometricViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
+      this.auctionViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
+      this.barterViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.biometricViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+      this.mygifticonViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
     }
 
     @Override
     public Map<String, Provider<ViewModel>> getHiltViewModelMap() {
-      return Collections.<String, Provider<ViewModel>>singletonMap("com.example.project.viewmodels.BiometricViewModel", ((Provider) biometricViewModelProvider));
+      return MapBuilder.<String, Provider<ViewModel>>newMapBuilder(4).put("com.example.project.viewmodels.AuctionViewModel", ((Provider) auctionViewModelProvider)).put("com.example.project.viewmodels.BarterViewModel", ((Provider) barterViewModelProvider)).put("com.example.project.viewmodels.BiometricViewModel", ((Provider) biometricViewModelProvider)).put("com.example.project.viewmodels.MygifticonViewModel", ((Provider) mygifticonViewModelProvider)).build();
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -457,8 +480,17 @@ public final class DaggerApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.example.project.viewmodels.BiometricViewModel 
-          return (T) new BiometricViewModel(singletonCImpl.provideApiServiceProvider.get(), singletonCImpl.provideSharedPreferencesUtilProvider.get());
+          case 0: // com.example.project.viewmodels.AuctionViewModel 
+          return (T) new AuctionViewModel(singletonCImpl.provideAuctionServiceProvider.get());
+
+          case 1: // com.example.project.viewmodels.BarterViewModel 
+          return (T) new BarterViewModel(singletonCImpl.provideBarterServiceProvider.get());
+
+          case 2: // com.example.project.viewmodels.BiometricViewModel 
+          return (T) new BiometricViewModel(singletonCImpl.provideLoginServiceProvider.get(), singletonCImpl.provideSharedPreferencesUtilProvider.get());
+
+          case 3: // com.example.project.viewmodels.MygifticonViewModel 
+          return (T) new MygifticonViewModel(singletonCImpl.provideMyServiceProvider.get(), singletonCImpl.provideSharedPreferencesUtilProvider.get());
 
           default: throw new AssertionError(id);
         }
@@ -541,9 +573,15 @@ public final class DaggerApplication_HiltComponents_SingletonC {
 
     private Provider<Retrofit> provideRetrofitProvider;
 
-    private Provider<ApiService> provideApiServiceProvider;
+    private Provider<AuctionService> provideAuctionServiceProvider;
+
+    private Provider<BarterService> provideBarterServiceProvider;
+
+    private Provider<LoginService> provideLoginServiceProvider;
 
     private Provider<SharedPreferencesUtil> provideSharedPreferencesUtilProvider;
+
+    private Provider<MyService> provideMyServiceProvider;
 
     private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
       this.applicationContextModule = applicationContextModuleParam;
@@ -554,12 +592,15 @@ public final class DaggerApplication_HiltComponents_SingletonC {
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
       this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 1));
-      this.provideApiServiceProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 0));
-      this.provideSharedPreferencesUtilProvider = DoubleCheck.provider(new SwitchingProvider<SharedPreferencesUtil>(singletonCImpl, 2));
+      this.provideAuctionServiceProvider = DoubleCheck.provider(new SwitchingProvider<AuctionService>(singletonCImpl, 0));
+      this.provideBarterServiceProvider = DoubleCheck.provider(new SwitchingProvider<BarterService>(singletonCImpl, 2));
+      this.provideLoginServiceProvider = DoubleCheck.provider(new SwitchingProvider<LoginService>(singletonCImpl, 3));
+      this.provideSharedPreferencesUtilProvider = DoubleCheck.provider(new SwitchingProvider<SharedPreferencesUtil>(singletonCImpl, 4));
+      this.provideMyServiceProvider = DoubleCheck.provider(new SwitchingProvider<MyService>(singletonCImpl, 5));
     }
 
     @Override
-    public void injectApplication(Application arg0) {
+    public void injectApplication(Application application) {
     }
 
     @Override
@@ -591,14 +632,23 @@ public final class DaggerApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.example.project.api.ApiService 
-          return (T) NetworkModule_ProvideApiServiceFactory.provideApiService(singletonCImpl.provideRetrofitProvider.get());
+          case 0: // com.example.project.api.AuctionService 
+          return (T) NetworkModule_ProvideAuctionServiceFactory.provideAuctionService(singletonCImpl.provideRetrofitProvider.get());
 
           case 1: // retrofit2.Retrofit 
           return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit();
 
-          case 2: // com.example.project.sharedpreferences.SharedPreferencesUtil 
+          case 2: // com.example.project.api.BarterService 
+          return (T) NetworkModule_ProvideBarterServiceFactory.provideBarterService(singletonCImpl.provideRetrofitProvider.get());
+
+          case 3: // com.example.project.api.LoginService 
+          return (T) NetworkModule_ProvideLoginServiceFactory.provideLoginService(singletonCImpl.provideRetrofitProvider.get());
+
+          case 4: // com.example.project.sharedpreferences.SharedPreferencesUtil 
           return (T) SharedPreferencesModule_ProvideSharedPreferencesUtilFactory.provideSharedPreferencesUtil(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 5: // com.example.project.api.MyService 
+          return (T) NetworkModule_ProvideMyServiceFactory.provideMyService(singletonCImpl.provideRetrofitProvider.get());
 
           default: throw new AssertionError(id);
         }

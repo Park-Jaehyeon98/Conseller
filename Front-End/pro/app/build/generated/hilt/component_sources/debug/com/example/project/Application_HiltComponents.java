@@ -2,7 +2,10 @@ package com.example.project;
 
 import com.example.project.di.NetworkModule;
 import com.example.project.di.SharedPreferencesModule;
+import com.example.project.viewmodels.AuctionViewModel_HiltModules;
+import com.example.project.viewmodels.BarterViewModel_HiltModules;
 import com.example.project.viewmodels.BiometricViewModel_HiltModules;
+import com.example.project.viewmodels.MygifticonViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -156,8 +159,11 @@ public final class Application_HiltComponents {
       modules = {
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
+          AuctionViewModel_HiltModules.KeyModule.class,
+          BarterViewModel_HiltModules.KeyModule.class,
           BiometricViewModel_HiltModules.KeyModule.class,
-          HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class
+          HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
+          MygifticonViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -193,8 +199,11 @@ public final class Application_HiltComponents {
 
   @Subcomponent(
       modules = {
+          AuctionViewModel_HiltModules.BindsModule.class,
+          BarterViewModel_HiltModules.BindsModule.class,
           BiometricViewModel_HiltModules.BindsModule.class,
-          HiltWrapper_HiltViewModelFactory_ViewModelModule.class
+          HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          MygifticonViewModel_HiltModules.BindsModule.class
       }
   )
   @ViewModelScoped

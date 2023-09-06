@@ -1,6 +1,6 @@
 package com.example.project.viewmodels;
 
-import com.example.project.api.ApiService;
+import com.example.project.api.LoginService;
 import com.example.project.sharedpreferences.SharedPreferencesUtil;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -21,28 +21,28 @@ import javax.inject.Provider;
     "rawtypes"
 })
 public final class BiometricViewModel_Factory implements Factory<BiometricViewModel> {
-  private final Provider<ApiService> apiServiceProvider;
+  private final Provider<LoginService> loginServiceProvider;
 
   private final Provider<SharedPreferencesUtil> sharedPreferencesUtilProvider;
 
-  public BiometricViewModel_Factory(Provider<ApiService> apiServiceProvider,
+  public BiometricViewModel_Factory(Provider<LoginService> loginServiceProvider,
       Provider<SharedPreferencesUtil> sharedPreferencesUtilProvider) {
-    this.apiServiceProvider = apiServiceProvider;
+    this.loginServiceProvider = loginServiceProvider;
     this.sharedPreferencesUtilProvider = sharedPreferencesUtilProvider;
   }
 
   @Override
   public BiometricViewModel get() {
-    return newInstance(apiServiceProvider.get(), sharedPreferencesUtilProvider.get());
+    return newInstance(loginServiceProvider.get(), sharedPreferencesUtilProvider.get());
   }
 
-  public static BiometricViewModel_Factory create(Provider<ApiService> apiServiceProvider,
+  public static BiometricViewModel_Factory create(Provider<LoginService> loginServiceProvider,
       Provider<SharedPreferencesUtil> sharedPreferencesUtilProvider) {
-    return new BiometricViewModel_Factory(apiServiceProvider, sharedPreferencesUtilProvider);
+    return new BiometricViewModel_Factory(loginServiceProvider, sharedPreferencesUtilProvider);
   }
 
-  public static BiometricViewModel newInstance(ApiService apiService,
+  public static BiometricViewModel newInstance(LoginService loginService,
       SharedPreferencesUtil sharedPreferencesUtil) {
-    return new BiometricViewModel(apiService, sharedPreferencesUtil);
+    return new BiometricViewModel(loginService, sharedPreferencesUtil);
   }
 }

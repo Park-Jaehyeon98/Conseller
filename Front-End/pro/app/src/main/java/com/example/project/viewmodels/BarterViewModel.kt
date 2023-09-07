@@ -2,10 +2,8 @@ package com.example.project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.BarterCreateDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
-import com.example.project.api.CreateBarterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,11 +27,6 @@ class BarterViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    // 물물교환 등록
-    private val _createBarterResponse = MutableStateFlow<CreateBarterResponse?>(null)
-    val createBarterResponse: StateFlow<CreateBarterResponse?> = _createBarterResponse
-
-
     private var currentPage = 1
     private var currentFilter = BarterFilterDTO("", "", null, currentPage)
 
@@ -55,31 +48,6 @@ class BarterViewModel @Inject constructor(
     fun searchItems(query: String) {
         currentFilter = currentFilter.copy(searchQuery = query)
         fetchBarterItems(currentPage)
-    }
-
-    // 물물교환 등록할때 이미지 불러오기용
-    fun getSelectedItems(indices: List<Int>): List<BarterItemData> {
-        return _barterItems.value.filter { it.index in indices }
-    }
-
-    // 물물교환 등록
-    fun createBarterItem(createDTO: BarterCreateDTO) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                val response = service.createBarterItem(createDTO)
-                if (response.isSuccessful && response.body() != null) {
-                    _createBarterResponse.value = response.body()
-                } else {
-                    _error.value = "Failed to create barter item: ${response.message()}"
-                }
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
-            } finally {
-                _isLoading.value = false
-            }
-        }
     }
 
 

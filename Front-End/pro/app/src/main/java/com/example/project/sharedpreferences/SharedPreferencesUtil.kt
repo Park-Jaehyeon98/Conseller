@@ -31,16 +31,16 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     }
 
     // 사용자 아이디를 저장하는 메서드
-    fun setUserId(useridx: Int) {
+    fun setUserId(useridx: String) {
         with(sharedPreferences.edit()) {
-            putInt(USER_IDX, useridx)
+            putString(USER_IDX, useridx)
             apply()
         }
     }
 
     // 저장된 사용자 아이디를 가져오는 메서드
-    fun getUserId(): Int {
-        return sharedPreferences.getInt(USER_IDX, -1)
+    fun getUserId(): String? {
+        return sharedPreferences.getString(USER_IDX, null)
     }
 
     // 사용자 닉네임을 저장하는 메서드

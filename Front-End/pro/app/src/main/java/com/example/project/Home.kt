@@ -4,17 +4,134 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
+fun TopBar(navController: NavHostController) {
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    Box(modifier = Modifier.fillMaxWidth().background(Color(201f/255f, 235f/255f, 243f/255f))) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth().height(54.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 로고
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = null,
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 알림
+                    Image(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = null,
+                        modifier = Modifier.clickable { navController.navigate("AlertPage") }
+                            .size(40.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("박해종님 안녕하세요", fontSize = 2f * 10.sp)
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+@Composable
+fun BottomBar(navController: NavHostController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .height(82.dp)
+    ) {
+        // 그림자 추가를 위한 Box
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(0.2.dp)
+                .shadow(elevation = 0.2.dp, shape = RectangleShape)
+        )
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BottomBarButton("메인") {
+                navController.navigate("Home")
+            }
+            BottomBarButton("검색") {
+                navController.navigate("SearchPage")
+            }
+            BottomBarButton("내정보") {
+                navController.navigate("MyPage")
+            }
+        }
+    }
+}
+
+
+@Composable
+fun BottomBarButton(label: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .widthIn(min = 64.dp, max = 80.dp)
+    ) {
+        val icon = when(label) {
+            "메인" -> Icons.Default.Home
+            "검색" -> Icons.Default.Search
+            "내정보" -> Icons.Default.AccountCircle
+            else -> Icons.Default.Home
+        }
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.height(4.dp)) // 아이콘과 텍스트 사이 간격
+        Text(label)
+    }
+}
+
+
+
+@Composable
+fun MainContent(modifier: Modifier = Modifier, navController: NavHostController) {
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -23,26 +140,26 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout2() }
+            item { ParentLayout2() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout3(navController) }
+            item { ParentLayout3(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout4() }
+            item { ParentLayout4() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout5() }
+            item { ParentLayout5() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout6() }
+            item { ParentLayout6() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout7() }
+            item { ParentLayout7() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout8() }
+            item { ParentLayout8() }
 
         }
     }
 }
 
 @Composable
-fun HomeLayout2() {
+fun ParentLayout2() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +173,7 @@ fun HomeLayout2() {
 }
 
 @Composable
-fun HomeLayout3(navController: NavHostController) {
+fun ParentLayout3(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,7 +216,7 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
         painter = painterResource(id = resourceId),
         contentDescription = null,
         modifier = Modifier
-            .size(88.dp)
+            .size(92.dp)
             .clickable(onClick = onClick)
     )
 }
@@ -110,7 +227,7 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
 
 
 @Composable
-fun HomeLayout4() {
+fun ParentLayout4() {
     Row(
         modifier = Modifier.fillMaxWidth().height(250.dp).padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -165,7 +282,7 @@ fun HomeLayout4() {
 
 
 @Composable
-fun HomeLayout5() {
+fun ParentLayout5() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,7 +296,7 @@ fun HomeLayout5() {
 }
 
 @Composable
-fun HomeLayout6() {
+fun ParentLayout6() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -193,7 +310,7 @@ fun HomeLayout6() {
 }
 
 @Composable
-fun HomeLayout7() {
+fun ParentLayout7() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -207,7 +324,7 @@ fun HomeLayout7() {
 }
 
 @Composable
-fun HomeLayout8() {
+fun ParentLayout8() {
     Box(
         modifier = Modifier
             .fillMaxWidth()

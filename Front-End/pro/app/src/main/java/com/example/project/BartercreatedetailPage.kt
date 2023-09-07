@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun FindPwPage(navController: NavHostController) {
-
+fun BarterCreateDetailPage(navController: NavHostController) {
+    // 내 계정 페이지 내용 작성
 }

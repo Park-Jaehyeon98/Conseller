@@ -15,7 +15,7 @@ interface LoginService {
 
 // 패턴 검증 요청에 대한 DTO
 data class PatternVerificationRequest(
-    val userId: String,
+    val user_idx: Int,
     val pattern: String
 )
 

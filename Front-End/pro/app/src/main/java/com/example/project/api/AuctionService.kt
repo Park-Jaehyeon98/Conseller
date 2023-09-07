@@ -8,16 +8,16 @@ import retrofit2.http.POST
 interface AuctionService {
 
     // 전체 목록 불러오는 API
-    @POST("api/auction")
+    @POST("auctionItems/all")
     suspend fun getAllAuctionItems(
         @Body filter: AuctionFilterDTO,
     ): Response<AuctionResponse>
 
-    // 경매 등록 API
-    @POST("api/auction/resist")
-    suspend fun registerAuctionItem(
-        @Body registerData: RegisterAuctionDTO
-    ): Response<RegisterAuctionResponse>
+    // 검색으로 불러오는 API
+    @POST("auctionItems/search")
+    suspend fun searchAuctionItems(
+        @Body filter: AuctionFilterDTO
+    ): Response<AuctionResponse>
 
 }
 
@@ -36,17 +36,3 @@ data class AuctionResponse(
     val items: List<AuctionItemData>
 )
 
-// 경매 등록 요청 DTO
-data class RegisterAuctionDTO(
-    val upperLimit: String,      // 상한가
-    val lowerLimit: String,      // 하한가
-    val postContent: String,     // 게시글 내용
-    val gifticon_idx: Int,       // gifticon의 인덱스
-    val user_idx: Int            // 사용자의 인덱스
-)
-
-// 경매 등록 응답 DTO
-data class RegisterAuctionResponse(
-    val success: Boolean,
-    val message: String
-)

@@ -77,7 +77,7 @@ fun AuctionCreatePage(navController: NavHostController) {
             ) {
                 Button(onClick = {
                     selectedItemIndex?.let {
-                        navController.navigate("AuctionCreateDetailPage/$it")
+                        navController.navigate("nextPageRoute/$it")
                     }
                 }) {
                     Icon(Icons.Default.ArrowForward, contentDescription = "다음")

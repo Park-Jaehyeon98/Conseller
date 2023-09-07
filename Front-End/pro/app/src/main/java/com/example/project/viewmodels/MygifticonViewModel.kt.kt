@@ -28,13 +28,13 @@ class MygifticonViewModel @Inject constructor(
     private var currentPage = 1
 
     init {
-        val user_idx = sharedPreferencesUtil.getUserId()
+        val user_idx = sharedPreferencesUtil.getUserId()?.toIntOrNull() ?: -1
         getUserGifticons(user_idx, currentPage)
     }
 
     fun changePage(page: Int) {
         currentPage = page
-        val user_idx = sharedPreferencesUtil.getUserId()
+        val user_idx = sharedPreferencesUtil.getUserId()?.toIntOrNull() ?: -1
         getUserGifticons(user_idx, currentPage)
     }
 

@@ -68,10 +68,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         AuctiondetailPage(index)
                     }
                     composable("AuctionCreatePage") { AuctionCreatePage(navController) }
-                    composable("AuctionCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
-                        val selectedItemIndex = backStackEntry.arguments?.getInt("selectedItemIndex") ?: -1
-                        AuctionCreateDetailPage(navController, selectedItemIndex)
-                    }
+                    composable("AuctionCreateDetailPage") { AuctionCreateDetailPage(navController) }
 
 
                     // 물물
@@ -81,11 +78,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         BarterdetailPage(index)
                     }
                     composable("BarterCreatePage") { BarterCreatePage(navController) }
-                    composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
-                        val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
-                        val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toIntOrNull() }.filterNotNull()
-                        BarterCreateDetailPage(navController, selectedItemIndicesList)
-                    }
+                    composable("BarterCreateDetailPage") { BarterCreateDetailPage(navController) }
 
 
                     // 스토어

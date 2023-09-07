@@ -1,9 +1,8 @@
 package com.example.project
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
 fun AlertPage() {
-    Text(text = "알림페이지입니다.")
+    // 알림 페이지 내용 작성
 }

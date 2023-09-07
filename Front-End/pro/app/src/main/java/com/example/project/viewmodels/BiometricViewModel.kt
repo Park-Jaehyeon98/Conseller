@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.ApiService
+import com.example.project.api.LoginService
 import com.example.project.api.PatternVerificationRequest
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BiometricViewModel @Inject constructor(
-    private val apiService: ApiService,
+    private val loginService: LoginService,
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
@@ -29,7 +29,7 @@ class BiometricViewModel @Inject constructor(
             }
             val request = PatternVerificationRequest(userId, pattern)
             try {
-                val response = apiService.verifyPattern(request)
+                val response = loginService.verifyPattern(request)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody?.success == true) {

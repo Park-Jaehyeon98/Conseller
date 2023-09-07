@@ -77,6 +77,8 @@ dependencies {
     // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    // coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
     //icon 추가
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
 

@@ -51,6 +51,9 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
+                    composable("FindIdPage"){ FindIdPage(navController)}
+                    composable("FindPwPage"){ FindPwPage(navController)}
+                    composable("MakePatternPage"){ MakePatternPage(navController)}
                     // top bar
                     composable("AlertPage") { AlertPage() }
                     // bottom bar

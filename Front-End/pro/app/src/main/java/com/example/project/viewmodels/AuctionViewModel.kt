@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
+import com.example.project.api.RegisterAuctionDTO
+import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuctionViewModel @Inject constructor(
-    private val service: AuctionService
+    private val service: AuctionService,
+    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
@@ -31,36 +34,34 @@ class AuctionViewModel @Inject constructor(
     private var currentFilter = AuctionFilterDTO("", "", "", null, currentPage)
 
     init {
-        fetchAuctionItems(currentPage)
+        fetchAuctionItems()
     }
 
     fun changePage(page: Int) {
         currentPage = page
-        fetchAuctionItems(currentPage)
+        currentFilter = currentFilter.copy(page = currentPage)
+        fetchAuctionItems()
     }
 
     fun applyFilter(filter: AuctionFilterDTO) {
-        currentFilter = filter
-        currentPage = 1 // 초기 페이지로 설정
-        fetchAuctionItems(currentPage)
+        currentFilter = filter.copy(page = 1)
+        currentPage = 1
+        fetchAuctionItems()
     }
 
     fun searchItems(query: String) {
-        currentFilter = currentFilter.copy(searchQuery = query)
-        fetchAuctionItems(currentPage)
+        currentFilter = currentFilter.copy(searchQuery = query, page = 1)
+        currentPage = 1
+        fetchAuctionItems()
     }
 
-
-    private fun fetchAuctionItems(page: Int) {
+    private fun fetchAuctionItems() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = if (currentFilter.searchQuery != null) {
-                    service.searchAuctionItems(currentFilter)
-                } else {
-                    service.getAllAuctionItems(currentFilter)
-                }
+                val response = service.getAllAuctionItems(currentFilter)
+
                 if (response.isSuccessful && response.body() != null) {
                     _auctionItems.value = response.body()!!.items
                     _totalItems.value = response.body()!!.total
@@ -71,6 +72,28 @@ class AuctionViewModel @Inject constructor(
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _auctionItems.value = getSampleData()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun registerAuctionItem(upperLimit: String, lowerLimit: String, postContent: String, gifticonIdx: Int) {
+        val userIdx = sharedPreferencesUtil.getUserId()
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.registerAuctionItem(RegisterAuctionDTO(upperLimit, lowerLimit, postContent, gifticonIdx, userIdx))
+
+                if (response.isSuccessful && response.body() != null) {
+                    // TODO: Handle successful registration logic if needed.
+                } else {
+                    _error.value = "Failed to register item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }

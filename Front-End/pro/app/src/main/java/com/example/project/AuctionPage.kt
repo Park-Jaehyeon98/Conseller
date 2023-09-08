@@ -11,12 +11,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -194,8 +191,6 @@ fun AuctionPage(navController: NavHostController) {
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterButton(
     selectedOption: String,
@@ -246,8 +241,8 @@ fun AuctionItem(
     gifticonTime: String,
     auctionTime: String,
     popular: String,
-    upperprice: String,
-    nowprice: String,
+    upperprice: Int,
+    nowprice: Int,
     onItemClick: () -> Unit
 ) {
     Column(

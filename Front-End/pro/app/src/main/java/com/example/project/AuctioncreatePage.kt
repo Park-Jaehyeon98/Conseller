@@ -29,7 +29,7 @@ fun AuctionCreatePage(navController: NavHostController) {
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
-    var selectedItemIndex by remember { mutableStateOf<Int?>(null) }
+    var selectedItemIndex by remember { mutableStateOf<Long?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -77,7 +77,7 @@ fun AuctionCreatePage(navController: NavHostController) {
             ) {
                 Button(onClick = {
                     selectedItemIndex?.let {
-                        navController.navigate("nextPageRoute/$it")
+                        navController.navigate("AuctionCreateDetailPage/$it")
                     }
                 }) {
                     Icon(Icons.Default.ArrowForward, contentDescription = "다음")

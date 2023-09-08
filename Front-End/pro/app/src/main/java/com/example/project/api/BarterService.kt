@@ -47,7 +47,7 @@ data class BarterCreateDTO(
     val filter2: String,
     val postTitle: String,
     val postContent: String,
-    val selectedItemIndices: List<Int>,
+    val selectedItemIndices: List<Long>,
 )
 
 // 물물교환 등록 응답 DTO

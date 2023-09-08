@@ -83,7 +83,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("BarterCreatePage") { BarterCreatePage(navController) }
                     composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
                         val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
-                        val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toIntOrNull() }.filterNotNull()
+                        val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
                         BarterCreateDetailPage(navController, selectedItemIndicesList)
                     }
 

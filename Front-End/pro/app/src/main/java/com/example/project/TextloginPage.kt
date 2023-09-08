@@ -31,10 +31,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.project.ui.theme.BrandColor1
 import java.time.format.TextStyle
 
 @Composable
 fun TextLoginPage(navController: NavHostController) {
+    var loginText by remember { mutableStateOf(TextFieldValue("")) }
+    var passwordText by remember { mutableStateOf(TextFieldValue("")) }
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter
     ) {
@@ -50,9 +53,6 @@ fun TextLoginPage(navController: NavHostController) {
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(500.dp, 250.dp)
             )
-
-            var loginText by remember { mutableStateOf(TextFieldValue("")) }
-            var passwordText by remember { mutableStateOf(TextFieldValue("")) }
 
             //아이디 입력창
             Row(
@@ -114,8 +114,7 @@ fun TextLoginPage(navController: NavHostController) {
                         visualTransformation = PasswordVisualTransformation(),
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 23.sp),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopStart)
+                            .size(300.dp, 70.dp)
                     )
 
                     // Spacer to simulate the bottom border
@@ -139,7 +138,7 @@ fun TextLoginPage(navController: NavHostController) {
                     navController.navigate("FindIdPage")
                 })
                 Text(
-                    text = "/", color = Color(0xFF1F59B6)
+                    text = " / ", color = Color(0xFF1F59B6)
                 )
                 Text(text = "비밀번호", color = Color(0xFF1F59B6), modifier = Modifier.clickable {
                     navController.navigate("FindPwPage")
@@ -152,7 +151,7 @@ fun TextLoginPage(navController: NavHostController) {
             Button(
                 onClick = { navController.navigate("Home") },
                 Modifier.size(181.dp, 45.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFF1F59B6))
+                colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {
                 Text("로그인", fontSize = 22.sp)
             }
@@ -160,7 +159,7 @@ fun TextLoginPage(navController: NavHostController) {
             Button(
                 onClick = { navController.navigate("SignUp") },
                 Modifier.size(181.dp, 45.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFF1F59B6))
+                colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {
                 Text("회원가입", fontSize = 22.sp)
             }

@@ -58,7 +58,7 @@ class BarterViewModel @Inject constructor(
     }
 
     // 물물교환 등록할때 이미지 불러오기용
-    fun getSelectedItems(indices: List<Int>): List<BarterItemData> {
+    fun getSelectedItems(indices: List<Long>): List<BarterItemData> {
         return _barterItems.value.filter { it.index in indices }
     }
 
@@ -113,7 +113,7 @@ class BarterViewModel @Inject constructor(
 
 // API response를 위한 데이터 클래스
 data class BarterItemData(
-    val index: Int,
+    val index: Long,
     val image: String,
     val name: String,
     val gifticonTime: String,

@@ -34,11 +34,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val selectedGifticon = gifticonItems?.find { it.index == selectedItemIndex }
+    val selectedGifticon = gifticonItems?.find { it.index == selectedItemIndex.toLong() }
 
     // 상한가, 하한가, 게시글 내용을 위한 상태값
-    var upperLimit by remember { mutableStateOf("") }
-    var lowerLimit by remember { mutableStateOf("") }
+    var upperLimit by remember { mutableStateOf(0) }
+    var lowerLimit by remember { mutableStateOf(0) }
     var postContent by remember { mutableStateOf("") }
 
     // 1000단위 , 찍기용
@@ -81,12 +81,12 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Text("상한가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
-                value = formattedNumber(upperLimit),
+                value = formattedNumber(upperLimit.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
                     if (pureValue.all { it.isDigit() }) {
-                        upperLimit = pureValue
+                        upperLimit = pureValue.toInt()
                     }
                 },
                 modifier = Modifier
@@ -108,12 +108,12 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Text("하한가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
-                value = formattedNumber(lowerLimit),
+                value = formattedNumber(upperLimit.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
                     if (pureValue.all { it.isDigit() }) {
-                        lowerLimit = pureValue
+                        lowerLimit = pureValue.toInt()
                     }
                 },
                 modifier = Modifier
@@ -165,7 +165,8 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Button(
                 onClick = {
-                    auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedGifticon?.index ?: -1)
+                    val selectedIndex: Long = selectedGifticon?.index?.toLong() ?: -1L
+                    auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedIndex)
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)

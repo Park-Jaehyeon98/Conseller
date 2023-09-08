@@ -26,6 +26,16 @@ public class Sale {
     @Column(name = "sale_end_date")
     private LocalDateTime saleEndedDate;
 
+    @Column(name = "sale_text")
+    private String saleText;
+
+    @Column(name = "sale_status")
+    private Enum saleStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gifticon_idx")
+    private Gifticon gifticon;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;

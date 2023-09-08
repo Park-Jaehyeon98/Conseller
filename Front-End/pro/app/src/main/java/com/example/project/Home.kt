@@ -74,10 +74,10 @@ fun HomeLayout3(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.width(8.dp))
-                ImageButton("경매") { navController.navigate("AuctionPage") }
-                ImageButton("물물교환") { navController.navigate("BarterPage") }
-                ImageButton("스토어") { navController.navigate("StorePage") }
-                ImageButton("이벤트") { navController.navigate("EventPage") }
+                ImageButton("경매", { navController.navigate("AuctionPage") })
+                ImageButton("물물교환", { navController.navigate("BarterPage") })
+                ImageButton("스토어", { navController.navigate("StorePage") })
+                ImageButton("이벤트", { navController.navigate("EventPage") })
                 Spacer(modifier = Modifier.width(8.dp))
             }
             Spacer(modifier = Modifier.weight(1f))  // 하단에 공간을 주기 위해 weight를 사용

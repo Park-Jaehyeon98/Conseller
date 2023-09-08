@@ -94,7 +94,7 @@ fun SignUpPage(navController: NavHostController) {
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(500.dp, 120.dp)
                 )
-                Text(text = "회원가입", fontSize = 27.sp, fontWeight = FontWeight.Bold)
+//                Text(text = "회원가입", fontSize = 27.sp, fontWeight = FontWeight.Bold)
                 // 이름 입력 부분
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

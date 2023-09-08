@@ -241,8 +241,8 @@ fun AuctionItem(
     gifticonTime: String,
     auctionTime: String,
     popular: String,
-    upperprice: String,
-    nowprice: String,
+    upperprice: Int,
+    nowprice: Int,
     onItemClick: () -> Unit
 ) {
     Column(

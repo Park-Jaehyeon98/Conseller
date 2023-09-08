@@ -18,12 +18,12 @@ interface MyService {
 
 // Request DTO
 data class GifticonRequestDTO(
-    val user_idx: Int,
+    val user_idx: Long,
     val page: Int
 )
 
 // 목록, 검색 응답 DTO
 data class GifticonResponse(
-    val total: Int,
+    val total: Long,
     val items: List<GifticonData>
 )

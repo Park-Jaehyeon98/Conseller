@@ -29,7 +29,7 @@ fun BarterCreatePage(navController: NavHostController) {
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
-    var selectedItemIndices by remember { mutableStateOf(listOf<Int>()) }
+    var selectedItemIndices by remember { mutableStateOf(listOf<Long>()) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(

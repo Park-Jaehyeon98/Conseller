@@ -33,7 +33,7 @@ import com.example.project.api.BarterCreateDTO
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Int>) {
+fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>) {
     val viewModel: BarterViewModel = hiltViewModel()
     val selectedItems = viewModel.getSelectedItems(selectedItemIndices)
     val scrollState = rememberScrollState()

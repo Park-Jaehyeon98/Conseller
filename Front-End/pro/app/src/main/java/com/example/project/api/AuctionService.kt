@@ -1,9 +1,13 @@
 package com.example.project.api
 
+import com.example.project.viewmodels.ActuonVidData
 import com.example.project.viewmodels.AuctionItemData
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AuctionService {
 
@@ -18,6 +22,12 @@ interface AuctionService {
     suspend fun registerAuctionItem(
         @Body registerData: RegisterAuctionDTO
     ): Response<RegisterAuctionResponse>
+
+    // 경매글 상세보기 API
+    @GET("api/auction/detail/{auction_idx}")
+    suspend fun getAuctionDetail(
+        @Path("auction_idx") auction_idx: Long
+    ): Response<AuctionDetailResponseDTO>
 
 }
 
@@ -38,10 +48,10 @@ data class AuctionResponse(
 
 // 경매 등록 요청 DTO
 data class RegisterAuctionDTO(
-    val upperLimit: String,      // 상한가
-    val lowerLimit: String,      // 하한가
+    val upperLimit: Int,         // 상한가
+    val lowerLimit: Int,         // 하한가
     val postContent: String,     // 게시글 내용
-    val gifticon_idx: Int,       // gifticon의 인덱스
+    val gifticon_idx: Long,       // gifticon의 인덱스
     val user_idx: Int            // 사용자의 인덱스
 )
 
@@ -49,4 +59,13 @@ data class RegisterAuctionDTO(
 data class RegisterAuctionResponse(
     val success: Boolean,
     val message: String
+)
+
+// 경매글 상세보기 요청 DTO = Path형식
+// 경매글 상세보기 응답 DTO
+data class AuctionDetailResponseDTO(
+    val postContent: String,              // 게시글 내용
+    val auction_user_idx: Long,           // 게시글 유저 idx
+    val auction_user_nickname: String,    // 게시글 유저 닉네임
+    val actuon_vid: List<ActuonVidData>,  // 경매입찰정보
 )

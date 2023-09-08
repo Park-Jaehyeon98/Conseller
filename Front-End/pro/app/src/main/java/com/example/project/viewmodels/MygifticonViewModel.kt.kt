@@ -28,17 +28,17 @@ class MygifticonViewModel @Inject constructor(
     private var currentPage = 1
 
     init {
-        val user_idx = sharedPreferencesUtil.getUserId()
+        val user_idx = sharedPreferencesUtil.getUserId().toLong()
         getUserGifticons(user_idx, currentPage)
     }
 
     fun changePage(page: Int) {
         currentPage = page
-        val user_idx = sharedPreferencesUtil.getUserId()
+        val user_idx = sharedPreferencesUtil.getUserId().toLong()
         getUserGifticons(user_idx, currentPage)
     }
 
-    fun getUserGifticons(user_idx: Int, page: Int) {
+    fun getUserGifticons(user_idx: Long, page: Int) {
         viewModelScope.launch {
             try {
                 val requestDTO = GifticonRequestDTO(user_idx, currentPage)
@@ -67,7 +67,7 @@ class MygifticonViewModel @Inject constructor(
 
 // API response를 위한 데이터 클래스
 data class GifticonData(
-    val index: Int,
+    val index: Long,
     val image: String,
     val name: String,
     val gifticonTime: String,
@@ -76,13 +76,13 @@ data class GifticonData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<GifticonData> {
     return listOf(
-        GifticonData(1,"image1", "Item1", "2일",),
-        GifticonData(2,"image2", "Item2", "3일",),
-        GifticonData(3,"image3", "Item3", "1일",),
-        GifticonData(4,"image4", "Item4", "4일",),
-        GifticonData(5,"image5", "Item5", "4일",),
-        GifticonData(6,"image6", "Item6", "4일",),
-        GifticonData(7,"image7", "Item7", "4일",),
-        GifticonData(8,"image8", "Item8", "5일",)
+        GifticonData(1,"image1", "Item1", "2일"),
+        GifticonData(2,"image2", "Item2", "3일"),
+        GifticonData(3,"image3", "Item3", "1일"),
+        GifticonData(4,"image4", "Item4", "4일"),
+        GifticonData(5,"image5", "Item5", "4일"),
+        GifticonData(6,"image6", "Item6", "4일"),
+        GifticonData(7,"image7", "Item7", "4일"),
+        GifticonData(8,"image8", "Item8", "5일"),
     )
 }

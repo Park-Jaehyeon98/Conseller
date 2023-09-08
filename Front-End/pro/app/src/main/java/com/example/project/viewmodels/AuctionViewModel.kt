@@ -61,6 +61,13 @@ class AuctionViewModel @Inject constructor(
         fetchAuctionItems()
     }
 
+    // 상세보기용 해당 인덱스 같은 데이터 들고오기
+    fun getAuctionItemByIndex(itemIndex: Long): AuctionItemData? {
+        return _auctionItems.value.firstOrNull { it.index == itemIndex }
+    }
+
+
+
     // 경매글 리스트 불러오기
     private fun fetchAuctionItems() {
         viewModelScope.launch {

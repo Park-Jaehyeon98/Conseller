@@ -131,14 +131,15 @@ fun BarterPage(navController: NavHostController) {
             // BarterItem 넣기
             barterItems.forEach { item ->
                 BarterItem(
-                    image = item.image,
-                    name = item.name,
-                    gifticonTime = item.gifticonTime,
-                    barterTime = item.barterTime,
+                    image = item.gifticonDataImageName,
+                    name = item.giftconName,
+                    gifticonTime = item.gifticonEndDate,
+                    barterTime = item.barterEndDate,
                     popular = item.popular,
                     preper = item.preper,
+                    title = item.barterName,
                     onItemClick = {
-                        navController.navigate("BarterDetailPage/${item.index}")
+                        navController.navigate("BarterDetailPage/${item.barterIdx}")
                     }
 
                 )
@@ -224,6 +225,7 @@ fun BarterItem(
     barterTime: String,
     popular: String,
     preper: String,
+    title: String,
     onItemClick: () -> Unit
 ) {
     Column(

@@ -34,7 +34,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val selectedGifticon = gifticonItems?.find { it.index == selectedItemIndex.toLong() }
+    val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex.toLong() }
 
     // 상한가, 하한가, 게시글 내용을 위한 상태값
     var upperLimit by remember { mutableStateOf(0) }
@@ -73,7 +73,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             )
 
             selectedGifticon?.let {
-                Text(text = "Selected gifticon image URL: ${it.image}") // 예시용. 실제로는 Image 컴포넌트로 이미지를 표시해야 함
+                Text(text = "Selected gifticon image URL: ${it.gifticonAllImagName}") // 예시용. 실제로는 Image 컴포넌트로 이미지를 표시해야 함
             }
             Icon(Icons.Default.Home, contentDescription = "Image", Modifier.size(120.dp)) // 임시 사진
 
@@ -165,7 +165,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Button(
                 onClick = {
-                    val selectedIndex: Long = selectedGifticon?.index?.toLong() ?: -1L
+                    val selectedIndex: Long = selectedGifticon?.gifticonIdx?.toLong() ?: -1L
                     auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedIndex)
                 },
                 modifier = Modifier

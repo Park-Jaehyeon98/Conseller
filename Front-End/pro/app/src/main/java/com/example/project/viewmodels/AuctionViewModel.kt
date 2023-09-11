@@ -19,7 +19,7 @@ class AuctionViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    // 글 불러오기?
+    // 글 불러오기
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
     val auctionItems: StateFlow<List<AuctionItemData>> = _auctionItems
 
@@ -63,8 +63,12 @@ class AuctionViewModel @Inject constructor(
 
     // 상세보기용 해당 인덱스 같은 데이터 들고오기
     fun getAuctionItemByIndex(itemIndex: Long): AuctionItemData? {
-        return _auctionItems.value.firstOrNull { it.index == itemIndex }
+        return _auctionItems.value.firstOrNull { it.auctionIdx == itemIndex }
     }
+
+    // 내 경매글 목록 불러오기
+    private val _myAuctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
+    val myAuctionItems: StateFlow<List<AuctionItemData>> = _myAuctionItems
 
 
 
@@ -78,7 +82,7 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _auctionItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.total
+                    _totalItems.value = response.body()!!.totalNum
                 } else {
                     _error.value = "Failed to load data: ${response.message()}"
                     _auctionItems.value = getSampleData()
@@ -135,19 +139,42 @@ class AuctionViewModel @Inject constructor(
             }
         }
     }
+
+    // 내 경매글 목록 불러오기
+    fun fetchMyAuctionItems(userIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getMyAuctionItems(userIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _myAuctionItems.value = response.body()!!.items
+                } else {
+                    _error.value = "Failed to load my Auction items: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
 }
 
 
 // API response를 위한 데이터 클래스
 data class AuctionItemData(
-    val index: Long,
-    val image: String,
-    val name: String,
-    val gifticonTime: String,
-    val auctionTime: String,
+    val auctionIdx: Long,
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
+    val auctionEndDate: String,
     val popular: String,
-    val upperprice: Int,
-    val nowprice: Int
+    val upperPrice: Int,
+    val lowerPrice: Int,
+    val auctionHighestBid: Int
 )
 
 // 상세보기용 데이터 클래스
@@ -163,10 +190,10 @@ data class ActuonVidData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<AuctionItemData> {
     return listOf(
-        AuctionItemData(1,"image1", "Item1", "2일", "5시간", "서버미연결", 1000, 800),
-        AuctionItemData(2,"image2", "Item2", "3일", "4시간", "중간", 2000, 1500),
-        AuctionItemData(3,"image3", "Item3", "1일", "2시간", "낮음", 3000, 2500),
-        AuctionItemData(4,"image4", "Item4", "4일", "6시간", "높음", 40000, 3500),
-        AuctionItemData(5,"image5", "Item5", "5일", "3시간", "중간", 5000, 4500)
+        AuctionItemData(1,"image1", "Item1", "2일", "5시간", "서버미연결", 1000, 500, 800),
+        AuctionItemData(2,"image2", "Item2", "3일", "4시간", "중간", 2000, 1000, 1500),
+        AuctionItemData(3,"image3", "Item3", "1일", "2시간", "낮음", 3000,2000, 2500),
+        AuctionItemData(4,"image4", "Item4", "4일", "6시간", "높음", 40000,2500, 3500),
+        AuctionItemData(5,"image5", "Item5", "5일", "3시간", "중간", 5000,3000, 4500)
     )
 }

@@ -80,7 +80,7 @@ fun SignUpPage(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .size(350.dp, 700.dp)
-                .border(BorderStroke(2.dp, BrandColor1), shape = RoundedCornerShape(16.dp))
+//                .border(BorderStroke(0.dp, BrandColor1), shape = RoundedCornerShape(16.dp))
                 .padding(20.dp)
         ) {
             Column(
@@ -94,9 +94,7 @@ fun SignUpPage(navController: NavHostController) {
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(500.dp, 120.dp)
                 )
-//                Text(text = "회원가입", fontSize = 27.sp, fontWeight = FontWeight.Bold)
-                Text("test")
-                // 이름 입력 부분
+                Text(text = "회원가입", fontSize = 27.sp, fontWeight = FontWeight.Bold)
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp),

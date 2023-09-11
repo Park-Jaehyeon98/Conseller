@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -57,4 +59,22 @@ public class User {
 
     @Column(name = "user_restrict_count")
     private Integer userRestrictCount;
+
+    @OneToMany(mappedBy = "user")
+    List<Barter> barters = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<BarterRequest> barterRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Gifticon> gifticons = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Inquiry> inquiries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Sale> sales = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Notification> notifications = new ArrayList<>();
 }

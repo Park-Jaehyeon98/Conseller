@@ -18,9 +18,9 @@ public class BarterHostItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barter_idx", nullable = false)
-    private Barter barterIdx;
+    private Barter barter;
 
     @OneToOne
     @JoinColumn(name = "gifticon_idx", nullable = false)
-    private Gifticon gifticonIdx;
+    private Gifticon gifticon;
 }

@@ -22,22 +22,22 @@ import com.example.project.viewmodels.GifticonData
 
 @Composable
 fun GifticonItem(gifticonData: GifticonData, isSelected: Boolean, onClick: () -> Unit) {
-        val backgroundColor = if (isSelected) Color.Green else Color.Transparent
+    val backgroundColor = if (isSelected) Color.Green else Color.Transparent
 
-        Row(
-                modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(backgroundColor)
-                        .clickable(onClick = onClick),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-        ) {
-                Icon(Icons.Default.Home, contentDescription = "Image", modifier = Modifier.size(64.dp))
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                        Text(text = gifticonData.name, fontWeight = FontWeight.Bold)
-                        Text(text = gifticonData.gifticonTime)
-                }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(backgroundColor)
+            .clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(Icons.Default.Home, contentDescription = "Image", modifier = Modifier.size(64.dp))
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            Text(text = gifticonData.giftconName, fontWeight = FontWeight.Bold)
+            Text(text = gifticonData.gifticonEndDate)
         }
+    }
 }

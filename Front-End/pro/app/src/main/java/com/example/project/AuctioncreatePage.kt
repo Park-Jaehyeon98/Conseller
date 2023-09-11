@@ -48,9 +48,9 @@ fun AuctionCreatePage(navController: NavHostController) {
             gifticonItems?.forEach { item ->
                 GifticonItem(
                     gifticonData = item,
-                    isSelected = item.index == selectedItemIndex,
+                    isSelected = item.gifticonIdx == selectedItemIndex,
                     onClick = {
-                        selectedItemIndex = item.index
+                        selectedItemIndex = item.gifticonIdx
                     }
                 )
                 Divider()

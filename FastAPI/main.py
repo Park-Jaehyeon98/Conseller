@@ -1,9 +1,15 @@
 # FastAPI CRUD 연습
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile
 from pydantic import BaseModel
+from fastapi.responses import JSONResponse
 from typing import List
+import sys
+import pytesseract
+import os
 app = FastAPI()
+
+UPLOAD_DIR = "images/"
 
 # 메모를 저장하기 위한 데이터베이스 대체
 database = []
@@ -11,6 +17,34 @@ database = []
 class Memo(BaseModel):
     id: int
     content: str
+
+# 이미지 전송
+@app.post("/gifticon/")
+def create_image(image: UploadFile):
+    try:
+        file_path = f"{UPLOAD_DIR}{image.filename}"
+
+      
+
+        with open(file_path, "wb") as image_file:
+                image_file.write(image.file.read())
+
+        print("message: 이미지 업로드가 완료되었습니다.")
+        config = ('-l kor+eng --oem 3 --psm 11')
+
+        # print(pytesseract.image_to_string(file_path, lang='eng'))
+        print(pytesseract.image_to_string(file_path, config=config))
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"message '{image.filename}' 삭제 완료.")
+        else:
+            print(f"error: '{image.filename}'을 찾을 수 없습니다.")
+        
+        return JSONResponse(content={"message": "이미지 업로드 후 삭제가 완료되었습니다."}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
 
 # 메모 생성
 @app.post("/memos/", response_model=Memo)

@@ -67,10 +67,10 @@ class MygifticonViewModel @Inject constructor(
 
 // API response를 위한 데이터 클래스
 data class GifticonData(
-    val index: Long,
-    val image: String,
-    val name: String,
-    val gifticonTime: String,
+    val gifticonIdx: Long,
+    val gifticonAllImagName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
 )
 
 // 인터넷 미연결 샘플데이터

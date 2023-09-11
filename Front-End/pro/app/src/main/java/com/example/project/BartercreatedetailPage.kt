@@ -72,7 +72,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             items(selectedItems.size) { index ->
                 val item = selectedItems[index]
                 Image(
-                    painter = rememberAsyncImagePainter(model = item.image), //https://coil-kt.github.io/coil/compose/
+                    painter = rememberAsyncImagePainter(model = item.gifticonDataImageName), //https://coil-kt.github.io/coil/compose/
                     contentDescription = null,
                     modifier = Modifier
                         .padding(4.dp)

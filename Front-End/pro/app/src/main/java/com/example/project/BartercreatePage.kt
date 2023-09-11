@@ -48,14 +48,14 @@ fun BarterCreatePage(navController: NavHostController) {
             gifticonItems?.forEach { item ->
                 GifticonItem(
                     gifticonData = item,
-                    isSelected = selectedItemIndices.contains(item.index),
+                    isSelected = selectedItemIndices.contains(item.gifticonIdx),
                     onClick = {
                         // 선택한 항목의 인덱스가 이미 목록에 있는 경우 제거, 그렇지 않으면 추가
-                        if (selectedItemIndices.contains(item.index)) {
-                            selectedItemIndices = selectedItemIndices - item.index
+                        if (selectedItemIndices.contains(item.gifticonIdx)) {
+                            selectedItemIndices = selectedItemIndices - item.gifticonIdx
                         } else {
                             if (selectedItemIndices.size < 5) {
-                                selectedItemIndices = selectedItemIndices + item.index
+                                selectedItemIndices = selectedItemIndices + item.gifticonIdx
                             }
                         }
                     }

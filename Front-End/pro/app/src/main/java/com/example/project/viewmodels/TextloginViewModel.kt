@@ -29,9 +29,9 @@ class TextloginViewModel @Inject constructor(
                     response.body()?.let {
                         // SharedPreferences에 로그인 정보 저장
                         sharedPreferencesUtil.setLoggedInStatus(true)
-                        sharedPreferencesUtil.setUserId(it.user_idx)
-                        sharedPreferencesUtil.setUserNickname(it.user_nickname)
-                        sharedPreferencesUtil.setUserToken(it.user_accesstoken)
+                        sharedPreferencesUtil.setUserId(it.userIdx)
+                        sharedPreferencesUtil.setUserNickname(it.userNickname)
+                        sharedPreferencesUtil.setUserToken(it.userAccessToken)
 
                         _idPwLoginState.value = ResponseState.Success(it)
                     } ?: run {

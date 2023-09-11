@@ -23,6 +23,33 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    // 토큰이 생기면 밑에 provideRetrofit를 지우고 이거를 사용하면됨.
+    // Retrofit 인스턴스에 OkHttpClient를 포함시켜 인터셉터를 추가하는 방식
+    // 각 요청에 알아서 추가함.
+
+//    @Provides
+//    @Singleton
+//    fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil): OkHttpClient {
+//        return OkHttpClient.Builder()
+//            .addInterceptor { chain ->
+//                val token = sharedPreferencesUtil.getUserToken() // 이거 get이름바뀌면 바꾸고
+//                val request = chain.request().newBuilder()       // 토큰 형식 맞는지 확인하고
+//                    .addHeader("Authorization", "Bearer $token")
+//                    .build()
+//                chain.proceed(request)
+//            }
+//            .build()
+//    }
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl("https://your.api.url")
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
+
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {

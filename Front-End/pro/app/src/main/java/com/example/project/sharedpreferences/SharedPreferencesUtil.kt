@@ -30,17 +30,17 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         return sharedPreferences.getBoolean(IS_LOGGED_IN, false)
     }
 
-    // 사용자 아이디를 저장하는 메서드
-    fun setUserId(useridx: Int) {
+    // 사용자 idx를 저장하는 메서드
+    fun setUserId(useridx: Long) {
         with(sharedPreferences.edit()) {
-            putInt(USER_IDX, useridx)
+            putLong(USER_IDX, useridx)
             apply()
         }
     }
 
-    // 저장된 사용자 아이디를 가져오는 메서드
-    fun getUserId(): Int {
-        return sharedPreferences.getInt(USER_IDX, -1)
+    // 저장된 사용자 idx를 가져오는 메서드
+    fun getUserId(): Long {
+        return sharedPreferences.getLong(USER_IDX, -1)
     }
 
     // 사용자 닉네임을 저장하는 메서드

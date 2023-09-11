@@ -11,10 +11,16 @@ import retrofit2.http.Query
 
 interface AuctionService {
 
-    // 전체 목록 불러오는 API
+    // 전체 목록 API
     @POST("api/auction")
     suspend fun getAllAuctionItems(
         @Body filter: AuctionFilterDTO,
+    ): Response<AuctionResponse>
+
+    // 내가 등록한 경매 목록 API
+    @GET("api/auction/{userIdx}")
+    suspend fun getMyAuctionItems(
+        @Path("userIdx") userIdx: Long,
     ): Response<AuctionResponse>
 
     // 경매 등록 API
@@ -24,17 +30,17 @@ interface AuctionService {
     ): Response<RegisterAuctionResponse>
 
     // 경매글 상세보기 API
-    @GET("api/auction/detail/{auction_idx}")
+    @GET("api/auction/detail/{auctionIdx}")
     suspend fun getAuctionDetail(
-        @Path("auction_idx") auction_idx: Long
+        @Path("auctionIdx") auctionIdx: Long
     ): Response<AuctionDetailResponseDTO>
 
 }
 
 // 목록, 검색 요청 DTO
 data class AuctionFilterDTO(
-    val majorCategory: String,    // 대분류
-    val minorCategory: String,    // 소분류
+    val kindBigStatus: String,    // 대분류
+    val kindSmallStatus: String,    // 소분류
     val status: String,           // 상태
     val searchQuery: String? = null, // 검색 쿼리. 검색 API 사용 시에만 값이 있음.
     val page: Int                 // 페이지 정보
@@ -42,7 +48,7 @@ data class AuctionFilterDTO(
 
 // 목록, 검색 응답 DTO
 data class AuctionResponse(
-    val total: Int,
+    val totalNum: Int,
     val items: List<AuctionItemData>
 )
 
@@ -50,9 +56,9 @@ data class AuctionResponse(
 data class RegisterAuctionDTO(
     val upperLimit: Int,         // 상한가
     val lowerLimit: Int,         // 하한가
-    val postContent: String,     // 게시글 내용
-    val gifticon_idx: Long,       // gifticon의 인덱스
-    val user_idx: Int            // 사용자의 인덱스
+    val auctionText: String,     // 게시글 내용
+    val gifticonIdx: Long,       // gifticon의 인덱스
+    val userIdx: Long            // 사용자의 인덱스
 )
 
 // 경매 등록 응답 DTO
@@ -65,7 +71,7 @@ data class RegisterAuctionResponse(
 // 경매글 상세보기 응답 DTO
 data class AuctionDetailResponseDTO(
     val postContent: String,              // 게시글 내용
-    val auction_user_idx: Long,           // 게시글 유저 idx
-    val auction_user_nickname: String,    // 게시글 유저 닉네임
-    val actuon_vid: List<ActuonVidData>,  // 경매입찰정보
+    val auctionUserIdx: Long,           // 게시글 유저 idx
+    val auctionUserNickname: String,    // 게시글 유저 닉네임
+    val auctionBid: List<ActuonVidData>,  // 경매입찰정보
 )

@@ -15,8 +15,8 @@ public class SubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer subCategoryIdx;
 
-    @Column(name = "sub_category_status", nullable = false)
-    private String subCategoryStatus;
+    @Column(name = "sub_category_content", nullable = false)
+    private String subCategoryContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "main_category_idx")

@@ -223,7 +223,7 @@ fun EmailTextFieldWithDomain(
                     onTextLayout = { textLayoutResult = it },
                     modifier = Modifier
                         .weight(5f)
-                        .padding(start = 8.dp)
+                        .padding(end = 8.dp)
                         .horizontalScroll(scrollState)
                         .focusRequester(focusRequester)
                 )

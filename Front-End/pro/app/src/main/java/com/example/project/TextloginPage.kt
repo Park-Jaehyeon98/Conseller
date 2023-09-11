@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,14 +31,32 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.api.IdPwLoginRequest
+
 import com.example.project.ui.theme.BrandColor1
+import com.example.project.viewmodels.AuctionViewModel
+import com.example.project.viewmodels.ResponseState
+import com.example.project.viewmodels.TextloginViewModel
 import java.time.format.TextStyle
 
 @Composable
 fun TextLoginPage(navController: NavHostController) {
+    val textLoginModel: TextloginViewModel = hiltViewModel()
     var loginText by remember { mutableStateOf(TextFieldValue("")) }
     var passwordText by remember { mutableStateOf(TextFieldValue("")) }
+
+    // 상태 확인
+    val loginState by textLoginModel.idPwLoginState.observeAsState()
+
+    val onLoginClick = {
+        val request = IdPwLoginRequest(
+            user_id = loginText.text,
+            user_password = passwordText.text
+        )
+        textLoginModel.loginWithIdPw(request)
+    }
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter
     ) {
@@ -149,7 +168,14 @@ fun TextLoginPage(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(60.dp))
             Button(
-                onClick = { navController.navigate("Home") },
+                onClick = {navController.navigate("Home") },
+                Modifier.size(181.dp, 45.dp),
+                colors = ButtonDefaults.buttonColors(BrandColor1)
+            ) {
+                Text("가짜 로그인", fontSize = 22.sp)
+            }
+            Button(
+                onClick = onLoginClick,
                 Modifier.size(181.dp, 45.dp),
                 colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {
@@ -163,6 +189,19 @@ fun TextLoginPage(navController: NavHostController) {
             ) {
                 Text("회원가입", fontSize = 22.sp)
             }
+            when (loginState) {
+                is ResponseState.Success -> {
+                    // 로그인 성공 시 Home으로 이동
+                    navController.navigate("Home")
+                }
+                is ResponseState.Error -> {
+                   // 로그인 실패 에러 알림
+                    println((loginState as ResponseState.Error).message)
+                }
+
+                else -> { }
+            }
+
         }
     }
 }

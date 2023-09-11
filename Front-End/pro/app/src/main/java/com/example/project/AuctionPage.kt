@@ -82,7 +82,7 @@ fun AuctionPage(navController: NavHostController) {
 
             var filter1Selected by remember { mutableStateOf("대분류") } // 필터1의 초기값
             var filter2Selected by remember { mutableStateOf("소분류") } // 필터2의 초기값
-            var filter3Selected by remember { mutableStateOf("상태선택") } // 필터3의 초기값
+            var filter3Selected by remember { mutableStateOf("등록일") } // 필터3의 초기값
 
             // 필터 버튼
             Row(
@@ -129,7 +129,7 @@ fun AuctionPage(navController: NavHostController) {
 
                 FilterButton(
                     selectedOption = filter3Selected,
-                    options = listOf("상태선택", "낮은가격순", "낮은입찰순", "미입찰")
+                    options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
                 ) {
                     filter3Selected = it
                     viewModel.applyFilter(
@@ -149,15 +149,15 @@ fun AuctionPage(navController: NavHostController) {
             // AuctionItem 넣기
             auctionItems.forEach { item ->
                 AuctionItem(
-                    image = item.image,
-                    name = item.name,
-                    gifticonTime = item.gifticonTime,
-                    auctionTime = item.auctionTime,
+                    image = item.gifticonDataImageName,
+                    name = item.giftconName,
+                    gifticonTime = item.gifticonEndDate,
+                    auctionTime = item.auctionEndDate,
                     popular = item.popular,
-                    upperprice = item.upperprice,
-                    nowprice = item.nowprice,
+                    upperprice = item.upperPrice,
+                    nowprice = item.auctionHighestBid,
                     onItemClick = {
-                        navController.navigate("AuctionDetailPage/${item.index}")
+                        navController.navigate("AuctionDetailPage/${item.auctionIdx}")
                     }
 
                 )

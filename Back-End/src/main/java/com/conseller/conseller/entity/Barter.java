@@ -27,6 +27,9 @@ public class Barter {
     @CreatedDate
     private LocalDateTime barterCreatedDate;
 
+    @Column(name = "barter_end_date", nullable = false)
+    private LocalDateTime barterEndDate;
+
     @LastModifiedDate
     private LocalDateTime barterModifiedDate;
 
@@ -47,5 +50,9 @@ public class Barter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_idx")
     private SubCategory subCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sub_catergory_idx")
+    private SubCategory preferSubCategory;
 }
 

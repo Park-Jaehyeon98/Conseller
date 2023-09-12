@@ -3,14 +3,13 @@ package com.conseller.conseller.sale;
 import com.conseller.conseller.entity.Sale;
 import com.conseller.conseller.sale.dto.request.RegistSaleRequest;
 import com.conseller.conseller.sale.dto.request.SaleListRequest;
+import com.conseller.conseller.sale.dto.response.CommonResponse;
+import com.conseller.conseller.sale.dto.response.DetailSaleResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,11 +28,29 @@ public class SaleController {
     }
 
     @PostMapping("/regist")
-    public ResponseEntity<String> registSale(@RequestBody RegistSaleRequest request) {
+    public ResponseEntity<CommonResponse> registSale(@RequestBody RegistSaleRequest request) {
         saleService.registSale(request);
 
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
     }
 
+    @GetMapping("/{sale_idx}")
+    public ResponseEntity<DetailSaleResponse> detailSale(@PathVariable("sale_idx") Long saleIdx) {
+        DetailSaleResponse detailSaleResponse = saleService.detailSale(saleIdx);
+
+        return new ResponseEntity<>(detailSaleResponse , HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{sale_idx}")
+    public ResponseEntity<CommonResponse> deleteSale(@PathVariable("sale_idx") Long saleIdx) {
+
+        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+    }
+
+    @PutMapping("/{sale_idx}/status")
+    public ResponseEntity<CommonResponse> saleStatusPermute(@PathVariable("sale_idx") Long saleIdx) {
+
+        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+    }
 
 }

@@ -1,15 +1,14 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
+import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "barterHostItemIdx")
 public class BarterHostItem {
     @Id
@@ -23,4 +22,19 @@ public class BarterHostItem {
     @OneToOne
     @JoinColumn(name = "gifticon_idx", nullable = false)
     private Gifticon gifticon;
+
+    @Builder
+    public BarterHostItem(Long barterHostItemIdx, Barter barter, Gifticon gifticon) {
+        this.barterHostItemIdx = barterHostItemIdx;
+        this.barter = barter;
+        this.gifticon = gifticon;
+    }
+
+    public BarterHostItemDto toBarterHostItemDto(Barter barter, Gifticon gifticon) {
+        BarterHostItemDto barterHostItemDto = new BarterHostItemDto();
+        barterHostItemDto.setBarter(barter);
+        barterHostItemDto.setGifticon(gifticon);
+
+        return barterHostItemDto;
+    }
 }

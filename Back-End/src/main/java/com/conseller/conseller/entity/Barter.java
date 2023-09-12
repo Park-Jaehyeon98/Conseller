@@ -1,17 +1,19 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "barterIdx")
 public class Barter {
     @Id
@@ -30,6 +32,7 @@ public class Barter {
     @Column(name = "barter_end_date", nullable = false)
     private LocalDateTime barterEndDate;
 
+
     @LastModifiedDate
     private LocalDateTime barterModifiedDate;
 
@@ -41,11 +44,11 @@ public class Barter {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
-    private User hostIdx;
+    private User barterHost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
-    private User barterCompleteGuestIdx;
+    private User barterCompleteGuest;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_idx")
@@ -54,5 +57,16 @@ public class Barter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_catergory_idx")
     private SubCategory preferSubCategory;
+
+    @Builder
+    public Barter(String barterName, String barterText, LocalDateTime barterEndDate, User barterHost, SubCategory subCategory, SubCategory preferSubCategory) {
+        this.barterName = barterName;
+        this.barterText = barterText;
+        this.barterCreatedDate = now();
+        this.barterEndDate = barterEndDate;
+        this.barterHost = barterHost;
+        this.subCategory = subCategory;
+        this.preferSubCategory = preferSubCategory;
+    }
 }
 

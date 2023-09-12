@@ -22,10 +22,10 @@ public class BarterRegistDto {
     private SubCategory preferSubCategory;
 
     @Builder
-    public BarterRegistDto(String barterName, String barterText, LocalDateTime barterEndDate, SubCategory subCategory, SubCategory preferSubCategory) {
-        this.barterName = barterName;
-        this.barterText = barterText;
-        this.barterEndDate = barterEndDate;
+    public BarterRegistDto(BarterCreateDto barterCreateDto, SubCategory subCategory, SubCategory preferSubCategory) {
+        this.barterName = barterCreateDto.getBarterName();
+        this.barterText = barterCreateDto.getBarterText();
+        this.barterEndDate = barterCreateDto.getBarterEndDate();
         this.subCategory = subCategory;
         this.preferSubCategory = preferSubCategory;
     }

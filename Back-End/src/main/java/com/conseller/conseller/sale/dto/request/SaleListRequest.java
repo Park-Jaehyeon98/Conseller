@@ -1,4 +1,4 @@
-package com.conseller.conseller.sale.dto;
+package com.conseller.conseller.sale.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

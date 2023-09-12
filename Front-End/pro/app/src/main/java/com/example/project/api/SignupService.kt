@@ -6,10 +6,29 @@ import retrofit2.http.POST
 
 interface SignupService {
 
-    // 여기부터 API 추가
-    @POST("user/verifypatternendpoint")
-    suspend fun verifyPattern(@Body request: PatternVerificationRequest):
-            Response<PatternVerifyResponse>
+    //회원가입 API
+    @POST("api/user/regist")
+    suspend fun verifyPattern(@Body request:RegistRequest ):
+            Response<RegistResponse>
+
 
 
 }
+
+
+//회원가입 요청 DTO
+data class RegistRequest(
+    val userId: String,
+    val userPassword: String,
+    val userEmail: String,
+    val userPhoneNumber: Int,
+    val userNickname: String,
+    val userAccount: String,
+    val userAccountBank: Int
+)
+
+//회원가입 응답 DTO
+data class  RegistResponse(
+    val status:String,
+    val message :String,
+)

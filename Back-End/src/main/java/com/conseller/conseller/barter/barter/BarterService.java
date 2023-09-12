@@ -9,9 +9,9 @@ import java.util.List;
 public interface BarterService {
 
     List<BarterResponseDto> getBarterList();
-    Barter getBarter(Long barterIdx);
+    BarterResponseDto getBarter(Long barterIdx);
 
-    Barter addBarter(BarterCreateDto barterCreateDto);
+    Void addBarter(BarterCreateDto barterCreateDto);
 
 
 

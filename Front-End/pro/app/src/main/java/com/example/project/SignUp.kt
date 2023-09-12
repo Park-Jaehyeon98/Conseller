@@ -23,6 +23,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,14 +40,39 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.api.RegistRequest
 import com.example.project.reuse_component.CustomTextField
 import com.example.project.reuse_component.CustomTextFieldWithButton
 import com.example.project.reuse_component.EmailTextFieldWithDomain
 import com.example.project.ui.theme.BrandColor1
+import com.example.project.viewmodels.SignupViewModel
 
 @Composable
 fun SignUpPage(navController: NavHostController) {
+    val viewModel: SignupViewModel = hiltViewModel()
+    val signupresult by viewModel.signupresponse.collectAsState()
+
+    // 유효성 검사
+    val checkIdResult by viewModel.checkId.collectAsState()
+    val checkEmailResult by viewModel.checkEmail.collectAsState()
+    val checkPhoneNumberResult by viewModel.checkPhoneNumber.collectAsState()
+    val checkNickNameResult by viewModel.checkNickname.collectAsState()
+
+    // 로그인 결과에 따른 값 변화
+    LaunchedEffect(key1 = signupresult) {
+        if (signupresult.status == 1) {
+            navController.navigate("Home") {
+                popUpTo(navController.graph.startDestinationId)
+                launchSingleTop = true
+            }
+        } else {
+
+        }
+    }
+
+    // 회원가입 request 값들
     var userId by remember { mutableStateOf(TextFieldValue("")) }
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var nickname by remember { mutableStateOf(TextFieldValue("")) }
@@ -57,14 +84,32 @@ fun SignUpPage(navController: NavHostController) {
     var account by remember { mutableStateOf("은행명을 선택하세요") }
     var accountBank by remember { mutableStateOf(TextFieldValue("")) }
 
+    val registClick = {
+        val request = RegistRequest(
+            userId = userId.text,
+            userAccount = account,
+            userEmail = email,
+            userPassword = password.text,
+            userAccountBank = accountBank.text.toIntOrNull() ?: 0,
+            userNickname = nickname.text,
+            userPhoneNumber = phoneNumber.text.toIntOrNull() ?: 0
+        )
+        viewModel.registerUser(request)
+    }
+
+    // 이메일 명
     var emailPart by remember { mutableStateOf("") }
+    // 이메일 도메인
     var Domain by remember { mutableStateOf("gmail.com") }
+
     // 스크롤
     val scrollState = rememberScrollState()
+
     val checkMarkId = remember { mutableStateOf(false) }
     val checkMarkNickname = remember { mutableStateOf(false) }
     val checkMarkPhone = remember { mutableStateOf(false) }
     val checkMarkEmail = remember { mutableStateOf(false) }
+
     // 인증번호 TextField의 표시 여부를 관리하는 상태
     val showCheckPhoneNumber = remember { mutableStateOf(false) }
 
@@ -182,7 +227,11 @@ fun SignUpPage(navController: NavHostController) {
                         },
                         error = emailError,
                         selectedDomain = Domain,
-                        onDomainSelected = { Domain = it },
+                        onDomainSelected = { newDomain ->
+                            Domain =newDomain
+                            email= "$emailPart@$Domain"
+                            emailError = if (isValidEmail(email)) null else "이메일 형식이 틀립니다."
+                        },
                         showIcon = checkMarkEmail.value,
 
                         )
@@ -213,7 +262,7 @@ fun SignUpPage(navController: NavHostController) {
                         },
                     )
                     Button(
-                        onClick = { navController.navigate("TextLoginPage") },
+                        onClick = { registClick },
                         Modifier.size(120.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(BrandColor1)
                     ) {

@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.user.enums.UserStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,11 +49,11 @@ public class User {
     @Column(name = "user_account", nullable = false)
     private String userAccount;
 
-    @Column(name = "user_account_bank", nullable = false)
+    @Enumerated(EnumType.STRING)
     private String userAccountBank;
 
-//    @Enumerated
-//    private Enum userStatus;
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @Column(name = "user_restrict_end_date")
     private LocalDateTime userRestrictEndDate;

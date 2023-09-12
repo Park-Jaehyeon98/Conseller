@@ -212,13 +212,12 @@ fun EmailTextFieldWithDomain(
             ) {
                 val scrollState = rememberScrollState()
                 val focusRequester = remember { FocusRequester() }
-
                 var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
                 BasicTextField(
                     value = emailValue,
                     onValueChange = onValueChange,
-                    textStyle = TextStyle(fontSize = 22.sp, textAlign = TextAlign.Right),
+                    textStyle = TextStyle(fontSize = 20.sp, textAlign = TextAlign.Right),
                     maxLines = 1,
                     onTextLayout = { textLayoutResult = it },
                     modifier = Modifier
@@ -246,15 +245,17 @@ fun EmailTextFieldWithDomain(
                 )
 
                 Box(modifier = Modifier.weight(4f)) {
+                    val scrollState = rememberScrollState()
                     if (showDomainTextField) {
                         BasicTextField(
                             value = selectedDomain,
                             onValueChange = onDomainSelected,
-                            textStyle=TextStyle(fontSize=22.sp, fontWeight = FontWeight.Bold),
+                            textStyle=TextStyle(fontSize=20.sp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(BrandColor1, RoundedCornerShape(8.dp))
-                                .padding(end=8.dp)
+                                .padding(start=8.dp)
+                                .horizontalScroll(scrollState)
                         )
                     } else {
                         Text(text = when (selectedDomain) {

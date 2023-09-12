@@ -20,10 +20,10 @@ public class BarterRequest {
 //    private Enum barterRequestStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "barter_idx", nullable = false)
-    private Barter barterIdx;
+    @JoinColumn(name = "barter_idx", nullable = false)
+    private Barter barter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_idx", nullable = false)
-    private User userIdx;
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 }

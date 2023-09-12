@@ -29,17 +29,17 @@ public class SaleController {
 
     @PostMapping("/regist")
     public ResponseEntity<CommonResponse> registSale(@RequestBody RegistSaleRequest request) {
-        saleService.registSale(request);
+//        saleService.registSale(request);
 
         return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/{sale_idx}")
-    public ResponseEntity<DetailSaleResponse> detailSale(@PathVariable("sale_idx") Long saleIdx) {
-        DetailSaleResponse detailSaleResponse = saleService.detailSale(saleIdx);
-
-        return new ResponseEntity<>(detailSaleResponse , HttpStatus.OK);
-    }
+//    @GetMapping("/{sale_idx}")
+//    public ResponseEntity<DetailSaleResponse> detailSale(@PathVariable("sale_idx") Long saleIdx) {
+////        DetailSaleResponse detailSaleResponse = saleService.detailSale(saleIdx);
+//
+////        return new ResponseEntity<>(detailSaleResponse , HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{sale_idx}")
     public ResponseEntity<CommonResponse> deleteSale(@PathVariable("sale_idx") Long saleIdx) {

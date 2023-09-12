@@ -1,6 +1,7 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -39,15 +40,15 @@ public class Barter {
     @Column(name = "barter_completed_date")
     private LocalDateTime barterCompletedDate;
 
-//    @Enumerated
-//    private Enum barterStatus;
+    @Enumerated(EnumType.STRING) // Enum의 문자열 값을 데이터베이스에 저장
+    private BarterStatus barterStatus = BarterStatus.EXCHANGEABLE;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "host_idx")
     private User barterHost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "complete_guest_idx")
     private User barterCompleteGuest;
 
     @ManyToOne(fetch = FetchType.LAZY)

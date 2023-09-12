@@ -35,11 +35,11 @@ public class Report {
 //    private Enum reportStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "reporter_idx")
     private User reporter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "reported_idx")
     private User reported;
 
 }

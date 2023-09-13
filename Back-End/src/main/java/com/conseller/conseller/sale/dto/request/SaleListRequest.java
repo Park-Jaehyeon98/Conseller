@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaleListRequest {
-    private String mainCategoryContent;
-    private String subCategoryContent;
+    private Integer mainCategory;
+    private Integer subCategory;
     private String status;
     private String searchQuery;
     private Integer page;

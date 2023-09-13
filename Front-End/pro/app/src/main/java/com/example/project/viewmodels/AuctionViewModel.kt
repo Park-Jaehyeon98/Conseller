@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
+import com.example.project.api.DeleteAuctionResponse
 import com.example.project.api.RegisterAuctionDTO
+import com.example.project.api.UpdateAuctionDTO
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,10 @@ class AuctionViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    // 글 불러오기
+    private var currentPage = 1
+    private var currentFilter = AuctionFilterDTO("", "", "", null, currentPage)
+
+    // 경매글 전체 목록 불러오기
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
     val auctionItems: StateFlow<List<AuctionItemData>> = _auctionItems
 
@@ -32,12 +37,28 @@ class AuctionViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    // 글 상세보기
+    // 유저idx 불러오기
+    fun getUserIdFromPreference(): Long {
+        return sharedPreferencesUtil.getUserId()
+    }
+
+
+    // 경매글 상세보기
     private val _auctionDetail = MutableStateFlow<AuctionDetailResponseDTO?>(null)
     val auctionDetail: StateFlow<AuctionDetailResponseDTO?> = _auctionDetail
 
-    private var currentPage = 1
-    private var currentFilter = AuctionFilterDTO("", "", "", null, currentPage)
+    // 내 경매글 목록
+    private val _myAuctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
+    val myAuctionItems: StateFlow<List<AuctionItemData>> = _myAuctionItems
+
+    // 경매 등록후 auctionIdx 받기
+    private val _navigateToAuctionDetail = MutableStateFlow<Long?>(null)
+    val navigateToAuctionDetail: StateFlow<Long?> = _navigateToAuctionDetail
+
+    // 경매 등록후 네비게이션 리셋
+    fun resetNavigation() {
+        _navigateToAuctionDetail.value = null
+    }
 
     init {
         fetchAuctionItems()
@@ -60,17 +81,6 @@ class AuctionViewModel @Inject constructor(
         currentPage = 1
         fetchAuctionItems()
     }
-
-    // 상세보기용 해당 인덱스 같은 데이터 들고오기
-    fun getAuctionItemByIndex(itemIndex: Long): AuctionItemData? {
-        return _auctionItems.value.firstOrNull { it.auctionIdx == itemIndex }
-    }
-
-    // 내 경매글 목록 불러오기
-    private val _myAuctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
-    val myAuctionItems: StateFlow<List<AuctionItemData>> = _myAuctionItems
-
-
 
     // 경매글 리스트 불러오기
     private fun fetchAuctionItems() {
@@ -107,7 +117,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.registerAuctionItem(RegisterAuctionDTO(upperLimit, lowerLimit, postContent, gifticonIdx, userIdx))
 
                 if (response.isSuccessful && response.body() != null) {
-                    // TODO: Handle successful registration logic if needed.
+                    _navigateToAuctionDetail.value = response.body()?.auctionIdx
                 } else {
                     _error.value = "Failed to register item: ${response.message()}"
                 }
@@ -118,6 +128,58 @@ class AuctionViewModel @Inject constructor(
             }
         }
     }
+
+    // 경매글 수정
+    fun updateAuctionItem(auctionIdx: Long, endDate: String, postContent: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val updateData = UpdateAuctionDTO(endDate, postContent)
+                val response = service.updateAuctionItem(auctionIdx, updateData)
+
+                if (response.isSuccessful) {
+                    fetchAuctionDetail(auctionIdx)
+                    _error.value = null
+                } else {
+                    _error.value = "Failed to update item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 경매글 삭제
+    fun deleteAuctionItem(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+                val response = service.deleteAuctionItem(auctionIdx)
+
+                if (response.isSuccessful) {
+                    val deleteResponse: DeleteAuctionResponse? = response.body()
+
+                    if (deleteResponse?.success == true) {
+                        fetchAuctionItems()
+                    } else {
+                        _error.value = deleteResponse?.message ?: "Unknown error occurred"
+                    }
+                } else {
+                    _error.value = "Failed to delete item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
 
     // 경매글 상세보기
     fun fetchAuctionDetail(auctionIdx: Long) {
@@ -130,7 +192,7 @@ class AuctionViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     _auctionDetail.value = response.body()
                 } else {
-                    _error.value = "Failed to load detail: ${response.message()}"
+                    _error.value = "Failed to load auction detail: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
@@ -140,7 +202,7 @@ class AuctionViewModel @Inject constructor(
         }
     }
 
-    // 내 경매글 목록 불러오기
+    // 경매 내 글 목록 불러오기
     fun fetchMyAuctionItems(userIdx: Long) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -178,7 +240,7 @@ data class AuctionItemData(
 )
 
 // 상세보기용 데이터 클래스
-data class ActuonVidData(
+data class AuctionBidData(
     val auctionBidIdx: Long,
     val auctionBidPrice: Int,
     val auctionRegistedDate: String,

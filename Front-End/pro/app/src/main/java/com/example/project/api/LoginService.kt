@@ -10,7 +10,7 @@ interface LoginService {
     @POST("user/verifypatternendpoint")
     suspend fun verifyPattern(@Body request: PatternVerificationRequest): Response<PatternVerifyResponse>
 
-    // 여기부터 API 추가
+
     // User IdPw API
     @POST("api/user/login")
     suspend fun textLogin(@Body request:IdPwLoginRequest ): Response<IdPwLoginResponse>

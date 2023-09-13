@@ -114,8 +114,7 @@ class BarterViewModel @Inject constructor(
 
     // 물물교환 등록
     fun createBarterItem(kindBigStatus:String, kindSmallStatus:String, barterName:String, barterText:String, barterEndDate:String, selectedItemIndices: List<Long>) {
-//        val userIdx = sharedPreferencesUtil.getUserId()
-        val userIdx = 111111111111
+        val userIdx = sharedPreferencesUtil.getUserId()
 
         viewModelScope.launch {
             _isLoading.value = true

@@ -1,6 +1,7 @@
 package com.example.project
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -65,26 +66,34 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("AuctionPage") { AuctionPage(navController) }
                     composable("AuctionDetailPage/{index}") { backStackEntry ->
                         val index = backStackEntry.arguments?.getString("index")
-                        AuctiondetailPage(index)
+                        AuctiondetailPage(index, navController)
                     }
                     composable("AuctionCreatePage") { AuctionCreatePage(navController) }
                     composable("AuctionCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
-                        val selectedItemIndex = backStackEntry.arguments?.getInt("selectedItemIndex") ?: -1
+                        val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
                         AuctionCreateDetailPage(navController, selectedItemIndex)
+                    }
+                    composable("auctionUpdate/{auctionIdx}") { backStackEntry ->
+                        val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
+                        AuctionUpdatePage(auctionIdx, navController)
                     }
 
 
                     // 물물
                     composable("BarterPage") { BarterPage(navController) }
-                    composable("BarterDetailPage/{index}") { backStackEntry ->
-                        val index = backStackEntry.arguments?.getString("index")
-                        BarterdetailPage(index)
+                    composable("BarterDetailPage/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterdetailPage(barterIdx, navController)
                     }
                     composable("BarterCreatePage") { BarterCreatePage(navController) }
                     composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
                         val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
                         val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
                         BarterCreateDetailPage(navController, selectedItemIndicesList)
+                    }
+                    composable("barterUpdate/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterUpdatePage(barterIdx, navController)
                     }
 
 

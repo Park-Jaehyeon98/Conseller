@@ -1,6 +1,7 @@
 package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.User;
@@ -23,18 +24,27 @@ public class BarterController {
 
     @GetMapping("/barter")
     public ResponseEntity<List<BarterResponseDto>> getBarterList() {
-        return new ResponseEntity<List<BarterResponseDto>>(barterService.getBarterList(), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(barterService.getBarterList());
     }
 
     @GetMapping("/{barterIdx}")
-    public ResponseEntity<BarterResponseDto> getBarter(@RequestParam Long barterIdx) {
-        BarterResponseDto barterReponseDto = barterService.getBarter(barterIdx);
-
-        return new ResponseEntity<BarterResponseDto>(barterReponseDto, HttpStatus.OK);
+    public ResponseEntity<BarterResponseDto> getBarter(@PathVariable Long barterIdx) {
+        return ResponseEntity.ok()
+                .body(barterService.getBarter(barterIdx));
     }
 
     @PostMapping({"", "/"})
     public ResponseEntity<Void> addBarter(@RequestBody BarterCreateDto barterCreateDto) {
-        return new ResponseEntity<Void>(barterService.addBarter(barterCreateDto), HttpStatus.OK);
+        barterService.addBarter(barterCreateDto);
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    @PatchMapping("/{barterIdx}")
+    public ResponseEntity<Void> modifyBarter(@PathVariable Long barterIdx, @RequestBody BarterModifyRequestDto barterModifyRequestDto) {
+        barterService.modifyBarter(barterIdx, barterModifyRequestDto);
+        return ResponseEntity.ok()
+                .build();
     }
 }

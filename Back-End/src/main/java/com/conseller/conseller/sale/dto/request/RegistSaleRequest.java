@@ -16,4 +16,5 @@ public class RegistSaleRequest {
 
     private Long userIdx;
 
+
 }

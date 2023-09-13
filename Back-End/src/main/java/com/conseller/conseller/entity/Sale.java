@@ -30,7 +30,7 @@ public class Sale {
     private LocalDateTime saleCreatedDate;
 
     @Column(name = "sale_end_date")
-    private LocalDateTime saleEndedDate;
+    private LocalDateTime saleEndDate;
 
     @Column(name = "sale_text")
     private String saleText;

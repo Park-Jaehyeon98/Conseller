@@ -9,8 +9,10 @@ public enum UserStatus {
     RESTRICTED("제한"),
     ACTIVE("정상");
 
-    private String status;
+    private final String status;
 
-    UserStatus(String status) {}
+    UserStatus(String status) {
+        this.status = status;
+    }
 
 }

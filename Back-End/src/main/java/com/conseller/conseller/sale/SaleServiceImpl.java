@@ -21,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
@@ -29,13 +30,13 @@ public class SaleServiceImpl implements SaleService {
     private final SubCategoryRepository subCategoryRepository;
 
     // 판매 목록
+    @Transactional(readOnly = true)
     public List<Sale> getSaleList(SaleListRequest saleListRequest) { //queryDSL 사용
 
         return null;
     }
 
     // 판매 글 등록
-    @Transactional
     public void registSale(RegistSaleRequest request) {
 
         User user = userRepository.findById(request.getUserIdx())
@@ -51,6 +52,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     // 판매 글 상세보기
+    @Transactional(readOnly = true)
     public DetailSaleResponse detailSale(Long saleIdx) {
         Sale sale = saleRepository.findById(saleIdx)
                 .orElseThrow(() -> new RuntimeException());

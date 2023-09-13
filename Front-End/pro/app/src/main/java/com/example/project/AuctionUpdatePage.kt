@@ -43,7 +43,7 @@ import com.example.project.viewmodels.AuctionViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AuctionUpdatePage(index: String?, navController: NavHostController) {
+fun AuctionUpdatePage(navController: NavHostController, index: String?) {
     val viewModel: AuctionViewModel = hiltViewModel()
     val auctionItems by viewModel.auctionItems.collectAsState()   // 대분류 내용 들고오기
     val auctionDetail by viewModel.auctionDetail.collectAsState()   // text 내용 들고오기

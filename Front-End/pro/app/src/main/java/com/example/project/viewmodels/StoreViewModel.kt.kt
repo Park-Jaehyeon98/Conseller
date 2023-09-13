@@ -17,7 +17,7 @@ class StoreViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var currentPage = 1
-    private var currentFilter = StoreFilterDTO("", "", "", null, currentPage)
+    private var currentFilter = StoreFilterDTO(0, 0, 0, null, currentPage)
 
     private val _storeItems = MutableStateFlow<List<StoreItemData>>(emptyList())
     val storeItems: StateFlow<List<StoreItemData>> = _storeItems

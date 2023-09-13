@@ -62,11 +62,28 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MyPage") { MyPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
 
+                    // 스토어
+                    composable("StorePage") { StorePage(navController = navController) }
+                    composable("StoreDetailPage/{index}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("index")
+                        StoreDetailPage(navController, storeIdx)
+                    }
+                    composable("StoreCreatePage") { StoreCreatePage(navController) }
+                    composable("StoreCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
+                        val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
+                        StoreCreateDetailPage(navController, selectedItemIndex)
+                    }
+                    composable("storeUpdate/{storeIdx}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("storeIdx")
+                        StoreUpdatePage(navController, storeIdx)
+                    }
+
+
                     // 경매
                     composable("AuctionPage") { AuctionPage(navController) }
                     composable("AuctionDetailPage/{index}") { backStackEntry ->
-                        val index = backStackEntry.arguments?.getString("index")
-                        AuctiondetailPage(index, navController)
+                        val auctionIdx = backStackEntry.arguments?.getString("index")
+                        AuctionDetailPage(navController, auctionIdx)
                     }
                     composable("AuctionCreatePage") { AuctionCreatePage(navController) }
                     composable("AuctionCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
@@ -75,7 +92,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     }
                     composable("auctionUpdate/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
-                        AuctionUpdatePage(auctionIdx, navController)
+                        AuctionUpdatePage(navController, auctionIdx)
                     }
 
 
@@ -95,10 +112,6 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
                         BarterUpdatePage(barterIdx, navController)
                     }
-
-
-                    // 스토어
-                    composable("StorePage") { StorePage(navController = navController) }
 
 
                     // 이벤트

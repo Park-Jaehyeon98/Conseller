@@ -14,9 +14,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,11 +58,8 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
-        Text(
-            text = "2. 원하는 기프티콘의 분류군과",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
-        )
+        Icon(Icons.Default.Home, contentDescription = "Image")
+
         Text(
             text = "게시글을 작성해주세요.",
             fontWeight = FontWeight.Bold,

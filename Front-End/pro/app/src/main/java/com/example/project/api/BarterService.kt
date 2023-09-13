@@ -25,7 +25,7 @@ interface BarterService {
     ): Response<BarterResponse>
 
     // 물물교환 등록 API
-    @POST("barterItems/create")
+    @POST("barterItems/regist")
     suspend fun createBarterItem(
         @Body filter: BarterCreateDTO
     ): Response<CreateBarterResponse>
@@ -53,8 +53,8 @@ interface BarterService {
 
 // 목록, 검색 요청 DTO
 data class BarterFilterDTO(
-    val majorCategory: String,    // 대분류
-    val minorCategory: String,    // 소분류
+    val mainCategory: Int,    // 대분류
+    val subCategory: Int,    // 소분류
     val searchQuery: String? = null, // 검색 쿼리. 검색 API 사용 시에만 값이 있음.
     val page: Int                 // 페이지 정보
 )
@@ -67,8 +67,8 @@ data class BarterResponse(
 
 // 물물교환 등록 요청 DTO
 data class BarterCreateDTO(
-    val kindBigStatus: String,
-    val kindSmallStatus: String,
+    val mainCategory: Int,
+    val subCategory: Int,
     val barterName: String,
     val barterText: String,
     val barterEndDate: String,
@@ -85,8 +85,8 @@ data class CreateBarterResponse(
 
 // 물물교환 수정 요청 DTO
 data class UpdateBarterDTO(
-    val kindBigStatus: String,
-    val kindSmallStatus: String,
+    val mainCategory: Int,
+    val subCategory: Int,
     val barterName: String,
     val barterText: String,
     val barterEndDate: String,

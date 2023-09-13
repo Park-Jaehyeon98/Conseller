@@ -168,18 +168,6 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
         ) {
             Button(
                 onClick = {
-                    navController.navigate("AuctionCreatePage")
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("이전")
-            }
-
-            Spacer(modifier = Modifier.width(24.dp))
-
-            Button(
-                onClick = {
                     val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
                     auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedIndex)
                 },
@@ -188,6 +176,19 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             ) {
                 Text("등록")
             }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            Button(
+                onClick = {
+                    navController.navigate("AuctionCreatePage")
+                },
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+            ) {
+                Text("이전")
+            }
+
             LaunchedEffect(navigateToIdx) {
                 navigateToIdx?.let { auctionIdx ->
                     navController.navigate("AuctionDetailPage/${auctionIdx}")

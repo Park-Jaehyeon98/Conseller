@@ -24,8 +24,7 @@ public class BarterHostItem {
     private Gifticon gifticon;
 
     @Builder
-    public BarterHostItem(Long barterHostItemIdx, Barter barter, Gifticon gifticon) {
-        this.barterHostItemIdx = barterHostItemIdx;
+    public BarterHostItem(Barter barter, Gifticon gifticon) {
         this.barter = barter;
         this.gifticon = gifticon;
     }

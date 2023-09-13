@@ -58,7 +58,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("AlertPage") { AlertPage() }
                     // bottom bar
                     composable("Home") { HomePage(navController = navController) }
-                    composable("MyPage") { MyPage() }
+                    composable("MyPage") { MyPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
 
                     // 경매

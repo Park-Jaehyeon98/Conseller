@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,17 +21,20 @@ public class BarterController {
     private final BarterService barterService;
 
 
-    @GetMapping({"/", ""})
+    @GetMapping("/barter")
     public ResponseEntity<List<BarterResponseDto>> getBarterList() {
         return new ResponseEntity<List<BarterResponseDto>>(barterService.getBarterList(), HttpStatus.OK);
     }
 
-    @PostMapping({"/", ""})
-    public ResponseEntity<Void> getBarter(BarterCreateDto barterCreateDto) {
-        barterService.addBarter(barterCreateDto);
+    @GetMapping("/{barterIdx}")
+    public ResponseEntity<BarterResponseDto> getBarter(@RequestParam Long barterIdx) {
+        BarterResponseDto barterReponseDto = barterService.getBarter(barterIdx);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<BarterResponseDto>(barterReponseDto, HttpStatus.OK);
     }
 
-
+    @PostMapping({"", "/"})
+    public ResponseEntity<Void> addBarter(@RequestBody BarterCreateDto barterCreateDto) {
+        return new ResponseEntity<Void>(barterService.addBarter(barterCreateDto), HttpStatus.OK);
+    }
 }

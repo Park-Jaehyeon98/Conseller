@@ -33,7 +33,7 @@ public class SaleController {
     // 판매 글 등록
     @PostMapping("/regist")
     public ResponseEntity<CommonResponse> registSale(@RequestBody RegistSaleRequest request) {
-        saleService.registSale(request);
+//        saleService.registSale(request);
 
         return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
     }

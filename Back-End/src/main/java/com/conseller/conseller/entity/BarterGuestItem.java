@@ -14,14 +14,14 @@ import java.math.BigInteger;
 public class BarterGuestItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long barterGuestItemIdx;
+    private Long barterGuestItemIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barter_request_idx", nullable = false)
-    private BarterRequest barterRequestIdx;
+    private BarterRequest barterRequest;
 
     @OneToOne
     @JoinColumn(name = "gifticon_idx", nullable = false)
-    private Gifticon gifticonIdx;
+    private Gifticon gifticon;
 
 }

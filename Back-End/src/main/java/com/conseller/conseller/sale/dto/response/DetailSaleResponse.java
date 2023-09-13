@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class DetailSaleResponse {
     private LocalDateTime saleCreatedDate;
 
-    private LocalDateTime saleEndedDate;
+    private LocalDateTime saleEndDate;
 
     private String saleText;
 
@@ -26,7 +26,7 @@ public class DetailSaleResponse {
 
     public DetailSaleResponse(User user, Sale sale) {
         this.saleCreatedDate = sale.getSaleCreatedDate();
-        this.saleEndedDate = sale.getSaleEndedDate();
+        this.saleEndDate = sale.getSaleEndDate();
         this.saleText = sale.getSaleText();
         this.saleUserIdx = user.getUserIdx();
         this.saleUserNickname = user.getUserNickname();

@@ -1,9 +1,8 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -13,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "userIdx")
+@Table(name = "\"user\"")
 public class User {
 
     @Id
@@ -38,7 +38,7 @@ public class User {
     private String userNickname;
 
     @Column(name = "user_deposit", nullable = false)
-    private String userDeposit;
+    private Integer userDeposit;
 
     @CreatedDate
     private LocalDateTime userJoinedDate;
@@ -50,7 +50,7 @@ public class User {
     private String userAccount;
 
     @Enumerated(EnumType.STRING)
-    private String userAccountBank;
+    private AccountBanks userAccountBank;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
@@ -78,4 +78,21 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Notification> notifications = new ArrayList<>();
+
+    @Builder
+    public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Integer userDeposit, LocalDateTime userJoinedDate, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount) {
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.userEmail = userEmail;
+        this.userPhoneNumber = userPhoneNumber;
+        this.userNickname = userNickname;
+        this.userDeposit = userDeposit;
+        this.userJoinedDate = userJoinedDate;
+        this.userDeletedDate = userDeletedDate;
+        this.userAccount = userAccount;
+        this.userAccountBank = userAccountBank;
+        this.userStatus = userStatus;
+        this.userRestrictEndDate = userRestrictEndDate;
+        this.userRestrictCount = userRestrictCount;
+    }
 }

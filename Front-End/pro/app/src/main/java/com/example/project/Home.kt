@@ -94,9 +94,9 @@ fun HomeLayout3(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.width(8.dp))
+                ImageButton("스토어") { navController.navigate("StorePage") }
                 ImageButton("경매") { navController.navigate("AuctionPage") }
                 ImageButton("물물교환") { navController.navigate("BarterPage") }
-                ImageButton("스토어") { navController.navigate("StorePage") }
                 ImageButton("이벤트") { navController.navigate("EventPage") }
                 Spacer(modifier = Modifier.width(8.dp))
             }

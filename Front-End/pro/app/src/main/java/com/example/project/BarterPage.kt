@@ -97,8 +97,8 @@ fun BarterPage(navController: NavHostController) {
                     filter2Selected = "소분류"
                     viewModel.applyFilter(
                         BarterFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -117,8 +117,8 @@ fun BarterPage(navController: NavHostController) {
                     filter2Selected = it
                     viewModel.applyFilter(
                         BarterFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
                             searchText,
                             currentPage
                         )

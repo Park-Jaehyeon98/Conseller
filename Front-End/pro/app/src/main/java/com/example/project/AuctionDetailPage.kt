@@ -13,11 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,12 +30,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.example.project.sharedpreferences.SharedPreferencesUtil
 import com.example.project.viewmodels.AuctionViewModel
 
 @Composable
-fun AuctiondetailPage(index: String?, navController: NavHostController) {
+fun AuctionDetailPage(navController: NavHostController, index: String?) {
     val viewModel: AuctionViewModel = hiltViewModel()
     val auctionItems by viewModel.auctionItems.collectAsState()     // 이전에 들고왔던 옥션리스트
     val auctionDetail by viewModel.auctionDetail.collectAsState()   // 글 상세보기했을때 들고온 정보
@@ -86,6 +81,7 @@ fun AuctiondetailPage(index: String?, navController: NavHostController) {
 
         auctionDetail?.let {
             Text("User: ${it.auctionUserNickname}")
+            Text("User: ${it.postContent}")
 
             it.auctionBid.forEach { bid ->
                 Text("입찰 : ${bid.auctionBidPrice}", fontSize = 18.sp)
@@ -93,9 +89,17 @@ fun AuctiondetailPage(index: String?, navController: NavHostController) {
         }
         // 개발되면 지울예정인 더미 4개
         Text("판매자 : 테스트", fontSize = 18.sp)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("내용 : 테스트내용", fontSize = 18.sp)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text("입찰가 1 : 800", fontSize = 18.sp)
         Text("입찰가 2 : 700", fontSize = 18.sp)
         Text("입찰가 3 : 800", fontSize = 18.sp)
+
 
 
 

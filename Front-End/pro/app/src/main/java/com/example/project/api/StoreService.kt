@@ -24,7 +24,7 @@ interface StoreService {
     ): Response<StoreResponse>
 
     // 스토어 등록 API
-    @POST("api/store/resist")
+    @POST("api/store/regist")
     suspend fun registerStoreItem(
         @Body registerData: RegisterStoreDTO
     ): Response<RegisterStoreResponse>
@@ -52,9 +52,9 @@ interface StoreService {
 
 // 목록, 검색 요청 DTO
 data class StoreFilterDTO(
-    val kindBigStatus: String,
-    val kindSmallStatus: String,
-    val status: String,
+    val mainCategory : Int,
+    val subCategory : Int,
+    val status: Int,
     val searchQuery: String? = null,
     val page: Int
 )

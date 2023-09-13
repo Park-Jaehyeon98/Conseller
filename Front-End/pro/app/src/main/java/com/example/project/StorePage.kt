@@ -97,9 +97,9 @@ fun StorePage(navController: NavHostController) {
                     filter2Selected = "소분류"
                     viewModel.applyFilter(
                         StoreFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -118,9 +118,9 @@ fun StorePage(navController: NavHostController) {
                     filter2Selected = it
                     viewModel.applyFilter(
                         StoreFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -134,9 +134,9 @@ fun StorePage(navController: NavHostController) {
                     filter3Selected = it
                     viewModel.applyFilter(
                         StoreFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )

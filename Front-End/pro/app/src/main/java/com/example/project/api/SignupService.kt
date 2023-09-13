@@ -44,10 +44,10 @@ data class RegistRequest(
     val userId: String,
     val userPassword: String,
     val userEmail: String,
-    val userPhoneNumber: Int,
+    val userPhoneNumber: String,
     val userNickname: String,
     val userAccount: String,
-    val userAccountBank: Int
+    val userAccountBank: String
 )
 
 //회원가입 응답 DTO

@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -31,7 +32,7 @@ interface AuctionService {
     ): Response<RegisterAuctionResponse>
 
     // 경매글 수정 API
-    @PUT("api/auction/update/{auctionIdx}")
+    @PATCH("api/auction/update/{auctionIdx}")
     suspend fun updateAuctionItem(
         @Path("auctionIdx") auctionIdx: Long,
         @Body updateData: UpdateAuctionDTO

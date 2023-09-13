@@ -23,7 +23,7 @@ class BarterViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var currentPage = 1
-    private var currentFilter = BarterFilterDTO("", "", null, currentPage)
+    private var currentFilter = BarterFilterDTO(0, 0, null, currentPage)
 
     // 물물교환글 전체 목록 불러오기
     private val _barterItems = MutableStateFlow<List<BarterItemData>>(emptyList())
@@ -115,6 +115,8 @@ class BarterViewModel @Inject constructor(
     // 물물교환 등록
     fun createBarterItem(kindBigStatus:String, kindSmallStatus:String, barterName:String, barterText:String, barterEndDate:String, selectedItemIndices: List<Long>) {
         val userIdx = sharedPreferencesUtil.getUserId()
+        val kindBigStatus = kindBigStatus.toInt()
+        val kindSmallStatus = kindSmallStatus.toInt()
 
         viewModelScope.launch {
             _isLoading.value = true
@@ -137,6 +139,10 @@ class BarterViewModel @Inject constructor(
 
     // 물물교환 글 수정
     fun updateBarterItem(barterIdx: Long, kindBigStatus: String, kindSmallStatus: String, barterName: String, barterText: String, barterEndDate: String) {
+
+        val kindBigStatus = kindBigStatus.toInt()
+        val kindSmallStatus = kindSmallStatus.toInt()
+
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null

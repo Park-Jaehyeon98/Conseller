@@ -22,7 +22,7 @@ class AuctionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var currentPage = 1
-    private var currentFilter = AuctionFilterDTO("", "", "", null, currentPage)
+    private var currentFilter = AuctionFilterDTO(0, 0, 0, null, currentPage)
 
     // 경매글 전체 목록 불러오기
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())

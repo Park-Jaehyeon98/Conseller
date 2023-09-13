@@ -161,18 +161,6 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         ) {
             Button(
                 onClick = {
-                    navController.navigate("BarterCreatePage")
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("이전")
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))  // 버튼 사이 간격 조절
-
-            Button(
-                onClick = {
                     barterviewModel.createBarterItem(
                         kindBigStatus = filter1Selected,
                         kindSmallStatus = filter2Selected,
@@ -187,6 +175,19 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             ) {
                 Text(text = "등록")
             }
+
+            Spacer(modifier = Modifier.width(16.dp))  // 버튼 사이 간격 조절
+
+            Button(
+                onClick = {
+                    navController.navigate("BarterCreatePage")
+                },
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+            ) {
+                Text("이전")
+            }
+
             LaunchedEffect(navigateToIdx) {
                 navigateToIdx?.let { auctionIdx ->
                     navController.navigate("AuctionDetailPage/${auctionIdx}")

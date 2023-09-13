@@ -26,7 +26,7 @@ interface AuctionService {
     ): Response<AuctionResponse>
 
     // 경매 등록 API
-    @POST("api/auction/resist")
+    @POST("api/auction/regist")
     suspend fun registerAuctionItem(
         @Body registerData: RegisterAuctionDTO
     ): Response<RegisterAuctionResponse>
@@ -55,9 +55,9 @@ interface AuctionService {
 
 // 목록, 검색 요청 DTO
 data class AuctionFilterDTO(
-    val kindBigStatus: String,    // 대분류
-    val kindSmallStatus: String,    // 소분류
-    val status: String,           // 상태
+    val mainCategory: Int,    // 대분류
+    val subCategory: Int,    // 소분류
+    val status: Int,           // 상태
     val searchQuery: String? = null, // 검색 쿼리. 검색 API 사용 시에만 값이 있음.
     val page: Int                 // 페이지 정보
 )

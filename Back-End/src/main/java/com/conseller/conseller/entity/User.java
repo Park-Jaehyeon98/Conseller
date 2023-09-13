@@ -61,6 +61,9 @@ public class User {
     @Column(name = "user_restrict_count")
     private Integer userRestrictCount;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     @OneToMany(mappedBy = "barterHost")
     List<Barter> barters = new ArrayList<>();
 

@@ -22,7 +22,7 @@ class BiometricViewModel @Inject constructor(
 
     fun verifyPattern(pattern: String) {
         viewModelScope.launch {
-            val userId = sharedPreferencesUtil.getUserId().toLong()
+            val userId = sharedPreferencesUtil.getUserId()
             if (userId == null) {
                 _authenticationState.value = AuthenticationState.ERROR("정상적인 경로로 회원가입을 진행후 로그인 해주세요.")
                 return@launch

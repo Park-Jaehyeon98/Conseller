@@ -9,7 +9,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     companion object {
         private const val PREF_NAME = "my_pref"
         private const val IS_LOGGED_IN = "is_logged_in"
-        private const val USER_IDX = "user_idx"
+        private const val USER_IDX = "12345"
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
     }

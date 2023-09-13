@@ -27,14 +27,15 @@ import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex: Int) {
+fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex: String?) {
     val myGifticonViewModel: MygifticonViewModel = hiltViewModel()
     val auctionViewModel: AuctionViewModel = hiltViewModel()
     val gifticonItems by myGifticonViewModel.gifticonItems.collectAsState()
+    val navigateToIdx by auctionViewModel.navigateToAuctionDetail.collectAsState() // 등록시 idx받기
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex.toLong() }
+    val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex!!.toLong() }
 
     // 상한가, 하한가, 게시글 내용을 위한 상태값
     var upperLimit by remember { mutableStateOf(0) }
@@ -85,8 +86,15 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
-                    if (pureValue.all { it.isDigit() }) {
-                        upperLimit = pureValue.toInt()
+                    if (pureValue.isEmpty()) {
+                        upperLimit = 0
+                    } else if (pureValue.all { it.isDigit() }) {
+                        val potentialValue = pureValue.toLong()
+                        if (potentialValue <= 1_000_000_000) {  // 10억으로 제한
+                            upperLimit = potentialValue.toInt()
+                        } else {
+                            upperLimit = 1_000_000_000
+                        }
                     }
                 },
                 modifier = Modifier
@@ -108,12 +116,19 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Text("하한가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
-                value = formattedNumber(upperLimit.toString()),
+                value = formattedNumber(lowerLimit.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
-                    if (pureValue.all { it.isDigit() }) {
-                        lowerLimit = pureValue.toInt()
+                    if (pureValue.isEmpty()) {
+                        lowerLimit = 0
+                    } else if (pureValue.all { it.isDigit() }) {
+                        val potentialValue = pureValue.toLong()
+                        if (potentialValue <= 1_000_000_000) {  // 10억으로 제한
+                            lowerLimit = potentialValue.toInt()
+                        } else {
+                            lowerLimit = 1_000_000_000
+                        }
                     }
                 },
                 modifier = Modifier
@@ -165,13 +180,19 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Button(
                 onClick = {
-                    val selectedIndex: Long = selectedGifticon?.gifticonIdx?.toLong() ?: -1L
+                    val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
                     auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedIndex)
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             ) {
                 Text("등록")
+            }
+            LaunchedEffect(navigateToIdx) {
+                navigateToIdx?.let { auctionIdx ->
+                    navController.navigate("AuctionDetailPage/${auctionIdx}")
+                    auctionViewModel.resetNavigation()
+                }
             }
         }
     }

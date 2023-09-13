@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.sale.enums.SaleStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,7 +36,8 @@ public class Sale {
     private String saleText;
 
     @Column(name = "sale_status")
-    private Enum saleStatus;
+    @Enumerated(EnumType.STRING)
+    private SaleStatus saleStatus = SaleStatus.IN_PROGRESS;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gifticon_idx")

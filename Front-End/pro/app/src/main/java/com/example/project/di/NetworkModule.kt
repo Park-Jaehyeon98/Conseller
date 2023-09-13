@@ -8,6 +8,7 @@ import com.example.project.api.LoginService
 import com.example.project.api.MainService
 import com.example.project.api.MyService
 import com.example.project.api.ReuseService
+import com.example.project.api.SignupService
 import com.example.project.api.StoreService
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.Module
@@ -105,6 +106,12 @@ object NetworkModule {
     @Singleton
     fun provideReuseService(retrofit: Retrofit): ReuseService {
         return retrofit.create(ReuseService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providerSignupService(retrofit: Retrofit): SignupService {
+        return retrofit.create(SignupService::class.java)
     }
 
 }

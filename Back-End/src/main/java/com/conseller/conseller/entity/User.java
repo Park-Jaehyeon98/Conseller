@@ -61,7 +61,7 @@ public class User {
     @Column(name = "user_restrict_count")
     private Integer userRestrictCount;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "barterHost")
     List<Barter> barters = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")

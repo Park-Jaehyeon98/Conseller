@@ -10,8 +10,8 @@ interface LoginService {
     @POST("user/verifypatternendpoint")
     suspend fun verifyPattern(@Body request: PatternVerificationRequest): Response<PatternVerifyResponse>
 
-    // 여기부터 API 추가
-    // User IdPw API
+
+    // User 일반로그인
     @POST("api/user/login")
     suspend fun textLogin(@Body request:IdPwLoginRequest ): Response<IdPwLoginResponse>
 
@@ -31,14 +31,14 @@ data class PatternVerifyResponse(
 
 // IdPw로그인 요청 DTO
 data class IdPwLoginRequest(
-    val user_id: String,
-    val user_password: String
+    val userId: String,
+    val userPassword: String
 )
 
 // IdPw로그인 응답 DTO
 data class  IdPwLoginResponse(
-    val user_idx:Long,
-    val user_nickname :String,
-    val user_accesstoken :String,
-    val user_refreshtoken:String,
+    val userIdx:Long,
+    val userNickname :String,
+    val userAccessToken :String,
+    val userRefreshToken:String,
 )

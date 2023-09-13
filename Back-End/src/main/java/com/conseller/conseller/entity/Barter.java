@@ -1,6 +1,7 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import lombok.*;
@@ -83,6 +84,13 @@ public class Barter {
                 .barterHost(barter.getBarterHost())
                 .barterCompleteGuest(barter.getBarterCompleteGuest())
                 .build();
+    }
+
+    public void modifyBarter(BarterModifyRequestDto barterModifyRequestDto) {
+        barterName = barterModifyRequestDto.getBarterName();
+        barterText = barterModifyRequestDto.getBarterText();
+        barterEndDate = barterModifyRequestDto.getBarterEndDate();
+        preferSubCategory = barterModifyRequestDto.getPreferSubCategory();
     }
 }
 

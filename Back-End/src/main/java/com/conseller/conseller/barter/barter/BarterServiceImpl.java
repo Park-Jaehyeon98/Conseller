@@ -2,6 +2,7 @@ package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.BarterHostItem.BarterHostItemService;
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
@@ -53,7 +54,7 @@ public class BarterServiceImpl implements BarterService{
     }
 
     @Override
-    public Void addBarter(BarterCreateDto barterCreateDto) {
+    public void addBarter(BarterCreateDto barterCreateDto) {
         SubCategory subCategory = subCategoryRepository.findById(barterCreateDto.getBarterSubCategory()).orElseThrow(() -> new RuntimeException());
         SubCategory preferSubCategory = subCategoryRepository.findById(barterCreateDto.getPreferBarterSubCategory()).orElseThrow(() -> new RuntimeException());
 
@@ -63,7 +64,17 @@ public class BarterServiceImpl implements BarterService{
         barterRepository.save(barter);
 
         barterHostItemService.addBarterHostItem(barterCreateDto.getSelectedItemIndices(), barter);
+    }
 
-        return null;
+    @Override
+    public void modifyBarter(Long barterIdx, BarterModifyRequestDto barterModifyRequestDto) {
+
+        SubCategory preferSubCategory = subCategoryRepository.findById(barterModifyRequestDto.getSubCategoryIdx())
+                .orElseThrow(() -> new RuntimeException());
+
+        barterModifyRequestDto.setPreferSubCategory(preferSubCategory);
+
+        Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
+        barter.modifyBarter(barterModifyRequestDto);
     }
 }

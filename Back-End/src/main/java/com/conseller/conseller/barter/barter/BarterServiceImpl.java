@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,12 +24,32 @@ public class BarterServiceImpl implements BarterService{
     private final BarterHostItemService barterHostItemService;
     @Override
     public List<BarterResponseDto> getBarterList() {
-        return null;
+        List<Barter> barterList = barterRepository.findAll();
+        List<BarterResponseDto> barterResponseDtoList= new ArrayList<>();
+
+        for(Barter barter : barterList) {
+            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+            barterResponseDtoList.add(barterResponseDto);
+        }
+        return barterResponseDtoList;
     }
 
     @Override
     public BarterResponseDto getBarter(Long barterIdx) {
-        return null;
+        Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
+        BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+
+        return barterResponseDto;
+    }
+
+    @Override
+    public List<BarterResponseDto> getBarterListByHost(Long userIdx) {
+        List<Barter> barterList = barterRepository.findByHostIdx(userIdx);
+        List<BarterResponseDto> barterResponseDtoList = new ArrayList<>();
+        for(Barter barter : barterList) {
+            barterResponseDtoList.add(barter.toBarterResponseDto(barter));
+        }
+        return barterResponseDtoList;
     }
 
     @Override

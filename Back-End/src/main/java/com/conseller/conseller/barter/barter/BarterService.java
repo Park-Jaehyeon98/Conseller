@@ -10,6 +10,7 @@ public interface BarterService {
 
     List<BarterResponseDto> getBarterList();
     BarterResponseDto getBarter(Long barterIdx);
+    List<BarterResponseDto> getBarterListByHost(Long userIdx);
 
     Void addBarter(BarterCreateDto barterCreateDto);
 

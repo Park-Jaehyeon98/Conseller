@@ -1,6 +1,7 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -68,6 +69,20 @@ public class Barter {
         this.barterHost = barterHost;
         this.subCategory = subCategory;
         this.preferSubCategory = preferSubCategory;
+    }
+
+    public static BarterResponseDto toBarterResponseDto(Barter barter){
+        return BarterResponseDto.builder()
+                .barterIdx(barter.barterIdx)
+                .barterName(barter.getBarterName())
+                .barterText(barter.getBarterText())
+                .barterCreatedDate(barter.getBarterCreatedDate())
+                .barterEndDate(barter.getBarterEndDate())
+                .subCategory(barter.getSubCategory())
+                .preferSubCategory(barter.getPreferSubCategory())
+                .barterHost(barter.getBarterHost())
+                .barterCompleteGuest(barter.getBarterCompleteGuest())
+                .build();
     }
 }
 

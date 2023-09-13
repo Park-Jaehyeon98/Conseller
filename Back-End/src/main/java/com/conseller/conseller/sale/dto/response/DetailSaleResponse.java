@@ -1,6 +1,11 @@
 package com.conseller.conseller.sale.dto.response;
 
-import lombok.*;
+import com.conseller.conseller.entity.Sale;
+import com.conseller.conseller.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -8,16 +13,23 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class DetailSaleResponse {
     private LocalDateTime saleCreatedDate;
 
-    private LocalDateTime saleEndedDate;
+    private LocalDateTime saleEndDate;
 
     private String saleText;
 
     private Long saleUserIdx;
 
     private String saleUserNickname;
+
+    public DetailSaleResponse(User user, Sale sale) {
+        this.saleCreatedDate = sale.getSaleCreatedDate();
+        this.saleEndDate = sale.getSaleEndDate();
+        this.saleText = sale.getSaleText();
+        this.saleUserIdx = user.getUserIdx();
+        this.saleUserNickname = user.getUserNickname();
+    }
 
 }

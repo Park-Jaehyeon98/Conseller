@@ -4,7 +4,6 @@ import com.conseller.conseller.entity.Sale;
 import com.conseller.conseller.sale.dto.request.ModifySaleRequest;
 import com.conseller.conseller.sale.dto.request.RegistSaleRequest;
 import com.conseller.conseller.sale.dto.request.SaleListRequest;
-import com.conseller.conseller.sale.dto.response.CommonResponse;
 import com.conseller.conseller.sale.dto.response.DetailSaleResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/sale")
 public class SaleController {
+
     private final SaleService saleService;
 
     private final String SUCCESS = "success";
@@ -27,15 +27,18 @@ public class SaleController {
     @PostMapping
     public ResponseEntity<List<Sale>> getSaleList(@RequestBody SaleListRequest request) {
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return ResponseEntity.ok()
+                .body(null);
     }
 
     // 판매 글 등록
     @PostMapping("/regist")
-    public ResponseEntity<CommonResponse> registSale(@RequestBody RegistSaleRequest request) {
-//        saleService.registSale(request);
+    public ResponseEntity<Object> registSale(@RequestBody RegistSaleRequest request) {
+        saleService.registSale(request);
 
-        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .build();
     }
 
     // 판매 글 상세보기
@@ -47,24 +50,27 @@ public class SaleController {
     }
 
     // 판매 글 수정
-    @PutMapping
-    public ResponseEntity<CommonResponse> modifySale(@RequestBody ModifySaleRequest saleRequest) {
-        saleService.modifySale(saleRequest);
-        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+    @PutMapping("/{sale_idx}")
+    public ResponseEntity<Object> modifySale(@PathVariable("sale_idx") Long saleIdx, @RequestBody ModifySaleRequest saleRequest) {
+        saleService.modifySale(saleIdx, saleRequest);
+        return ResponseEntity.ok()
+                .build();
     }
 
     // 판매 글 삭제
     @DeleteMapping("/{sale_idx}")
-    public ResponseEntity<CommonResponse> deleteSale(@PathVariable("sale_idx") Long saleIdx) {
+    public ResponseEntity<Object> deleteSale(@PathVariable("sale_idx") Long saleIdx) {
         saleService.deleteSale(saleIdx);
-        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .build();
     }
 
     // 판매 상태 변경
     @PutMapping("/{sale_idx}/status")
-    public ResponseEntity<CommonResponse> saleStatusPermute(@PathVariable("sale_idx") Long saleIdx) {
+    public ResponseEntity<Object> saleStatusPermute(@PathVariable("sale_idx") Long saleIdx) {
         saleService.saleStatusPermute(saleIdx);
-        return new ResponseEntity<>(new CommonResponse(true, SUCCESS), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .build();
     }
 
 

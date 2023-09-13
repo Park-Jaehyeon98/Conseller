@@ -1,18 +1,23 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.auction.auction.enums.AuctionStatus;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @EqualsAndHashCode(of = "auctionIdx")
+@DynamicUpdate
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +35,9 @@ public class Auction {
     @Column(name = "auction_highest_bid", nullable = false)
     private Integer auctionHighestBid;
 
-//    @Column(name = "auction_status", nullable = false)
-//    private Enum auctionStatus;
+    @Column(name = "auction_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AuctionStatus auctionStatus = AuctionStatus.IN_PROGRESS;
 
     @CreatedDate
     private LocalDateTime auctionStartDate;
@@ -45,5 +51,9 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "gifticon_idx")
     private Gifticon gifticon;
+
+    @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User user;
 }
 

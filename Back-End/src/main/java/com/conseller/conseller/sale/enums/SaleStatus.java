@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum SaleStatus {
     IN_PROGRESS("진행 중"),
     IN_TRADE("거래 중"),
-    AWARDED("낙찰");
+    AWARDED("낙찰"),
+    TRADED("거래 완료");
 
     private final String status;
 }

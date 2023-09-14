@@ -3,7 +3,6 @@ package com.conseller.conseller.entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -73,7 +72,7 @@ public class User {
     List<Inquiry> inquiries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    List<Sale> sales = new ArrayList<>();
+    List<Store> stores = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     List<Notification> notifications = new ArrayList<>();

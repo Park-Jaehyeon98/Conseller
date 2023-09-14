@@ -1,4 +1,4 @@
-package com.conseller.conseller.sale.dto.request;
+package com.conseller.conseller.store.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,14 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistSaleRequest {
-    private Integer salePrice;
+public class RegistStoreRequest {
+    private Integer storePrice;
 
-    private String saleText;
+    private String storeText;
 
     private Long gifticonIdx;
 
     private Long userIdx;
-
-
 }

@@ -42,6 +42,8 @@ interface SignupService {
 //회원가입 요청 DTO
 data class RegistRequest(
     val userId: String,
+    val userGender: String, // F,M
+    val userAge: Int,
     val userPassword: String,
     val userEmail: String,
     val userPhoneNumber: String,

@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +47,7 @@ import com.example.project.api.RegistRequest
 import com.example.project.reuse_component.CustomTextField
 import com.example.project.reuse_component.CustomTextFieldWithButton
 import com.example.project.reuse_component.EmailTextFieldWithDomain
+import com.example.project.ui.theme.BlueChecker
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.SignupViewModel
 
@@ -62,6 +64,8 @@ fun SignUpPage(navController: NavHostController) {
 
     // 회원가입 request 값들
     var userId by remember { mutableStateOf(TextFieldValue("")) }
+    var gender by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf(TextFieldValue("")) }
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var nickname by remember { mutableStateOf(TextFieldValue("")) }
     var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
@@ -75,6 +79,8 @@ fun SignUpPage(navController: NavHostController) {
     val registClick = {
         val request = RegistRequest(
             userId = userId.text,
+            userGender=gender,
+            userAge=age.text.toInt(),
             userAccount = account,
             userEmail = email,
             userPassword = password.text,
@@ -117,12 +123,12 @@ fun SignUpPage(navController: NavHostController) {
 
     //이름 검증 
     fun isValidName(name: String): Boolean {
-        return 1<= name.length && name.length <= 45
+        return 1 <= name.length && name.length <= 45
     }
 
     //닉네임 검증
     fun isValidNickName(nickName: String): Boolean {
-        return 1<= nickName.length && nickName.length <= 45
+        return 1 <= nickName.length && nickName.length <= 45
     }
 
     //유효성 검사 상태들
@@ -190,6 +196,16 @@ fun SignUpPage(navController: NavHostController) {
                         name = it
                         nameError = if (isValidName(it.text)) null else "이름은 1글자 이상 45글자 이하여야 합니다."
                     }, error = nameError, showIcon = isValidName(name.text))
+                    GenderSelection(label="성별",gender = gender, onGenderSelected = { selectedGender ->
+                        gender = selectedGender
+                    })
+                    CustomTextField(label = "나이", value = age, onValueChange = {
+                            newValue ->
+                        if (newValue.text.all { it.isDigit() }) {
+                            age = newValue
+                        }
+                    })
+
                     CustomTextFieldWithButton(
                         label = "아이디",
                         buttonLabel = "중복확인",
@@ -224,11 +240,14 @@ fun SignUpPage(navController: NavHostController) {
                         label = "닉네임",
                         buttonLabel = "중복확인",
                         value = nickname,
-                        onValueChange = { nickname = it
-                                        nickNameError=if(isValidNickName(it.text)) null else "닉네임은 1글자 이상 45글자 이하여야 합니다."},
+                        onValueChange = {
+                            nickname = it
+                            nickNameError =
+                                if (isValidNickName(it.text)) null else "닉네임은 1글자 이상 45글자 이하여야 합니다."
+                        },
                         onButtonClick = { viewModel.checkDuplicateNickname(nickname.text) },
                         showIcon = checkMarkNickname.value,
-                        error=nickNameError
+                        error = nickNameError
                     )
                     CustomTextFieldWithButton(
                         label = "전화번호",
@@ -357,8 +376,35 @@ fun CustomDropdown(
 }
 
 
+@Composable
+fun GenderSelection(label:String,gender: String, onGenderSelected: (String) -> Unit) {
+    Column(modifier=Modifier.fillMaxWidth()) {
+        Text(text = label, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)
+        ) {
+            Button(
+                onClick = {
+                    onGenderSelected("M")
+                }, colors = ButtonDefaults.buttonColors(
+                    if (gender == "M") BlueChecker else BrandColor1
+                ),
+                modifier = Modifier.weight(5f)
+            ) {
+                Text("남성", fontSize = 22.sp)
+            }
 
-
-
-
+            Button(
+                onClick = {
+                    onGenderSelected("F")
+                }, colors = ButtonDefaults.buttonColors(
+                    if (gender == "F")  Color(0xFFEC9393) else BrandColor1
+                ),
+                modifier = Modifier.weight(5f)
+            ) {
+                Text("여성", fontSize = 22.sp)
+            }
+        }
+    }
+}
 

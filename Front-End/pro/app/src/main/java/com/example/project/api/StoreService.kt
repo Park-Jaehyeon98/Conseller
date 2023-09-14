@@ -48,6 +48,24 @@ interface StoreService {
         @Path("storeIdx") storeIdx: Long
     ): Response<StoreDetailResponseDTO>
 
+    // 스토어 거래진행 계좌번호 불러오기 API
+    @GET("api/store/trade/{storeIdx}")
+    suspend fun getStoreTrade(
+        @Path("storeIdx") storeIdx: Long
+    ): Response<StoreTradeResponseDTO>
+
+    // 스토어 거래진행 취소 API
+    @PATCH("api/store/cancel/{storeIdx}")
+    suspend fun cancelStoreTrade(
+        @Path("storeIdx") storeIdx: Long
+    ): Response<Void>
+
+    // 스토어 거래진행 입금완료 API
+    @POST("api/store/complete/{storeIdx}")
+    suspend fun completeStorePayment(
+        @Path("storeIdx") storeIdx: Long
+    ): Response<StoreTradeCompleteResponseDTO>
+
 }
 
 // 목록, 검색 요청 DTO
@@ -105,4 +123,21 @@ data class StoreDetailResponseDTO(
     val postContent: String,
     val storeUserIdx: Long,
     val storeUserNickname: String,
+)
+
+// 스토어 최고가 구매 계좌번호 요청 DTO = Path형식
+// 스토어 최고가 구매 계좌번호 응답 DTO
+data class StoreTradeResponseDTO(
+    val success: Boolean,
+    val message: String,
+    val userAccount: String,
+    val userAccountBank: String,
+)
+
+// 스토어 완료 요청 DTO = Path형식
+// 스토어 완료 요청 DTO
+
+data class StoreTradeCompleteResponseDTO(
+    val success: Boolean,
+    val message: String,
 )

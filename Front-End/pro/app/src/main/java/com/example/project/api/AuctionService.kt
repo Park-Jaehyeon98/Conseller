@@ -44,12 +44,30 @@ interface AuctionService {
         @Path("auctionIdx") auctionIdx: Long
     ): Response<DeleteAuctionResponse>
 
-
     // 경매글 상세보기 API
     @GET("api/auction/detail/{auctionIdx}")
     suspend fun getAuctionDetail(
         @Path("auctionIdx") auctionIdx: Long
     ): Response<AuctionDetailResponseDTO>
+
+    // 경매진행 계좌번호 불러오기 API
+    @GET("api/auction/trade/{auctionIdx}")
+    suspend fun getAuctionTrade(
+        @Path("auctionIdx") auctionIdx: Long
+    ): Response<AuctionTradeResponseDTO>
+
+    // 경매진행 취소 API
+    @PATCH("api/auction/cancel/{auctionIdx}")
+    suspend fun cancelAuctionTrade(
+        @Path("auctionIdx") auctionIdx: Long
+    ): Response<Void>
+
+    // 경매진행 입금완료 API
+    @POST("api/auction/complete/{auctionIdx}")
+    suspend fun completeAuctionPayment(
+        @Path("auctionIdx") auctionIdx: Long
+    ): Response<AuctionTradeCompleteResponseDTO>
+
 
 }
 
@@ -110,4 +128,21 @@ data class AuctionDetailResponseDTO(
     val auctionUserIdx: Long,           // 게시글 유저 idx
     val auctionUserNickname: String,    // 게시글 유저 닉네임
     val auctionBid: List<AuctionBidData>,  // 경매입찰정보
+)
+
+// 경매 최고가 구매 계좌번호 요청 DTO = Path형식
+// 경매 최고가 구매 계좌번호 응답 DTO
+data class AuctionTradeResponseDTO(
+    val success: Boolean,
+    val message: String,
+    val userAccount: String,
+    val userAccountBank: String,
+)
+
+// 입금 완료 요청 DTO = Path형식
+// 입금 완료 요청 DTO
+
+data class AuctionTradeCompleteResponseDTO(
+    val success: Boolean,
+    val message: String,
 )

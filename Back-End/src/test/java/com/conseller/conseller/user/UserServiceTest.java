@@ -6,6 +6,7 @@ import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.user.service.UserService;
 import com.conseller.conseller.user.service.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,9 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserValidator userValidator;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -31,14 +35,17 @@ public class UserServiceTest {
 
         //given
         SignUpDto signUpDto = SignUpDto.builder()
-                    .userId("test1234")
-                    .userPassword("test123456!")
-                    .userEmail("test1234@gmail.com")
-                    .userAccount("28218930100882")
-                    .userNickname("테스트123")
-                    .userAccountBank("신한은행")
-                    .userPhoneNumber("01050945330")
-                    .build();
+                .userId("test1234")
+                .userPassword("test123456!")
+                .userEmail("test1234@gmail.com")
+                .userAccount("28218930100882")
+                .userAge(20)
+                .userGender('M')
+                .userName("김현수")
+                .userNickname("테스트123")
+                .userAccountBank("신한은행")
+                .userPhoneNumber("01050945330")
+                .build();
 
         User user = User.builder()
                 .userId(signUpDto.getUserId())
@@ -47,6 +54,9 @@ public class UserServiceTest {
                 .userDeposit(0)
                 .userNickname(signUpDto.getUserNickname())
                 .userPhoneNumber(signUpDto.getUserPhoneNumber())
+                .userName(signUpDto.getUserName())
+                .userAge(signUpDto.getUserAge())
+                .userGender(signUpDto.getUserGender())
                 .userAccount(signUpDto.getUserAccount())
                 .userRestrictCount(0)
                 .userStatus(UserStatus.ACTIVE)
@@ -61,7 +71,33 @@ public class UserServiceTest {
         //then
         assertThat(savedUser.getUserId()).isEqualTo(signUpDto.getUserId());
         assertThat(savedUser.getUserPassword()).isEqualTo(signUpDto.getUserPassword());
+    }
 
+    @Test
+    @DisplayName("해당 아이디를 가진 유저가 있으면 true를 반환한다.")
+    void checkUserId() {
+        // given
+        SignUpDto signUpDto = SignUpDto.builder()
+                .userId("test1234")
+                .userPassword("test123456!")
+                .userEmail("test1234@gmail.com")
+                .userAccount("28218930100882")
+                .userAge(20)
+                .userGender('M')
+                .userName("김현수")
+                .userNickname("테스트123")
+                .userAccountBank("신한은행")
+                .userPhoneNumber("01050945330")
+                .build();
+
+        userService.register(signUpDto);
+        given(userRepository.existsByUserId(any(String.class))).willReturn(true);
+
+        // when
+        boolean result = userRepository.existsByUserId(signUpDto.getUserId());
+
+        // then
+        assertThat(result).isTrue();
     }
 
 

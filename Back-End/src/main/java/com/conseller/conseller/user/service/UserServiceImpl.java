@@ -19,6 +19,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final UserValidator userValidator;
 
@@ -42,8 +43,7 @@ public class UserServiceImpl implements UserService {
                 .userAccountBank(AccountBanks.fromString(signUpDto.getUserAccountBank()))
                 .build();
 
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "userIdx")
-@Table(name = "\"user\"")
+@Table(name = "\"USER\"")
 public class User {
 
     @Id
@@ -46,6 +46,7 @@ public class User {
     @Column(name = "user_deposit", nullable = false)
     private Integer userDeposit;
 
+    //@EntityListeners(AuditingEntityListener.class) << 이걸 달아놔야 가능함.
     @CreatedDate
     private LocalDateTime userJoinedDate;
 

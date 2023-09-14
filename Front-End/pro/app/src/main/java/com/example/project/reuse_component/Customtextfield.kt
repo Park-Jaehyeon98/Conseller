@@ -107,7 +107,8 @@ fun CustomTextFieldWithButton(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     onButtonClick: () -> Unit,
-    showIcon: Boolean = false
+    showIcon: Boolean = false,
+    error: String? = null,
 ) {
     val shape = RoundedCornerShape(8.dp) // 모서리 둥글게 만들기 위한 shape 정의
     val scrollState = rememberScrollState()
@@ -129,7 +130,9 @@ fun CustomTextFieldWithButton(
             }
             Text(text = label, fontSize = 19.sp, fontWeight = FontWeight.Bold)
         }
-
+        if (error != null) {
+            Text(text = error, fontSize = 15.sp, color = Color.Red)  // 오류 메시지를 빨간색으로 표시
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)

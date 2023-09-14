@@ -1,6 +1,7 @@
 package com.example.project
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -58,27 +59,48 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("AlertPage") { AlertPage() }
                     // bottom bar
                     composable("Home") { HomePage(navController = navController) }
-                    composable("MyPage") { MyPage() }
+                    composable("MyPage") { MyPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
+
+                    // 스토어
+                    composable("StorePage") { StorePage(navController = navController) }
+                    composable("StoreDetailPage/{index}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("index")
+                        StoreDetailPage(navController, storeIdx)
+                    }
+                    composable("StoreCreatePage") { StoreCreatePage(navController) }
+                    composable("StoreCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
+                        val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
+                        StoreCreateDetailPage(navController, selectedItemIndex)
+                    }
+                    composable("storeUpdate/{storeIdx}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("storeIdx")
+                        StoreUpdatePage(navController, storeIdx)
+                    }
+
 
                     // 경매
                     composable("AuctionPage") { AuctionPage(navController) }
                     composable("AuctionDetailPage/{index}") { backStackEntry ->
-                        val index = backStackEntry.arguments?.getString("index")
-                        AuctiondetailPage(index)
+                        val auctionIdx = backStackEntry.arguments?.getString("index")
+                        AuctionDetailPage(navController, auctionIdx)
                     }
                     composable("AuctionCreatePage") { AuctionCreatePage(navController) }
                     composable("AuctionCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
-                        val selectedItemIndex = backStackEntry.arguments?.getInt("selectedItemIndex") ?: -1
+                        val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
                         AuctionCreateDetailPage(navController, selectedItemIndex)
+                    }
+                    composable("auctionUpdate/{auctionIdx}") { backStackEntry ->
+                        val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
+                        AuctionUpdatePage(navController, auctionIdx)
                     }
 
 
                     // 물물
                     composable("BarterPage") { BarterPage(navController) }
-                    composable("BarterDetailPage/{index}") { backStackEntry ->
-                        val index = backStackEntry.arguments?.getString("index")
-                        BarterdetailPage(index)
+                    composable("BarterDetailPage/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterdetailPage(barterIdx, navController)
                     }
                     composable("BarterCreatePage") { BarterCreatePage(navController) }
                     composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
@@ -86,10 +108,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
                         BarterCreateDetailPage(navController, selectedItemIndicesList)
                     }
-
-
-                    // 스토어
-                    composable("StorePage") { StorePage(navController = navController) }
+                    composable("barterUpdate/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterUpdatePage(barterIdx, navController)
+                    }
 
 
                     // 이벤트

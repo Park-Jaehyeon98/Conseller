@@ -1,6 +1,7 @@
 package com.example.project
 
 import PaginationControls
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -97,9 +98,9 @@ fun AuctionPage(navController: NavHostController) {
                     filter2Selected = "소분류"
                     viewModel.applyFilter(
                         AuctionFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -118,9 +119,9 @@ fun AuctionPage(navController: NavHostController) {
                     filter2Selected = it
                     viewModel.applyFilter(
                         AuctionFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -134,9 +135,9 @@ fun AuctionPage(navController: NavHostController) {
                     filter3Selected = it
                     viewModel.applyFilter(
                         AuctionFilterDTO(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected,
+                            filter1Selected.toInt(),
+                            filter2Selected.toInt(),
+                            filter3Selected.toInt(),
                             searchText,
                             currentPage
                         )
@@ -158,6 +159,8 @@ fun AuctionPage(navController: NavHostController) {
                     nowprice = item.auctionHighestBid,
                     onItemClick = {
                         navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                        Log.d("AuctionPage", "auctionIdx: ${item.auctionIdx}")
+
                     }
 
                 )
@@ -267,7 +270,10 @@ fun AuctionItem(
 
         // 10% 이름 및 유효기간
         Row(
-            modifier = Modifier.weight(0.1f).fillMaxWidth().padding(horizontal = 12.dp),
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(name, fontSize = 20.sp)
@@ -286,7 +292,9 @@ fun AuctionItem(
 
         // 15% 박스1
         Box(
-            modifier = Modifier.weight(0.15f).padding(horizontal = 12.dp)
+            modifier = Modifier
+                .weight(0.15f)
+                .padding(horizontal = 12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),

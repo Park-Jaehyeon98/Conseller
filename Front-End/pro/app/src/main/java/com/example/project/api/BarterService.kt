@@ -1,11 +1,13 @@
 package com.example.project.api
 
-import com.example.project.viewmodels.ActuonVidData
 import com.example.project.viewmodels.BarterItemData
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface BarterService {
@@ -22,54 +24,85 @@ interface BarterService {
         @Path("userIdx") userIdx: Long,
     ): Response<BarterResponse>
 
-    // 검색으로 불러오는 API
-    @POST("barterItems/search")
-    suspend fun searchBarterItems(
-        @Body filter: BarterFilterDTO
-    ): Response<BarterResponse>
-
     // 물물교환 등록 API
-    @POST("barterItems/create")
+    @POST("barterItems/regist")
     suspend fun createBarterItem(
         @Body filter: BarterCreateDTO
     ): Response<CreateBarterResponse>
 
+    // 물물교환 수정 API
+    @PATCH("api/barter/update/{barterIdx}")
+    suspend fun updateBarterItem(
+        @Path("barterIdx") auctionIdx: Long,
+        @Body updateData: UpdateBarterDTO
+    ): Response<UpdateBarterResponse>
+
+    // 물물교환 삭제 API
+    @DELETE("api/barter/delete/{barterIdx}")
+    suspend fun deleteBarterItem(
+        @Path("barterIdx") barterIdx: Long
+    ): Response<DeleteBarterResponse>
+
     // 물물교환 상세보기 API
-    @GET("api/batter/detail/{batterIdx}")
-    suspend fun getAuctionDetail(
-        @Path("batterIdx") batterIdx: Long
+    @GET("api/barter/detail/{barterIdx}")
+    suspend fun getBarterDetail(
+        @Path("barterIdx") barterIdx: Long
     ): Response<BarterDetailResponseDTO>
 
 }
 
 // 목록, 검색 요청 DTO
 data class BarterFilterDTO(
-    val majorCategory: String,    // 대분류
-    val minorCategory: String,    // 소분류
+    val mainCategory: Int,    // 대분류
+    val subCategory: Int,    // 소분류
     val searchQuery: String? = null, // 검색 쿼리. 검색 API 사용 시에만 값이 있음.
     val page: Int                 // 페이지 정보
 )
 
 // 목록, 검색 응답 DTO
 data class BarterResponse(
-    val total: Int,
+    val totalNum: Int,
     val items: List<BarterItemData>
 )
 
 // 물물교환 등록 요청 DTO
 data class BarterCreateDTO(
-    val kindBigStatus: String,
-    val kindSmallStatus: String,
+    val mainCategory: Int,
+    val subCategory: Int,
     val barterName: String,
     val barterText: String,
+    val barterEndDate: String,
     val selectedItemIndices: List<Long>,
+    val userIdx: Long,
 )
 
 // 물물교환 등록 응답 DTO
 data class CreateBarterResponse(
     val success: Boolean,
     val message: String,
-    val barterIdx: Int? = null // 생성된 물물교환 게시글의 idx주세요
+    val barterIdx: Long, // 생성된 물물교환 게시글의 idx주세요
+)
+
+// 물물교환 수정 요청 DTO
+data class UpdateBarterDTO(
+    val mainCategory: Int,
+    val subCategory: Int,
+    val barterName: String,
+    val barterText: String,
+    val barterEndDate: String,
+)
+
+// 물물교환 수정 응답 DTO
+data class UpdateBarterResponse(
+    val success: Boolean,
+    val message: String,
+)
+
+// 물물교환 삭제 요청 DTO = Path형식
+// 물물교환 삭제 응답 DTO
+data class DeleteBarterResponse(
+    val success: Boolean,
+    val message: String,
 )
 
 // 물물교환 상세보기 요청 DTO = Path형식

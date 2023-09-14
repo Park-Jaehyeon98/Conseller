@@ -2,6 +2,7 @@ package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.BarterHostItem.BarterHostItemService;
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,16 +25,36 @@ public class BarterServiceImpl implements BarterService{
     private final BarterHostItemService barterHostItemService;
     @Override
     public List<BarterResponseDto> getBarterList() {
-        return null;
+        List<Barter> barterList = barterRepository.findAll();
+        List<BarterResponseDto> barterResponseDtoList= new ArrayList<>();
+
+        for(Barter barter : barterList) {
+            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+            barterResponseDtoList.add(barterResponseDto);
+        }
+        return barterResponseDtoList;
     }
 
     @Override
     public BarterResponseDto getBarter(Long barterIdx) {
-        return null;
+        Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
+        BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+
+        return barterResponseDto;
     }
 
     @Override
-    public Void addBarter(BarterCreateDto barterCreateDto) {
+    public List<BarterResponseDto> getBarterListByHost(Long userIdx) {
+        List<Barter> barterList = barterRepository.findByHostIdx(userIdx);
+        List<BarterResponseDto> barterResponseDtoList = new ArrayList<>();
+        for(Barter barter : barterList) {
+            barterResponseDtoList.add(barter.toBarterResponseDto(barter));
+        }
+        return barterResponseDtoList;
+    }
+
+    @Override
+    public void addBarter(BarterCreateDto barterCreateDto) {
         SubCategory subCategory = subCategoryRepository.findById(barterCreateDto.getBarterSubCategory()).orElseThrow(() -> new RuntimeException());
         SubCategory preferSubCategory = subCategoryRepository.findById(barterCreateDto.getPreferBarterSubCategory()).orElseThrow(() -> new RuntimeException());
 
@@ -42,7 +64,17 @@ public class BarterServiceImpl implements BarterService{
         barterRepository.save(barter);
 
         barterHostItemService.addBarterHostItem(barterCreateDto.getSelectedItemIndices(), barter);
+    }
 
-        return null;
+    @Override
+    public void modifyBarter(Long barterIdx, BarterModifyRequestDto barterModifyRequestDto) {
+
+        SubCategory preferSubCategory = subCategoryRepository.findById(barterModifyRequestDto.getSubCategoryIdx())
+                .orElseThrow(() -> new RuntimeException());
+
+        barterModifyRequestDto.setPreferSubCategory(preferSubCategory);
+
+        Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
+        barter.modifyBarter(barterModifyRequestDto);
     }
 }

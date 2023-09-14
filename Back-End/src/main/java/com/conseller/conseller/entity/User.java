@@ -4,6 +4,7 @@ import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
 import lombok.*;
 
+import org.apache.catalina.Store;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -89,7 +90,7 @@ public class User {
     List<Inquiry> inquiries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    List<Sale> sales = new ArrayList<>();
+    List<Store> stores = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     List<Notification> notifications = new ArrayList<>();

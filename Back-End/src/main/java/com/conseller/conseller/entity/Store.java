@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.store.enums.StoreStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,31 +12,32 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "saleIdx")
+@EqualsAndHashCode(of = "storeIdx")
 @DynamicUpdate
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Sale {
+public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long saleIdx;
+    private long storeIdx;
 
-    @Column(name = "sale_price", nullable = false)
-    private Integer salePrice;
+    @Column(name = "store_price", nullable = false)
+    private Integer storePrice;
 
     @CreatedDate
-    private LocalDateTime saleCreatedDate;
+    private LocalDateTime storeCreatedDate;
 
-    @Column(name = "sale_end_date")
-    private LocalDateTime saleEndedDate;
+    @Column(name = "store_end_date")
+    private LocalDateTime storeEndDate;
 
-    @Column(name = "sale_text")
-    private String saleText;
+    @Column(name = "store_text")
+    private String storeText;
 
-    @Column(name = "sale_status")
-    private Enum saleStatus;
+    @Column(name = "store_status")
+    @Enumerated(EnumType.STRING)
+    private StoreStatus storeStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gifticon_idx")

@@ -2,12 +2,14 @@ package com.example.project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.BarterCreateDTO
 import com.example.project.api.BarterDetailResponseDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
-import com.example.project.api.CreateBarterResponse
+import com.example.project.api.DeleteBarterResponse
+import com.example.project.api.UpdateBarterDTO
+import com.example.project.api.UpdateBarterResponse
+import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BarterViewModel @Inject constructor(
-    private val service: BarterService
+    private val service: BarterService,
+//    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    // 물물교환 전체 목록
+    private var currentPage = 1
+    private var currentFilter = BarterFilterDTO(0, 0, null, currentPage)
+
+    // 물물교환글 전체 목록 불러오기
     private val _barterItems = MutableStateFlow<List<BarterItemData>>(emptyList())
     val barterItems: StateFlow<List<BarterItemData>> = _barterItems
 
@@ -32,11 +38,13 @@ class BarterViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    // 물물교환 등록
-    private val _createBarterResponse = MutableStateFlow<CreateBarterResponse?>(null)
-    val createBarterResponse: StateFlow<CreateBarterResponse?> = _createBarterResponse
+    // 유저idx 불러오기
+    fun getUserIdFromPreference(): Long {
+//        return sharedPreferencesUtil.getUserId()
+        return 12345
+    }
 
-    // 물물교환 글 상세보기
+    // 물물교환글 상세보기
     private val _barterDetail = MutableStateFlow<BarterDetailResponseDTO?>(null)
     val barterDetail: StateFlow<BarterDetailResponseDTO?> = _barterDetail
 
@@ -44,29 +52,35 @@ class BarterViewModel @Inject constructor(
     private val _myBarterItems = MutableStateFlow<List<BarterItemData>>(emptyList())
     val myBarterItems: StateFlow<List<BarterItemData>> = _myBarterItems
 
+    // 물물교환 등록후 barterIdx 받기
+    private val _navigateToBarterDetail = MutableStateFlow<Long?>(null)
+    val navigateToBarterDetail: StateFlow<Long?> = _navigateToBarterDetail
 
-
-    private var currentPage = 1
-    private var currentFilter = BarterFilterDTO("", "", null, currentPage)
+    // 물물교환 등록후 네비게이션 리셋
+    fun resetNavigation() {
+        _navigateToBarterDetail.value = null
+    }
 
     init {
-        fetchBarterItems(currentPage)
+        fetchBarterItems()
     }
 
     fun changePage(page: Int) {
         currentPage = page
-        fetchBarterItems(currentPage)
+        currentFilter = currentFilter.copy(page = currentPage)
+        fetchBarterItems()
     }
 
     fun applyFilter(filter: BarterFilterDTO) {
-        currentFilter = filter
+        currentFilter = filter.copy(page = 1)
         currentPage = 1 // 초기 페이지로 설정
-        fetchBarterItems(currentPage)
+        fetchBarterItems()
     }
 
     fun searchItems(query: String) {
-        currentFilter = currentFilter.copy(searchQuery = query)
-        fetchBarterItems(currentPage)
+        currentFilter = currentFilter.copy(searchQuery = query, page = 1)
+        currentPage = 1
+        fetchBarterItems()
     }
 
     // 물물교환 등록할때 이미지 불러오기용
@@ -74,40 +88,17 @@ class BarterViewModel @Inject constructor(
         return _barterItems.value.filter { it.barterIdx in indices }
     }
 
-    // 물물교환 등록
-    fun createBarterItem(createDTO: BarterCreateDTO) {
+    // 물물교환 리스트 불러오기
+    private fun fetchBarterItems() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.createBarterItem(createDTO)
-                if (response.isSuccessful && response.body() != null) {
-                    _createBarterResponse.value = response.body()
-                } else {
-                    _error.value = "Failed to create barter item: ${response.message()}"
-                }
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
+                val response = service.getAllBarterItems(currentFilter)
 
-    // 물물교환 목록 불러오기
-    private fun fetchBarterItems(page: Int) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                val response = if (currentFilter.searchQuery != null) {
-                    service.searchBarterItems(currentFilter)
-                } else {
-                    service.getAllBarterItems(currentFilter)
-                }
                 if (response.isSuccessful && response.body() != null) {
                     _barterItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.total
+                    _totalItems.value = response.body()!!.totalNum
                 } else {
                     _error.value = "Failed to load data: ${response.message()}"
                     _barterItems.value = getSampleData()
@@ -121,13 +112,100 @@ class BarterViewModel @Inject constructor(
         }
     }
 
+    // 물물교환 등록
+    fun createBarterItem(kindBigStatus:String, kindSmallStatus:String, barterName:String, barterText:String, barterEndDate:String, selectedItemIndices: List<Long>) {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        val kindBigStatus = kindBigStatus.toInt()
+        val kindSmallStatus = kindSmallStatus.toInt()
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.createBarterItem(BarterCreateDTO(kindBigStatus,kindSmallStatus,barterName,barterText,barterEndDate,selectedItemIndices,userIdx))
+
+                if (response.isSuccessful && response.body() != null) {
+                    _navigateToBarterDetail.value = response.body()?.barterIdx
+                } else {
+                    _error.value = "Failed to create barter item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 물물교환 글 수정
+    fun updateBarterItem(barterIdx: Long, kindBigStatus: String, kindSmallStatus: String, barterName: String, barterText: String, barterEndDate: String) {
+
+        val kindBigStatus = kindBigStatus.toInt()
+        val kindSmallStatus = kindSmallStatus.toInt()
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+                val response = service.updateBarterItem(barterIdx, UpdateBarterDTO(kindBigStatus,kindSmallStatus,barterName,barterText,barterEndDate))
+
+                if (response.isSuccessful) {
+                    val updateResponse: UpdateBarterResponse? = response.body()
+
+                    if (updateResponse?.success == true) {
+                        fetchBarterItems()
+                    } else {
+                        _error.value = updateResponse?.message ?: "Unknown error occurred"
+                    }
+                } else {
+                    _error.value = "Failed to update item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 물물교환 글 삭제
+    fun deleteBarterItem(barterIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+                val response = service.deleteBarterItem(barterIdx)
+
+                if (response.isSuccessful) {
+                    val deleteResponse: DeleteBarterResponse? = response.body()
+
+                    if (deleteResponse?.success == true) {
+                        // 성공적으로 삭제되면, 물물교환 목록을 다시 불러옵니다.
+                        fetchBarterItems()
+                    } else {
+                        _error.value = deleteResponse?.message ?: "Unknown error occurred"
+                    }
+                } else {
+                    _error.value = "Failed to delete item: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     // 물물교환 글 상세보기
     fun fetchBarterDetail(barterIdx: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.getAuctionDetail(barterIdx)
+                val response = service.getBarterDetail(barterIdx)
+
                 if (response.isSuccessful && response.body() != null) {
                     _barterDetail.value = response.body()
                 } else {
@@ -160,7 +238,6 @@ class BarterViewModel @Inject constructor(
             }
         }
     }
-
 
 
 }

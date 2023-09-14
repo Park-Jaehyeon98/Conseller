@@ -40,6 +40,8 @@ data class GifticonResponse(
 )
 
 // 경매 입찰 목록 요청 DTO = Path형식
+
+
 // 경매 입찰 목록 응답 DTO
 data class MyAuctionListResponseDTO(
     val auctionIdx: Long,                   // 경매idx

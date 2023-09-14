@@ -109,8 +109,8 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (selectedItemIndex != auctionDetail?.auctionUserIdx && false/*개발용*/) {
-                Button(onClick = { }) {
+            if (selectedItemIndex != auctionDetail?.auctionUserIdx && true/*개발용*/) {
+                Button(onClick = { navController.navigate("AuctionTradePage/${currentItem?.auctionIdx}") }) {
                     Text("즉시구매")
                 }
 

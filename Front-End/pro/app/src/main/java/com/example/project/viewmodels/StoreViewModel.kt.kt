@@ -44,6 +44,19 @@ class StoreViewModel @Inject constructor(
     private val _navigateToStoreDetail = MutableStateFlow<Long?>(null)
     val navigateToStoreDetail: StateFlow<Long?> = _navigateToStoreDetail
 
+    // 스토어 거래 진행 계좌번호 받기
+    private val _storeTrade = MutableStateFlow<StoreTradeResponseDTO?>(null)
+    val storeTrades: StateFlow<StoreTradeResponseDTO?> = _storeTrade
+
+    // 스토어 거래 취소
+    private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
+    val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+
+    // 스토어 거래 입금완료
+    private val _paymentCompleted = MutableStateFlow<StoreTradeCompleteResponseDTO?>(null)
+    val paymentCompleted: StateFlow<StoreTradeCompleteResponseDTO?> get() = _paymentCompleted
+
+
     fun resetNavigation() {
         _navigateToStoreDetail.value = null
     }
@@ -202,6 +215,67 @@ class StoreViewModel @Inject constructor(
             }
         }
     }
+    // 스토어 거래 진행
+    fun fetchAccountDetails(storeIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getStoreTrade(storeIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _storeTrade.value = response.body()
+                } else {
+                    _error.value = "Failed to load account details: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 스토어 거래 취소
+    fun cancelStoreTrade(storeIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.cancelStoreTrade(storeIdx)
+                if (response.isSuccessful) {
+                    _cancelTradeSuccessful.value = true
+                } else {
+                    _error.value = "Failed to cancel store trade: ${response.message()}"
+                    _cancelTradeSuccessful.value = false
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+                _cancelTradeSuccessful.value = false
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    // 스토어 거래 입금완료
+    fun completeStorePayment(storeIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.completeStorePayment(storeIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _paymentCompleted.value = response.body()
+                } else {
+                    _error.value = "Failed to complete store payment: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
 }
 
 // API response를 위한 데이터 클래스

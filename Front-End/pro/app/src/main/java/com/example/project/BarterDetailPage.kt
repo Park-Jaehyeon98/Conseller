@@ -95,8 +95,8 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
             horizontalArrangement = Arrangement.Center
         ) {
             // 이 로직도 실제 바터 상황에 따라 조정해야 합니다.
-            if (selectedItemIndex != barterDetail?.barterUserIdx && false /*개발용*/) {
-                Button(onClick = { }) {
+            if (selectedItemIndex != barterDetail?.barterUserIdx && true /*개발용*/) {
+                Button(onClick = { navController.navigate("BarterTradeSelectPage/${currentItem?.barterIdx}") }) {
                     Text("제안하기")
                 }
             } else {

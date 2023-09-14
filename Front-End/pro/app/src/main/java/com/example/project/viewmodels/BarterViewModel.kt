@@ -7,6 +7,7 @@ import com.example.project.api.BarterDetailResponseDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
 import com.example.project.api.DeleteBarterResponse
+import com.example.project.api.TradeBarterResponseDTO
 import com.example.project.api.UpdateBarterDTO
 import com.example.project.api.UpdateBarterResponse
 import com.example.project.sharedpreferences.SharedPreferencesUtil
@@ -60,6 +61,10 @@ class BarterViewModel @Inject constructor(
     fun resetNavigation() {
         _navigateToBarterDetail.value = null
     }
+
+    // 물물교환 제안하기
+    private val _tradeProposalResponse = MutableStateFlow<TradeBarterResponseDTO?>(null)
+    val tradeProposalResponse: StateFlow<TradeBarterResponseDTO?> = _tradeProposalResponse
 
     init {
         fetchBarterItems()
@@ -238,6 +243,28 @@ class BarterViewModel @Inject constructor(
             }
         }
     }
+
+    // 물물교환 거래 제안
+    fun proposeBarterTrade(barterIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.proposeBarterTrade(barterIdx)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _tradeProposalResponse.value = response.body()
+                } else {
+                    _error.value = "Failed to propose barter trade: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
 
 
 }

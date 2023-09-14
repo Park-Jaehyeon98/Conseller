@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "userIdx")
 @Table(name = "\"user\"")
@@ -37,6 +37,12 @@ public class User {
     @Column(name = "user_nickname", nullable = false)
     private String userNickname;
 
+    @Column(name = "user_gender", nullable = false)
+    private Character userGender;
+
+    @Column(name = "user_age", nullable = false)
+    private Integer userAge;
+
     @Column(name = "user_deposit", nullable = false)
     private Integer userDeposit;
 
@@ -45,6 +51,9 @@ public class User {
 
     @Column(name = "user_deleted_date")
     private LocalDateTime userDeletedDate;
+
+    @Column(name = "user_name", nullable = false)
+    private String userName;
 
     @Column(name = "user_account", nullable = false)
     private String userAccount;
@@ -60,6 +69,9 @@ public class User {
 
     @Column(name = "user_restrict_count")
     private Integer userRestrictCount;
+
+    @Column(name = "user_profile_url")
+    private String userProfileUrl;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -83,19 +95,23 @@ public class User {
     List<Notification> notifications = new ArrayList<>();
 
     @Builder
-    public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Integer userDeposit, LocalDateTime userJoinedDate, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount) {
+    public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Character userGender, Integer userAge, String userName, Integer userDeposit, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount, String userProfileUrl, String refreshToken) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
         this.userNickname = userNickname;
+        this.userGender = userGender;
+        this.userAge = userAge;
+        this.userName = userName;
         this.userDeposit = userDeposit;
-        this.userJoinedDate = userJoinedDate;
         this.userDeletedDate = userDeletedDate;
         this.userAccount = userAccount;
         this.userAccountBank = userAccountBank;
         this.userStatus = userStatus;
         this.userRestrictEndDate = userRestrictEndDate;
         this.userRestrictCount = userRestrictCount;
+        this.userProfileUrl = userProfileUrl;
+        this.refreshToken = refreshToken;
     }
 }

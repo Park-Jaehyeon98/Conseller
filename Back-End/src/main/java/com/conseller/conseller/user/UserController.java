@@ -20,9 +20,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpDto signUpDto) {
-
+        log.info("유저 회원가입 호출");
         userService.register(signUpDto);
-
+        
         return ResponseEntity.ok()
                 .build();
     }

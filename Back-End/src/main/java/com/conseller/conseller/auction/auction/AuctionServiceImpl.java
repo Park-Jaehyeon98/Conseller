@@ -1,5 +1,6 @@
 package com.conseller.conseller.auction.auction;
 
+import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.Gifticon;
@@ -25,10 +26,7 @@ public class AuctionServiceImpl implements AuctionService{
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        request.setGifticon(gifticon);
-        request.setUser(user);
-
-        Auction auction = request.toEntity(request);
+        Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
         auctionRepository.save(auction);
     }

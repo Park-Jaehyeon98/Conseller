@@ -37,7 +37,7 @@ public class Sale {
 
     @Column(name = "sale_status")
     @Enumerated(EnumType.STRING)
-    private SaleStatus saleStatus = SaleStatus.IN_PROGRESS;
+    private SaleStatus saleStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gifticon_idx")

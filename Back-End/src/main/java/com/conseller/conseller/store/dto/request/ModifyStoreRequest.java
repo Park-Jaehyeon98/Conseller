@@ -1,4 +1,4 @@
-package com.conseller.conseller.sale.dto.request;
+package com.conseller.conseller.store.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifySaleRequest {
-    private LocalDateTime saleEndDate;
+public class ModifyStoreRequest {
+    private LocalDateTime storeEndDate;
 
-    private String saleText;
+    private String storeText;
 }

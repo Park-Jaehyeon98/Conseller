@@ -1,7 +1,7 @@
 package com.conseller.conseller.user;
 
-import com.conseller.conseller.user.dto.InfoValidationDto;
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.response.InfoValidationDto;
+import com.conseller.conseller.user.dto.request.SignUpDto;
 import com.conseller.conseller.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

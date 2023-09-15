@@ -1,4 +1,4 @@
-package com.conseller.conseller.user.dto;
+package com.conseller.conseller.user.dto.request;
 
 import com.sun.istack.NotNull;
 import lombok.*;

@@ -1,8 +1,8 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.entity.User;
-import com.conseller.conseller.user.dto.InfoValidationDto;
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.response.InfoValidationDto;
+import com.conseller.conseller.user.dto.request.SignUpDto;
 
 public interface UserService {
 

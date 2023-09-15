@@ -3,8 +3,8 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
-import com.conseller.conseller.user.dto.InfoValidationDto;
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.response.InfoValidationDto;
+import com.conseller.conseller.user.dto.request.SignUpDto;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Service

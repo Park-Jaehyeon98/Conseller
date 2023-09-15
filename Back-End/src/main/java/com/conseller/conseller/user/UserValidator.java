@@ -1,6 +1,6 @@
 package com.conseller.conseller.user;
 
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.request.SignUpDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

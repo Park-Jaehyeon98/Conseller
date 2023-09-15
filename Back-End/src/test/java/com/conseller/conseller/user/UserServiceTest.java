@@ -1,12 +1,10 @@
 package com.conseller.conseller.user;
 
 import com.conseller.conseller.entity.User;
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.request.SignUpDto;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
-import com.conseller.conseller.user.service.UserService;
 import com.conseller.conseller.user.service.UserServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

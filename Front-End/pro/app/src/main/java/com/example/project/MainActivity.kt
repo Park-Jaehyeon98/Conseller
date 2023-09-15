@@ -80,6 +80,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val storeIdx = backStackEntry.arguments?.getString("storeIdx")
                         StoreUpdatePage(navController, storeIdx)
                     }
+                    composable("StoreTradePage/{storeIdx}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("storeIdx")
+                        StoreTradePage(storeIdx, navController)
+                    }
 
 
                     // 경매
@@ -96,6 +100,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("auctionUpdate/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         AuctionUpdatePage(navController, auctionIdx)
+                    }
+                    composable("AuctionTradePage/{auctionIdx}") { backStackEntry ->
+                        val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
+                        AuctionTradePage(auctionIdx, navController)
                     }
 
 
@@ -115,8 +123,20 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
                         BarterUpdatePage(barterIdx, navController)
                     }
+                    composable("BarterTradeSelectPage/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterTradeSelectPage(barterIdx, navController)
+                    }
+                    composable("BarterTradePage/{selectedItemIndices}/{barterIdx}") { backStackEntry ->
+                        val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
+                        val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterTradePage(navController, selectedItemIndicesList, barterIdx)
+                    }
 
-
+                    
+                    // 거래 완료
+                    composable("WaitingPage") { WaitingPage(navController) }
                     // 이벤트
                     composable("EventPage") { EventPage(navController = navController) }
 

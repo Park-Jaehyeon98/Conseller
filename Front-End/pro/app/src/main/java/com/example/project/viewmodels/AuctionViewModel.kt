@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
+import com.example.project.api.AuctionTradeCompleteResponseDTO
+import com.example.project.api.AuctionTradeResponseDTO
 import com.example.project.api.DeleteAuctionResponse
 import com.example.project.api.RegisterAuctionDTO
 import com.example.project.api.UpdateAuctionDTO
@@ -54,6 +56,19 @@ class AuctionViewModel @Inject constructor(
     // 경매 등록후 auctionIdx 받기
     private val _navigateToAuctionDetail = MutableStateFlow<Long?>(null)
     val navigateToAuctionDetail: StateFlow<Long?> = _navigateToAuctionDetail
+
+    // 경매 거래 진행 계좌번호 받기
+    private val _auctionTrade = MutableStateFlow<AuctionTradeResponseDTO?>(null)
+    val auctionTrades: StateFlow<AuctionTradeResponseDTO?> = _auctionTrade
+
+    // 경매 거래 취소
+    private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
+    val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+
+    // 경매 거래 입금완료
+    private val _paymentCompleted = MutableStateFlow<AuctionTradeCompleteResponseDTO?>(null)
+    val paymentCompleted: StateFlow<AuctionTradeCompleteResponseDTO?> get() = _paymentCompleted
+
 
     // 경매 등록후 네비게이션 리셋
     fun resetNavigation() {
@@ -221,6 +236,69 @@ class AuctionViewModel @Inject constructor(
             }
         }
     }
+
+    // 경매 거래 진행
+    fun fetchAccountDetails(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getAuctionTrade(auctionIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionTrade.value = response.body()
+                } else {
+                    _error.value = "Failed to load account details: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 경매 거래 취소
+    fun cancelAuctionTrade(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.cancelAuctionTrade(auctionIdx)
+                if (response.isSuccessful) {
+                    _cancelTradeSuccessful.value = true
+                } else {
+                    _error.value = "Failed to cancel auction trade: ${response.message()}"
+                    _cancelTradeSuccessful.value = false
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+                _cancelTradeSuccessful.value = false
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    // 경매 입금완료
+    fun completeAuctionPayment(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.completeAuctionPayment(auctionIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _paymentCompleted.value = response.body()
+                } else {
+                    _error.value = "Failed to complete auction payment: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
 
 
 }

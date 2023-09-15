@@ -47,6 +47,7 @@ public class AuctionController {
     // 경매 글 수정
     @PatchMapping("/{auction_idx}")
     public ResponseEntity<Object> modifyAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestBody ModifyAuctionRequest auctionRequest) {
+        auctionService.modifyAuction(auctionIdx, auctionRequest);
 
         return ResponseEntity.ok()
                 .build();
@@ -55,6 +56,7 @@ public class AuctionController {
     // 경매 글 삭제
     @DeleteMapping("/{auction_idx}")
     public ResponseEntity<Object> deleteAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        auctionService.deleteAuction(auctionIdx);
 
         return ResponseEntity.ok()
                 .build();

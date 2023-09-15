@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BarterViewModel @Inject constructor(
     private val service: BarterService,
-//    private val sharedPreferencesUtil: SharedPreferencesUtil
+     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
     private var currentPage = 1

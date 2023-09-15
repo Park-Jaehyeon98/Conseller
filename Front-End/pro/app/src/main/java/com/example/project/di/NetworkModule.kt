@@ -6,6 +6,7 @@ import com.example.project.api.BarterService
 import com.example.project.api.EventService
 import com.example.project.api.LoginService
 import com.example.project.api.MainService
+import com.example.project.api.MyPageService
 import com.example.project.api.MyService
 import com.example.project.api.ReuseService
 import com.example.project.api.SignupService
@@ -112,6 +113,12 @@ object NetworkModule {
     @Singleton
     fun providerSignupService(retrofit: Retrofit): SignupService {
         return retrofit.create(SignupService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providerMyPageService(retrofit: Retrofit) : MyPageService{
+        return retrofit.create(MyPageService::class.java)
     }
 
 }

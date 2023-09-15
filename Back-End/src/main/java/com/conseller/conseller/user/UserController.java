@@ -1,7 +1,7 @@
 package com.conseller.conseller.user;
 
-import com.conseller.conseller.user.dto.response.InfoValidationDto;
-import com.conseller.conseller.user.dto.request.SignUpDto;
+import com.conseller.conseller.user.dto.response.InfoValidationRequest;
+import com.conseller.conseller.user.dto.request.SignUpRequest;
 import com.conseller.conseller.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +19,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         log.info("유저 회원가입 호출");
-        userService.register(signUpDto);
+        userService.register(signUpRequest);
         
         return ResponseEntity.ok()
                 .build();
@@ -30,33 +30,33 @@ public class UserController {
     @GetMapping("/{userNickname}")
     public ResponseEntity<Object> checkNickname(@PathVariable String userNickname) {
 
-        InfoValidationDto infoValidationDto = userService.checkNickname(userNickname);
+        InfoValidationRequest infoValidationRequest = userService.checkNickname(userNickname);
 
         return ResponseEntity.ok()
-                .body(infoValidationDto);
+                .body(infoValidationRequest);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<Object> checkId(@PathVariable String userId) {
-        InfoValidationDto infoValidationDto = userService.checkId(userId);
+        InfoValidationRequest infoValidationRequest = userService.checkId(userId);
 
         return ResponseEntity.ok()
-                .body(infoValidationDto);
+                .body(infoValidationRequest);
     }
 
     @GetMapping("/{userEmail}")
     public ResponseEntity<Object> checkEmail(@PathVariable String userEmail) {
-        InfoValidationDto infoValidationDto = userService.checkEmail(userEmail);
+        InfoValidationRequest infoValidationRequest = userService.checkEmail(userEmail);
 
         return ResponseEntity.ok()
-                .body(infoValidationDto);
+                .body(infoValidationRequest);
     }
 
     @GetMapping("/{userPhoneNumber}")
     public ResponseEntity<Object> checkPhoneNumber(@PathVariable String userPhoneNumber) {
-        InfoValidationDto infoValidationDto = userService.checkPhoneNumber(userPhoneNumber);
+        InfoValidationRequest infoValidationRequest = userService.checkPhoneNumber(userPhoneNumber);
 
         return ResponseEntity.ok()
-                .body(infoValidationDto);
+                .body(infoValidationRequest);
     }
 }

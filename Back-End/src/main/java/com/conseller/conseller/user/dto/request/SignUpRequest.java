@@ -8,7 +8,7 @@ import javax.validation.constraints.*;
 @ToString
 @Getter @Setter @Builder
 @AllArgsConstructor
-public class SignUpDto {
+public class SignUpRequest {
 
     @NotBlank(message = "아이디를 입력해야 합니다.")
     private String userId;

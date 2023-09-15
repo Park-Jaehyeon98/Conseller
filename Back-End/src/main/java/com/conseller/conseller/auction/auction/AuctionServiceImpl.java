@@ -7,7 +7,6 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
 import com.conseller.conseller.entity.Auction;
-import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
@@ -49,13 +48,12 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     @Transactional(readOnly = true)
     public DetailAuctionResponse detailAuction(Long auctionIdx) {
-        List<AuctionBid> auctionBidList = auctionBidRepository.findByAuctionIdx(auctionIdx);
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
         User user = userRepository.findById(auction.getUser().getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidList);
+        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auction.getAuctionBidList());
 
         return detailAuctionResponse;
     }

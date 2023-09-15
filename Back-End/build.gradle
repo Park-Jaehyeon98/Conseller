@@ -15,6 +15,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -31,13 +32,30 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-core:5.0.0"
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jpa'
+    annotationProcessor "javax.persistence:javax.persistence-api"
+    annotationProcessor "javax.annotation:javax.annotation-api"
+
+    // MapStruct
     implementation "org.mapstruct:mapstruct:1.5.5.Final"
     annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.h2database:h2'
 //    testImplementation 'org.springframework.security:spring-security-test'
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+}
+
+//queryDSL
+def querydslDir = "build/generated/querydsl"
+
+sourceSets {
+    main.java.srcDir querydslDir
 }
 
 tasks.named('test') {

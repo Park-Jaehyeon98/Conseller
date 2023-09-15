@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -56,5 +57,9 @@ public class Auction {
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
+
+    @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY)
+    private List<AuctionBid> auctionBidList;
+
 }
 

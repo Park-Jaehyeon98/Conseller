@@ -50,6 +50,14 @@ interface AuctionService {
         @Path("auctionIdx") auctionIdx: Long
     ): Response<AuctionDetailResponseDTO>
 
+    // 경매 입찰하기 API
+    @POST("api/auction/bid/{auctionIdx}")
+    suspend fun bidOnAuction(
+        @Path("auctionIdx") auctionIdx: Long,
+        @Body bidRequest: AuctionBidRequestDTO
+    ): Response<AuctionBidResponseDTO>
+
+
     // 경매진행 계좌번호 불러오기 API
     @GET("api/auction/trade/{auctionIdx}")
     suspend fun getAuctionTrade(
@@ -128,6 +136,18 @@ data class AuctionDetailResponseDTO(
     val auctionUserIdx: Long,           // 게시글 유저 idx
     val auctionUserNickname: String,    // 게시글 유저 닉네임
     val auctionBid: List<AuctionBidData>,  // 경매입찰정보
+)
+
+// 경매 입찰하기 요청 DTO
+data class AuctionBidRequestDTO(
+    val userIdx: Long,
+    val auctionBidPrice: Int,
+)
+
+// 경매 입찰하기 응답 DTO
+data class AuctionBidResponseDTO(
+    val success: Boolean,
+    val message: String,
 )
 
 // 경매 최고가 구매 계좌번호 요청 DTO = Path형식

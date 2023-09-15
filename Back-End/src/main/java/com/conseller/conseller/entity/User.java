@@ -14,9 +14,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "userIdx")
+@EqualsAndHashCode(of = "userIdx", callSuper = false)
 @Table(name = "\"USER\"")
-public class User {
+public class User extends BaseTime{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,10 +45,6 @@ public class User {
 
     @Column(name = "user_deposit", nullable = false)
     private Integer userDeposit;
-
-    //@EntityListeners(AuditingEntityListener.class) << 이걸 달아놔야 가능함.
-    @CreatedDate
-    private LocalDateTime userJoinedDate;
 
     @Column(name = "user_deleted_date")
     private LocalDateTime userDeletedDate;
@@ -97,6 +93,7 @@ public class User {
 
     @Builder
     public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Character userGender, Integer userAge, String userName, Integer userDeposit, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount, String userProfileUrl, String refreshToken) {
+        super();
         this.userId = userId;
         this.userPassword = userPassword;
         this.userEmail = userEmail;

@@ -33,6 +33,7 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
     val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 사진
 
     var showCancelDialog by remember { mutableStateOf(false) } // 취소 대화상자 표시 상태
+    var showTradeProposalDialog by remember { mutableStateOf(false) } //거래신청 대화상자
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -81,7 +82,7 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(onClick = {
-                // TODO: 거래하기 로직 추가
+                showTradeProposalDialog = true
             }, modifier = Modifier.weight(1f)) {
                 Text("거래신청")
             }
@@ -115,6 +116,35 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
             confirmButton = {
                 Button(onClick = {
                     showCancelDialog = false
+                }) {
+                    Text("아니오")
+                }
+            }
+        )
+    }
+    if (showTradeProposalDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showTradeProposalDialog = false
+            },
+            title = {
+                Text(text = "거래 제안")
+            },
+            text = {
+                Text("거래를 제안하시겠습니까?")
+            },
+            dismissButton = {
+                Button(onClick = {
+                    showTradeProposalDialog = false
+                    barterviewModel.proposeBarterTrade(index?.toLongOrNull() ?: return@Button, selectedItemIndices)
+                    // TODO: 거래 제안 결과에 따른 메시지 처리 로직 추가
+                }) {
+                    Text("예")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    showTradeProposalDialog = false
                 }) {
                     Text("아니오")
                 }

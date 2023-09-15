@@ -7,6 +7,7 @@ import com.example.project.api.BarterDetailResponseDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
 import com.example.project.api.DeleteBarterResponse
+import com.example.project.api.TradeBarterRequestDTO
 import com.example.project.api.TradeBarterResponseDTO
 import com.example.project.api.UpdateBarterDTO
 import com.example.project.api.UpdateBarterResponse
@@ -20,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BarterViewModel @Inject constructor(
     private val service: BarterService,
-     private val sharedPreferencesUtil: SharedPreferencesUtil
+    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
     private var currentPage = 1
@@ -245,12 +246,14 @@ class BarterViewModel @Inject constructor(
     }
 
     // 물물교환 거래 제안
-    fun proposeBarterTrade(barterIdx: Long) {
+    fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.proposeBarterTrade(barterIdx)
+                val response = service.proposeBarterTrade(barterIdx,
+                    TradeBarterRequestDTO(selectedItemIndices)
+                )
 
                 if (response.isSuccessful && response.body() != null) {
                     _tradeProposalResponse.value = response.body()

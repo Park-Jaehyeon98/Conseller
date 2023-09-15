@@ -52,7 +52,8 @@ interface BarterService {
     // 물물교환 거래제안 API
     @POST("api/barter/trade/{barterIdx}")
     suspend fun proposeBarterTrade(
-        @Path("barterIdx") barterIdx: Long
+        @Path("barterIdx") barterIdx: Long,
+        @Body tradeRequest: TradeBarterRequestDTO
     ): Response<TradeBarterResponseDTO>
 
 }
@@ -120,7 +121,11 @@ data class BarterDetailResponseDTO(
     val barterUserNickname: String,    // 게시글 유저 닉네임
 )
 
-// 물물교환 거래제안 요청 DTO = Path형식
+// 물물교환 거래제안 요청 DTO
+data class TradeBarterRequestDTO(
+    val selectedItemIndices: List<Long>
+)
+
 // 물물교환 거래제안 응답 DTO
 data class TradeBarterResponseDTO(
     val success: Boolean,

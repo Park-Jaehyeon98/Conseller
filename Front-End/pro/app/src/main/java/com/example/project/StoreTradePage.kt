@@ -164,7 +164,6 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                 }
             )
         }
-
         if (showSnackbar) {
             Snackbar(dismissAction = { showSnackbar = true }) {
                 Text(text = snackbarText)

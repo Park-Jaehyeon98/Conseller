@@ -1,8 +1,9 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.user.enums.AccountBanks;
+import com.conseller.conseller.user.enums.UserStatus;
+import lombok.*;
+
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -12,8 +13,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "userIdx")
+@Table(name = "\"USER\"")
 public class User {
 
     @Id
@@ -35,29 +37,45 @@ public class User {
     @Column(name = "user_nickname", nullable = false)
     private String userNickname;
 
-    @Column(name = "user_deposit", nullable = false)
-    private String userDeposit;
+    @Column(name = "user_gender", nullable = false)
+    private Character userGender;
 
+    @Column(name = "user_age", nullable = false)
+    private Integer userAge;
+
+    @Column(name = "user_deposit", nullable = false)
+    private Integer userDeposit;
+
+    //@EntityListeners(AuditingEntityListener.class) << 이걸 달아놔야 가능함.
     @CreatedDate
     private LocalDateTime userJoinedDate;
 
     @Column(name = "user_deleted_date")
     private LocalDateTime userDeletedDate;
 
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+
     @Column(name = "user_account", nullable = false)
     private String userAccount;
 
-    @Column(name = "user_account_bank", nullable = false)
-    private String userAccountBank;
+    @Enumerated(EnumType.STRING)
+    private AccountBanks userAccountBank;
 
-//    @Enumerated
-//    private Enum userStatus;
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @Column(name = "user_restrict_end_date")
     private LocalDateTime userRestrictEndDate;
 
     @Column(name = "user_restrict_count")
     private Integer userRestrictCount;
+
+    @Column(name = "user_profile_url")
+    private String userProfileUrl;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
     @OneToMany(mappedBy = "barterHost")
     List<Barter> barters = new ArrayList<>();
@@ -76,4 +94,25 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Notification> notifications = new ArrayList<>();
+
+    @Builder
+    public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Character userGender, Integer userAge, String userName, Integer userDeposit, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount, String userProfileUrl, String refreshToken) {
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.userEmail = userEmail;
+        this.userPhoneNumber = userPhoneNumber;
+        this.userNickname = userNickname;
+        this.userGender = userGender;
+        this.userAge = userAge;
+        this.userName = userName;
+        this.userDeposit = userDeposit;
+        this.userDeletedDate = userDeletedDate;
+        this.userAccount = userAccount;
+        this.userAccountBank = userAccountBank;
+        this.userStatus = userStatus;
+        this.userRestrictEndDate = userRestrictEndDate;
+        this.userRestrictCount = userRestrictCount;
+        this.userProfileUrl = userProfileUrl;
+        this.refreshToken = refreshToken;
+    }
 }

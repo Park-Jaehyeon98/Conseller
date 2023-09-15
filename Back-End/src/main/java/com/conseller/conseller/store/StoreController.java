@@ -50,7 +50,7 @@ public class StoreController {
     }
 
     // 판매 글 수정
-    @PutMapping("/{store_idx}")
+    @PatchMapping("/{store_idx}")
     public ResponseEntity<Object> modifyStore(@PathVariable("store_idx") Long storeIdx, @RequestBody ModifyStoreRequest storeRequest) {
         storeService.modifyStore(storeIdx, storeRequest);
         return ResponseEntity.ok()
@@ -66,7 +66,7 @@ public class StoreController {
     }
 
     // 판매 상태 변경
-    @PutMapping("/{store_idx}/status")
+    @PatchMapping("/{store_idx}/status")
     public ResponseEntity<Object> storeStatusPermute(@PathVariable("store_idx") Long storeIdx) {
         storeService.storeStatusPermute(storeIdx);
         return ResponseEntity.ok()

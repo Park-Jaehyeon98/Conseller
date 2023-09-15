@@ -95,9 +95,9 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            if (selectedItemIndex != storeDetail?.storeUserIdx && false/*개발용*/) {
-                Button(onClick = { }) {
-                    Text("즉시구매")
+            if (selectedItemIndex != storeDetail?.storeUserIdx && true/*개발용*/) {
+                Button(onClick = {navController.navigate("StoreTradePage/${currentItem?.storeIdx}") }) {
+                    Text("구매하기")
                 }
             } else {
                 Button(onClick = { navController.navigate("storeUpdate/${currentItem?.storeIdx}") }) {

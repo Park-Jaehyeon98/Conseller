@@ -60,6 +60,9 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     // bottom bar
                     composable("Home") { HomePage(navController = navController) }
                     composable("MyPage") { MyPage(navController = navController) }
+                    composable("MyPageModify") { MyPageModifyPage(navController = navController) }
+                    composable("MyPageValid") { MyPageValidPage(navController = navController) }
+                    composable("MyGifticonAdd") { GifticonAddPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
 
                     // 스토어

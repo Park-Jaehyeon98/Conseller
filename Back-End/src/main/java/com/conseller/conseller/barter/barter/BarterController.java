@@ -46,4 +46,11 @@ public class BarterController {
         return ResponseEntity.ok()
                 .build();
     }
+
+    @DeleteMapping("/{barterIdx}")
+    public ResponseEntity<Void> deleteBarter(@PathVariable Long barterIdx) {
+        barterService.deleteBarter(barterIdx);
+        return ResponseEntity.ok()
+                .build();
+    }
 }

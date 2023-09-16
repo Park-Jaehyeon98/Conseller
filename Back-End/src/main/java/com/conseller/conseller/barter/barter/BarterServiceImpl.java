@@ -70,8 +70,6 @@ public class BarterServiceImpl implements BarterService{
     @Override
     @Transactional
     public void modifyBarter(Long barterIdx, BarterModifyRequestDto barterModifyRequestDto) {
-
-        System.out.println(barterModifyRequestDto.getSubCategoryIdx());
         SubCategory preferSubCategory = subCategoryRepository.findById(barterModifyRequestDto.getSubCategoryIdx())
                 .orElseThrow(() -> new RuntimeException());
 
@@ -81,4 +79,11 @@ public class BarterServiceImpl implements BarterService{
 
         barter.modifyBarter(barterModifyRequestDto);
     }
+
+    @Override
+    public void deleteBarter(Long barterIdx) {
+        barterRepository.deleteById(barterIdx);
+    }
+
+
 }

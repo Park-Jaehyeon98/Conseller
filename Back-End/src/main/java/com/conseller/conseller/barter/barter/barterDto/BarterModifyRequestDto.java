@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class BarterModifyRequestDto {
-    private Integer MainCategoryIdx;
-    private Integer SubCategoryIdx;
-    private SubCategory PreferSubCategory;
+    private Integer mainCategoryIdx;
+    private Integer subCategoryIdx;
+    private SubCategory preferSubCategory;
     private String barterName;
     private String barterText;
     private LocalDateTime barterEndDate;

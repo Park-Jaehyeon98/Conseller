@@ -75,18 +75,10 @@ public class BarterServiceImpl implements BarterService{
         SubCategory preferSubCategory = subCategoryRepository.findById(barterModifyRequestDto.getSubCategoryIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음1");
-
         barterModifyRequestDto.setPreferSubCategory(preferSubCategory);
-
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음2");
 
         Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
 
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음3");
-
         barter.modifyBarter(barterModifyRequestDto);
-
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기네");
     }
 }

@@ -11,6 +11,7 @@ import com.conseller.conseller.entity.SubCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,14 +68,25 @@ public class BarterServiceImpl implements BarterService{
     }
 
     @Override
+    @Transactional
     public void modifyBarter(Long barterIdx, BarterModifyRequestDto barterModifyRequestDto) {
 
+        System.out.println(barterModifyRequestDto.getSubCategoryIdx());
         SubCategory preferSubCategory = subCategoryRepository.findById(barterModifyRequestDto.getSubCategoryIdx())
                 .orElseThrow(() -> new RuntimeException());
 
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음1");
+
         barterModifyRequestDto.setPreferSubCategory(preferSubCategory);
 
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음2");
+
         Barter barter = barterRepository.findByBarterIdx(barterIdx).orElseThrow(() -> new RuntimeException());
+
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기는 오류없음3");
+
         barter.modifyBarter(barterModifyRequestDto);
+
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$ 여기네");
     }
 }

@@ -1,5 +1,7 @@
 package com.conseller.conseller.barter.request;
 
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
 import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestRegistDto;
@@ -19,6 +21,7 @@ import java.util.List;
 public class BarterRequestServiceImpl implements BarterRequestService{
 
     private final BarterRequestRepository barterRequestRepository;
+    private final BarterGuestItemService barterGuestItemService;
     private final BarterRepository barterRepository;
     private final UserRepository userRepository;
     List<BarterRequestResponseDto> barterRequestResponseDtoList;
@@ -86,6 +89,8 @@ public class BarterRequestServiceImpl implements BarterRequestService{
                 .orElseThrow(() -> new RuntimeException());
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);
+
+        barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);
     }
 
     @Override

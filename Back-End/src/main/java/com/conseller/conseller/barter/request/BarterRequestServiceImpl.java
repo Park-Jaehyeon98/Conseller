@@ -95,6 +95,6 @@ public class BarterRequestServiceImpl implements BarterRequestService{
 
     @Override
     public void deleteBarterRequest(Long barterRequestIdx) {
-
+        barterRequestRepository.deleteById(barterRequestIdx);
     }
 }

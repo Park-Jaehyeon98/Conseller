@@ -20,12 +20,11 @@ public class BarterHostItemServiceImpl implements BarterHostItemService{
     public Void addBarterHostItem(List<Long> gifticonIdx, Barter barter) {
 
         for(Long gift : gifticonIdx) {
-            Gifticon gifticon = gifticonRepository.findById(gift).orElseThrow(()-> new RuntimeException());
-            BarterHostItemDto barterHostItemDto = new BarterHostItemDto(barter, gifticon);
-            BarterHostItem barterHostItem = barterHostItemDto.toEntity(barterHostItemDto);
+            Gifticon gifticon = gifticonRepository.findById(gift)
+                    .orElseThrow(()-> new RuntimeException());
+            BarterHostItem barterHostItem = new BarterHostItem(barter, gifticon);
             barterHostItemRepository.save(barterHostItem);
         }
-
         return null;
     }
 }

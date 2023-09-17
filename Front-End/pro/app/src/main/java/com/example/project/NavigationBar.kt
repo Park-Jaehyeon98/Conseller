@@ -42,7 +42,7 @@ fun TopBar(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(201f / 255f, 235f / 255f, 243f / 255f)),
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         Column {
@@ -58,10 +58,10 @@ fun TopBar(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(320.dp)
-                        .scale(3f)
+                        .size(300.dp, 300.dp)
+//                        .scale(3f)
                         .offset(x = (12).dp)
-                        .padding(top = 12.dp)
+                        .padding(top = 24.dp)
                 )
 
                 if (currentDestination != "AlertPage") {

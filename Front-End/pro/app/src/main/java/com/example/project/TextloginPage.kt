@@ -70,7 +70,7 @@ fun TextLoginPage(navController: NavHostController) {
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.size(500.dp, 250.dp)
+                modifier = Modifier.size(300.dp, 200.dp)
             )
 
             //아이디 입력창

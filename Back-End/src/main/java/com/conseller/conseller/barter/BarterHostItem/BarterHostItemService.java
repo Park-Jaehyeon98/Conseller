@@ -1,6 +1,5 @@
 package com.conseller.conseller.barter.BarterHostItem;
 
-import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
 import com.conseller.conseller.entity.Barter;
 
 import java.util.List;

@@ -2,6 +2,8 @@ package com.example.project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.AuctionBidRequestDTO
+import com.example.project.api.AuctionBidResponseDTO
 import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
@@ -48,6 +50,11 @@ class AuctionViewModel @Inject constructor(
     // 경매글 상세보기
     private val _auctionDetail = MutableStateFlow<AuctionDetailResponseDTO?>(null)
     val auctionDetail: StateFlow<AuctionDetailResponseDTO?> = _auctionDetail
+
+    // 경매 입찰 응답
+    private val bidResponseState = MutableStateFlow<AuctionBidResponseDTO?>(null)
+    val _bidResponseState: StateFlow<AuctionBidResponseDTO?> = bidResponseState
+
 
     // 내 경매글 목록
     private val _myAuctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
@@ -208,6 +215,29 @@ class AuctionViewModel @Inject constructor(
                     _auctionDetail.value = response.body()
                 } else {
                     _error.value = "Failed to load auction detail: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 경매 입찰하기
+    fun bidOnAuction(auctionIdx: Long, bidPrice: Int) {
+        val userIdx = getUserIdFromPreference()
+        val bidRequest = AuctionBidRequestDTO(userIdx, bidPrice)
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.bidOnAuction(auctionIdx, bidRequest)
+                if (response.isSuccessful && response.body() != null) {
+                    bidResponseState.value = response.body()
+                } else {
+                    _error.value = "Failed to bid on auction: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage

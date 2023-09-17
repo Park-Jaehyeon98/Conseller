@@ -18,7 +18,7 @@ public class BarterController {
     private final BarterService barterService;
 
 
-    @GetMapping("/barter")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<BarterResponseDto>> getBarterList() {
         return ResponseEntity.ok()
                 .body(barterService.getBarterList());

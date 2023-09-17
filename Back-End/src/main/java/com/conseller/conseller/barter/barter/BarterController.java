@@ -17,7 +17,6 @@ public class BarterController {
 
     private final BarterService barterService;
 
-
     @GetMapping({"", "/"})
     public ResponseEntity<List<BarterResponseDto>> getBarterList() {
         return ResponseEntity.ok()
@@ -39,9 +38,6 @@ public class BarterController {
 
     @PatchMapping("/{barterIdx}")
     public ResponseEntity<Void> modifyBarter(@PathVariable Long barterIdx, @RequestBody BarterModifyRequestDto barterModifyRequestDto) {
-
-        System.out.println(barterModifyRequestDto.toString());
-
         barterService.modifyBarter(barterIdx, barterModifyRequestDto);
         return ResponseEntity.ok()
                 .build();

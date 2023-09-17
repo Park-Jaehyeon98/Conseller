@@ -1,8 +1,6 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -10,6 +8,7 @@ import java.math.BigInteger;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "barterGuestItemIdx")
 public class BarterGuestItem {
     @Id
@@ -24,4 +23,9 @@ public class BarterGuestItem {
     @JoinColumn(name = "gifticon_idx", nullable = false)
     private Gifticon gifticon;
 
+    @Builder
+    public BarterGuestItem(BarterRequest barterRequest, Gifticon gifticon) {
+        this.barterRequest = barterRequest;
+        this.gifticon = gifticon;
+    }
 }

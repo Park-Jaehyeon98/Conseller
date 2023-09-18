@@ -3,14 +3,14 @@ package com.conseller.conseller.auction.auction;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
+import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.entity.Auction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -21,10 +21,13 @@ public class AuctionController {
 
     // 경매 목록
     @PostMapping
-    public ResponseEntity<List<Auction>> getAuctionList(@RequestBody AuctionListRequest request) {
+    public ResponseEntity<AuctionListResponse> getAuctionList(@RequestBody AuctionListRequest request) {
+        Page<Auction> auctionList = auctionService.getAuctionList(request);
+
+        AuctionListResponse response = new AuctionListResponse(auctionList);
 
         return ResponseEntity.ok()
-                .body(null);
+                .body(response);
     }
 
     // 경매 글 등록

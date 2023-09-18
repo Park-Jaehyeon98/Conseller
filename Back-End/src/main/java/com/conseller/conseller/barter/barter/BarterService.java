@@ -17,5 +17,7 @@ public interface BarterService {
 
     void modifyBarter(Long barterIdx, BarterModifyRequestDto barterModifyRequestDto);
 
+    void deleteBarter(Long barterIdx);
 
+    void exchangeGifticon(Long barterIdx, Long barterRequestIdx);
 }

@@ -1,14 +1,17 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
+import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.request.enums.RequestStatus;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "barterRequestIdx")
 public class BarterRequest {
 
@@ -16,8 +19,8 @@ public class BarterRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long barterRequestIdx;
 
-//    @Enumerated
-//    private Enum barterRequestStatus;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus barterRequestStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barter_idx", nullable = false)
@@ -26,4 +29,22 @@ public class BarterRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "barterRequest")
+    List<BarterGuestItem> barterGuestItemList = new ArrayList<>();
+
+    @Builder
+    public BarterRequest(Barter barter, User user){
+        this.barterRequestStatus = RequestStatus.WAIT;
+        this.barter = barter;
+        this.user = user;
+    }
+
+    public BarterRequestResponseDto toBarterRequestResponseDto(BarterRequest barterRequest, BarterResponseDto barterResponseDto) {
+        return BarterRequestResponseDto.builder()
+                .barterRequestStatus(barterRequest.getBarterRequestStatus())
+                .barterResponse(barterResponseDto)
+                .user(barterRequest.getUser())
+                .build();
+    }
 }

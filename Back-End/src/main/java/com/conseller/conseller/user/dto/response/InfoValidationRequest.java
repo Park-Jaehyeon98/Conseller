@@ -1,4 +1,4 @@
-package com.conseller.conseller.user.dto;
+package com.conseller.conseller.user.dto.response;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Getter @Setter @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfoValidationDto {
+public class InfoValidationRequest {
     private int status;
     private String message;
 }

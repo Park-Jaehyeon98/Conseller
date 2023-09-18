@@ -6,6 +6,8 @@ import com.conseller.conseller.barter.request.enums.RequestStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +29,9 @@ public class BarterRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "barterRequest")
+    List<BarterGuestItem> barterGuestItemList = new ArrayList<>();
 
     @Builder
     public BarterRequest(Barter barter, User user){

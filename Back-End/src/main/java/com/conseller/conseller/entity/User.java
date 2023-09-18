@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Getter @Builder
+@Getter @Setter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "userIdx", callSuper = false)

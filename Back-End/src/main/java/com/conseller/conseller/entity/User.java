@@ -5,10 +5,13 @@ import com.conseller.conseller.user.enums.UserStatus;
 import lombok.*;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -16,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "userIdx", callSuper = false)
 @Table(name = "\"USER\"")
-public class User extends BaseTime{
+public class User extends BaseTime implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -111,5 +114,40 @@ public class User extends BaseTime{
         this.userRestrictCount = userRestrictCount;
         this.userProfileUrl = userProfileUrl;
         this.refreshToken = refreshToken;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

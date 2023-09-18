@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,9 +23,12 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
+    /*
+    @param ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 엑세스 토큰 유효기간 1 hour
+    @param REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 리프레쉬 토큰 유효기간 2 weeks
+     */
     private static final int ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60 * 60;
     private static final long REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1440 * 60 * 7 * 1000L * 2;
-
 
     private final Key key;
 

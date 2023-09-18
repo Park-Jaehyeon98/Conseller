@@ -1,7 +1,9 @@
 package com.conseller.conseller.user;
 
+import com.conseller.conseller.user.dto.request.LoginRequest;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.request.SignUpRequest;
+import com.conseller.conseller.user.dto.response.LoginResponse;
 import com.conseller.conseller.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,19 @@ public class UserController {
         
         return ResponseEntity.ok()
                 .build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+
+        LoginResponse loginResponse = userService.login(loginRequest);
+
+        log.info("user nickname : " + loginResponse.getUserNickname());
+        log.info("user accessToken : " + loginResponse.getAccessToken());
+        log.info("user refreshToken : " + loginResponse.getRefreshToken());
+
+        return ResponseEntity.ok()
+                .body(loginResponse);
     }
     
     @GetMapping("/{userNickname}")

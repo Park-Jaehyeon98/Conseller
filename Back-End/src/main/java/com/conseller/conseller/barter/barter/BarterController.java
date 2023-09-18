@@ -50,10 +50,10 @@ public class BarterController {
                 .build();
     }
 
-    @PatchMapping("/{barterIdx}")
-    public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @RequestBody Long barterRequestIdx) {
-        barterService.exchangeGifticon(barterIdx, barterRequestIdx);
-        return ResponseEntity.ok()
-                .build();
-    }
+//    @PatchMapping("/{barterIdx}")
+//    public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @RequestBody Long barterRequestIdx) {
+//        barterService.exchangeGifticon(barterIdx, barterRequestIdx);
+//        return ResponseEntity.ok()
+//                .build();
+//    }
 }

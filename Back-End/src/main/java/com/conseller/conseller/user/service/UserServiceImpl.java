@@ -1,12 +1,12 @@
 package com.conseller.conseller.user.service;
 
-import com.conseller.conseller.entity.User;
+import com.conseller.conseller.entity.*;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
-import com.conseller.conseller.user.dto.request.LoginRequest;
+import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
-import com.conseller.conseller.user.dto.request.SignUpRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
+import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.JwtToken;
@@ -18,7 +18,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -48,8 +51,8 @@ public class UserServiceImpl implements UserService {
                 .userName(signUpRequest.getUserName())
                 .userAccount(signUpRequest.getUserAccount())
                 .userRestrictCount(0)
-                .userStatus(UserStatus.ACTIVE)
-                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()))
+                .userStatus(UserStatus.ACTIVE.getStatus())
+                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
                 .build();
 
         return userRepository.save(user);
@@ -74,6 +77,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> loginedUser = userRepository.findByUserId(loginRequest.getUserId());
         User user = loginedUser.get();
 
+        //refresh token db 저장
+        user.setRefreshToken(jwtToken.getRefreshToken());
+
         if (jwtToken.getAccessToken() != null) {
             loginedUser = userRepository.findByUserId(loginRequest.getUserId());
         }
@@ -86,6 +92,107 @@ public class UserServiceImpl implements UserService {
                 .refreshToken(jwtToken.getRefreshToken())
                 .build();
     }
+
+    @Override
+    public void updateUserInfo(long userIdx, UserInfoRequest userInfoRequest) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("해당 인덱스에 대한 유저가 존재하지 않습니다."));
+
+        user.setUserPassword(userInfoRequest.getUserPassword());
+        user.setUserNickname(userInfoRequest.getUserNickname());
+        user.setUserEmail(userInfoRequest.getUserEmail());
+        user.setUserAccount(userInfoRequest.getUserAccount());
+        user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+    }
+
+    @Override
+    public UserInfoResponse getUserInfo(long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("해당 인덱스에 대한 유저가 존재하지 않습니다."));
+
+        return UserInfoResponse.builder()
+                .userId(user.getUserId())
+                .userNickname(user.getUserNickname())
+                .userPassword(user.getUserPassword())
+                .userEmail(user.getUserEmail())
+                .userPhoneNumber(user.getUserPhoneNumber())
+                .userAccount(user.getUserAccount())
+                .userAccountBank(user.getUserAccountBank())
+                .build();
+    }
+
+    @Override
+    public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest) {
+        //유저의 idx와 비밀번호를 통해 해당 유저가 존재하는지 확인하는 쿼리를 짜야함.
+    }
+
+    @Override
+    public void uploadUserProfile(UserProfileRequest userProfileRequest) {
+        //s3가 만들어지면 구현하기로 함.
+    }
+
+    @Override
+    public void deposit(long userIdx, int deposit) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        user.setUserDeposit(deposit);
+    }
+
+    @Override
+    public List<Store> getUserStores(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        return user.getStores();
+    }
+
+    @Override
+    public List<Auction> getUserAuctions(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        return user.getAuctions();
+    }
+
+    @Override
+    public List<AuctionBid> getUserAuctionBids(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        return user.getAuctionBids();
+    }
+
+    @Override
+    public List<Barter> getUserbarters(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        return user.getBarters();
+    }
+
+    @Override
+    public List<BarterRequest> getUserBarterRequests(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        return user.getBarterRequests();
+    }
+
+    @Override
+    public void deleteUser(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+        user.setUserDeletedDate(LocalDateTime.now());
+    }
+
+    //추후 여유날 때 리프레쉬 토큰 재발급 구현
+//    public void reIssue(HttpServletRequest request) {
+//        // 1. header에서 refresh token 추출
+//        String refreshToken = jwtTokenProvider.resolveToken(request);
+//
+//        // 2. 토큰의 유효성 검사
+//        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+//            // 3. 저장된 refresh token 찾아오기
+//            // 4. 리프레쉬 토큰이 유효하다면 액세스 토큰 발급
+//            // 5. 리프레쉬 토큰이 유효하지 않다면 리프레쉬 토큰과 액세스 토큰 모두 발급
+//        }
+//    }
 
     @Override
     public InfoValidationRequest checkNickname(String nickname) {

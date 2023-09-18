@@ -12,7 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +32,13 @@ public class JwtTokenProvider {
     private static final int ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60 * 60;
     private static final long REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1440 * 60 * 7 * 1000L * 2;
 
+    /*
+    @param test용 엑세스 토큰 유효기간 30 sec
+    @param test용 리프레쉬 토큰 유효기간 1 min
+     */
+    private static final int TEST_ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 30;
+    private static final long TEST_REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60;
+
     private final Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -45,7 +54,7 @@ public class JwtTokenProvider {
         long now =  (new Date()).getTime();
 
         //Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS);
+        Date accessTokenExpiresIn = new Date(now + TEST_ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -55,7 +64,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS))
+                .setExpiration(new Date(now + TEST_REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -109,5 +118,15 @@ public class JwtTokenProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    // Request Header 에서 토큰 정보 추출
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        //유효한 헤더 정보인지 확인
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

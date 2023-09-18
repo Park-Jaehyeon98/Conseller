@@ -21,9 +21,4 @@ public interface BarterRepository extends JpaRepository<Barter, Long> {
 //
 //    Optional<>
 
-    // 물물교환 주인 물건
-
-        // 물물교환
-
-    // 물물교환 손님 물건
 }

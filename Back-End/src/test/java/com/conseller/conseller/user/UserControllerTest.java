@@ -1,17 +1,14 @@
 package com.conseller.conseller.user;
 
-import com.conseller.conseller.user.dto.SignUpDto;
+import com.conseller.conseller.user.dto.request.SignUpRequest;
 import com.conseller.conseller.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.catalina.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,7 +36,7 @@ public class UserControllerTest {
     @DisplayName("유저가 올바른 정보로 회원가입을 한다.")
     void signUp() throws Exception {
         // given
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpRequest signUpRequest = SignUpRequest.builder()
                 .userId("test1234")
                 .userPassword("test123456!")
                 .userEmail("test1234@gmail.com")
@@ -55,7 +52,7 @@ public class UserControllerTest {
         // when, then
         mockMvc.perform(post("/user")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(signUpDto))
+                        .content(objectMapper.writeValueAsString(signUpRequest))
                         .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())

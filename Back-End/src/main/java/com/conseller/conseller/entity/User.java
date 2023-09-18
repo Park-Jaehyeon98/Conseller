@@ -6,6 +6,7 @@ import lombok.*;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -13,10 +14,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-@Getter
-@NoArgsConstructor
+@Getter @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EqualsAndHashCode(of = "userIdx", callSuper = false)
 @Table(name = "\"USER\"")
 public class User extends BaseTime implements UserDetails {
@@ -94,60 +97,45 @@ public class User extends BaseTime implements UserDetails {
     @OneToMany(mappedBy = "user")
     List<Notification> notifications = new ArrayList<>();
 
-    @Builder
-    public User(String userId, String userPassword, String userEmail, String userPhoneNumber, String userNickname, Character userGender, Integer userAge, String userName, Integer userDeposit, LocalDateTime userDeletedDate, String userAccount, AccountBanks userAccountBank, UserStatus userStatus, LocalDateTime userRestrictEndDate, Integer userRestrictCount, String userProfileUrl, String refreshToken) {
-        super();
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userEmail = userEmail;
-        this.userPhoneNumber = userPhoneNumber;
-        this.userNickname = userNickname;
-        this.userGender = userGender;
-        this.userAge = userAge;
-        this.userName = userName;
-        this.userDeposit = userDeposit;
-        this.userDeletedDate = userDeletedDate;
-        this.userAccount = userAccount;
-        this.userAccountBank = userAccountBank;
-        this.userStatus = userStatus;
-        this.userRestrictEndDate = userRestrictEndDate;
-        this.userRestrictCount = userRestrictCount;
-        this.userProfileUrl = userProfileUrl;
-        this.refreshToken = refreshToken;
-    }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return this.userPassword;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.userId;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

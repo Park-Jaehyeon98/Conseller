@@ -1,14 +1,15 @@
 package com.conseller.conseller.user;
 
 import com.conseller.conseller.user.dto.request.SignUpRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserValidator {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public void signUpDtoValidate(final SignUpRequest signUpRequest) {
         boolean idExists = userRepository.existsByUserId(signUpRequest.getUserId());

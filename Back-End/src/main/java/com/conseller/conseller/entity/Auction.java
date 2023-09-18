@@ -2,7 +2,6 @@ package com.conseller.conseller.entity;
 
 import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,12 +33,10 @@ public class Auction {
     private Integer upperPrice;
 
     @Column(name = "auction_highest_bid", nullable = false)
-    @ColumnDefault("0")
-    private Integer auctionHighestBid;
+    private Integer auctionHighestBid = 0;
 
     @Column(name = "auction_status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private AuctionStatus auctionStatus;
+    private String auctionStatus = AuctionStatus.IN_PROGRESS.getStatus();
 
     @CreatedDate
     private LocalDateTime auctionStartDate;

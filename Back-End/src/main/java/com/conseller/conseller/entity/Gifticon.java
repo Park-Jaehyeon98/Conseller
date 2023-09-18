@@ -53,4 +53,8 @@ public class Gifticon {
     @JoinColumn(name = "sub_category_idx")
     private SubCategory subCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "main_category_idx")
+    private MainCategory mainCategory;
+
 }

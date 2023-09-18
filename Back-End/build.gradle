@@ -15,7 +15,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -63,11 +62,12 @@ dependencies {
     testImplementation 'com.h2database:h2'
 }
 
-//queryDSL
-def querydslDir = "build/generated/querydsl"
-
 sourceSets {
-    main.java.srcDir querydslDir
+    main {
+        java {
+            srcDir("$projectDir/build/generated")
+        }
+    }
 }
 
 tasks.named('test') {

@@ -12,10 +12,11 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +26,14 @@ public class AuctionServiceImpl implements AuctionService{
     private final UserRepository userRepository;
     private final GifticonRepository gifticonRepository;
     private final AuctionBidRepository auctionBidRepository;
+    private final AuctionRepositoryImpl auctionImplRepository;
 
+    // 경매 목록
     @Override
-    public List<Auction> getAuctionList(AuctionListRequest request) {
-        return null;
+    public Page<Auction> getAuctionList(AuctionListRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), 10);
+
+        return auctionImplRepository.findAuctionList(request, pageable);
     }
 
     // 경매 글 등록

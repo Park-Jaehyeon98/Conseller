@@ -14,7 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class DetailAuctionResponse {
     private String auctionText;
+
     private Long auctionUserIdx;
+
     private String auctionUserNickname;
+
     private List<AuctionBid> auctionBidList;
 }

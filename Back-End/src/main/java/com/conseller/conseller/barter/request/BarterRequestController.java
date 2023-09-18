@@ -11,7 +11,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/barter")
+@RequestMapping("/barterRequest")
 public class BarterRequestController {
 
     private final BarterRequestService barterRequestService;

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Getter @Builder
+@Getter @Setter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "userIdx", callSuper = false)
@@ -61,11 +61,11 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "user_account", nullable = false)
     private String userAccount;
 
-    @Enumerated(EnumType.STRING)
-    private AccountBanks userAccountBank;
+    @Column(name = "user_account_bank")
+    private String userAccountBank;
 
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    @Column(name = "user_status", nullable = false)
+    private String userStatus;
 
     @Column(name = "user_restrict_end_date")
     private LocalDateTime userRestrictEndDate;
@@ -78,6 +78,12 @@ public class User extends BaseTime implements UserDetails {
 
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    @OneToMany(mappedBy = "user")
+    List<Auction> auctions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<AuctionBid> auctionBids = new ArrayList<>();
 
     @OneToMany(mappedBy = "barterHost")
     List<Barter> barters = new ArrayList<>();

@@ -159,14 +159,14 @@ public class UserController {
     }
 
     //내 물물교환 보기
-    @GetMapping("/{userIdx}/barer")
+    @GetMapping("/{userIdx}/batrer")
     public ResponseEntity<List<Barter>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserbarters(userIdx));
     }
 
     //내 물물교환 요청 보기
-    @GetMapping("/{userIdx}/barer-request")
+    @GetMapping("/{userIdx}/barter-request")
     public ResponseEntity<List<BarterRequest>> getUserBarterRequests(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserBarterRequests(userIdx));

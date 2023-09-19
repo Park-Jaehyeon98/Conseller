@@ -1,17 +1,21 @@
 package com.conseller.conseller.user;
 
+import com.conseller.conseller.TestConfig;
 import com.conseller.conseller.entity.User;
+import com.conseller.conseller.user.dto.request.EmailAndNameRequest;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.UserStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Import({TestConfig.class})
 @DataJpaTest
 public class UserRepositoryTest {
 
@@ -32,10 +36,10 @@ public class UserRepositoryTest {
                 .userAge(27)
                 .userName("테스트")
                 .userAccount("0234691047826307")
-                .userAccountBank(AccountBanks.fromString("신한은행"))
+                .userAccountBank(AccountBanks.fromString("신한은행").getBank())
                 .userEmail("ekclstkfka5@gmail.com")
                 .userDeposit(0)
-                .userStatus(UserStatus.ACTIVE)
+                .userStatus(UserStatus.ACTIVE.getStatus())
                 .userRestrictCount(0)
                 .build();
 
@@ -46,7 +50,7 @@ public class UserRepositoryTest {
         assertThat("test123123").isEqualTo(savedUser.getUserId());
         assertThat("test123456!").isEqualTo(savedUser.getUserPassword());
         assertThat("01050945330").isEqualTo(savedUser.getUserPhoneNumber());
-        assertThat(AccountBanks.SHINHAN.getBank()).isEqualTo(savedUser.getUserAccountBank().getBank());
+        assertThat(AccountBanks.SHINHAN.getBank()).isEqualTo(savedUser.getUserAccountBank());
     }
 
     @Test
@@ -62,10 +66,10 @@ public class UserRepositoryTest {
                 .userAge(27)
                 .userName("테스트")
                 .userAccount("0234691047826307")
-                .userAccountBank(AccountBanks.fromString("신한은행"))
+                .userAccountBank(AccountBanks.fromString("신한은행").getBank())
                 .userEmail("ekclstkfka5@gmail.com")
                 .userDeposit(0)
-                .userStatus(UserStatus.ACTIVE)
+                .userStatus(UserStatus.ACTIVE.getStatus())
                 .userRestrictCount(0)
                 .build();
         userRepository.save(user);
@@ -89,5 +93,36 @@ public class UserRepositoryTest {
 
         // then
         assertThat(findUser.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("이메일과 이름이 일치하는 유저의 정보를 불러올 수 있다.")
+    void findUserEmailAndUserName() {
+        // given
+        User user = User.builder()
+                .userId("test123123")
+                .userPassword("test123456!")
+                .userNickname("회원가입테스트용1")
+                .userPhoneNumber("01050945330")
+                .userGender('M')
+                .userAge(27)
+                .userName("테스트")
+                .userAccount("0234691047826307")
+                .userAccountBank(AccountBanks.fromString("신한은행").getBank())
+                .userEmail("test1@gmail.com")
+                .userDeposit(0)
+                .userStatus(UserStatus.ACTIVE.getStatus())
+                .userRestrictCount(0)
+                .build();
+        userRepository.save(user);
+
+        String userEmail = "test1@gmail.com";
+        String userName = "테스트";
+
+        // when
+        Optional<User> findUser = userRepository.findByUserEmailAndUserName(userEmail, userName);
+
+        // then
+        assertThat(findUser.isPresent()).isTrue();
     }
 }

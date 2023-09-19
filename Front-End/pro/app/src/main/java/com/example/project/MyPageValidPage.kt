@@ -13,6 +13,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,14 +25,42 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.api.IdPwLoginRequest
+import com.example.project.api.userValidRequest
 import com.example.project.reuse_component.CustomTextField
 import com.example.project.ui.theme.BrandColor1
+import com.example.project.viewmodels.MyPageViewModel
+import com.example.project.viewmodels.ResponseState
 
 @Composable
 fun MyPageValidPage(navController: NavHostController) {
+    val viewModel: MyPageViewModel = hiltViewModel()
+
+    val useridx=viewModel.getUserIdFromPreference()
+
+    val checkUserValidState by viewModel.validUserResponse.collectAsState()
 
     var password by remember { mutableStateOf(TextFieldValue("")) }
+    val checkUserValid = {
+        val request = userValidRequest(
+            userIdx = useridx,
+            userPassword = password.text
+        )
+        viewModel.userValid(request)
+    }
+
+    LaunchedEffect(checkUserValidState) {
+        if (checkUserValidState.status == -1) {
+            navController.navigate("MyPageModify")
+        } else {
+            println(checkUserValidState.message)
+        }
+    }
+
+
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         val shape = RoundedCornerShape(8.dp)
         Box(
@@ -54,7 +84,7 @@ fun MyPageValidPage(navController: NavHostController) {
                         onValueChange = { password = it },
                     )
                     Button(
-                        onClick = {  },
+                        onClick = {checkUserValid },
                         modifier = Modifier
                             .height(50.dp)
                             .clip(shape),

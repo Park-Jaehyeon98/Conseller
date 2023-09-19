@@ -1,7 +1,6 @@
 package com.example.project
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,18 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -44,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.project.api.RegistRequest
+import com.example.project.reuse_component.CustomDropdown
 import com.example.project.reuse_component.CustomTextField
 import com.example.project.reuse_component.CustomTextFieldWithButton
 import com.example.project.reuse_component.EmailTextFieldWithDomain
@@ -121,15 +115,16 @@ fun SignUpPage(navController: NavHostController) {
         return password.length >= 8 && specialCharCount >= 1 && digitCount >= 1 && letterCount >= 1
     }
 
+    //닉네임 검증
+    fun isValidNickName(nickName: String): Boolean {
+        return 1 <= nickName.length && nickName.length <= 45
+    }
+
     //이름 검증 
     fun isValidName(name: String): Boolean {
         return 1 <= name.length && name.length <= 45
     }
 
-    //닉네임 검증
-    fun isValidNickName(nickName: String): Boolean {
-        return 1 <= nickName.length && nickName.length <= 45
-    }
 
     //유효성 검사 상태들
     var emailError by remember { mutableStateOf<String?>(null) }
@@ -328,52 +323,6 @@ fun SignUpPage(navController: NavHostController) {
     }
 }
 
-@Composable
-fun CustomDropdown(
-    selectedBank: String,
-    onBankSelected: (String) -> Unit,
-    error: String? = null,
-) {
-    val banks = listOf("신한은행", "국민은행", "카카오페이", "우리은행", "하나은행", "농협은행")
-    var expanded by remember { mutableStateOf(false) }
-
-    Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(text = "계좌은행", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        }
-        Surface(
-            modifier = Modifier
-                .shadow(4.dp, RoundedCornerShape(8.dp))
-                .fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .height(40.dp)
-                    .wrapContentHeight()
-            ) {
-                Text(
-                    text = selectedBank,
-                    fontSize = 19.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = { expanded = !expanded })
-                        .padding(8.dp)
-                )
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    banks.forEach { bank ->
-                        DropdownMenuItem(text = { Text(bank, fontSize = 22.sp) }, onClick = {
-                            onBankSelected(bank)
-                            expanded = false
-                        })
-                    }
-                }
-            }
-        }
-    }
-}
 
 
 @Composable

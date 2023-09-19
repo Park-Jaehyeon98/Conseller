@@ -77,14 +77,6 @@ fun MyPage(navController: NavHostController) {
 
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(onClick = {
-//                val currentImage = selectImage
-//                if(currentImage!=null){
-//                    val inputStream = getInputStreamFromUri(context, currentImage)
-//                    val byteArray = getBytesFromInputStream(inputStream!!)
-//                    val multipartImage = getMultipartFromByteArray(byteArray, "profile.jpg") // "profile.jpg"는 예시 파일 이름입니다.
-//                    Log.d("UserProfile", "Multipart data length: ${byteArray.size}")
-//                    viewModel.profileSend(multipartImage)
-//                }
                     navController.navigate("MyPageValid")
                 },
                     modifier = Modifier.padding(end = 8.dp),
@@ -100,6 +92,7 @@ fun MyPage(navController: NavHostController) {
                 ) {
                     Text("기프티콘 등록")
                 }
+
             }
 
         }
@@ -110,7 +103,7 @@ fun MyPage(navController: NavHostController) {
 
 @Composable
 fun UserProfile(
-    profileImage: String? = null, userNickName: String, userEmail: String, userPhoneNumber: String
+    profileImage: Uri? = null, userNickName: String, userEmail: String, userPhoneNumber: String
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
     var selectImage by remember { mutableStateOf<Uri?>(null) }
@@ -135,16 +128,16 @@ fun UserProfile(
             Image(painter = rememberAsyncImagePainter(profileImage),
                 contentDescription = "유저 프로필 이미지",
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .clickable { galleryLauncher.launch("image/*") })
+                    .size(200.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillHeight)
         } else {
             Image(painter = painterResource(id = R.drawable.defaultimage),
                 contentDescription = "Default User Image",
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .clickable { galleryLauncher.launch("image/*") })
+                    .size(150.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillHeight)
         }
         Text(text = userNickName, fontSize = 22.sp)
         Text(text = userEmail)

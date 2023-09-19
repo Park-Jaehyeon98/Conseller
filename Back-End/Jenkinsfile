@@ -25,7 +25,7 @@ pipeline {
 
         stage('Dockerimage build') {
             steps {
-                dir('back/B306'){
+                dir('Back-End'){
                     sh '''
                     echo 'Dockerimage build'
                     docker build -t docker-springboot:0.0.2 .

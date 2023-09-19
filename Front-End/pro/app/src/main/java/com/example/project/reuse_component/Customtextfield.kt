@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -159,7 +160,7 @@ fun CustomTextFieldWithButton(
                 onClick = { onButtonClick() },
                 modifier = Modifier
                     .weight(4f)
-                    .fillMaxHeight()
+//                    .fillMaxHeight()
                     .clip(shape),
                 colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {
@@ -286,6 +287,53 @@ fun EmailTextFieldWithDomain(
                                 expanded = false
                             })
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomDropdown(
+    selectedBank: String,
+    onBankSelected: (String) -> Unit,
+    error: String? = null,
+) {
+    val banks = listOf("신한은행", "국민은행", "카카오페이", "우리은행", "하나은행", "농협은행")
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = "계좌은행", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        }
+        Surface(
+            modifier = Modifier
+                .shadow(4.dp, RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(40.dp)
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = selectedBank,
+                    fontSize = 19.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = { expanded = !expanded })
+                        .padding(8.dp)
+                )
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    banks.forEach { bank ->
+                        DropdownMenuItem(text = { Text(bank, fontSize = 22.sp) }, onClick = {
+                            onBankSelected(bank)
+                            expanded = false
+                        })
                     }
                 }
             }

@@ -34,7 +34,7 @@ public class UserController {
 
     //일반 로그인
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         LoginResponse loginResponse = userService.login(loginRequest);
 
@@ -104,7 +104,7 @@ public class UserController {
 
     //유저 정보 변경
     @PutMapping("/{userIdx}")
-    public ResponseEntity<Void> updateUserInfo(@PathVariable long userIdx, @RequestBody UserInfoRequest userInfoRequest) {
+    public ResponseEntity<Void> updateUserInfo(@PathVariable long userIdx, @Valid @RequestBody UserInfoRequest userInfoRequest) {
         userService.updateUserInfo(userIdx, userInfoRequest);
         return ResponseEntity.ok().build();
     }

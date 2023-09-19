@@ -5,12 +5,12 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -24,11 +24,13 @@ public class StoreController {
 
     // 판매 목록
     @PostMapping
-    public ResponseEntity<List<Store>> getStoreList(@RequestBody StoreListRequest request) {
+    public ResponseEntity<StoreListResponse> getStoreList(@RequestBody StoreListRequest request) {
+            Page<Store> list = storeService.getStoreList(request);
 
+            StoreListResponse response = new StoreListResponse(list);
 
         return ResponseEntity.ok()
-                .body(null);
+                .body(response);
     }
 
     // 판매 글 등록

@@ -1,11 +1,14 @@
 package com.example.project
 
+import FilterButton
+import FormattedDateText
 import PaginationControls
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -35,7 +38,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.project.api.AuctionFilterDTO
+import com.example.project.api.StoreFilterDTO
 import com.example.project.viewmodels.AuctionViewModel
+import convertNameToNum
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -86,62 +91,84 @@ fun AuctionPage(navController: NavHostController) {
             var filter3Selected by remember { mutableStateOf("등록일") } // 필터3의 초기값
 
             // 필터 버튼
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterButton(
-                    selectedOption = filter1Selected,
-                    options = listOf("대분류", "a", "b", "c")
-                ) {
-                    filter1Selected = it
-                    filter2Selected = "소분류"
-                    viewModel.applyFilter(
-                        AuctionFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
-                            searchText,
-                            currentPage
+                item {
+                    FilterButton(
+                        selectedOption = filter1Selected,
+                        options = listOf("대분류", "버거/치킨/피자", "편의점", "카페/베이커리", "아이스크림", "기타"),
+                    ) {
+                        filter1Selected = it
+                        filter2Selected = "소분류"
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
                         )
-                    )
-                }
-
-                FilterButton(
-                    selectedOption = filter2Selected,
-                    options = when (filter1Selected) {
-                        "a" -> listOf("소분류", "a-1", "a-2", "a-3")
-                        "b" -> listOf("소분류", "b-1", "b-2", "b-3")
-                        "c" -> listOf("소분류", "c-1", "c-2", "c-3")
-                        else -> listOf("소분류")
+                        viewModel.applyFilter(
+                            AuctionFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
                     }
-                ) {
-                    filter2Selected = it
-                    viewModel.applyFilter(
-                        AuctionFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
-                            searchText,
-                            currentPage
-                        )
-                    )
-                }
 
-                FilterButton(
-                    selectedOption = filter3Selected,
-                    options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
-                ) {
-                    filter3Selected = it
-                    viewModel.applyFilter(
-                        AuctionFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
-                            searchText,
-                            currentPage
+                }
+                item {
+                    FilterButton(
+                        selectedOption = filter2Selected,
+                        options = when (filter1Selected) {
+                            "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
+                            "편의점" -> listOf("전체", "금액권", "과자", "음료","도시락/김밥류","기타")
+                            "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
+                            "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
+                            "기타" -> listOf("전체")
+                            else -> listOf("전체")
+                        }
+                    ) {
+                        filter2Selected = it
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
                         )
-                    )
+                        viewModel.applyFilter(
+                            AuctionFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
+                    }
+                }
+                item {
+                    FilterButton(
+                        selectedOption = filter3Selected,
+                        options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
+                    ) {
+                        filter3Selected = it
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
+                        )
+                        viewModel.applyFilter(
+                            AuctionFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
+                    }
                 }
             }
 
@@ -194,48 +221,6 @@ fun AuctionPage(navController: NavHostController) {
     }
 }
 
-@Composable
-fun FilterButton(
-    selectedOption: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .width(116.dp)
-            .height(28.dp)
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
-            .clickable { expanded = true }
-            .padding(horizontal = 6.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = selectedOption,modifier = Modifier.weight(1f), fontSize = 16.sp)
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Arrow Drop Down")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest  = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option, fontSize = 16.sp) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-
 
 @Composable
 fun AuctionItem(
@@ -274,26 +259,21 @@ fun AuctionItem(
                 .weight(0.1f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
         ) {
             Text(name, fontSize = 20.sp)
-            Text("유효기간: $gifticonTime")
+            FormattedDateText(gifticonTime,"유효기간")
         }
 
         // 구분 줄
         Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
-
-        // 5% 경매기간
-        Text("경매기간: $auctionTime", modifier = Modifier
-            .weight(0.1f)
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-        )
+        Spacer(modifier = Modifier.height(4.dp))
 
         // 15% 박스1
         Box(
             modifier = Modifier
-                .weight(0.15f)
+                .weight(0.16f)
                 .padding(horizontal = 12.dp)
         ) {
             Row(
@@ -309,12 +289,22 @@ fun AuctionItem(
                     horizontalAlignment = Alignment.End
                 ) {
                     // 30% 즉시구매가
-                    Text("즉시구매가: $upperprice", modifier = Modifier.weight(0.4f))
+                    Text("즉시구매가: $upperprice 원", modifier = Modifier.weight(0.4f))
 
                     // 70% 현재입찰가
-                    Text("현재입찰가: $nowprice", modifier = Modifier.weight(0.6f))
+                    Text("현재입찰가: $nowprice 원", modifier = Modifier.weight(0.6f))
                 }
             }
         }
+
+        // 5% 경매기간
+        FormattedDateText(
+            gifticonTime = auctionTime,
+            prefix = "마감일",
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+        )
     }
 }

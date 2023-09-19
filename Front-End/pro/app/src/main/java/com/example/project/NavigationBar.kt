@@ -49,20 +49,18 @@ fun TopBar(navController: NavHostController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(42.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(300.dp, 300.dp)
-//                        .scale(3f)
-                        .offset(x = (12).dp)
-                        .padding(top = 24.dp)
-                )
+                Box(modifier = Modifier.padding(top = 24.dp, start = 12.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = null,
+                        modifier = Modifier.size(400.dp, 400.dp)
+                    )
+                }
 
                 if (currentDestination != "AlertPage") {
                     Image(

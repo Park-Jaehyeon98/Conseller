@@ -292,10 +292,10 @@ data class StoreItemData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<StoreItemData> {
     return listOf(
-        StoreItemData(1,"image1", "Item1", "2일", "5시간", "서버미연결", 10000),
-        StoreItemData(2,"image2", "Item2", "3일", "4시간", "중간", 20000),
-        StoreItemData(3,"image3", "Item3", "1일", "2시간", "낮음", 30000),
-        StoreItemData(4,"image4", "Item4", "4일", "6시간", "높음", 40000),
-        StoreItemData(5,"image5", "Item5", "5일", "3시간", "중간", 50000)
+        StoreItemData(1,"image1", "Item1", "20231001235959", "20231001235959", "서버미연결", 10000),
+        StoreItemData(2,"image2", "Item2", "20231002235959", "20231002235959", "중간", 20000),
+        StoreItemData(3,"image3", "Item3", "20231003235959", "20231003235959", "낮음", 30000),
+        StoreItemData(4,"image4", "Item4", "20231004235959", "20231004235959", "높음", 40000),
+        StoreItemData(5,"image5", "Item5", "20231005235959", "20231005235959", "중간", 50000)
     )
 }

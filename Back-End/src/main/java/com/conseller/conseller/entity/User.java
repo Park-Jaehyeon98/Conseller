@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -143,5 +144,11 @@ public class User extends BaseTime implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    //비밀번호 암호화
+    public User encryptPassword(PasswordEncoder passwordEncoder) {
+        this.userPassword = passwordEncoder.encode(this.userPassword);
+        return this;
     }
 }

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(SignUpRequest signUpRequest) {
+
         userValidator.signUpDtoValidate(signUpRequest);
 
         User user = User.builder()
@@ -57,6 +59,8 @@ public class UserServiceImpl implements UserService {
                 .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
                 .build();
 
+        //비밀번호 암호화 및 유저 권한 설정
+        user.encryptPassword(new BCryptPasswordEncoder());
         user.getRoles().add(Authority.USER.name());
         return userRepository.save(user);
     }

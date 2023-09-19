@@ -18,6 +18,7 @@ public interface UserService {
     public LoginResponse login(LoginRequest loginRequest);
     public void updateUserInfo(long userIdx, UserInfoRequest userInfoRequest);
     public UserInfoResponse getUserInfo(long userIdx);
+
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest);
     public void uploadUserProfile(UserProfileRequest userProfileRequest);
     public void deposit(long userIdx, int deposit);

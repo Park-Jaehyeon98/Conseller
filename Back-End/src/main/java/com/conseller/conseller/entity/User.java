@@ -61,10 +61,10 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "user_account", nullable = false)
     private String userAccount;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "user_account_bank")
     private String userAccountBank;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
     private String userStatus;
 
     @Column(name = "user_restrict_end_date")

@@ -24,6 +24,9 @@ public class Gifticon {
     @Column(name = "gifticon_name", nullable = false)
     private String gifticonName;
 
+    /*
+    생성 시에 초 단위는 어떻게 할껀지?
+     */
     @CreatedDate
     private LocalDateTime gifticonStartDate;
 
@@ -49,5 +52,9 @@ public class Gifticon {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_idx")
     private SubCategory subCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "main_category_idx")
+    private MainCategory mainCategory;
 
 }

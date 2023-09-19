@@ -10,6 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.time.LocalDateTime.now;
 
@@ -35,7 +37,6 @@ public class Barter {
     @Column(name = "barter_end_date", nullable = false)
     private LocalDateTime barterEndDate;
 
-
     @LastModifiedDate
     private LocalDateTime barterModifiedDate;
 
@@ -60,6 +61,9 @@ public class Barter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_catergory_idx")
     private SubCategory preferSubCategory;
+
+    @OneToMany(mappedBy = "barter")
+    List<BarterHostItem> barterHostItemList = new ArrayList<>();
 
     @Builder
     public Barter(String barterName, String barterText, LocalDateTime barterEndDate, User barterHost, SubCategory subCategory, SubCategory preferSubCategory) {

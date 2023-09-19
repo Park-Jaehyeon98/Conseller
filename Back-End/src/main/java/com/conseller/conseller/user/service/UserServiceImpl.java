@@ -8,6 +8,7 @@ import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.user.enums.AccountBanks;
+import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.JwtToken;
 import com.conseller.conseller.utils.JwtTokenProvider;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +57,7 @@ public class UserServiceImpl implements UserService {
                 .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
                 .build();
 
+        user.getRoles().add(Authority.USER.name());
         return userRepository.save(user);
     }
 
@@ -125,6 +128,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest) {
         //유저의 idx와 비밀번호를 통해 해당 유저가 존재하는지 확인하는 쿼리를 짜야함.
+        if (!userRepository.existsByUserIdxAndUserPassword(userCheckPasswordRequest.getUserIdx(),
+                userCheckPasswordRequest.getUserPassword())) {
+            throw new RuntimeException("해당 idx와 비밀번호를 가진 유저가 존재하지 않습니다.");
+        }
     }
 
     @Override

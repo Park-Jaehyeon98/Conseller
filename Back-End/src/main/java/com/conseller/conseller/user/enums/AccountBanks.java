@@ -1,18 +1,16 @@
 package com.conseller.conseller.user.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
 @Getter
+@RequiredArgsConstructor
 public enum AccountBanks {
     SHINHAN("신한은행");
 
     private final String bank;
-
-    AccountBanks(String bank) {
-        this.bank = bank;
-    }
 
     public static AccountBanks fromString(String bank) {
 

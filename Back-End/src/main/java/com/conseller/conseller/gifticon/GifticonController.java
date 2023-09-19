@@ -1,4 +1,4 @@
 package com.conseller.conseller.gifticon;
 
-public class gifti {
+public class GifticonController {
 }

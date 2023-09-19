@@ -1,22 +1,23 @@
 package com.example.project
 
+import FilterButton
+import FormattedDateText
 import PaginationControls
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,8 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.project.api.StoreFilterDTO
 import com.example.project.viewmodels.StoreViewModel
+import convertNameToNum
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -70,12 +73,14 @@ fun StorePage(navController: NavHostController) {
                     )
                 },
                 placeholder = { Text("검색") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(5.dp)),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     viewModel.searchItems(searchText)
                     keyboardController?.hide() // 키보드 숨기기
-                })
+                }),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -85,62 +90,84 @@ fun StorePage(navController: NavHostController) {
             var filter3Selected by remember { mutableStateOf("등록일") } // 필터3의 초기값
 
             // 필터 버튼
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                StoreFilterButton(
+                item {
+                FilterButton(
                     selectedOption = filter1Selected,
-                    options = listOf("대분류", "a", "b", "c")
+                    options = listOf("대분류", "버거/치킨/피자", "편의점", "카페/베이커리", "아이스크림", "기타"),
                 ) {
                     filter1Selected = it
                     filter2Selected = "소분류"
+                    val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                        filter1Selected,
+                        filter2Selected,
+                        filter3Selected
+                    )
                     viewModel.applyFilter(
                         StoreFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
+                            filter1Id,
+                            filter2Id,
+                            filter3Id,
                             searchText,
                             currentPage
                         )
                     )
-                }
+                    }
 
-                StoreFilterButton(
+                }
+                item {
+                FilterButton(
                     selectedOption = filter2Selected,
                     options = when (filter1Selected) {
-                        "a" -> listOf("소분류", "a-1", "a-2", "a-3")
-                        "b" -> listOf("소분류", "b-1", "b-2", "b-3")
-                        "c" -> listOf("소분류", "c-1", "c-2", "c-3")
-                        else -> listOf("소분류")
+                        "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
+                        "편의점" -> listOf("전체", "금액권", "과자", "음료","도시락/김밥류","기타")
+                        "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
+                        "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
+                        "기타" -> listOf("전체")
+                        else -> listOf("전체")
                     }
                 ) {
                     filter2Selected = it
+                    val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                        filter1Selected,
+                        filter2Selected,
+                        filter3Selected
+                    )
                     viewModel.applyFilter(
                         StoreFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
+                            filter1Id,
+                            filter2Id,
+                            filter3Id,
                             searchText,
                             currentPage
                         )
                     )
                 }
-
-                StoreFilterButton(
-                    selectedOption = filter3Selected,
-                    options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
-                ) {
-                    filter3Selected = it
-                    viewModel.applyFilter(
-                        StoreFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            filter3Selected.toInt(),
-                            searchText,
-                            currentPage
+                }
+                item {
+                    FilterButton(
+                        selectedOption = filter3Selected,
+                        options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
+                    ) {
+                        filter3Selected = it
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
                         )
-                    )
+                        viewModel.applyFilter(
+                            StoreFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
+                    }
                 }
             }
 
@@ -190,47 +217,6 @@ fun StorePage(navController: NavHostController) {
     }
 }
 
-@Composable
-fun StoreFilterButton(
-    selectedOption: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .width(116.dp)
-            .height(28.dp)
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
-            .clickable { expanded = true }
-            .padding(horizontal = 6.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = selectedOption,modifier = Modifier.weight(1f), fontSize = 16.sp)
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Arrow Drop Down")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest  = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option, fontSize = 16.sp) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
 
 
 @Composable
@@ -261,6 +247,11 @@ fun StoreItem(
         ) {
             // Home 아이콘 임시 image가 들어갈자리
             Icon(Icons.Default.Home, contentDescription = "Image")
+            Image(
+                painter = rememberAsyncImagePainter(model = image),
+                contentDescription = "Loaded Image",
+                modifier = Modifier.size(100.dp) // 원하는 크기로 조정
+            )
         }
 
         // 10% 이름 및 유효기간
@@ -269,26 +260,21 @@ fun StoreItem(
                 .weight(0.1f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
         ) {
             Text(name, fontSize = 20.sp)
-            Text("유효기간: $gifticonTime")
+            FormattedDateText(gifticonTime,"유효기간")
         }
 
         // 구분 줄
         Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
-
-        // 5% 경매기간
-        Text("경매기간: $storeTime", modifier = Modifier
-            .weight(0.1f)
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-        )
+        Spacer(modifier = Modifier.height(4.dp))
 
         // 15% 박스1
         Box(
             modifier = Modifier
-                .weight(0.15f)
+                .weight(0.10f)
                 .padding(horizontal = 12.dp)
         ) {
             Row(
@@ -303,9 +289,18 @@ fun StoreItem(
                     modifier = Modifier.weight(0.6f),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Text("구매가: $storePrice")
+                    Text("구매가: $storePrice 원")
                 }
             }
         }
+        // 5% 경매기간
+        FormattedDateText(
+            gifticonTime = storeTime,
+            prefix = "마감일",
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+        )
     }
 }

@@ -62,6 +62,7 @@ interface BarterService {
 data class BarterFilterDTO(
     val mainCategory: Int,    // 대분류
     val subCategory: Int,    // 소분류
+    val status: Int,           // 상태
     val searchQuery: String? = null, // 검색 쿼리. 검색 API 사용 시에만 값이 있음.
     val page: Int                 // 페이지 정보
 )

@@ -360,10 +360,10 @@ data class AuctionBidData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<AuctionItemData> {
     return listOf(
-        AuctionItemData(1,"image1", "Item1", "2일", "5시간", "서버미연결", 1000, 500, 800),
-        AuctionItemData(2,"image2", "Item2", "3일", "4시간", "중간", 2000, 1000, 1500),
-        AuctionItemData(3,"image3", "Item3", "1일", "2시간", "낮음", 3000,2000, 2500),
-        AuctionItemData(4,"image4", "Item4", "4일", "6시간", "높음", 40000,2500, 3500),
-        AuctionItemData(5,"image5", "Item5", "5일", "3시간", "중간", 5000,3000, 4500)
+        AuctionItemData(1,"image1", "Item1", "20231001235959", "20231001235959", "서버미연결", 1000, 500, 800),
+        AuctionItemData(2,"image2", "Item2", "20231002235959", "20231002235959", "중간", 2000, 1000, 1500),
+        AuctionItemData(3,"image3", "Item3", "20231003235959", "20231003235959", "낮음", 3000,2000, 2500),
+        AuctionItemData(4,"image4", "Item4", "20231004235959", "20231004235959", "높음", 40000,2500, 3500),
+        AuctionItemData(5,"image5", "Item5", "20231005235959", "20231005235959", "중간", 5000,3000, 4500)
     )
 }

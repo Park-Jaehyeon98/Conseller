@@ -1,23 +1,20 @@
 package com.example.project
 
+import FilterButton
+import FormattedDateText
 import PaginationControls
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.viewmodels.BarterViewModel
+import convertNameToNum
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -83,46 +82,87 @@ fun BarterPage(navController: NavHostController) {
 
             var filter1Selected by remember { mutableStateOf("대분류") } // 필터1의 초기값
             var filter2Selected by remember { mutableStateOf("소분류") } // 필터2의 초기값
+            var filter3Selected by remember { mutableStateOf("등록일") } // 필터2의 초기값
 
             // 필터 버튼
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterButton2(
-                    selectedOption = filter1Selected,
-                    options = listOf("대분류", "a", "b", "c")
-                ) {
-                    filter1Selected = it
-                    filter2Selected = "소분류"
-                    viewModel.applyFilter(
-                        BarterFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            searchText,
-                            currentPage
+                item {
+                    FilterButton(
+                        selectedOption = filter1Selected,
+                        options = listOf("대분류", "버거/치킨/피자", "편의점", "카페/베이커리", "아이스크림", "기타"),
+                    ) {
+                        filter1Selected = it
+                        filter2Selected = "소분류"
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
                         )
-                    )
-                }
-
-                FilterButton2(
-                    selectedOption = filter2Selected,
-                    options = when (filter1Selected) {
-                        "a" -> listOf("소분류", "a-1", "a-2", "a-3")
-                        "b" -> listOf("소분류", "b-1", "b-2", "b-3")
-                        "c" -> listOf("소분류", "c-1", "c-2", "c-3")
-                        else -> listOf("소분류")
+                        viewModel.applyFilter(
+                            BarterFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
                     }
-                ) {
-                    filter2Selected = it
-                    viewModel.applyFilter(
-                        BarterFilterDTO(
-                            filter1Selected.toInt(),
-                            filter2Selected.toInt(),
-                            searchText,
-                            currentPage
+
+                }
+                item {
+                    FilterButton(
+                        selectedOption = filter2Selected,
+                        options = when (filter1Selected) {
+                            "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
+                            "편의점" -> listOf("전체", "금액권", "과자", "음료","도시락/김밥류","기타")
+                            "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
+                            "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
+                            "기타" -> listOf("전체")
+                            else -> listOf("전체")
+                        }
+                    ) {
+                        filter2Selected = it
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
                         )
-                    )
+                        viewModel.applyFilter(
+                            BarterFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
+                    }
+                }
+                item {
+                    FilterButton(
+                        selectedOption = filter3Selected,
+                        options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
+                    ) {
+                        filter3Selected = it
+                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                            filter1Selected,
+                            filter2Selected,
+                            filter3Selected
+                        )
+                        viewModel.applyFilter(
+                            BarterFilterDTO(
+                                filter1Id,
+                                filter2Id,
+                                filter3Id,
+                                searchText,
+                                currentPage
+                            )
+                        )
+                    }
                 }
             }
 
@@ -173,50 +213,6 @@ fun BarterPage(navController: NavHostController) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FilterButton2(
-    selectedOption: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .width(116.dp)
-            .height(28.dp)
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
-            .clickable { expanded = true }
-            .padding(horizontal = 6.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = selectedOption,modifier = Modifier.weight(1f), fontSize = 16.sp)
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Arrow Drop Down")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest  = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option, fontSize = 16.sp) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-
-
 @Composable
 fun BarterItem(
     image: String,
@@ -250,21 +246,28 @@ fun BarterItem(
 
         // 10% 이름 및 유효기간
         Row(
-            modifier = Modifier.weight(0.1f).fillMaxWidth().padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
         ) {
             Text(name, fontSize = 20.sp)
-            Text("유효기간: $gifticonTime")
+            FormattedDateText(gifticonTime,"유효기간")
         }
 
         // 구분 줄
         Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
 
         // 5% 경매기간
-        Text("경매기간: $barterTime", modifier = Modifier
-            .weight(0.1f)
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
+        FormattedDateText(
+            gifticonTime = barterTime,
+            prefix = "마감일",
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
         )
 
         // 15% 박스1

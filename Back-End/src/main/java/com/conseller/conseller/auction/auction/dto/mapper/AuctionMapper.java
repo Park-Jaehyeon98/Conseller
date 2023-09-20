@@ -1,6 +1,7 @@
 package com.conseller.conseller.auction.auction.dto.mapper;
 
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
+import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.entity.Auction;
@@ -28,7 +29,7 @@ public interface AuctionMapper {
     @Mapping(source = "auctionBidList", target = "auctionBidList")
     @Mapping(source = "user.userIdx", target = "auctionUserIdx")
     @Mapping(source = "user.userNickname", target = "auctionUserNickname")
-    DetailAuctionResponse entityToDetailAuctionResponse(User user, Auction auction, List<AuctionBid> auctionBidList);
+    DetailAuctionResponse entityToDetailAuctionResponse(User user, Auction auction, List<AuctionBidItemData> auctionBidList);
 
     //AuctionList -> AuctionItemDataList 매핑
     @Named("A2A")
@@ -49,4 +50,23 @@ public interface AuctionMapper {
 
     @IterableMapping(qualifiedByName = "A2A")
     List<AuctionItemData> auctionsToItemDatas(List<Auction> auctionList);
+
+    //AuctionBidList -> AuctionBidItemDataList 매핑
+    @Named("B2B")
+    default AuctionBidItemData bidToItemData(AuctionBid auctionBid) {
+        AuctionBidItemData itemData = new AuctionBidItemData();
+
+        itemData.setAuctionBidIdx(auctionBid.getAuctionBidIdx());
+        itemData.setAuctionBidPrice(auctionBid.getAuctionBidPrice());
+        itemData.setAuctionRegistedDate(auctionBid.getAuctionRegistedDate());
+        itemData.setAuctionBidStatus(auctionBid.getAuctionBidStatus());
+        itemData.setUserIdx(auctionBid.getUser().getUserIdx());
+        itemData.setAuctionIdx(auctionBid.getAuction().getAuctionIdx());
+
+        return itemData;
+    }
+
+    @IterableMapping(qualifiedByName = "B2B")
+    List<AuctionBidItemData> bidsToItemDatas(List<AuctionBid> auctionBidList);
+
 }

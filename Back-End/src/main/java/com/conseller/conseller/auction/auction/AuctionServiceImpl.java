@@ -4,6 +4,7 @@ import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
+import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
@@ -71,7 +72,9 @@ public class AuctionServiceImpl implements AuctionService{
         User user = userRepository.findById(auction.getUser().getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auction.getAuctionBidList());
+        List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
+
+        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidItemDataList);
 
         return detailAuctionResponse;
     }

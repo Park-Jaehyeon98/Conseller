@@ -1,6 +1,5 @@
 package com.conseller.conseller.auction.auction.dto.response;
 
-import com.conseller.conseller.entity.AuctionBid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +18,5 @@ public class DetailAuctionResponse {
 
     private String auctionUserNickname;
 
-    private List<AuctionBid> auctionBidList;
+    private List<AuctionBidItemData> auctionBidList;
 }

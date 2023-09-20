@@ -11,6 +11,8 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreItemData;
+import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.enums.StoreStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +37,18 @@ public class StoreServiceImpl implements StoreService {
 
     // 판매 목록
     @Transactional(readOnly = true)
-    public Page<Store> getStoreList(StoreListRequest request) { //queryDSL 사용
+    public StoreListResponse getStoreList(StoreListRequest request) { //queryDSL 사용
         Pageable pageable = PageRequest.of(request.getPage(), 10);
-        return storeRepositoryImpl.findStoreList(request, pageable);
+
+        Page<Store> stores = storeRepositoryImpl.findStoreList(request, pageable);
+
+        List<StoreItemData> storeItemDataList = StoreMapper.INSTANCE.storesToItemDatas(stores.getContent());
+
+        StoreListResponse response = new StoreListResponse(storeItemDataList,
+                stores.getTotalElements(),
+                stores.getTotalPages());
+
+        return response;
     }
 
     // 판매 글 등록

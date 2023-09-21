@@ -1,10 +1,8 @@
-package com.conseller.conseller.barter.request.barterRequestDto;
+package com.conseller.conseller.barter.barterRequest.barterRequestDto;
 
 
 
-import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterGuestItemDto;
 import com.conseller.conseller.entity.Barter;
-import com.conseller.conseller.entity.BarterGuestItem;
 import com.conseller.conseller.entity.BarterRequest;
 import com.conseller.conseller.entity.User;
 import lombok.Getter;

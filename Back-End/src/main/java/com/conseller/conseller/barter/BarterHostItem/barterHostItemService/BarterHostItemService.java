@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.BarterHostItem;
+package com.conseller.conseller.barter.BarterHostItem.barterHostItemService;
 
 import com.conseller.conseller.entity.Barter;
 

@@ -1,5 +1,6 @@
-package com.conseller.conseller.barter.BarterGuestItem;
+package com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService;
 
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
 import com.conseller.conseller.entity.BarterGuestItem;
 import com.conseller.conseller.entity.BarterRequest;
 import com.conseller.conseller.entity.Gifticon;

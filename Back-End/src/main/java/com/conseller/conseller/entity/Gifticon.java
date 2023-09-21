@@ -39,6 +39,10 @@ public class Gifticon {
     @LastModifiedDate
     private LocalDateTime gifticonRegistedDate;
 
+    /*
+    원본이미지 : not null
+    짜른 이미지 : null
+     */
     @Column(name = "gifticon_all_image_name")
     private String gifticonAllImageName;
 

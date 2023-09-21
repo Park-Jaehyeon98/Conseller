@@ -5,9 +5,14 @@ import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreItemData;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel="spring")
 public interface StoreMapper {
@@ -23,4 +28,22 @@ public interface StoreMapper {
     @Mapping(source = "user.userNickname", target = "storeUserNickname")
     DetailStoreResponse entityToDetailStoreResponse(User user, Store store);
 
+    //StoreList -> StoreItemDataList 매핑
+    @Named("S2S")
+    default StoreItemData storeToItemData(Store store) {
+        StoreItemData itemData = new StoreItemData();
+
+        itemData.setStoreIdx(store.getStoreIdx());
+        itemData.setGifticonDataImageName(store.getGifticon().getGifticonDateImageName());
+        itemData.setGifticonName(store.getGifticon().getGifticonName());
+        itemData.setGifticonEndDate(store.getGifticon().getGifticonEndDate());
+        itemData.setStoreEndDate(store.getStoreEndDate());
+        itemData.setPopular("0");
+        itemData.setStorePrice(store.getStorePrice());
+
+        return itemData;
+    }
+
+    @IterableMapping(qualifiedByName = "S2S")
+    List<StoreItemData> storesToItemDatas(List<Store> storeList);
 }

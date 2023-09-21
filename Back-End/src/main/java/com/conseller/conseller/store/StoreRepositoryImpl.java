@@ -1,8 +1,8 @@
-package com.conseller.conseller.auction.auction;
+package com.conseller.conseller.store;
 
-import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
-import com.conseller.conseller.auction.auction.enums.AuctionStatus;
-import com.conseller.conseller.entity.Auction;
+import com.conseller.conseller.entity.Store;
+import com.conseller.conseller.store.dto.request.StoreListRequest;
+import com.conseller.conseller.store.enums.StoreStatus;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -16,20 +16,20 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.conseller.conseller.entity.QAuction.auction;
+import static com.conseller.conseller.entity.QStore.store;
 
 @Repository
 @RequiredArgsConstructor
-public class AuctionRepositoryImpl{
+public class StoreRepositoryImpl {
     private final JPAQueryFactory factory;
 
-    public Page<Auction> findAuctionList(AuctionListRequest request, Pageable pageable) {
-        List<Auction> content = factory
-                .selectFrom(auction)
+    public Page<Store> findStoreList(StoreListRequest request, Pageable pageable) {
+        List<Store> content = factory
+                .selectFrom(store)
                 .where(
                         eqCategory(request.getMainCategory(), request.getSubCategory()),
                         eqSearch(request.getSearchQuery()),
-                        auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS.getStatus())
+                        store.storeStatus.eq(StoreStatus.IN_PROGRESS.getStatus())
                 )
                 .orderBy(orderSpecifier(request.getStatus()))
                 .offset(pageable.getOffset())
@@ -37,12 +37,12 @@ public class AuctionRepositoryImpl{
                 .fetch();
 
         Long count = factory
-                .select(auction.count())
-                .from(auction)
+                .select(store.count())
+                .from(store)
                 .where(
                         eqCategory(request.getMainCategory(), request.getSubCategory()),
                         eqSearch(request.getSearchQuery()),
-                        auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS.getStatus())
+                        store.storeStatus.eq(StoreStatus.IN_PROGRESS.getStatus())
                 )
                 .fetchOne();
 
@@ -51,9 +51,9 @@ public class AuctionRepositoryImpl{
 
     private BooleanExpression eqCategory(Integer mainCategory, Integer subCategory) {
         if(subCategory != 0) {
-            return auction.gifticon.subCategory.subCategoryIdx.eq(subCategory);
+            return store.gifticon.subCategory.subCategoryIdx.eq(subCategory);
         }else if(mainCategory != 0 && subCategory == 0) {
-            return auction.gifticon.mainCategory.mainCategoryIdx.eq(mainCategory);
+            return store.gifticon.mainCategory.mainCategoryIdx.eq(mainCategory);
         }else {
             return null;
         }
@@ -64,18 +64,16 @@ public class AuctionRepositoryImpl{
             return null;
         }
 
-        return auction.gifticon.gifticonName.containsIgnoreCase(searchQuery);
+        return store.gifticon.gifticonName.containsIgnoreCase(searchQuery);
     }
 
     private OrderSpecifier orderSpecifier(Integer status) {
         if(status == 0) {
-            return new OrderSpecifier(Order.DESC, auction.auctionStartDate);
+            return new OrderSpecifier(Order.DESC, store.storeCreatedDate);
         } else if (status == 1) {
-            return new OrderSpecifier(Order.ASC, auction.gifticon.gifticonEndDate);
-        } else if(status == 2) {
-            return new OrderSpecifier(Order.ASC, auction.auctionHighestBid);
+            return new OrderSpecifier(Order.ASC, store.gifticon.gifticonEndDate);
         } else  {
-            return new OrderSpecifier(Order.ASC, auction.upperPrice);
+            return new OrderSpecifier(Order.ASC, store.storePrice);
         }
     }
 }

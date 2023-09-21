@@ -11,9 +11,14 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreItemData;
+import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.enums.StoreStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +33,22 @@ public class StoreServiceImpl implements StoreService {
     private final GifticonRepository gifticonRepository;
     private final MainCategoryRepository mainCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final StoreRepositoryImpl storeRepositoryImpl;
 
     // 판매 목록
     @Transactional(readOnly = true)
-    public List<Store> getStoreList(StoreListRequest storeListRequest) { //queryDSL 사용
+    public StoreListResponse getStoreList(StoreListRequest request) { //queryDSL 사용
+        Pageable pageable = PageRequest.of(request.getPage(), 10);
 
-        return null;
+        Page<Store> stores = storeRepositoryImpl.findStoreList(request, pageable);
+
+        List<StoreItemData> storeItemDataList = StoreMapper.INSTANCE.storesToItemDatas(stores.getContent());
+
+        StoreListResponse response = new StoreListResponse(storeItemDataList,
+                stores.getTotalElements(),
+                stores.getTotalPages());
+
+        return response;
     }
 
     // 판매 글 등록
@@ -80,7 +95,7 @@ public class StoreServiceImpl implements StoreService {
     public void storeStatusPermute(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx).orElseThrow(() -> new RuntimeException());
 
-        store.setStoreStatus(StoreStatus.IN_TRADE);
+        store.setStoreStatus(StoreStatus.IN_TRADE.getStatus());
     }
 
 }

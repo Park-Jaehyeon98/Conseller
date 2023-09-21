@@ -4,6 +4,9 @@ import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
+import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
+import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
+import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
 import com.conseller.conseller.entity.Auction;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -30,10 +35,19 @@ public class AuctionServiceImpl implements AuctionService{
 
     // 경매 목록
     @Override
-    public Page<Auction> getAuctionList(AuctionListRequest request) {
+    @Transactional(readOnly = true)
+    public AuctionListResponse getAuctionList(AuctionListRequest request) {
         Pageable pageable = PageRequest.of(request.getPage(), 10);
 
-        return auctionImplRepository.findAuctionList(request, pageable);
+        Page<Auction> auctions = auctionImplRepository.findAuctionList(request, pageable);
+
+        List<AuctionItemData> auctionItemDataList = AuctionMapper.INSTANCE.auctionsToItemDatas(auctions.getContent());
+
+        AuctionListResponse response = new AuctionListResponse(auctionItemDataList,
+                auctions.getTotalElements(),
+                auctions.getTotalPages());
+
+        return response;
     }
 
     // 경매 글 등록
@@ -58,7 +72,9 @@ public class AuctionServiceImpl implements AuctionService{
         User user = userRepository.findById(auction.getUser().getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auction.getAuctionBidList());
+        List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
+
+        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidItemDataList);
 
         return detailAuctionResponse;
     }

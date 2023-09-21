@@ -1,4 +1,4 @@
-package com.conseller.conseller.auction.auction.dto.response;
+package com.conseller.conseller.store.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuctionListResponse {
-    private List<AuctionItemData> items;
-
+public class StoreListResponse {
+    private List<StoreItemData> items;
     private Long totalElements;
-
     private Integer totalPages;
 }

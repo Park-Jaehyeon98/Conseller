@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(of = "storeIdx")
 @DynamicUpdate
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -36,8 +35,7 @@ public class Store {
     private String storeText;
 
     @Column(name = "store_status")
-    @Enumerated(EnumType.STRING)
-    private StoreStatus storeStatus;
+    private String storeStatus = StoreStatus.IN_PROGRESS.getStatus();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gifticon_idx")

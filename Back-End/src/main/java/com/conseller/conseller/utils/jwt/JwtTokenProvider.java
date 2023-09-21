@@ -1,4 +1,4 @@
-package com.conseller.conseller.utils;
+package com.conseller.conseller.utils.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

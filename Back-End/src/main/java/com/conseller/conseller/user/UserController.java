@@ -24,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
 
+    //회원가입
     @PostMapping
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         log.info("유저 회원가입 호출");
@@ -47,11 +48,12 @@ public class UserController {
                 .body(loginResponse);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@RequestBody LoginRequest loginRequest) {
+    //액세스 토큰 재발급 요청
+    @PostMapping("/refresh/{userIdx}")
+    public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@PathVariable long userIdx) {
         log.info("액세스 토큰 재발급 요청");
         return ResponseEntity.ok()
-                .body(userService.reCreateAccessToken(request, loginRequest));
+                .body(userService.reCreateAccessToken(request, userIdx));
     }
 
     //닉네임 중복체크
@@ -91,18 +93,18 @@ public class UserController {
                 .body(infoValidationRequest);
     }
 
-    //아이디 찾기
+    //부분 암호화된 아이디 출력
     @PostMapping("/id")
     public ResponseEntity<Object> getEncodeUserId(@RequestBody EmailAndNameRequest emailAndNameRequest) {
         return ResponseEntity.ok()
-                .body(null);
+                .body(userService.getHiddenUserId(emailAndNameRequest));
     }
 
-    //비밀번호 찾기
+    // 임시 비밀번호 발급
     @PatchMapping("/pw")
     public ResponseEntity<Object> changeTempPassword(@RequestBody EmailAndIdRequest emailAndIdRequest) {
         return ResponseEntity.ok()
-                .body(null);
+                .body(userService.generateTemporaryPassword(emailAndIdRequest));
     }
 
     //유저 정보 변경
@@ -165,7 +167,7 @@ public class UserController {
     @GetMapping("/{userIdx}/batrer")
     public ResponseEntity<List<Barter>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
-                .body(userService.getUserbarters(userIdx));
+                .body(userService.getUserBarters(userIdx));
     }
 
     //내 물물교환 요청 보기

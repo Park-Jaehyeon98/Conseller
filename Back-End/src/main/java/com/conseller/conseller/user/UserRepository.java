@@ -14,7 +14,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserIdx(Long userIdx);
 
-    Optional<User> findByUserEmailAndUserName(String email, String userName);
+    Optional<User> findByUserEmailAndUserName(String userEmail, String userName);
+
+    Optional<User> findByUserEmailAndUserId(String userEmail, String userId);
 
     @Query("select u.refreshToken from User u where u.userId = :userId")
     Optional<String> findRefreshTokenByUserId(@Param("userId") String userId);

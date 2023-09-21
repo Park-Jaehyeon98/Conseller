@@ -1,4 +1,4 @@
-package com.conseller.conseller.utils;
+package com.conseller.conseller.utils.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,13 +1,11 @@
 package com.conseller.conseller.entity;
 
-import com.conseller.conseller.user.enums.AccountBanks;
-import com.conseller.conseller.user.enums.UserStatus;
 import lombok.*;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -79,29 +77,37 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Auction> auctions = new ArrayList<>();
+    private List<Auction> auctions = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<AuctionBid> auctionBids = new ArrayList<>();
+    private List<AuctionBid> auctionBids = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "barterHost")
-    List<Barter> barters = new ArrayList<>();
+    private List<Barter> barters = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<BarterRequest> barterRequests = new ArrayList<>();
+    private List<BarterRequest> barterRequests = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Gifticon> gifticons = new ArrayList<>();
+    private List<Gifticon> gifticons = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Inquiry> inquiries = new ArrayList<>();
+    private List<Inquiry> inquiries = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Store> stores = new ArrayList<>();
+    private List<Store> stores = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Notification> notifications = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -143,5 +149,15 @@ public class User extends BaseTime implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    //비밀번호 암호화
+    public void encryptPassword(PasswordEncoder passwordEncoder) {
+        this.userPassword = passwordEncoder.encode(this.userPassword);
+    }
+
+    //해당 비밀번호가 맞는지 확인
+    public boolean checkPassword(PasswordEncoder passwordEncoder, String userPassword) {
+        return passwordEncoder.matches(userPassword, this.userPassword);
     }
 }

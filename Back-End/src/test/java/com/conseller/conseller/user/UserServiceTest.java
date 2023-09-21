@@ -57,8 +57,8 @@ public class UserServiceTest {
                 .userGender(signUpRequest.getUserGender())
                 .userAccount(signUpRequest.getUserAccount())
                 .userRestrictCount(0)
-                .userStatus(UserStatus.ACTIVE)
-                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()))
+                .userStatus(UserStatus.ACTIVE.getStatus())
+                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
                 .build();
 
         given(userRepository.save(any(User.class))).willReturn(user);

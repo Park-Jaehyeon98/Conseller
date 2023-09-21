@@ -45,14 +45,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 dir('Back-End'){
-                    sh '''
-                    echo 'Deploy'
-
-                    docker stop springboot
-                    docker rm springboot
-
-                    docker run -d -p 8080:8080 --name springboot docker-springboot:0.0.2
-                    '''
+                    script {
+                            def containerExists = sh(script: 'docker ps -a --format "{{.Names}}" | grep -q "springboot"', returnStatus: true)
+                            if (containerExists == 0) {
+                                sh 'docker stop springboot'
+                                sh 'docker rm springboot'
+                            }
+                            sh 'docker run -d -p 8080:8080 --name springboot docker-springboot:0.0.2'
+                            }
                 }
             }
             post {

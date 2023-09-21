@@ -71,5 +71,17 @@ public class AuctionController {
                 .body(response);
     }
 
+    // 즉시 구매 버튼
+
+
+    // 경매 진행 취소
+    @PatchMapping("/cancel/{auction_idx}")
+    public ResponseEntity<Object> cancelAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        auctionService.cancelAuction(auctionIdx);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
 
 }

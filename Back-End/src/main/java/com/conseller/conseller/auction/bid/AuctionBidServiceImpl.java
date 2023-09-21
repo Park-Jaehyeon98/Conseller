@@ -56,7 +56,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             Auction auction = auctionRepository.findById(auctionBid.getAuction().getAuctionIdx())
                     .orElseThrow(() -> new RuntimeException());
 
-            // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴
+            // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴-
             List<AuctionBid> auctionBidList = auctionBidRepository
                     .findByAuctionIdxOrderByAuctionBidPriceDesc(auction.getAuctionIdx());
             

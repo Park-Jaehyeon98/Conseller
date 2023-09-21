@@ -110,4 +110,19 @@ public class AuctionServiceImpl implements AuctionService{
 
         return response;
     }
+
+    @Override
+    public void cancelAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+
+        // 거래 취소 알림
+
+        // 경매 상태 진행 중으로 변경
+        auction.setAuctionStatus(AuctionStatus.IN_PROGRESS.getStatus());
+
+        //가장 높은 입찰 삭제
+        //입찰이 한사람당 하나씩인지 결정하고 작성
+
+    }
 }

@@ -20,4 +20,6 @@ public interface AuctionService {
     public void deleteAuction(Long auctionIdx);
 
     public AuctionTradeResponse tradeAuction(Long auctionIdx);
+
+    public void cancelAuction(Long auctionIdx);
 }

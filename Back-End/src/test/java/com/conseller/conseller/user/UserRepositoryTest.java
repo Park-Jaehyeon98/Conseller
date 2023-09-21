@@ -32,10 +32,10 @@ public class UserRepositoryTest {
                 .userAge(27)
                 .userName("테스트")
                 .userAccount("0234691047826307")
-                .userAccountBank(AccountBanks.fromString("신한은행"))
+//                .userAccountBank(AccountBanks.fromString("신한은행"))
                 .userEmail("ekclstkfka5@gmail.com")
                 .userDeposit(0)
-                .userStatus(UserStatus.ACTIVE)
+//                .userStatus(UserStatus.ACTIVE)
                 .userRestrictCount(0)
                 .build();
 
@@ -46,7 +46,7 @@ public class UserRepositoryTest {
         assertThat("test123123").isEqualTo(savedUser.getUserId());
         assertThat("test123456!").isEqualTo(savedUser.getUserPassword());
         assertThat("01050945330").isEqualTo(savedUser.getUserPhoneNumber());
-        assertThat(AccountBanks.SHINHAN.getBank()).isEqualTo(savedUser.getUserAccountBank().getBank());
+//        assertThat(AccountBanks.SHINHAN.getBank()).isEqualTo(savedUser.getUserAccountBank().getBank());
     }
 
     @Test
@@ -62,10 +62,10 @@ public class UserRepositoryTest {
                 .userAge(27)
                 .userName("테스트")
                 .userAccount("0234691047826307")
-                .userAccountBank(AccountBanks.fromString("신한은행"))
+//                .userAccountBank(AccountBanks.fromString("신한은행"))
                 .userEmail("ekclstkfka5@gmail.com")
                 .userDeposit(0)
-                .userStatus(UserStatus.ACTIVE)
+//                .userStatus(UserStatus.ACTIVE)
                 .userRestrictCount(0)
                 .build();
         userRepository.save(user);

@@ -1,11 +1,11 @@
-package com.conseller.conseller.barter.request;
+package com.conseller.conseller.barter.barterRequest.barterRequestService;
 
-import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
-import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemService;
+import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestRegistDto;
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.BarterRequest;
 import com.conseller.conseller.entity.User;

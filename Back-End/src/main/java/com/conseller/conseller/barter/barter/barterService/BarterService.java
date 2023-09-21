@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.barter;
+package com.conseller.conseller.barter.barter.barterService;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
@@ -20,4 +20,6 @@ public interface BarterService {
     void deleteBarter(Long barterIdx);
 
     void exchangeGifticon(Long barterIdx, Long barterRequestIdx);
+
+    void rejectRequest(Long barterIdx, Long BarterRequest);
 }

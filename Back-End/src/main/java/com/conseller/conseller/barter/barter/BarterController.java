@@ -3,6 +3,7 @@ package com.conseller.conseller.barter.barter;
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
+import com.conseller.conseller.barter.barter.barterService.BarterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -50,10 +51,10 @@ public class BarterController {
                 .build();
     }
 
-//    @PatchMapping("/{barterIdx}")
-//    public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @RequestBody Long barterRequestIdx) {
-//        barterService.exchangeGifticon(barterIdx, barterRequestIdx);
-//        return ResponseEntity.ok()
-//                .build();
-//    }
+    @PatchMapping("/{barterIdx}/{barterRequestIdx}")
+    public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @PathVariable Long barterRequestIdx) {
+        barterService.exchangeGifticon(barterIdx, barterRequestIdx);
+        return ResponseEntity.ok()
+                .build();
+    }
 }

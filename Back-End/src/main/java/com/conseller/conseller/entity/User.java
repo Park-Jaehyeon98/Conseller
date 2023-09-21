@@ -131,6 +131,10 @@ public class User extends BaseTime implements UserDetails {
         return this.userId;
     }
 
+    public String getName() {
+        return this.userName;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

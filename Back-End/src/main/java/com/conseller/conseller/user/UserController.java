@@ -24,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
 
+    //회원가입
     @PostMapping
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         log.info("유저 회원가입 호출");
@@ -47,6 +48,7 @@ public class UserController {
                 .body(loginResponse);
     }
 
+    //액세스 토큰 재발급 요청
     @PostMapping("/refresh/{userIdx}")
     public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@PathVariable long userIdx) {
         log.info("액세스 토큰 재발급 요청");
@@ -91,11 +93,11 @@ public class UserController {
                 .body(infoValidationRequest);
     }
 
-    //아이디 찾기
+    //부분 암호화된 아이디 출력
     @PostMapping("/id")
     public ResponseEntity<Object> getEncodeUserId(@RequestBody EmailAndNameRequest emailAndNameRequest) {
         return ResponseEntity.ok()
-                .body(null);
+                .body(userService.getHiddenUserId(emailAndNameRequest));
     }
 
     // 임시 비밀번호 발급

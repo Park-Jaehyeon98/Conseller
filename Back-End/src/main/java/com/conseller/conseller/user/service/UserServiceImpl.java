@@ -8,8 +8,8 @@ import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
-import com.conseller.conseller.utils.JwtToken;
-import com.conseller.conseller.utils.JwtTokenProvider;
+import com.conseller.conseller.utils.jwt.JwtToken;
+import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +125,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PartialHiddenUserIdResponse getHiddenUserId(EmailAndNameRequest emailAndNameRequest) {
-        return null;
+
+        //1. 이메일과 이름을 통해 유저 정보를 불러온다.
+        User user = userRepository.findByUserEmailAndUserName(emailAndNameRequest.getUserEmail(), emailAndNameRequest.getUserName())
+                .orElseThrow(() -> new RuntimeException("유저 정보를 불러올 수 없습니다."));
+
+        StringBuilder partialEncodeId = new StringBuilder();
+        String userId = user.getUserId();
+        int length = userId.length();
+
+        partialEncodeId.append("*".repeat(length / 2));
+        partialEncodeId.append(userId.substring(length / 2));
+
+        return PartialHiddenUserIdResponse.builder()
+                .userEncodeId(partialEncodeId.toString())
+                .build();
     }
 
     @Override

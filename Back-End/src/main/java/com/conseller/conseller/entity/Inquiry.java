@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.inquiry.enums.InquiryStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,14 +29,19 @@ public class Inquiry {
     @Column(nullable = false)
     private String inquiryText;
 
+    @Column
+    private String inquiryAnswer;
+
+    @Column
+    private LocalDateTime inquiryAnswerDate;
+
     @CreatedDate
-    private LocalDateTime inquiryCreatedTime;
+    private LocalDateTime inquiryCreatedDate;
 
-//    @Enumerated(EnumType.STRING)
-//    private InquiryStatus inquiryStatus;
+    @Column(nullable = false)
+    private String inquiryStatus = InquiryStatus.CHECKING.getStatus();
 
-//    @Enumerated(EnumType.STRING)
-//    private InquiryType inquiryType;
-
+    @Column(nullable = false)
+    private String inquiryType;
 
 }

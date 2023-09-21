@@ -1,10 +1,7 @@
 package com.conseller.conseller.entity;
 
-import com.conseller.conseller.user.enums.AccountBanks;
-import com.conseller.conseller.user.enums.UserStatus;
 import lombok.*;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -147,8 +144,12 @@ public class User extends BaseTime implements UserDetails {
     }
 
     //비밀번호 암호화
-    public User encryptPassword(PasswordEncoder passwordEncoder) {
+    public void encryptPassword(PasswordEncoder passwordEncoder) {
         this.userPassword = passwordEncoder.encode(this.userPassword);
-        return this;
+    }
+
+    //해당 비밀번호가 맞는지 확인
+    public boolean checkPassword(PasswordEncoder passwordEncoder, String userPassword) {
+        return passwordEncoder.matches(userPassword, this.userPassword);
     }
 }

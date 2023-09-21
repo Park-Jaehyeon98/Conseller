@@ -1,7 +1,7 @@
-package com.conseller.conseller.barter.request;
+package com.conseller.conseller.barter.barterRequest.barterRequestService;
 
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestRegistDto;
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 
 import java.util.List;
 

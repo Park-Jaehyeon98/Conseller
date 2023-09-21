@@ -1,8 +1,8 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestResponseDto;
-import com.conseller.conseller.barter.request.enums.RequestStatus;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "barterRequestIdx")
 public class BarterRequest {

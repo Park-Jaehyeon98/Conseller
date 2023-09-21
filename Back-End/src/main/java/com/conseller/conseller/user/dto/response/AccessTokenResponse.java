@@ -1,14 +1,12 @@
 package com.conseller.conseller.user.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@Getter @Builder @ToString
-@RequiredArgsConstructor
+@Getter @Setter @Builder @ToString
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class AccessTokenResponse {
 
-    private final String accessToken;
+    private String accessToken;
 
 }

@@ -77,29 +77,37 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Auction> auctions = new ArrayList<>();
+    private List<Auction> auctions = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<AuctionBid> auctionBids = new ArrayList<>();
+    private List<AuctionBid> auctionBids = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "barterHost")
-    List<Barter> barters = new ArrayList<>();
+    private List<Barter> barters = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<BarterRequest> barterRequests = new ArrayList<>();
+    private List<BarterRequest> barterRequests = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Gifticon> gifticons = new ArrayList<>();
+    private List<Gifticon> gifticons = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Inquiry> inquiries = new ArrayList<>();
+    private List<Inquiry> inquiries = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Store> stores = new ArrayList<>();
+    private List<Store> stores = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    List<Notification> notifications = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)

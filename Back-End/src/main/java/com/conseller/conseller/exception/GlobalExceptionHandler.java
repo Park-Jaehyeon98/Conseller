@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<CommonResponse> handleRuntimeException(RuntimeException exception) {
+    public ResponseEntity<CommonResponse> handleRuntimeException(IllegalArgumentException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
                 .code(IllEGAL_CODE)
                 .message(exception.getMessage())

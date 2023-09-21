@@ -4,8 +4,10 @@ import com.conseller.conseller.entity.*;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
+import com.conseller.conseller.user.dto.response.AccessTokenResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserService {
@@ -16,8 +18,11 @@ public interface UserService {
     public InfoValidationRequest checkEmail(String email);
     public InfoValidationRequest checkPhoneNumber(String phoneNumber);
     public LoginResponse login(LoginRequest loginRequest);
+
+    public AccessTokenResponse reCreateAccessToken(HttpServletRequest request, LoginRequest loginRequest);
     public void updateUserInfo(long userIdx, UserInfoRequest userInfoRequest);
     public UserInfoResponse getUserInfo(long userIdx);
+
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest);
     public void uploadUserProfile(UserProfileRequest userProfileRequest);
     public void deposit(long userIdx, int deposit);

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class UserController {
 
     //일반 로그인
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         LoginResponse loginResponse = userService.login(loginRequest);
 
@@ -46,10 +47,12 @@ public class UserController {
                 .body(loginResponse);
     }
 
-//    @PostMapping("/refresh")
-//    public ResponseEntity<Object> reCreateAccessToken(@RequestBody LoginRequest loginRequest) {
-//
-//    }
+    @PostMapping("/refresh")
+    public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@RequestBody LoginRequest loginRequest) {
+        log.info("액세스 토큰 재발급 요청");
+        return ResponseEntity.ok()
+                .body(userService.reCreateAccessToken(request, loginRequest));
+    }
 
     //닉네임 중복체크
     @GetMapping("/{userNickname}")
@@ -104,7 +107,7 @@ public class UserController {
 
     //유저 정보 변경
     @PutMapping("/{userIdx}")
-    public ResponseEntity<Void> updateUserInfo(@PathVariable long userIdx, @RequestBody UserInfoRequest userInfoRequest) {
+    public ResponseEntity<Void> updateUserInfo(@PathVariable long userIdx, @Valid @RequestBody UserInfoRequest userInfoRequest) {
         userService.updateUserInfo(userIdx, userInfoRequest);
         return ResponseEntity.ok().build();
     }
@@ -159,14 +162,14 @@ public class UserController {
     }
 
     //내 물물교환 보기
-    @GetMapping("/{userIdx}/barer")
+    @GetMapping("/{userIdx}/batrer")
     public ResponseEntity<List<Barter>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserbarters(userIdx));
     }
 
     //내 물물교환 요청 보기
-    @GetMapping("/{userIdx}/barer-request")
+    @GetMapping("/{userIdx}/barter-request")
     public ResponseEntity<List<BarterRequest>> getUserBarterRequests(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserBarterRequests(userIdx));

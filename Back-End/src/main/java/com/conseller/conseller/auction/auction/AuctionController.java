@@ -83,5 +83,21 @@ public class AuctionController {
                 .build();
     }
 
+    // 입금 완료 버튼
+    @GetMapping("/deposit/{auction_idx}")
+    public ResponseEntity<Object> depositAuction(@PathVariable("auction_idx") Long auctionIdx) {
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    // 입금 확인 버튼
+    @GetMapping("/complete/{auction_idx}")
+    public  ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
 
 }

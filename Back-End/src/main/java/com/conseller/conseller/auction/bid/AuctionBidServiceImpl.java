@@ -35,8 +35,10 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             // 입찰금 범위 이상 예외처리
         }
 
+        // 현재 최대 입찰금보다 지금 입찰한 금액이 더 크다면 최대 입찰금, 최대 금액 입찰한 유저 갱신
         if(request.getAuctionBidPrice() > auction.getAuctionHighestBid()) {
             auction.setAuctionHighestBid(request.getAuctionBidPrice());
+            auction.setHighestBidUser(user);
         }
 
         AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registRequestToAuctionBid(user, auction, request);
@@ -49,17 +51,22 @@ public class AuctionBidServiceImpl implements AuctionBidService{
         AuctionBid auctionBid = auctionBidRepository.findById(auctionBidIdx)
                         .orElseThrow(() -> new RuntimeException());
 
+        // 삭제하려고 하는 입찰자가 최대 금액 입찰자라면 
         if(auctionBid.getAuction().getAuctionHighestBid().equals(auctionBid.getAuctionBidPrice())) {
             Auction auction = auctionRepository.findById(auctionBid.getAuction().getAuctionIdx())
                     .orElseThrow(() -> new RuntimeException());
 
+            // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴
             List<AuctionBid> auctionBidList = auctionBidRepository
                     .findByAuctionIdxOrderByAuctionBidPriceDesc(auction.getAuctionIdx());
-
+            
+            //입잘자가 혼자라면 초기화
             if(auctionBidList.size() == 1){
                 auction.setAuctionHighestBid(0);
-            }else {
+                auction.setHighestBidUser(null);
+            }else { //입찰자보다 바로 아래 입찰금액으로 갱신
                 auction.setAuctionHighestBid(auctionBidList.get(1).getAuctionBidPrice());
+                auction.setHighestBidUser(auctionBidList.get(1).getUser());
             }
 
         }

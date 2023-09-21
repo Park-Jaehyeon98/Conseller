@@ -35,6 +35,10 @@ public class Auction {
     @Column(name = "auction_highest_bid", nullable = false)
     private Integer auctionHighestBid = 0;
 
+    @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User highestBidUser;
+
     @Column(name = "auction_status", nullable = false)
     private String auctionStatus = AuctionStatus.IN_PROGRESS.getStatus();
 

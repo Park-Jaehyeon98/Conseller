@@ -45,4 +45,8 @@ public class Store {
     @JoinColumn(name = "user_idx")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User consumer;
+
 }

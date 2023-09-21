@@ -4,10 +4,8 @@ import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
-import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
-import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.auction.dto.response.*;
+import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.Gifticon;
@@ -93,5 +91,23 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public void deleteAuction(Long auctionIdx) {
         auctionRepository.deleteById(auctionIdx);
+    }
+
+    @Override
+    public AuctionTradeResponse tradeAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+
+        // 가장 높은 입찰자에게 알림이 간다
+
+        // 경매 상태 거래중으로 변경
+        auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
+
+        // 판매자의 계좌번호와 은행 전달
+        AuctionTradeResponse response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
+                auction.getUser().getUserAccountBank());
+
+
+        return response;
     }
 }

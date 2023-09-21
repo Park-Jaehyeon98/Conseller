@@ -4,6 +4,7 @@ import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
+import com.conseller.conseller.auction.auction.dto.response.AuctionTradeResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,5 +61,15 @@ public class AuctionController {
         return ResponseEntity.ok()
                 .build();
     }
+
+    // 경매 낙찰 버튼
+    @GetMapping("/trade/{auction_idx}")
+    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
 
 }

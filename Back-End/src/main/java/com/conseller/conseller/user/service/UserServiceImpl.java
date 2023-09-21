@@ -4,15 +4,13 @@ import com.conseller.conseller.entity.*;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
-import com.conseller.conseller.user.dto.response.InfoValidationRequest;
-import com.conseller.conseller.user.dto.response.LoginResponse;
-import com.conseller.conseller.user.dto.response.AccessTokenResponse;
-import com.conseller.conseller.user.dto.response.UserInfoResponse;
+import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.JwtToken;
 import com.conseller.conseller.utils.JwtTokenProvider;
+import com.conseller.conseller.utils.TemporaryValueGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public LoginResponse login(LoginRequest loginRequest) {
 
        // 1. 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
-        Authentication authentication = getAuthentication(loginRequest);
+        Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());
 
         // 2. 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
@@ -105,6 +103,29 @@ public class UserServiceImpl implements UserService {
         user.setUserEmail(userInfoRequest.getUserEmail());
         user.setUserAccount(userInfoRequest.getUserAccount());
         user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+    }
+
+    @Override
+    public TemporaryPasswordResponse generateTemporaryPassword(EmailAndIdRequest emailAndIdRequest) {
+
+        // 1. 임시 비밀번호 생성
+        String tempPassword = TemporaryValueGenerator.generateTemporaryValue();
+
+        // 2. 해당 이메일과 ID를 가진 유저 불러오기
+        User user = userRepository.findByUserEmailAndUserId(emailAndIdRequest.getUserEmail(), emailAndIdRequest.getUserId())
+                .orElseThrow(() -> new RuntimeException("없는 유저 정보 입니다."));
+
+        // 3. 임시 비밀번호로 저장
+        user.setUserPassword(tempPassword);
+
+        return TemporaryPasswordResponse.builder()
+                .temporaryPassword(user.getPassword())
+                .build();
+    }
+
+    @Override
+    public PartialHiddenUserIdResponse getHiddenUserId(EmailAndNameRequest emailAndNameRequest) {
+        return null;
     }
 
     @Override
@@ -170,7 +191,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Barter> getUserbarters(long userIdx) {
+    public List<Barter> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         return user.getBarters();
@@ -191,15 +212,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AccessTokenResponse reCreateAccessToken(HttpServletRequest request, LoginRequest loginRequest) {
+    public AccessTokenResponse reCreateAccessToken(HttpServletRequest request, long userIdx) {
         log.info("refresh token service layer");
+        // 0.요청이 들어온 유저의 정보를 db에서 가져온다.
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+
         // 1. authentication 발급
-        Authentication authentication = getAuthentication(loginRequest);
+        Authentication authentication = getAuthentication(user.getUserId(), user.getUserPassword());
 
         // 2. header에서 refresh token 추출
         String refreshToken = jwtTokenProvider.resolveToken(request);
+
         // 3. 토큰의 유효성 검사
-        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+        if (refreshToken != null
+                && jwtTokenProvider.validateToken(refreshToken)
+                && refreshToken.equals(user.getRefreshToken())) {
             log.info("refresh token is valid.");
             // 3. access 토큰 재발급
             return AccessTokenResponse.builder()
@@ -210,13 +238,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private Authentication getAuthentication(LoginRequest loginRequest) {
-        log.info("user ID : " + loginRequest.getUserId());
-        log.info("user Password : " + loginRequest.getUserPassword());
+    private Authentication getAuthentication(String userId, String userPassword) {
+        log.info("user ID : " + userId);
+        log.info("user Password : " + userPassword);
         // 1. username + password 를 기반으로 Authentication 객체 생성
         // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getUserPassword());
+                new UsernamePasswordAuthenticationToken(userId, userPassword);
 
         log.info(authenticationManagerBuilder.getObject().toString());
         // 2. 실제 검증. authenticate() 메서드를 통해 요청된 User에 대한 검증 진행

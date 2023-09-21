@@ -47,11 +47,11 @@ public class UserController {
                 .body(loginResponse);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/refresh/{userIdx}")
+    public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@PathVariable long userIdx) {
         log.info("액세스 토큰 재발급 요청");
         return ResponseEntity.ok()
-                .body(userService.reCreateAccessToken(request, loginRequest));
+                .body(userService.reCreateAccessToken(request, userIdx));
     }
 
     //닉네임 중복체크
@@ -98,11 +98,11 @@ public class UserController {
                 .body(null);
     }
 
-    //비밀번호 찾기
+    // 임시 비밀번호 발급
     @PatchMapping("/pw")
     public ResponseEntity<Object> changeTempPassword(@RequestBody EmailAndIdRequest emailAndIdRequest) {
         return ResponseEntity.ok()
-                .body(null);
+                .body(userService.generateTemporaryPassword(emailAndIdRequest));
     }
 
     //유저 정보 변경
@@ -165,7 +165,7 @@ public class UserController {
     @GetMapping("/{userIdx}/batrer")
     public ResponseEntity<List<Barter>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
-                .body(userService.getUserbarters(userIdx));
+                .body(userService.getUserBarters(userIdx));
     }
 
     //내 물물교환 요청 보기

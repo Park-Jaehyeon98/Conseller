@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.request.enums;
+package com.conseller.conseller.barter.barterRequest.enums;
 
 import lombok.Getter;
 

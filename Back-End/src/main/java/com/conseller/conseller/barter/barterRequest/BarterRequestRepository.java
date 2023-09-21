@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.request;
+package com.conseller.conseller.barter.barterRequest;
 
 import com.conseller.conseller.entity.BarterRequest;
 import org.springframework.data.jpa.repository.JpaRepository;

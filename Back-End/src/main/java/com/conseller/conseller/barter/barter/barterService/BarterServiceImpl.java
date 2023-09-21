@@ -1,13 +1,17 @@
-package com.conseller.conseller.barter.barter;
+package com.conseller.conseller.barter.barter.barterService;
 
-import com.conseller.conseller.barter.BarterHostItem.BarterHostItemService;
+import com.conseller.conseller.barter.BarterHostItem.barterHostItemService.BarterHostItemService;
+import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
-import com.conseller.conseller.barter.request.BarterRequestRepository;
+import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
+import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import java.util.List;
 public class BarterServiceImpl implements BarterService{
 
     private final BarterRepository barterRepository;
+    private final GifticonRepository gifticonRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final BarterHostItemService barterHostItemService;
     private final BarterRequestRepository barterRequestRepository;
@@ -92,7 +97,25 @@ public class BarterServiceImpl implements BarterService{
                 .orElseThrow(() -> new RuntimeException());
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
                 .orElseThrow(() -> new RuntimeException());
+        //물물교환 교환신청 리스트
+        List<BarterRequest> barterRequestList = barterRequestRepository.findByBarterIdx(barterIdx);
 
+        for(BarterRequest br : barterRequestList) {
+
+            if(br.getBarterRequestIdx() == barterRequestIdx) continue;
+            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED)) continue;
+
+            List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
+            br.setBarterRequestStatus(RequestStatus.REJECTED);
+            barterRequestRepository.save(br);
+
+            for(BarterGuestItem bg : barterGuestItemList) {
+                Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new RuntimeException());
+                gifticon.setGifticonStatus(GifticonStatus.KEEP);
+                gifticonRepository.save(gifticon);
+            }
+        }
         User barterHost = barter.getBarterHost();
         User barterRequester = barterRequest.getUser();
 
@@ -100,15 +123,17 @@ public class BarterServiceImpl implements BarterService{
         for(BarterHostItem hostItem : barter.getBarterHostItemList()){
             Gifticon gift = hostItem.getGifticon();
             gift.setUser(barterRequester);
+            gifticonRepository.save(gift);
         }
         for(BarterGuestItem guestItem : barterRequest.getBarterGuestItemList()){
             Gifticon gift = guestItem.getGifticon();
             gift.setUser(barterHost);
+            gifticonRepository.save(gift);
         }
-
-        //기프티콘 교환 service;
-
     }
 
+    @Override
+    public void rejectRequest(Long barterIdx, Long barterRequestIdx) {
 
+    }
 }

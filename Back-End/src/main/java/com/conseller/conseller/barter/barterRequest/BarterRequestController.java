@@ -1,7 +1,8 @@
-package com.conseller.conseller.barter.request;
+package com.conseller.conseller.barter.barterRequest;
 
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestRegistDto;
-import com.conseller.conseller.barter.request.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestService.BarterRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -36,14 +36,34 @@ public class JwtTokenProvider {
     @param test용 엑세스 토큰 유효기간 30 sec
     @param test용 리프레쉬 토큰 유효기간 1 min
      */
-    private static final int TEST_ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 30;
-    private static final long TEST_REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60;
+    private static final int TEST_ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60;
+    private static final long TEST_REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS = 1000 * 60 * 60 * 10;
 
     private final Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String createAccessToken(Authentication authentication) {
+
+        log.info("createAccessToken까지 넘어옴.");
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+
+        //Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + TEST_ACCESS_TOKEN_EXPIRE_TIMEOUT_SECONDS);
+
+        return Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public JwtToken createToken(Authentication authentication) {
@@ -64,6 +84,8 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
                 .setExpiration(new Date(now + TEST_REFRESH_TOKEN_EXPIRE_TIMEOUT_SECONDS))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

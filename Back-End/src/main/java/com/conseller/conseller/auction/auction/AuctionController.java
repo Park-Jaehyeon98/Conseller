@@ -72,7 +72,7 @@ public class AuctionController {
     }
 
     // 즉시 구매 버튼
-
+    //경매 낙찰 뒤에 쿼리스트링으로 즉시구매랑 경매랑 구분?
 
     // 경매 진행 취소
     @PatchMapping("/cancel/{auction_idx}")
@@ -92,7 +92,7 @@ public class AuctionController {
     }
 
     // 입금 확인 버튼
-    @GetMapping("/complete/{auction_idx}")
+    @PatchMapping("/complete/{auction_idx}")
     public  ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
 
         return ResponseEntity.ok()

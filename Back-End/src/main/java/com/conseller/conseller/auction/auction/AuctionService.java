@@ -21,5 +21,11 @@ public interface AuctionService {
 
     public AuctionTradeResponse tradeAuction(Long auctionIdx);
 
+    public AuctionTradeResponse immediTradeAuction(Long auctionIdx);
+
     public void cancelAuction(Long auctionIdx);
+
+    public void depositAuction(Long auctionIdx);
+
+    public void completeAuction(Long auctionIdx);
 }

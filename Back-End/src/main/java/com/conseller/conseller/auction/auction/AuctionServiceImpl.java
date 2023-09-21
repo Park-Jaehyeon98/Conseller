@@ -112,6 +112,23 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
+    public AuctionTradeResponse immediTradeAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+
+        // 판매자에게 알림
+
+        // 경매 상태 거래중으로 변경
+        auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
+
+        // 판매자의 계좌번호와 은행 전달
+        AuctionTradeResponse response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
+                auction.getUser().getUserAccountBank());
+
+        return response;
+    }
+
+    @Override
     public void cancelAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
@@ -123,6 +140,28 @@ public class AuctionServiceImpl implements AuctionService{
 
         //가장 높은 입찰 삭제
         //입찰이 한사람당 하나씩인지 결정하고 작성
+
+    }
+
+    @Override
+    public void depositAuction(Long auctionIdx) {
+        // 판매자에게 알림
+    }
+
+    @Override
+    public void completeAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+        Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
+                .orElseThrow(() -> new RuntimeException());
+        User user = userRepository.findById(auction.getHighestBidUser().getUserIdx())
+                .orElseThrow(() -> new RuntimeException());
+
+        auction.setAuctionStatus(AuctionStatus.AWARDED.getStatus());
+
+        gifticon.setUser(user);
+
+        // 구매자에게 알림?
 
     }
 }

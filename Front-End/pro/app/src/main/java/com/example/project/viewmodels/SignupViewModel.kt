@@ -1,7 +1,9 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.CheckuserIdRequest
 import com.example.project.api.RegistRequest
 import com.example.project.api.RegistResponse
 import com.example.project.api.SignupService
@@ -49,19 +51,25 @@ class SignupViewModel @Inject constructor(
     // 로그인 로직
     fun registerUser(request: RegistRequest) {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {// 일반적인 API 통신인 경우 IO를 사용해서 IO로 함 , 블로킹 처리 대비
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = service.regist(request)
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
                         _SignupResponse.value = response.body() ?: RegistResponse(-1, "")
+                        Log.d("RegisterUser", "Registration Successful: ${_SignupResponse.value}")
                     } else {
                         _error.value = response.message()
+                        // HTTP 응답 코드 및 에러 메시지 로깅
+                        Log.d("RegisterUser", "Registration Failed: Response Code = ${response.code()}, Error Message = ${response.errorBody()?.string() ?: "Unknown Error"}")
                     }
                 }
             } catch (e: Exception) {
-                _error.value = e.message
+                withContext(Dispatchers.Main) {
+                    _error.value = e.message
+                }
+                Log.d("RegisterUser", "Exception Occurred: ${e.message}")
             }
         }
     }
@@ -89,36 +97,42 @@ class SignupViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = service.checkDuplicateuEmail(email)
+                val response = service.checkDuplicateEmail(email)
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
                         _CheckEmailResponse.value = response.body() ?: RegistResponse(-1, "")
+                        Log.d("CheckDuplicateEmail", "Email check successful: ${response.body()}")
                     } else {
                         _error.value = response.message()
+                        Log.e("CheckDuplicateEmail", "Email check failed: ${response.message()}")
                     }
                 }
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e("CheckDuplicateEmail", "Error during email check", e)
             }
         }
     }
 
-    fun checkDuplicateId(userId: String) {
+    fun checkDuplicateId(request: CheckuserIdRequest) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = service.checkDuplicateId(userId)
+                val response = service.checkDuplicateId(request)
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
                         _CheckId.value = response.body() ?: RegistResponse(-1, "")
+                        Log.d("CheckDuplicateEmail", "Email check 성공함: ${response.body()}")
                     } else {
                         _error.value = response.message()
+                        Log.d("CheckDuplicateEmail", "Email check 문제났음: ${response.message()}")
                     }
                 }
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.d("CheckDuplicateEmail", "에러남:",e)
             }
         }
     }

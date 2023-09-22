@@ -49,7 +49,7 @@ public class UserController {
     }
 
     //액세스 토큰 재발급 요청
-    @PostMapping("/refresh/{userIdx}")
+    @GetMapping("/refresh/{userIdx}")
     public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@PathVariable long userIdx) {
         log.info("액세스 토큰 재발급 요청");
         return ResponseEntity.ok()
@@ -57,8 +57,8 @@ public class UserController {
     }
 
     //닉네임 중복체크
-    @GetMapping("/{userNickname}")
-    public ResponseEntity<Object> checkNickname(@PathVariable String userNickname) {
+    @PostMapping("/nickname")
+    public ResponseEntity<Object> checkNickname(@RequestBody String userNickname) {
 
         InfoValidationRequest infoValidationRequest = userService.checkNickname(userNickname);
 
@@ -67,8 +67,8 @@ public class UserController {
     }
 
     //id 중복체크
-    @GetMapping("/{userId}")
-    public ResponseEntity<Object> checkId(@PathVariable String userId) {
+    @PostMapping("/id")
+    public ResponseEntity<Object> checkId(@RequestBody String userId) {
         InfoValidationRequest infoValidationRequest = userService.checkId(userId);
 
         return ResponseEntity.ok()
@@ -76,8 +76,8 @@ public class UserController {
     }
 
     //이메일 중복체크
-    @GetMapping("/{userEmail}")
-    public ResponseEntity<Object> checkEmail(@PathVariable String userEmail) {
+    @PostMapping("/email")
+    public ResponseEntity<Object> checkEmail(@RequestBody String userEmail) {
         InfoValidationRequest infoValidationRequest = userService.checkEmail(userEmail);
 
         return ResponseEntity.ok()
@@ -85,8 +85,8 @@ public class UserController {
     }
 
     //전화번호 중복체크
-    @GetMapping("/{userPhoneNumber}")
-    public ResponseEntity<Object> checkPhoneNumber(@PathVariable String userPhoneNumber) {
+    @PostMapping("/phone-number")
+    public ResponseEntity<Object> checkPhoneNumber(@RequestBody String userPhoneNumber) {
         InfoValidationRequest infoValidationRequest = userService.checkPhoneNumber(userPhoneNumber);
 
         return ResponseEntity.ok()
@@ -94,14 +94,14 @@ public class UserController {
     }
 
     //부분 암호화된 아이디 출력
-    @PostMapping("/id")
+    @PostMapping("/encode/id")
     public ResponseEntity<Object> getEncodeUserId(@RequestBody EmailAndNameRequest emailAndNameRequest) {
         return ResponseEntity.ok()
                 .body(userService.getHiddenUserId(emailAndNameRequest));
     }
 
     // 임시 비밀번호 발급
-    @PatchMapping("/pw")
+    @PatchMapping("/encode/pw")
     public ResponseEntity<Object> changeTempPassword(@RequestBody EmailAndIdRequest emailAndIdRequest) {
         return ResponseEntity.ok()
                 .body(userService.generateTemporaryPassword(emailAndIdRequest));

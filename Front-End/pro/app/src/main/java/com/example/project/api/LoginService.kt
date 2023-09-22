@@ -39,6 +39,6 @@ data class IdPwLoginRequest(
 data class  IdPwLoginResponse(
     val userIdx:Long,
     val userNickname :String,
-    val userAccessToken :String,
-    val userRefreshToken:String,
+    val accessToken :String,
+    val refreshToken:String,
 )

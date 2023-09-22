@@ -50,13 +50,6 @@ interface MyPageService {
         @Part imageFile : MultipartBody.Part
     ):Response<uploadImageResponse>
 
-    // gifticon 전송
-    @Multipart
-    @POST("api/gifticon")
-    suspend fun uploadGifticon(
-        @Part("userIdx") userIdx: Long,
-        @Part imageFile : MultipartBody.Part
-    ):Response<uploadImageResponse>
 
     // 유저 정보 확인
     @GET("api/user/{userIdx}/userinfo")

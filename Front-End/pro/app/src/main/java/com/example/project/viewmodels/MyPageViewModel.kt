@@ -70,24 +70,6 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun uploadGifticon(userIdx: String, imageFile: MultipartBody.Part) {
-        val userIdx = sharedPreferencesUtil.getUserId()
-        _isLoading.value = true
-        viewModelScope.launch {
-            try {
-                val response = service.uploadGifticon(userIdx, imageFile)
-                if (response.isSuccessful) {
-                    _UploadGifticonResponse.value = response.body() ?: uploadImageResponse(-1, "")
-                } else {
-                    _error.value = response.errorBody()?.string() ?: "서버 error"
-                }
-            } catch (e: Exception) {
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
 
     fun getMyInfo() {
         val userIdx = sharedPreferencesUtil.getUserId()

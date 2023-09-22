@@ -1,5 +1,6 @@
 package com.example.project.api
 
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -9,29 +10,29 @@ import retrofit2.http.Path
 interface SignupService {
 
     //회원가입 API
-    @POST("api/user/regist")
+    @POST("api/user")
     suspend fun regist(@Body request:RegistRequest ): Response<RegistResponse>
 
-    @GET("api/user/{userNickName}")
+    @POST("api/user/nickname")
     suspend fun checkDuplicateNickName(
-        @Path("userNickName") userNickName: String,
+        @Body userNickName: String
     ): Response<RegistResponse>
 
-
-    @GET("api/user/{userEmail}")
-    suspend fun checkDuplicateuEmail(
-        @Path("userEmail") userEmail: String,
+    @POST("api/user/email")
+    suspend fun checkDuplicateEmail(
+        @Body userEmail: String
     ): Response<RegistResponse>
 
-    @GET("api/user/{userId}")
+    @POST("api/user/id")
     suspend fun checkDuplicateId(
-        @Path("userId") userId: String,
+        @Body request: CheckuserIdRequest
     ): Response<RegistResponse>
 
-    @GET("api/user/{userPhoneNumber}")
+    @POST("api/user/phone-number")
     suspend fun checkDuplicatePhoneNumber(
-        @Path("userPhoneNumber") userPhoneNumber: String,
+        @Body userPhoneNumber: String
     ): Response<RegistResponse>
+
 
 
 
@@ -44,6 +45,7 @@ data class RegistRequest(
     val userId: String,
     val userGender: String, // F,M
     val userAge: Int,
+    val userName:String,
     val userPassword: String,
     val userEmail: String,
     val userPhoneNumber: String,

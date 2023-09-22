@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.api.CheckuserIdRequest
 import com.example.project.api.RegistRequest
 import com.example.project.reuse_component.CustomDropdown
 import com.example.project.reuse_component.CustomTextField
@@ -70,21 +72,29 @@ fun SignUpPage(navController: NavHostController) {
     var account by remember { mutableStateOf("은행명을 선택하세요") }
     var accountBank by remember { mutableStateOf(TextFieldValue("")) }
 
-    val registClick = {
+
         val request = RegistRequest(
             userId = userId.text,
             userGender=gender,
-            userAge=age.text.toInt(),
-            userAccount = account,
+            userName=name.text,
+            userAge=if (age.text.isNotBlank()) {
+                Integer.parseInt(age.text)
+            } else {
+                // 기본값 또는 오류 처리
+                0 // 예를 들어, 기본 나이를 0으로 설정하거나 오류 메시지를 표시
+            },
+            userAccount = accountBank.text,
             userEmail = email,
             userPassword = password.text,
-            userAccountBank = accountBank.text,
+            userAccountBank = account,
             userNickname = nickname.text,
             userPhoneNumber = phoneNumber.text
         )
-        viewModel.registerUser(request)
-    }
 
+
+    val Checkrequest=CheckuserIdRequest(
+        userId=userId.text
+    )
     // 이메일 명
     var emailPart by remember { mutableStateOf("") }
     // 이메일 도메인
@@ -158,6 +168,7 @@ fun SignUpPage(navController: NavHostController) {
             checkMarkNickname.value = true
         } else {
             // 유효성 검사 실패 알람
+
         }
     }
 
@@ -206,7 +217,7 @@ fun SignUpPage(navController: NavHostController) {
                         buttonLabel = "중복확인",
                         value = userId,
                         onValueChange = { userId = it },
-                        onButtonClick = { viewModel.checkDuplicateId(userId.text) },
+                        onButtonClick = { viewModel.checkDuplicateId(Checkrequest) },
                         showIcon = checkMarkId.value
                     )
                     CustomTextField(
@@ -246,25 +257,16 @@ fun SignUpPage(navController: NavHostController) {
                     )
                     CustomTextFieldWithButton(
                         label = "전화번호",
-                        buttonLabel = "본인인증",
+                        buttonLabel = "중복확인",
                         value = phoneNumber,
                         onValueChange = { newValue ->
                             if (newValue.text.all { it.isDigit() }) {
                                 phoneNumber = newValue
                             }
                         },
-                        onButtonClick = { showCheckPhoneNumber.value = true },
+                        onButtonClick = { viewModel.checkDuplicatePhoneNumber(phoneNumber.text) },
                         showIcon = checkMarkPhone.value
                     )
-                    if (showCheckPhoneNumber.value) {
-                        CustomTextFieldWithButton(
-                            label = "인증번호",
-                            buttonLabel = "인증하기",
-                            value = checkPhoneNumber,
-                            onValueChange = { checkPhoneNumber = it },
-                            onButtonClick = { checkMarkPhone.value = true },
-                        )
-                    }
 
                     EmailTextFieldWithDomain(
                         label = "이메일",
@@ -311,7 +313,7 @@ fun SignUpPage(navController: NavHostController) {
                         },
                     )
                     Button(
-                        onClick = { registClick },
+                        onClick = { viewModel.registerUser(request) },
                         Modifier.size(120.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(BrandColor1)
                     ) {

@@ -8,6 +8,7 @@ import com.conseller.conseller.auction.auction.dto.response.*;
 import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
 import com.conseller.conseller.entity.Auction;
+import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
@@ -93,12 +94,18 @@ public class AuctionServiceImpl implements AuctionService{
         auctionRepository.deleteById(auctionIdx);
     }
 
+    // 경매 거래 진행
     @Override
-    public AuctionTradeResponse tradeAuction(Long auctionIdx) {
+    public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        // 가장 높은 입찰자에게 알림이 간다
+        if(index == 1) { // 경매
+            //가장 높은 입찰자에게 알림
+        }
+        else if(index == 2) { // 즉시 구매
+            // 판매자에게 알림
+        }
 
         // 경매 상태 거래중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
@@ -111,23 +118,7 @@ public class AuctionServiceImpl implements AuctionService{
         return response;
     }
 
-    @Override
-    public AuctionTradeResponse immediTradeAuction(Long auctionIdx) {
-        Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
-
-        // 판매자에게 알림
-
-        // 경매 상태 거래중으로 변경
-        auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
-
-        // 판매자의 계좌번호와 은행 전달
-        AuctionTradeResponse response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
-                auction.getUser().getUserAccountBank());
-
-        return response;
-    }
-
+    // 경매 거래 취소
     @Override
     public void cancelAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
@@ -139,17 +130,32 @@ public class AuctionServiceImpl implements AuctionService{
         auction.setAuctionStatus(AuctionStatus.IN_PROGRESS.getStatus());
 
         //가장 높은 입찰 삭제
-        //입찰이 한사람당 하나씩인지 결정하고 작성
+        // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴-
+        List<AuctionBid> auctionBidList = auctionBidRepository
+                .findByAuctionIdxOrderByAuctionBidPriceDesc(auction.getAuctionIdx());
+
+        //입잘자가 혼자라면 초기화
+        if(auctionBidList.size() == 1){
+            auction.setAuctionHighestBid(0);
+            auction.setHighestBidUser(null);
+        }else { //입찰자보다 바로 아래 입찰금액으로 갱신
+            auction.setAuctionHighestBid(auctionBidList.get(1).getAuctionBidPrice());
+            auction.setHighestBidUser(auctionBidList.get(1).getUser());
+        }
+
+        auctionBidRepository.deleteByUser_UserIdx(auction.getHighestBidUser().getUserIdx());
 
     }
 
+    // 경매 입금 완료
     @Override
-    public void depositAuction(Long auctionIdx) {
+    public void completeAuction(Long auctionIdx) {
         // 판매자에게 알림
     }
 
+    // 경매 거래 확정
     @Override
-    public void completeAuction(Long auctionIdx) {
+    public void confirmAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
         Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())

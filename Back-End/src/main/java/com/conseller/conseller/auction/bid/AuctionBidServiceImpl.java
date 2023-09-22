@@ -41,9 +41,21 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             auction.setHighestBidUser(user);
         }
 
-        AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registRequestToAuctionBid(user, auction, request);
+        // 이미 입찰이 있다면
+        if(auctionBidRepository.existsByUser_UserIdx(user.getUserIdx())){
+            AuctionBid auctionBid = auctionBidRepository.findByUser_UserIdx(user.getUserIdx())
+                    .orElseThrow(() -> new RuntimeException());
 
-        auctionBidRepository.save(auctionBid);
+            // 경매 정보 수정
+            auctionBid.setAuction(auction);
+        }
+        else { // 없으면
+            AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registRequestToAuctionBid(user, auction, request);
+
+            // 새로 등록
+            auctionBidRepository.save(auctionBid);
+        }
+
     }
 
     @Override

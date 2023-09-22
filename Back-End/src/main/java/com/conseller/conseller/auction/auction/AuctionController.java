@@ -62,17 +62,14 @@ public class AuctionController {
                 .build();
     }
 
-    // 경매 낙찰 버튼
+    // 경매 낙찰 진행
     @GetMapping("/trade/{auction_idx}")
-    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx) {
-        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx);
+    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestParam(name = "im") Integer index ) {
+        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, index);
 
         return ResponseEntity.ok()
                 .body(response);
     }
-
-    // 즉시 구매 버튼
-    //경매 낙찰 뒤에 쿼리스트링으로 즉시구매랑 경매랑 구분?
 
     // 경매 진행 취소
     @PatchMapping("/cancel/{auction_idx}")
@@ -84,16 +81,18 @@ public class AuctionController {
     }
 
     // 입금 완료 버튼
-    @GetMapping("/deposit/{auction_idx}")
-    public ResponseEntity<Object> depositAuction(@PathVariable("auction_idx") Long auctionIdx) {
+    @PatchMapping("/complete/{auction_idx}")
+    public ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        auctionService.completeAuction(auctionIdx);
 
         return ResponseEntity.ok()
                 .build();
     }
 
-    // 입금 확인 버튼
-    @PatchMapping("/complete/{auction_idx}")
-    public  ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
+    // 거래 확정 버튼
+    @PatchMapping("/confirm/{auction_idx}")
+    public  ResponseEntity<Object> confirmAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        auctionService.confirmAuction(auctionIdx);
 
         return ResponseEntity.ok()
                 .build();

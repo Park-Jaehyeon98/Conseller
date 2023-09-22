@@ -19,13 +19,11 @@ public interface AuctionService {
 
     public void deleteAuction(Long auctionIdx);
 
-    public AuctionTradeResponse tradeAuction(Long auctionIdx);
-
-    public AuctionTradeResponse immediTradeAuction(Long auctionIdx);
+    public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index);
 
     public void cancelAuction(Long auctionIdx);
 
-    public void depositAuction(Long auctionIdx);
-
     public void completeAuction(Long auctionIdx);
+
+    public void confirmAuction(Long auctionIdx);
 }

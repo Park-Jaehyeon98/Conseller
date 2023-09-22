@@ -143,7 +143,7 @@ public class AuctionServiceImpl implements AuctionService{
             auction.setHighestBidUser(auctionBidList.get(1).getUser());
         }
 
-        auctionBidRepository.deleteByUser_UserIdx(auction.getHighestBidUser().getUserIdx());
+        auctionBidRepository.deleteByUser_UserIdx(auctionBidList.get(0).getUser().getUserIdx());
 
     }
 

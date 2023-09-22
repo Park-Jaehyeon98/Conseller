@@ -68,7 +68,7 @@ public class StoreController {
     @GetMapping("/trade/{store_idx}/{consumer_idx}")
     public ResponseEntity<StoreTradeResponse> tradeStore(@PathVariable("store_idx") Long storeIdx,
                                                          @PathVariable("consumer_idx") Long consumerIdx) {
-        StoreTradeResponse response = null;
+        StoreTradeResponse response = storeService.tradeStore(storeIdx, consumerIdx);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -76,7 +76,8 @@ public class StoreController {
 
     // 스토어 거래 진행 취소
     @PatchMapping("/cancel/{store_idx}")
-    public ResponseEntity<Object> canselStore(@PathVariable("store_idx") Long storeIdx) {
+    public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
+        storeService.cancelStore(storeIdx);
 
         return ResponseEntity.ok()
                 .build();
@@ -85,6 +86,7 @@ public class StoreController {
     // 스토어 입금 완료
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
+        storeService.completeStore(storeIdx);
 
         return ResponseEntity.ok()
                 .build();
@@ -92,7 +94,8 @@ public class StoreController {
 
     // 스토어 거래 확정
     @PatchMapping("/confirm/{store_idx}")
-    public ResponseEntity<Object> comfirmStore(@PathVariable("store_idx") Long storeIdx) {
+    public ResponseEntity<Object> confirmStore(@PathVariable("store_idx") Long storeIdx) {
+        storeService.confirmStore(storeIdx);
 
         return ResponseEntity.ok()
                 .build();

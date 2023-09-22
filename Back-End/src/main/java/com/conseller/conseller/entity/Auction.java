@@ -36,7 +36,7 @@ public class Auction {
     private Integer auctionHighestBid = 0;
 
     @ManyToOne
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "highest_bid_user_idx")
     private User highestBidUser;
 
     @Column(name = "auction_status", nullable = false)

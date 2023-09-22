@@ -106,17 +106,6 @@ fun UserProfile(
     profileImage: Uri? = null, userNickName: String, userEmail: String, userPhoneNumber: String
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
-    var selectImage by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            selectImage = uri
-        }
-
-//    //확인용
-//    LaunchedEffect(selectImage) {
-//        Log.d("UserProfile", "Selected images: $selectImage")
-//    }
 
 
     Column(

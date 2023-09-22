@@ -8,6 +8,7 @@ import com.example.project.api.LoginService
 import com.example.project.api.MainService
 import com.example.project.api.MyPageService
 import com.example.project.api.MyService
+import com.example.project.api.OcrService
 import com.example.project.api.ReuseService
 import com.example.project.api.SignupService
 import com.example.project.api.StoreService
@@ -17,8 +18,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Authenticator
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Route
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -46,7 +52,55 @@ object NetworkModule {
 //    @Singleton
 //    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 //        return Retrofit.Builder()
-//            .baseUrl("https://your.api.url")
+//            .baseUrl("https://j9b207.p.ssafy.io")
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
+
+//    @Provides
+//    @Singleton
+//    fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil, refreshTokenService: MyService): OkHttpClient {
+//        return OkHttpClient.Builder()
+//            .addInterceptor { chain ->
+//                val token = sharedPreferencesUtil.getUserToken()
+//                val request = chain.request().newBuilder()
+//                    .addHeader("Authorization", "Bearer $token")
+//                    .build()
+//                chain.proceed(request)
+//            }
+//            .authenticator(object : Authenticator {
+//                override fun authenticate(route: Route?, response: okhttp3.Response): Request? {
+//                    if (response.code == 403) {
+//                        val userIdx = sharedPreferencesUtil.getUserId()
+//                        try {
+//                            val refreshTokenResponse = refreshTokenService.refreshToken(userIdx).execute()
+//                            if (refreshTokenResponse.isSuccessful) {
+//                                val newAccessToken = refreshTokenResponse.body()?.accessToken
+//                                if(newAccessToken != null) {
+//                                    sharedPreferencesUtil.setUserToken(newAccessToken)
+//                                    return response.request.newBuilder()
+//                                        .header("Authorization", "Bearer $newAccessToken")
+//                                        .build()
+//                                }
+//                            }
+//                        } catch (e: Exception) {
+//                        }
+//                    }else if(
+//                        response.code==403
+//                    ){
+//                        sharedPreferencesUtil.setLoggedInStatus(false)
+//                    }
+//                    return null
+//                }
+//            })
+//            .build()
+//    }
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl("https://j9b207.p.ssafy.io")
 //            .client(okHttpClient)
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
@@ -56,7 +110,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://your.api.url")
+            .baseUrl("https://j9b207.p.ssafy.io/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -119,6 +173,12 @@ object NetworkModule {
     @Singleton
     fun providerMyPageService(retrofit: Retrofit) : MyPageService{
         return retrofit.create(MyPageService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOcrService(retrofit: Retrofit): OcrService {
+        return retrofit.create(OcrService::class.java)
     }
 
 }

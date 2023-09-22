@@ -1,8 +1,12 @@
 package com.example.project.api
 
 import com.example.project.viewmodels.GifticonData
+import okhttp3.MultipartBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
+import java.io.File
+import java.util.Base64
 
 interface MyService {
 
@@ -23,6 +27,11 @@ interface MyService {
     suspend fun getMyNotifications(
         @Path("userIdx") userIdx: Long
     ): Response<List<MyNotificationResponseDTO>>
+
+    @GET("/api/user/refresh/{userIdx}")
+    fun refreshToken(@Path("userIdx") userIdx: Long): Call<RefreshResponse>
+
+
 
 
 }
@@ -55,4 +64,9 @@ data class MyNotificationResponseDTO(
     val notificationIdx: Long,
     val notificationCreatedDate: String,
     val notificationStatus: String,
+)
+
+
+data class RefreshResponse(
+    val accessToken: String
 )

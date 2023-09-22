@@ -159,6 +159,14 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public void uploadProfile(long userIdx, String profileUrl) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("유저 정보가 존재하지 않습니다."));
+
+        user.setUserProfileUrl(profileUrl);
+    }
+
     //비밀번호 암호화 된걸 가져와야함.
     @Override
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest) {
@@ -169,11 +177,6 @@ public class UserServiceImpl implements UserService {
         if (!user.checkPassword(new BCryptPasswordEncoder(), userCheckPasswordRequest.getUserPassword())) {
             throw new RuntimeException("해당 idx와 비밀번호를 가진 유저가 존재하지 않습니다.");
         }
-    }
-
-    @Override
-    public void uploadUserProfile(UserProfileRequest userProfileRequest) {
-        //s3가 만들어지면 구현하기로 함.
     }
 
     @Override

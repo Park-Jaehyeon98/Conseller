@@ -5,7 +5,7 @@ import lombok.*;
 @Builder
 @Getter @Setter @ToString
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfoResponse {
 
     private String userId;

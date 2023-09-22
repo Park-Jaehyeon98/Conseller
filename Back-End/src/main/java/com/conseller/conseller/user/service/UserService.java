@@ -42,11 +42,11 @@ public interface UserService {
     //회원정보 조회
     public UserInfoResponse getUserInfo(long userIdx);
 
+    //회원 프로필 사진 저장
+    public void uploadProfile(long userIdx, String profileUrl);
+
     //비밀번호 확인
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest);
-
-    //유저 프로필 사진 업로드
-    public void uploadUserProfile(UserProfileRequest userProfileRequest);
 
     //보증금 입금
     public void deposit(long userIdx, int deposit);

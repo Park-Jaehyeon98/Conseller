@@ -128,13 +128,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    //프로필 사진 업로드
-    @PostMapping("/profile")
-    public ResponseEntity<Void> uploadUserProfile(@RequestBody UserProfileRequest userProfileRequest) {
-        userService.uploadUserProfile(userProfileRequest);
-        return ResponseEntity.ok().build();
-    }
-
     //보증금 넣기
     @PatchMapping("/{userIdx}/deposit")
     public ResponseEntity<Void> deposit(@PathVariable long userIdx, @RequestBody int deposit) {

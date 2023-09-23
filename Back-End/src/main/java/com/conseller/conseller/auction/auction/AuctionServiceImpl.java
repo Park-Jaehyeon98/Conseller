@@ -7,6 +7,7 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.*;
 import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
+import com.conseller.conseller.auction.bid.enums.BidStatus;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
@@ -172,7 +173,17 @@ public class AuctionServiceImpl implements AuctionService{
 
         auction.setAuctionStatus(AuctionStatus.AWARDED.getStatus());
 
+        for(AuctionBid bid : auction.getAuctionBidList()) {
+            if(bid.getUser().getUserIdx().equals(user.getUserIdx())){
+                bid.setAuctionBidStatus(BidStatus.AWARDED.getStatus());
+            }
+            else {
+                bid.setAuctionBidStatus(BidStatus.FAILURE.getStatus());
+            }
+        }
+
         gifticon.setUser(user);
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
 
         // 구매자에게 알림?
 

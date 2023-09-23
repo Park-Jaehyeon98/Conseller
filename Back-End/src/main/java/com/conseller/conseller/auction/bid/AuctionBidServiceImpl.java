@@ -41,9 +41,19 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             auction.setHighestBidUser(user);
         }
 
-        // 이미 입찰이 있다면
-        if(auctionBidRepository.existsByUser_UserIdx(user.getUserIdx())){
-            AuctionBid auctionBid = auctionBidRepository.findByUser_UserIdx(user.getUserIdx())
+        boolean isExist = false;
+        Long bidIdx = 0L;
+
+        // 이미 입찰이 있고 그 입찰이 지금 경매라면
+        for(AuctionBid bid : auction.getAuctionBidList()) {
+            if(bid.getUser().getUserIdx().equals(request.getUserIdx())){
+                isExist = true;
+                bidIdx = bid.getAuctionBidIdx();
+            }
+        }
+
+        if(isExist){
+            AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
                     .orElseThrow(() -> new RuntimeException());
 
             // 입찰 정보 수정

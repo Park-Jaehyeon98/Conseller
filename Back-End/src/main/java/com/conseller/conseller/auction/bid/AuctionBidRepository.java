@@ -11,4 +11,6 @@ import java.util.List;
 public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("select ab from AuctionBid ab where ab.auction.auctionIdx = :auctionIdx order by ab.auctionBidPrice desc")
     List<AuctionBid> findByAuctionIdxOrderByAuctionBidPriceDesc(Long auctionIdx);
+
+    void deleteByUser_UserIdx(Long userIdx);
 }

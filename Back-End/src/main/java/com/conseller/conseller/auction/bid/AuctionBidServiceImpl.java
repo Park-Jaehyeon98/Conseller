@@ -46,7 +46,8 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             AuctionBid auctionBid = auctionBidRepository.findByUser_UserIdx(user.getUserIdx())
                     .orElseThrow(() -> new RuntimeException());
 
-            // 경매 정보 수정
+            // 입찰 정보 수정
+            auctionBid.setAuctionBidPrice(request.getAuctionBidPrice());
             auctionBid.setAuction(auction);
         }
         else { // 없으면

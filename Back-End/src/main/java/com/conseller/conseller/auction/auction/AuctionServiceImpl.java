@@ -12,6 +12,7 @@ import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -57,9 +58,15 @@ public class AuctionServiceImpl implements AuctionService{
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
+        if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
+            //등록 x 예외처리
+        }else {
+            Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
-        auctionRepository.save(auction);
+            gifticon.setGifticonStatus(GifticonStatus.AUCTION.getStatus());
+
+            auctionRepository.save(auction);
+        }
     }
 
     // 경매 글 상세보기

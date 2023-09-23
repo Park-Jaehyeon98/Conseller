@@ -6,6 +6,7 @@ import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
@@ -60,9 +61,15 @@ public class StoreServiceImpl implements StoreService {
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
                 .orElseThrow(() -> new RuntimeException());
 
-        Store store = StoreMapper.INSTANCE.registStoreRequestToStore(request, user, gifticon);
+        if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
 
-        storeRepository.save(store);
+        }else {
+            Store store = StoreMapper.INSTANCE.registStoreRequestToStore(request, user, gifticon);
+
+            gifticon.setGifticonStatus(GifticonStatus.STORE.getStatus());
+
+            storeRepository.save(store);
+        }
     }
 
     // 스토어 글 상세보기

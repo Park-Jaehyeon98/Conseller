@@ -60,6 +60,9 @@ dependencies {
     //aws
     implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'

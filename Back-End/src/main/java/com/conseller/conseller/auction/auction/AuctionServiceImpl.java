@@ -132,8 +132,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        // 거래 취소 알림
-
         // 경매 상태 진행 중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_PROGRESS.getStatus());
 

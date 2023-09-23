@@ -6,6 +6,7 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.AuctionTradeResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auction")
 public class AuctionController {
     private final AuctionService auctionService;
+    private final NotificationService notificationService;
 
     // 경매 목록
     @PostMapping
@@ -75,6 +77,9 @@ public class AuctionController {
     @PatchMapping("/cancel/{auction_idx}")
     public ResponseEntity<Object> cancelAuction(@PathVariable("auction_idx") Long auctionIdx) {
         auctionService.cancelAuction(auctionIdx);
+
+        // 거래 취소 알림
+        notificationService.sendAuctionNotification(auctionIdx, "거래 취소", "거래가 취소되었습니다");
 
         return ResponseEntity.ok()
                 .build();

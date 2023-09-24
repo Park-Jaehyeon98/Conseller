@@ -25,15 +25,6 @@ class MygifticonViewModel @Inject constructor(
     private val _gifticonItems = MutableStateFlow<List<GifticonData>>(emptyList())
     val gifticonItems: StateFlow<List<GifticonData>> get() = _gifticonItems
 
-    //기프티콘 등록(OCR)
-    private val _uploadGifticonResponse = MutableStateFlow<UploadGifticonResponse>(
-        UploadGifticonResponse(
-            "",
-            "",
-            "",
-        )
-    )
-    val uploadGifticonResponse: StateFlow<UploadGifticonResponse> get() = _uploadGifticonResponse
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error

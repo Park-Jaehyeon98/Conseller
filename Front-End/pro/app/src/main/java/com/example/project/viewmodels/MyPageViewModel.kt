@@ -8,6 +8,7 @@ import com.example.project.api.uploadImageResponse
 import com.example.project.api.userInfoResponse
 import com.example.project.api.userModifyRequest
 import com.example.project.api.userModifyResponse
+import com.example.project.api.userUploadGifticonResponse
 import com.example.project.api.userValidRequest
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,15 +35,15 @@ class MyPageViewModel @Inject constructor(
     val uploadProfileResponse: StateFlow<uploadImageResponse> get() = _UploadProfileResponse
 
     //기프티콘 사진 업로드
-    private val _UploadGifticonResponse = MutableStateFlow(uploadImageResponse(-1, ""))
-    val uploadGifticonResponse: StateFlow<uploadImageResponse> get() = _UploadGifticonResponse
+    private val _UploadGifticonResponse = MutableStateFlow<Boolean>(false)
+    val uploadGifticonResponse: StateFlow<Boolean> get() = _UploadGifticonResponse
 
     // 내 정보 조회
     private val _GetMyInfoResponse = MutableStateFlow(userInfoResponse(null, "", "통신에러", "SSAFY@naver.com", "국민은행","12345678910",""))
     val getMyinfoResponse: StateFlow<userInfoResponse> get() = _GetMyInfoResponse
 
     private val _ValidUserReponse = MutableStateFlow(uploadImageResponse(-1, ""))
-    val validUserResponse: StateFlow<uploadImageResponse> get() = _UploadGifticonResponse
+    val validUserResponse: StateFlow<uploadImageResponse> get() = _ValidUserReponse
 
     private val _ModifyUserResponse = MutableStateFlow(userModifyResponse("", ""))
     val modifyUserResponse: StateFlow<userModifyResponse> get() = _ModifyUserResponse
@@ -70,6 +71,31 @@ class MyPageViewModel @Inject constructor(
                 val errorMessage = "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
                 Log.e("ProfileSend", errorMessage, e)
+            } finally {
+            }
+        }
+    }
+
+    fun gifticonUpload(request: MultipartBody.Part,originalFile:MultipartBody.Part, cropFile: MultipartBody.Part) {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        viewModelScope.launch {
+            try {
+                val response = service.uploadgifiticon(userIdx, request,originalFile,cropFile)
+                _UploadGifticonResponse.value=false
+                if (response.isSuccessful) {
+                    _UploadGifticonResponse.value=true
+                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                } else {
+                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
+                    val errorString = "Error Code: ${response.code()}, Error Body: ${response.errorBody()?.string() ?: "Unknown"}"
+                    _error.value = errorString
+                    Log.e("GifticonUpload", errorString)
+                }
+            } catch (e: Exception) {
+                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
+                val errorMessage = "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
+                _error.value = errorMessage
+                Log.e("GifticonUpload", errorMessage, e)
             } finally {
             }
         }

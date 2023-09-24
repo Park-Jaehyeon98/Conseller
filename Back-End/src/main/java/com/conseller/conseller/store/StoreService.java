@@ -5,6 +5,7 @@ import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
 import com.conseller.conseller.store.dto.response.StoreListResponse;
+import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 
 public interface StoreService {
     public StoreListResponse getStoreList(StoreListRequest request);
@@ -17,6 +18,12 @@ public interface StoreService {
 
     public void deleteStore(Long storeIdx);
 
-    public void storeStatusPermute(Long storeIdx);
+    public StoreTradeResponse tradeStore(Long storeIdx, Long consumerIdx);
+
+    public void cancelStore(Long storeIdx);
+
+    public void confirmStore(Long storeIdx);
+
+    public void completeStore(Long storeIdx);
 
 }

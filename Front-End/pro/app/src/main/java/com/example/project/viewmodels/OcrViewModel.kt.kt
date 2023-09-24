@@ -29,6 +29,7 @@ class OcrViewModel @Inject constructor(
             "",
             "",
             "",
+            ""
         )
     )
     val uploadGifticonResponse: StateFlow<UploadGifticonResponse> get() = _uploadGifticonResponse
@@ -41,18 +42,21 @@ class OcrViewModel @Inject constructor(
 
     private var currentPage = 1
 
-
+    fun getUserNickName(): String? {
+        return sharedPreferencesUtil.getUserNickname()
+    }
     //기프티콘 업로드(OCR)
     fun uploadGifticon(category:Int, image: MultipartBody.Part) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = OcrService.uploadGifticon(category, image)
+                val response = OcrService.uploadOcrGifticon(category, image)
                 if (response.isSuccessful) {
                     _uploadGifticonResponse.value = response.body() ?: UploadGifticonResponse(
                         "",
                         "",
                         "",
+                        ""
                     )
                     Log.d("OcrViewModel", "Upload successful: ${_uploadGifticonResponse.value}")
                 } else {

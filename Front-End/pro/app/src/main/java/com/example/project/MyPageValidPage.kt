@@ -52,7 +52,7 @@ fun MyPageValidPage(navController: NavHostController) {
     }
 
     LaunchedEffect(checkUserValidState) {
-        if (checkUserValidState.status == -1) {
+        if (checkUserValidState.status == 1) {
             navController.navigate("MyPageModify")
         } else {
             println(checkUserValidState.message)

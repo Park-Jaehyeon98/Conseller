@@ -340,3 +340,41 @@ fun CustomDropdown(
         }
     }
 }
+
+
+@Composable
+fun CustomGiftTextField(
+    label:String,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+
+//    Keyboard: KeyboardType = KeyboardType.Text
+) {
+    val scrollState = rememberScrollState()
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+        }
+        Text(text=label, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Surface(
+            modifier = Modifier
+                .shadow(4.dp, RoundedCornerShape(8.dp))
+                .background(BrandColor1)
+                .fillMaxWidth(0.8f)
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Left, color = Color.White),
+                modifier = Modifier
+                    .height(40.dp)
+                    .weight(0.8f)
+                    .padding(start=8.dp)
+                    .horizontalScroll(scrollState)
+                    .background(BrandColor1)
+            )
+        }
+    }
+}

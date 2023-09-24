@@ -12,7 +12,7 @@ interface OcrService {
     // 이미지 전송(OCR)
     @Multipart
     @POST("gifticon") //OCR URL 변경되어야함
-    suspend fun uploadGifticon(
+    suspend fun uploadOcrGifticon(
         @Part("category") category: Int,
         @Part image : MultipartBody.Part
     ):Response<UploadGifticonResponse>
@@ -31,5 +31,5 @@ data class UploadGifticonResponse(
     val gitriconBarcode:String,
     val gifticonName:String,
     val gifticonEndData: String,
-    val gifticonCropImage: Base64? =null,
+    val gifticonCropImage: String,
 )

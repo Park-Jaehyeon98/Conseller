@@ -108,13 +108,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        if(index == 1) { // 경매
-            //가장 높은 입찰자에게 알림
-        }
-        else if(index == 2) { // 즉시 구매
-            // 판매자에게 알림
-        }
-
         // 경매 상태 거래중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
 
@@ -153,12 +146,6 @@ public class AuctionServiceImpl implements AuctionService{
 
     }
 
-    // 경매 입금 완료
-    @Override
-    public void completeAuction(Long auctionIdx) {
-        // 판매자에게 알림
-    }
-
     // 경매 거래 확정
     @Override
     public void confirmAuction(Long auctionIdx) {
@@ -182,8 +169,5 @@ public class AuctionServiceImpl implements AuctionService{
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-
-        // 구매자에게 알림?
-
     }
 }

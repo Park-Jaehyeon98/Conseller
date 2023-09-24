@@ -109,7 +109,7 @@ public class User extends BaseTime implements UserDetails {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<Notification> notifications = new ArrayList<>();
+    private List<NotificationEntity> notificationEntities = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)

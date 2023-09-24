@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long storeIdx;
+    private Long storeIdx;
 
     @Column(name = "store_price", nullable = false)
     private Integer storePrice;

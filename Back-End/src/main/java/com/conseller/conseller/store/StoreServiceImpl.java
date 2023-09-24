@@ -1,7 +1,5 @@
 package com.conseller.conseller.store;
 
-import com.conseller.conseller.category.mainCategory.MainCategoryRepository;
-import com.conseller.conseller.category.subCategory.SubCategoryRepository;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
@@ -33,8 +31,6 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final GifticonRepository gifticonRepository;
-    private final MainCategoryRepository mainCategoryRepository;
-    private final SubCategoryRepository subCategoryRepository;
     private final StoreRepositoryImpl storeRepositoryImpl;
 
     // 스토어 목록
@@ -108,8 +104,6 @@ public class StoreServiceImpl implements StoreService {
         User consumer = userRepository.findById(consumerIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        // 판매자에게 알림
-
         // 구매자의 인덱스를 저장
         store.setConsumer(consumer);
         
@@ -128,8 +122,6 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        // 거래 취소 알림
-
         // 거래 상태를 진행중으로 변경
         store.setStoreStatus(StoreStatus.IN_PROGRESS.getStatus());
 
@@ -137,15 +129,9 @@ public class StoreServiceImpl implements StoreService {
         store.setConsumer(null);
     }
 
-    // 스토어 입금 완료
+    // 스토어 거래 확정
     @Override
     public void confirmStore(Long storeIdx) {
-        // 판매자에게 알림
-    }
-
-    // 스토어 입금 확인
-    @Override
-    public void completeStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new RuntimeException());
         Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())

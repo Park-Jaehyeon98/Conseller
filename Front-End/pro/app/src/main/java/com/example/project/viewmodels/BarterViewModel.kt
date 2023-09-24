@@ -280,7 +280,7 @@ data class BarterItemData(
     val giftconName: String,
     val gifticonEndDate: String,
     val barterEndDate: String,
-    val popular: String,
+    val isDeposit: Boolean,
     val preper: String,
     val barterName: String,
 )
@@ -288,10 +288,10 @@ data class BarterItemData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<BarterItemData> {
     return listOf(
-        BarterItemData(1,"image1", "Item1", "20231001235959", "20231001235959", "서버미연결", "치킨","글1"),
-        BarterItemData(2,"https://via.placeholder.com/150", "Item2", "20231002235959", "20231002235959", "중간", "커피","글2"),
-        BarterItemData(3,"image3", "Item3", "20231003235959", "20231003235959", "낮음", "피자","글3"),
-        BarterItemData(4,"image4", "Item4", "20231004235959", "20231004235959", "높음", "물건","글4"),
-        BarterItemData(5,"image5", "Item5", "20231005235959", "20231005235959", "중간", "등등","글5")
+        BarterItemData(1,"image1", "Item1", "20231001235959", "20231001235959", true, "치킨","글1"),
+        BarterItemData(2,"https://via.placeholder.com/150", "Item2", "20231002235959", "20231002235959", false, "커피","글2"),
+        BarterItemData(3,"image3", "Item3", "20231003235959", "20231003235959", true, "피자","글3"),
+        BarterItemData(4,"image4", "Item4", "20231004235959", "20231004235959", false, "물건","글4"),
+        BarterItemData(5,"image5", "Item5", "20231005235959", "20231005235959", true, "등등","글5")
     )
 }

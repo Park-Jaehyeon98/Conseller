@@ -10,6 +10,11 @@ interface LoginService {
     @POST("user/verifypatternendpoint")
     suspend fun verifyPattern(@Body request: PatternVerificationRequest): Response<PatternVerifyResponse>
 
+    // 패턴을 저장하기 위한 API
+    @POST("user/savepatternendpoint")
+    suspend fun savePattern(
+        @Body request: PatternSaveRequest
+    ): Response<PatternSaveResponse>
 
     // User 일반로그인
     @POST("api/user/login")
@@ -25,6 +30,17 @@ data class PatternVerificationRequest(
 
 // 패턴 검증 응답에 대한 DTO
 data class PatternVerifyResponse(
+    val success: Boolean,
+    val message: String
+)
+
+// 패턴 저장 요청 DTO
+data class PatternSaveRequest(
+    val userIdx: Long,
+    val pattern: String,
+)
+// 패턴 저장 응답 DTO
+data class PatternSaveResponse(
     val success: Boolean,
     val message: String
 )

@@ -3,6 +3,7 @@ package com.example.project.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.MyAuctionListResponseDTO
+import com.example.project.api.MyNotificationAnswerRequestDTO
 import com.example.project.api.MyNotificationResponseDTO
 import com.example.project.api.MyService
 import com.example.project.sharedpreferences.SharedPreferencesUtil
@@ -68,6 +69,7 @@ class MyAuctionViewModel @Inject constructor(
                     _myNotifications.value = response.body() ?: emptyList()
                 } else {
                     _error.value = response.message()
+                    _myNotifications.value = getSampleData()
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
@@ -76,4 +78,41 @@ class MyAuctionViewModel @Inject constructor(
             }
         }
     }
+
+    // 알람 답변 보내기
+    fun sendNotificationAnswer(notificationIdx: Long, notificationType: String, answer: Boolean) {
+        viewModelScope.launch {
+            _loading.value = true
+            val requestDTO = MyNotificationAnswerRequestDTO(notificationIdx, notificationType, answer)
+            try {
+                val response = service.submitNotificationAnswer(requestDTO)
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody?.success == true) {
+                        // 응답이 성공적이면 다시 갱신
+                        fetchMyNotifications()
+                    } else {
+                        _error.value = responseBody?.message ?: "Unknown error"
+                    }
+                } else {
+                    _error.value = response.message()
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+}
+
+// 인터넷 미연결 샘플데이터
+private fun getSampleData(): List<MyNotificationResponseDTO> {
+    return listOf(
+        MyNotificationResponseDTO(5,"입금확인","20230921111111","알람테스트 데이터 1"),
+        MyNotificationResponseDTO(4,"물물신청","20230922123456","알람테스트 데이터 2"),
+        MyNotificationResponseDTO(3,"기프티콘시간","20230923111111","알람테스트 데이터 3"),
+        MyNotificationResponseDTO(2,"게시글시간","20230924123456","알람테스트 데이터 4"),
+        MyNotificationResponseDTO(1,"6","20230925111111","알람테스트 데이터 5"),
+    )
 }

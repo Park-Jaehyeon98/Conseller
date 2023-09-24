@@ -172,7 +172,7 @@ fun BarterPage(navController: NavHostController) {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(2.5.dp)
                     .background(logocolor)
             )
 
@@ -183,7 +183,7 @@ fun BarterPage(navController: NavHostController) {
                     name = item.giftconName,
                     gifticonTime = item.gifticonEndDate,
                     barterTime = item.barterEndDate,
-                    popular = item.popular,
+                    isDeposit = item.isDeposit,
                     preper = item.preper,
                     title = item.barterName,
                     onItemClick = {
@@ -227,7 +227,7 @@ fun BarterItem(
     name: String,
     gifticonTime: String,
     barterTime: String,
-    popular: String,
+    isDeposit: Boolean,
     preper: String,
     title: String,
     onItemClick: () -> Unit
@@ -294,7 +294,12 @@ fun BarterItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // 40% 인기
-                Text("인기: $popular", modifier = Modifier.weight(0.4f))
+                Text(
+                    text = if (isDeposit) "보증금 있음" else "보증금 없음",
+                    modifier = Modifier.weight(0.4f),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
 
                 // 60% 박스2
                 Column(

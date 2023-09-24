@@ -56,12 +56,12 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // 상태값을 저장할 변수 추가
-    var postContent by remember { mutableStateOf(auctionDetail?.postContent ?: "") }
+    var auctionText by remember { mutableStateOf(auctionDetail?.auctionText ?: "") }
     var showEditConfirmDialog by remember { mutableStateOf(false) }
 
     // 입력값 업데이트 처리
     fun updateContent(newText: String) {
-        postContent = newText
+        auctionText = newText
     }
 
     // 선택된 경매 상품 데이터 가져오기
@@ -110,7 +110,7 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
         // 내용 수정 부분
         Text("게시글 내용 수정", modifier = Modifier.padding(bottom = 8.dp), fontSize = 24.sp)
         OutlinedTextField(
-            value = postContent,
+            value = auctionText,
             onValueChange = ::updateContent,
             modifier = Modifier
                 .padding(8.dp)
@@ -165,7 +165,7 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
                     SelectButton(
                         text = "네",
                         onClick = {
-                            viewModel.updateAuctionItem(index!!.toLong(), "123", postContent)
+                            viewModel.updateAuctionItem(index!!.toLong(), "123", auctionText)
                             navController.navigate("AuctionDetailPage/${index}")
                             showEditConfirmDialog = false
                         }

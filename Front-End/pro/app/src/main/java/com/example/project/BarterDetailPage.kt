@@ -1,11 +1,18 @@
 package com.example.project
 
+import FormattedDateDot
 import SelectButton
+import UserDetailDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -20,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +45,7 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
 
     // barterItems의 index값이 들고온 값이랑 같은것들을 세팅
     val currentItem = barterItems.find { it.barterIdx.toString() == index }
@@ -50,9 +59,9 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
         Column(
             modifier = Modifier
@@ -60,34 +69,64 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
                 .verticalScroll(scrollState)
         ) {
             currentItem?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+                        .padding(8.dp)
+                ) {
+                    Column {
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp),
-                        contentScale = ContentScale.Crop,
-                    )
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val imagePainter =
+                                rememberAsyncImagePainter(model = it.gifticonDataImageName)
+                            Image(
+                                painter = imagePainter,
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        val textStyle = Modifier.padding(vertical = 4.dp)
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            FormattedDateDot(it.gifticonEndDate, fontSize = 18.sp)
+                            Text(
+                                "판매자 : ${barterDetail?.barterUserNickname}",
+                                fontSize = 18.sp,
+                                modifier = Modifier
+                                    .clickable(
+                                        indication = rememberRipple(),  // Ripple 효과 추가
+                                        interactionSource = remember { MutableInteractionSource() }
+                                    ) {
+                                        showUserDetailDialog = true
+                                    },
+                                textDecoration = TextDecoration.Underline,  // 텍스트에 밑줄 추가
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            FormattedDateDot(it.gifticonEndDate, fontSize = 18.sp, label = "게시기한 :")
+                        }
+                    }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                val textStyle = Modifier.padding(vertical = 4.dp)
-
-                Text("유효기간 : ${it.gifticonEndDate}", modifier = textStyle, fontSize = 18.sp)
-                Text("게시기한 : ${it.barterEndDate}", modifier = textStyle, fontSize = 18.sp)
-
-                barterDetail?.let {
-                    Text("판매자 : ${it.barterUserNickname}", modifier = textStyle, fontSize = 18.sp)
-                    Text("제목 : ${it.barterName}", modifier = textStyle, fontSize = 18.sp)
-                    Text("상세설명 : ${it.barterText}", modifier = textStyle, fontSize = 18.sp)
-                }
-
-                Text("판매자 : 테스트유저", fontSize = 18.sp)
-                Text("제목 : 테스트제목", fontSize = 18.sp)
-                Text("상세설명 : 테스트내용", fontSize = 18.sp)
+                Text("제목 : ${barterDetail?.barterName}", fontSize = 18.sp)
+                Text("내용 : ${barterDetail?.barterText}", fontSize = 18.sp)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -145,6 +184,21 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
                                 text = "아니오",
                                 onClick = { showDeleteDialog = false }
                             )
+                        }
+                    )
+                }
+                // 판매자 상세보기
+                if (showUserDetailDialog) {
+                    UserDetailDialog(
+                        userImageUrl = barterDetail?.barterUserProfileUrl,
+                        userNickname = barterDetail?.barterUserNickname,
+                        userDeposit = barterDetail?.barterUserDeposit,
+                        onDismiss = { showUserDetailDialog = false },
+                        onReportClick = {
+                            // Handle report logic here
+                        },
+                        onMessageClick = {
+                            // Handle message sending logic here
                         }
                     )
                 }

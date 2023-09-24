@@ -285,17 +285,17 @@ data class StoreItemData(
     val giftconName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
-    val popular: String,
+    val isDeposit: Boolean,
     val storePrice: Int,
 )
 
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<StoreItemData> {
     return listOf(
-        StoreItemData(1,"image1", "Item1", "20231001235959", "20231001235959", "서버미연결", 10000),
-        StoreItemData(2,"image2", "Item2", "20231002235959", "20231002235959", "중간", 20000),
-        StoreItemData(3,"https://via.placeholder.com/150", "Item3", "20231003235959", "20231003235959", "낮음", 30000),
-        StoreItemData(4,"image4", "Item4", "20231004235959", "20231004235959", "높음", 40000),
-        StoreItemData(5,"image5", "Item5", "20231005235959", "20231005235959", "중간", 50000)
+        StoreItemData(1,"image1", "Item1", "20231001235959", "20231001235959", true, 10000),
+        StoreItemData(2,"image2", "Item2", "20231002235959", "20231002235959", false, 20000),
+        StoreItemData(3,"https://via.placeholder.com/150", "Item3", "20231003235959", "20231003235959", true, 30000),
+        StoreItemData(4,"image4", "Item4", "20231004235959", "20231004235959", false, 40000),
+        StoreItemData(5,"image5", "Item5", "20231005235959", "20231005235959", true, 50000)
     )
 }

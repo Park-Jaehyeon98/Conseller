@@ -28,6 +28,12 @@ interface MyService {
         @Path("userIdx") userIdx: Long
     ): Response<List<MyNotificationResponseDTO>>
 
+    // 알람 버튼 선택값 보내기
+    @POST("user/notifications/answer")
+    suspend fun submitNotificationAnswer(
+        @Body request: MyNotificationAnswerRequestDTO
+    ): Response<MyNotificationAnswerResponseDTO>
+
     @GET("/api/user/refresh/{userIdx}")
     fun refreshToken(@Path("userIdx") userIdx: Long): Call<RefreshResponse>
 
@@ -62,8 +68,21 @@ data class MyAuctionListResponseDTO(
 // 알람 목록 응답 DTO
 data class MyNotificationResponseDTO(
     val notificationIdx: Long,
+    val notificationType: String,
     val notificationCreatedDate: String,
     val notificationStatus: String,
+)
+
+// 알람 버튼 선택 요청 DTO
+data class MyNotificationAnswerRequestDTO(
+    val notificationIdx: Long,
+    val notificationType: String,
+    val notificationAnswer: Boolean,
+)
+// 알람 버튼 선택 응답 DTO
+data class MyNotificationAnswerResponseDTO(
+    val success: Boolean,
+    val message: String,
 )
 
 

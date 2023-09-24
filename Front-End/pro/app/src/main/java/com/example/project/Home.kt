@@ -154,7 +154,7 @@ fun HomeLayout4(navController: NavController) {
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
 
     Row(
-        modifier = Modifier.fillMaxWidth().height(300.dp),
+        modifier = Modifier.fillMaxWidth().height(330.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Box(
@@ -172,9 +172,15 @@ fun HomeLayout4(navController: NavController) {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    Text("입찰", modifier = Modifier.clickable { selectedTab = "입찰" }, fontSize = 18.sp)
-                    Spacer(modifier = Modifier.weight(0.5f))
-                    Text("판매", modifier = Modifier.clickable { selectedTab = "판매" }, fontSize = 18.sp)
+                    Text("입찰",
+                        modifier = Modifier.clickable { selectedTab = "입찰" },
+                        fontSize = 18.sp,
+                        color = if (selectedTab == "입찰") Color.Black else Color.Gray)
+                    Spacer(modifier = Modifier.weight(0.8f))
+                    Text("판매",
+                        modifier = Modifier.clickable { selectedTab = "판매" },
+                        fontSize = 18.sp,
+                        color = if (selectedTab == "판매") Color.Black else Color.Gray)
                     Spacer(modifier = Modifier.weight(1f))
                 }
 
@@ -189,41 +195,61 @@ fun HomeLayout4(navController: NavController) {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            myAuctions.take(3).forEach { item ->
-                                val itemInteractionState = remember { MutableInteractionSource() }
-                                val itemIsPressed by itemInteractionState.collectIsPressedAsState()
+                        if (myAuctions.isEmpty()) {
+                            Text(text = "등록된 입찰이 없습니다.", fontSize = 24.sp)
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(top = 50.dp)
+                            ) {
+                                myAuctions.take(3).forEach { item ->
+                                    val itemInteractionState = remember { MutableInteractionSource() }
+                                    val itemIsPressed by itemInteractionState.collectIsPressedAsState()
 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
-                                        .clickable(
-                                            interactionSource = itemInteractionState,
-                                            indication = rememberRipple(bounded = true),
-                                            onClick = {
-                                                navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(85.dp)
+                                            .padding(horizontal = 10.dp)
+                                            .clickable(
+                                                interactionSource = itemInteractionState,
+                                                indication = rememberRipple(bounded = true),
+                                                onClick = {
+                                                    navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                                }
+                                            )
+                                            .background(
+                                                if (itemIsPressed) Color.LightGray else Color.Transparent
+                                            )
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start,
+                                            modifier = Modifier.padding(8.dp)
+                                        ) {
+                                            val painter =
+                                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(85.dp)
+                                                    .align(Alignment.CenterVertically)
+                                            )
+                                            Spacer(modifier = Modifier.width(25.dp))
+                                            Column(
+                                                modifier = Modifier.align(Alignment.CenterVertically)
+                                            ) {
+                                                Text(item.gifticonName, fontSize = 18.sp)
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                Text(
+                                                    "최고 입찰가: ${item.auctionHighestBid}원",
+                                                    fontSize = 18.sp
+                                                )
                                             }
-                                        )
-                                        .background(
-                                            if (itemIsPressed) Color.LightGray else Color.Transparent
-                                        ),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Start
-                                ) {
-                                    val painter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                                    Image(
-                                        painter = painter,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(50.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(30.dp))
-                                    Text(item.gifticonName, fontSize = 14.sp)
-                                    Spacer(modifier = Modifier.width(60.dp))
-                                    Text("현재 입찰가: ${item.auctionHighestBid}", fontSize = 14.sp)
-                                    Spacer(modifier = Modifier.width(30.dp))
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(10.dp))
                                 }
-                                Spacer(modifier = Modifier.height(10.dp))
                             }
                         }
                     }
@@ -233,41 +259,62 @@ fun HomeLayout4(navController: NavController) {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            auctionItems.take(3).forEach { item ->
-                                val itemInteractionState = remember { MutableInteractionSource() }
-                                val itemIsPressed by itemInteractionState.collectIsPressedAsState()
+                        if (auctionItems.isEmpty()) {
+                            Text(text = "등록된 판매가 없습니다.", fontSize = 24.sp)
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(top = 50.dp)
+                            ) {
+                                auctionItems.take(3).forEach { item ->
+                                    val itemInteractionState =
+                                        remember { MutableInteractionSource() }
+                                    val itemIsPressed by itemInteractionState.collectIsPressedAsState()
 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
-                                        .clickable(
-                                            interactionSource = itemInteractionState,
-                                            indication = rememberRipple(bounded = true),
-                                            onClick = {
-                                                navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(85.dp)
+                                            .padding(horizontal = 10.dp)
+                                            .clickable(
+                                                interactionSource = itemInteractionState,
+                                                indication = rememberRipple(bounded = true),
+                                                onClick = {
+                                                    navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                                }
+                                            )
+                                            .background(
+                                                if (itemIsPressed) Color.LightGray else Color.Transparent
+                                            )
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start,
+                                            modifier = Modifier.padding(8.dp)
+                                        ) {
+                                            val painter =
+                                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(85.dp)
+                                                    .align(Alignment.CenterVertically)
+                                            )
+                                            Spacer(modifier = Modifier.width(25.dp))
+                                            Column(
+                                                modifier = Modifier.align(Alignment.CenterVertically)
+                                            ) {
+                                                Text("${item.gifticonName}", fontSize = 18.sp)
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                Text(
+                                                    "최고 입찰가: ${item.auctionHighestBid}원",
+                                                    fontSize = 18.sp
+                                                )
                                             }
-                                        )
-                                        .background(
-                                            if (itemIsPressed) Color.LightGray else Color.Transparent
-                                        ),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Start
-                                ) {
-                                    val painter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                                    Image(
-                                        painter = painter,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(50.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(30.dp))
-                                    Text("${item.giftconName}", fontSize = 14.sp)
-                                    Spacer(modifier = Modifier.width(60.dp))
-                                    Text("현재 입찰가: ${item.auctionHighestBid}", fontSize = 14.sp)
-                                    Spacer(modifier = Modifier.width(30.dp))
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(10.dp))
                                 }
-                                Spacer(modifier = Modifier.height(10.dp))
                             }
                         }
                     }

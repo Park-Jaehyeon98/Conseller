@@ -89,7 +89,6 @@ data class GifticonData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<GifticonData> {
     return listOf(
-
         GifticonData(1,"https://via.placeholder.com/150", "Item1", "2일"),
         GifticonData(2,"image2", "Item2", "3일"),
         GifticonData(3,"image3", "Item3", "1일"),

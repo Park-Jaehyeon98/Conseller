@@ -119,6 +119,8 @@ data class BarterDetailResponseDTO(
     val barterName: String,                // 게시글 제목
     val barterText: String,              // 게시글 내용
     val barterUserIdx: Long,           // 게시글 유저 idx
+    val barterUserProfileUrl: String,   // 게시글 유저 사진
+    val barterUserDeposit: Long,        // 게시글 유저 보증금
     val barterUserNickname: String,    // 게시글 유저 닉네임
 )
 

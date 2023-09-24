@@ -61,7 +61,7 @@ interface StoreService {
     ): Response<Void>
 
     // 스토어 거래진행 입금완료 API
-    @POST("api/store/complete/{storeIdx}")
+    @PATCH("api/store/complete/{storeIdx}")
     suspend fun completeStorePayment(
         @Path("storeIdx") storeIdx: Long
     ): Response<StoreTradeCompleteResponseDTO>
@@ -123,6 +123,8 @@ data class StoreDetailResponseDTO(
     val postContent: String,
     val storeUserIdx: Long,
     val storeUserNickname: String,
+    val storeUserProfileUrl: String,
+    val storeUserDeposit: Long,
 )
 
 // 스토어 최고가 구매 계좌번호 요청 DTO = Path형식

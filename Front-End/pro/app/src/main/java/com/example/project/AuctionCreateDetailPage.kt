@@ -42,8 +42,8 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex!!.toLong() }
 
     // 상한가, 하한가, 게시글 내용을 위한 상태값
-    var upperLimit by remember { mutableStateOf(0) }
-    var lowerLimit by remember { mutableStateOf(0) }
+    var upperPrice by remember { mutableStateOf(0) }
+    var lowerPrice by remember { mutableStateOf(0) }
     var postContent by remember { mutableStateOf("") }
     var showRegisterConfirmDialog by remember { mutableStateOf(false) }
 
@@ -94,18 +94,18 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Text("상한가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
-                value = formattedNumber(upperLimit.toString()),
+                value = formattedNumber(upperPrice.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
                     if (pureValue.isEmpty()) {
-                        upperLimit = 0
+                        upperPrice = 0
                     } else if (pureValue.all { it.isDigit() }) {
                         val potentialValue = pureValue.toLong()
                         if (potentialValue <= 1_000_000_000) {  // 10억으로 제한
-                            upperLimit = potentialValue.toInt()
+                            upperPrice = potentialValue.toInt()
                         } else {
-                            upperLimit = 1_000_000_000
+                            upperPrice = 1_000_000_000
                         }
                     }
                 },
@@ -131,18 +131,18 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             Text("하한가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
-                value = formattedNumber(lowerLimit.toString()),
+                value = formattedNumber(lowerPrice.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
                     if (pureValue.isEmpty()) {
-                        lowerLimit = 0
+                        lowerPrice = 0
                     } else if (pureValue.all { it.isDigit() }) {
                         val potentialValue = pureValue.toLong()
                         if (potentialValue <= 1_000_000_000) {  // 10억으로 제한
-                            lowerLimit = potentialValue.toInt()
+                            lowerPrice = potentialValue.toInt()
                         } else {
-                            lowerLimit = 1_000_000_000
+                            lowerPrice = 1_000_000_000
                         }
                     }
                 },
@@ -238,8 +238,8 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         onClick = {
                             val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
                             auctionViewModel.registerAuctionItem(
-                                upperLimit,
-                                lowerLimit,
+                                upperPrice,
+                                lowerPrice,
                                 postContent,
                                 selectedIndex
                             )

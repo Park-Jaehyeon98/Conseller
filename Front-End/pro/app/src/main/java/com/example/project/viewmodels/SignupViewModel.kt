@@ -3,9 +3,10 @@ package com.example.project.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.BasicResponse
 import com.example.project.api.CheckuserIdRequest
+import com.example.project.api.HttpResponse
 import com.example.project.api.RegistRequest
-import com.example.project.api.RegistResponse
 import com.example.project.api.SignupService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,25 +21,24 @@ class SignupViewModel @Inject constructor(
     private val service: SignupService,
 ) : ViewModel() {
 
-    private val _SignupResponse = MutableStateFlow(RegistResponse(-1,""))
-    val signupresponse: StateFlow<RegistResponse> get() = _SignupResponse
+    private val _SignupResponse = MutableStateFlow(HttpResponse(0,""))
+    val signupresponse: StateFlow<HttpResponse> get() = _SignupResponse
 
 
-    private val _CheckEmailResponse = MutableStateFlow(RegistResponse(-1, ""))
-    val checkEmail: StateFlow<RegistResponse> get() = _CheckEmailResponse
+    private val _CheckEmailResponse = MutableStateFlow(BasicResponse(-1, ""))
+    val checkEmail: StateFlow<BasicResponse> get() = _CheckEmailResponse
 
 
-    private val _CheckNickNameResponse = MutableStateFlow(RegistResponse(-1, ""))
-    val checkNickname: StateFlow<RegistResponse> get() = _CheckNickNameResponse
+    private val _CheckNickNameResponse = MutableStateFlow(BasicResponse(-1, ""))
+    val checkNickname: StateFlow<BasicResponse> get() = _CheckNickNameResponse
 
 
-    private val _CheckPhoneNumber = MutableStateFlow(RegistResponse(-1, ""))
-    val checkPhoneNumber: StateFlow<RegistResponse> get() = _CheckPhoneNumber
+    private val _CheckPhoneNumber = MutableStateFlow(BasicResponse(-1, ""))
+    val checkPhoneNumber: StateFlow<BasicResponse> get() = _CheckPhoneNumber
 
 
-    private val _CheckId = MutableStateFlow(RegistResponse(-1, ""))
-    val checkId: StateFlow<RegistResponse> get() = _CheckId
-
+    private val _CheckId = MutableStateFlow(BasicResponse(-1, ""))
+    val checkId: StateFlow<BasicResponse> get() = _CheckId
 
 
     private val _isLoading = MutableStateFlow(false)
@@ -46,7 +46,6 @@ class SignupViewModel @Inject constructor(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
-
 
     // 로그인 로직
     fun registerUser(request: RegistRequest) {
@@ -57,11 +56,11 @@ class SignupViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        _SignupResponse.value = response.body() ?: RegistResponse(-1, "")
+                        _SignupResponse.value = HttpResponse(code = response.code(), message = response.message())
                         Log.d("RegisterUser", "Registration Successful: ${_SignupResponse.value}")
                     } else {
                         _error.value = response.message()
-                        // HTTP 응답 코드 및 에러 메시지 로깅
+                        _SignupResponse.value = HttpResponse(code = response.code(), message = response.message())
                         Log.d("RegisterUser", "Registration Failed: Response Code = ${response.code()}, Error Message = ${response.errorBody()?.string() ?: "Unknown Error"}")
                     }
                 }
@@ -82,7 +81,7 @@ class SignupViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        _CheckNickNameResponse.value = response.body() ?: RegistResponse(-1, "")
+                        _CheckNickNameResponse.value = response.body() ?: BasicResponse(-1, "")
                     } else {
                         _error.value = response.message()
                     }
@@ -101,7 +100,7 @@ class SignupViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        _CheckEmailResponse.value = response.body() ?: RegistResponse(-1, "")
+                        _CheckEmailResponse.value = response.body() ?: BasicResponse(-1, "")
                         Log.d("CheckDuplicateEmail", "Email check successful: ${response.body()}")
                     } else {
                         _error.value = response.message()
@@ -122,20 +121,25 @@ class SignupViewModel @Inject constructor(
                 val response = service.checkDuplicateId(request)
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
+                    Log.d("CheckDuplicateId", "HTTP Status Code: ${response.code()}")
+
                     if (response.isSuccessful) {
-                        _CheckId.value = response.body() ?: RegistResponse(-1, "")
-                        Log.d("CheckDuplicateEmail", "Email check 성공함: ${response.body()}")
+                        _CheckId.value = response.body() ?: BasicResponse(-1, "")
+                        Log.d("CheckDuplicateId", "Id check 성공함: ${response.body()}")
                     } else {
                         _error.value = response.message()
-                        Log.d("CheckDuplicateEmail", "Email check 문제났음: ${response.message()}")
+                        Log.e("CheckDuplicateId", "Id check 문제났음: ${response.message()}, HTTP Status Code: ${response.code()}, Response Body: ${response.errorBody()?.string()}")
                     }
                 }
             } catch (e: Exception) {
-                _error.value = e.message
-                Log.d("CheckDuplicateEmail", "에러남:",e)
+                withContext(Dispatchers.Main) {
+                    _error.value = e.message
+                    Log.e("CheckDuplicateId", "에러남:", e)
+                }
             }
         }
     }
+
 
     fun checkDuplicatePhoneNumber(phoneNumber: String) {
         _isLoading.value = true
@@ -145,7 +149,7 @@ class SignupViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        _CheckPhoneNumber.value = response.body() ?: RegistResponse(-1, "")
+                        _CheckPhoneNumber.value = response.body() ?: BasicResponse(-1, "")
                     } else {
                         _error.value = response.message()
                     }

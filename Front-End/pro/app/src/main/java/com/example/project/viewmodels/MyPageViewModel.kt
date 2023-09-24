@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.MyPageService
@@ -51,24 +52,29 @@ class MyPageViewModel @Inject constructor(
         return sharedPreferencesUtil.getUserId()
     }
 
-    fun profileSend(imageFile: MultipartBody.Part) {
+    fun profileSend(file: MultipartBody.Part) {
         val userIdx = sharedPreferencesUtil.getUserId()
-        _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = service.profileSend(userIdx, imageFile)
+                val response = service.profileSend(userIdx, file)
                 if (response.isSuccessful) {
-                    _UploadProfileResponse.value = response.body() ?: uploadImageResponse(-1, "")
+                    Log.d("ProfileSend", "Response: ${response.body()}")
                 } else {
-                    _error.value = response.errorBody()?.string() ?: "서버 error"
+                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
+                    val errorString = "Error Code: ${response.code()}, Error Body: ${response.errorBody()?.string() ?: "Unknown"}"
+                    _error.value = errorString
+                    Log.e("ProfileSend", errorString)
                 }
             } catch (e: Exception) {
-                _error.value = e.message
+                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
+                val errorMessage = "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
+                _error.value = errorMessage
+                Log.e("ProfileSend", errorMessage, e)
             } finally {
-                _isLoading.value = false
             }
         }
     }
+
 
 
     fun getMyInfo() {
@@ -77,14 +83,23 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = service.getUserInfo(userIdx)
+
+                // Log the response data
+                Log.d("YourViewModel", "Response Code: ${response.code()}")
+                Log.d("YourViewModel", "Response Message: ${response.message()}")
+
                 if (response.isSuccessful) {
                     _GetMyInfoResponse.value =
                         response.body() ?: userInfoResponse(null, "", "", "", "","","")
+                    Log.d("YourViewModel", "Response Body: ${response.body()}")
                 } else {
-                    _error.value = response.errorBody()?.string() ?: "서버 error"
+                    val errorBody = response.errorBody()?.string() ?: "서버 error"
+                    _error.value = errorBody
+                    Log.d("YourViewModel", "Error Body: $errorBody")
                 }
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e("YourViewModel", "Exception occurred:", e)
             } finally {
                 _isLoading.value = false
             }

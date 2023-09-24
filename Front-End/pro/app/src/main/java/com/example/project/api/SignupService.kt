@@ -11,27 +11,27 @@ interface SignupService {
 
     //회원가입 API
     @POST("api/user")
-    suspend fun regist(@Body request:RegistRequest ): Response<RegistResponse>
+    suspend fun regist(@Body request:RegistRequest ): Response<HttpResponse>
 
     @POST("api/user/nickname")
     suspend fun checkDuplicateNickName(
         @Body userNickName: String
-    ): Response<RegistResponse>
+    ): Response<BasicResponse>
 
     @POST("api/user/email")
     suspend fun checkDuplicateEmail(
         @Body userEmail: String
-    ): Response<RegistResponse>
+    ): Response<BasicResponse>
 
     @POST("api/user/id")
     suspend fun checkDuplicateId(
         @Body request: CheckuserIdRequest
-    ): Response<RegistResponse>
+    ): Response<BasicResponse>
 
     @POST("api/user/phone-number")
     suspend fun checkDuplicatePhoneNumber(
         @Body userPhoneNumber: String
-    ): Response<RegistResponse>
+    ): Response<BasicResponse>
 
 
 
@@ -55,9 +55,14 @@ data class RegistRequest(
 )
 
 //회원가입 응답 DTO
-data class  RegistResponse(
+data class  BasicResponse( // 일반적인 결론일 경우
     val status: Int,
     val message :String,
+)
+
+data class HttpResponse(
+    val code:Int,
+    val message:String
 )
 
 data class CheckuserNicknameRequest(

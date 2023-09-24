@@ -12,6 +12,7 @@ import com.conseller.conseller.gifticon.dto.request.GifticonRegisterRequest;
 import com.conseller.conseller.gifticon.dto.response.ImageUrlsResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class GifticonServiceImpl implements GifticonService {
     private final SubCategoryRepository subCategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
     private final UserRepository userRepository;
+    private final DateTimeConverter dateTimeConverter;
 
     public GifticonResponse getGifticonResponse(long gifticonIdx) {
         Gifticon gifticon = gifticonRepository.findByGifticonIdx(gifticonIdx)
@@ -38,8 +40,8 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonIdx(gifticon.getGifticonIdx())
                 .gifticonBarcode(gifticon.getGifticonBarcode())
                 .gifticonName(gifticon.getGifticonName())
-                .gifticonStartDate(gifticon.getGifticonStartDate().toString())
-                .gifticonEndDate(gifticon.getGifticonStartDate().toString())
+                .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
+                .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
                 .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
                 .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
                 .gifticonStatus(gifticon.getGifticonStatus())
@@ -68,7 +70,7 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonDataImageUrl(dataImageUrl)
                 .subCategory(subCategory)
                 .mainCategory(mainCategory)
-                .gifticonEndDate(convertDateTime(gifticonRegisterRequest.getGifticonEndDate()))
+                .gifticonEndDate(dateTimeConverter.convertDateTime(gifticonRegisterRequest.getGifticonEndDate()))
                 .user(user)
                 .build();
 
@@ -89,15 +91,5 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonAllImageUrl(gifticonAllImageUrl)
                 .gifticonDataImageUrl(gifticonDataImageUrl)
                 .build();
-    }
-
-    private LocalDateTime convertDateTime(String date) {
-
-        // 문자열을 LocalDate로 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        LocalDate localDate = LocalDate.parse(date, formatter);
-
-        // LocalDate를 LocalDateTime으로 변환 (시간을 23:59:59로 설정)
-        return localDate.atTime(23, 59, 59);
     }
 }

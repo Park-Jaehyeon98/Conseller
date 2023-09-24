@@ -1,6 +1,9 @@
 package com.example.project
 
+import SelectButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.MygifticonViewModel
 import com.example.project.viewmodels.StoreViewModel
 import java.text.DecimalFormat
@@ -60,6 +66,7 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
     // 판매가와 게시글 내용을 위한 상태값
     var storePrice by remember { mutableStateOf(0) }
     var postContent by remember { mutableStateOf("") }
+    var showRegisterConfirmDialog by remember { mutableStateOf(false) }
 
     // 1000단위 , 찍기용
     val numberFormat = DecimalFormat("#,###")
@@ -93,9 +100,16 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
             )
 
             selectedGifticon?.let {
-                Text(text = "Selected gifticon image URL: ${it.gifticonAllImagName}") // 예시용
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonAllImagName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
-            Icon(Icons.Default.Home, contentDescription = "Image", Modifier.size(120.dp)) // 임시 사진
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -119,7 +133,10 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(onDone = {
                     keyboardController?.hide() // 키보드 숨기기
                 }),
@@ -151,29 +168,25 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Button(
+            SelectButton(
+                text = "등록",
                 onClick = {
-                    val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
-                    storeViewModel.registerStoreItem(storePrice, postContent, selectedIndex)
+                    showRegisterConfirmDialog = true
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("등록")
-            }
+            )
 
             Spacer(modifier = Modifier.width(24.dp))
 
-            Button(
+            SelectButton(
+                text = "이전",
                 onClick = {
                     navController.navigate("StoreCreatePage")
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("이전")
-            }
-
+            )
 
             LaunchedEffect(navigateToIdx) {
                 navigateToIdx?.let { storeIdx ->
@@ -181,6 +194,39 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                     storeViewModel.resetNavigation()
                 }
             }
+        }
+
+        // 등록 확인 대화상자
+        if (showRegisterConfirmDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showRegisterConfirmDialog = false
+                },
+                title = {
+                    Text(text = "상점 아이템 등록")
+                },
+                text = {
+                    Text("등록하시겠습니까?", fontSize = 18.sp)
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "예",
+                        onClick = {
+                            val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
+                            storeViewModel.registerStoreItem(storePrice, postContent, selectedIndex)
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                }
+            )
         }
     }
 }

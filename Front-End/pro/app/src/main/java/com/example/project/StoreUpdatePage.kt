@@ -1,6 +1,9 @@
 package com.example.project
 
+import SelectButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.StoreViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -56,6 +61,7 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
     var postContent by remember { mutableStateOf(storeDetail?.postContent ?: "") }
     var storePrice by remember { mutableStateOf(selectedStoreItem?.storePrice ?: 0) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showUpdateConfirmDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -68,7 +74,16 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(Icons.Default.Home, contentDescription = "Image", Modifier.size(120.dp))
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                val imagePainter =
+                    rememberAsyncImagePainter(model = selectedStoreItem?.gifticonDataImageName)
+                Image(
+                    painter = imagePainter,
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp),
+                    contentScale = ContentScale.Crop,
+                )
+            }
 
             Text("판매가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
             OutlinedTextField(
@@ -89,7 +104,10 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(onDone = {
                     keyboardController?.hide()
                 }),
@@ -125,28 +143,51 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = {
-                        viewModel.updateStoreItem(index!!.toLong(), "123", postContent)
-                        navController.navigate("StoreDetailPage/${index}")
-                    },
+                SelectButton(
+                    text = "수정하기",
+                    onClick = { showUpdateConfirmDialog = true },
                     modifier = Modifier
                         .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-                ) {
-                    Text("수정하기")
-                }
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Button(
-                    onClick = {
-                        showDeleteDialog = true
-                    },
+                SelectButton(
+                    text = "삭제하기",
+                    onClick = { showDeleteDialog = true },
                     modifier = Modifier
                         .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-                ) {
-                    Text("삭제하기")
-                }
+                )
+            }
+
+            if (showUpdateConfirmDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showUpdateConfirmDialog = false
+                    },
+                    title = {
+                        Text(text = "게시글 수정")
+                    },
+                    text = {
+                        Text("수정하기겠습니까?", fontSize = 18.sp)
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "네",
+                            onClick = {
+                                viewModel.updateStoreItem(index!!.toLong(), "123", postContent)
+                                navController.navigate("StoreDetailPage/${index}")
+                                showUpdateConfirmDialog = false
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "아니오",
+                            onClick = { showUpdateConfirmDialog = false }
+                        )
+                    }
+                )
             }
 
             if (showDeleteDialog) {
@@ -158,23 +199,23 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
                         Text(text = "게시글 삭제")
                     },
                     text = {
-                        Text("정말 삭제하시겠습니까?")
+                        Text("정말 삭제하시겠습니까?", fontSize = 18.sp)
                     },
                     dismissButton = {
-                        Button(onClick = {
-                            viewModel.deleteStoreItem(index!!.toLong())
-                            navController.navigate("StorePage")
-                            showDeleteDialog = false
-                        }) {
-                            Text("네")
-                        }
+                        SelectButton(
+                            text = "네",
+                            onClick = {
+                                viewModel.deleteStoreItem(index!!.toLong())
+                                navController.navigate("StorePage")
+                                showDeleteDialog = false
+                            }
+                        )
                     },
                     confirmButton = {
-                        Button(onClick = {
-                            showDeleteDialog = false
-                        }) {
-                            Text("아니오")
-                        }
+                        SelectButton(
+                            text = "아니오",
+                            onClick = { showDeleteDialog = false }
+                        )
                     }
                 )
             }

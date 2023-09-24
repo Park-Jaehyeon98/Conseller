@@ -1,5 +1,7 @@
 package com.example.project
 
+import SelectButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.MygifticonViewModel
 import java.text.DecimalFormat
@@ -41,6 +45,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     var upperLimit by remember { mutableStateOf(0) }
     var lowerLimit by remember { mutableStateOf(0) }
     var postContent by remember { mutableStateOf("") }
+    var showRegisterConfirmDialog by remember { mutableStateOf(false) }
 
     // 1000단위 , 찍기용
     val numberFormat = DecimalFormat("#,###")
@@ -74,9 +79,16 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             )
 
             selectedGifticon?.let {
-                Text(text = "Selected gifticon image URL: ${it.gifticonAllImagName}") // 예시용. 실제로는 Image 컴포넌트로 이미지를 표시해야 함
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonAllImagName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
-            Icon(Icons.Default.Home, contentDescription = "Image", Modifier.size(120.dp)) // 임시 사진
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -100,7 +112,10 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(onDone = {
                     keyboardController?.hide() // 키보드 숨기기
                 }),
@@ -134,7 +149,10 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(onDone = {
                     keyboardController?.hide() // 키보드 숨기기
                 }),
@@ -166,28 +184,25 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Button(
+            SelectButton(
+                text = "등록",
                 onClick = {
-                    val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
-                    auctionViewModel.registerAuctionItem(upperLimit, lowerLimit, postContent, selectedIndex)
+                    showRegisterConfirmDialog = true
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("등록")
-            }
+            )
 
             Spacer(modifier = Modifier.width(24.dp))
 
-            Button(
+            SelectButton(
+                text = "이전",
                 onClick = {
                     navController.navigate("AuctionCreatePage")
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("이전")
-            }
+            )
 
             LaunchedEffect(navigateToIdx) {
                 navigateToIdx?.let { auctionIdx ->
@@ -195,6 +210,44 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                     auctionViewModel.resetNavigation()
                 }
             }
+        }
+
+        // 등록 확인 대화상자
+        if (showRegisterConfirmDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showRegisterConfirmDialog = false
+                },
+                title = {
+                    Text(text = "게시글 등록")
+                },
+                text = {
+                    Text("등록하시겠습니까?")
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "예",
+                        onClick = {
+                            val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
+                            auctionViewModel.registerAuctionItem(
+                                upperLimit,
+                                lowerLimit,
+                                postContent,
+                                selectedIndex
+                            )
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                }
+            )
         }
     }
 }

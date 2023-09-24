@@ -52,7 +52,7 @@ import com.example.project.viewmodels.OcrViewModel
 @Composable
 fun GifticonAddDetailPage(navController: NavHostController) {
     // OCR 모델
-    val OcrViewModel: OcrViewModel= hiltViewModel()
+    val OcrViewModel: OcrViewModel = hiltViewModel()
     // 기프티콘 등록 모델
     val viewModel: MygifticonViewModel = hiltViewModel()
 
@@ -67,9 +67,10 @@ fun GifticonAddDetailPage(navController: NavHostController) {
     // Crop된 이미지
     var gifticonCropImage by remember { mutableStateOf<Uri?>(null) }
 
+
     // 사용자가 채워야하는 값
-    var subCategoryIdx by remember { mutableStateOf("버거/치킨/피자") }
-    var mainCategoryIdx by remember { mutableStateOf("피자") }
+    var subCategoryIdx by remember { mutableStateOf(-1) }
+    var mainCategoryIdx by remember { mutableStateOf(-1) }
 
     var currentPage by remember { mutableStateOf<Int>(0) }
     val currentUpdatedPage = rememberUpdatedState(currentPage)
@@ -102,21 +103,30 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         verticalArrangement = Arrangement.Center
     ) {
         if (currentUpdatedPage.value == 0) {
+            //메인 카테고리
+            ChoiceMainCategory(MainCategory = mainCategoryIdx,
+                onMainCategorySet = { newMainCategory -> mainCategoryIdx = newMainCategory },
+                subCategory = subCategoryIdx,
+                onSubCategorySet = { newSubCategory -> subCategoryIdx = newSubCategory })
+            Spacer(modifier = Modifier.height(40.dp))
+            if (subCategoryIdx >= 0 || mainCategoryIdx == 5) {
+                pagechanger(
+                    currentPage = currentPage,
+                    onSetPage = { newPage -> currentPage = newPage })
+            }
+        } else if (currentUpdatedPage.value == 1) {
             //카테고리
             ChoiceCategory(category = selectedCategoryIndex,
                 onCategorySet = { newCategory -> selectedCategoryIndex = newCategory })
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
-        } else if (currentUpdatedPage.value == 1) {
+        } else if (currentUpdatedPage.value == 2) {
             GifticonUpload(
                 onImageSelected = { uri: Uri ->
                     selectImage = uri
                 },
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
-        } else if (currentUpdatedPage.value == 2) {
-            Text(text = "다음2")
+            Spacer(modifier = Modifier.height(40.dp))
             pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
         } else if (currentUpdatedPage.value == 3) {
             Text(text = "다음3")
@@ -131,6 +141,448 @@ fun GifticonAddDetailPage(navController: NavHostController) {
     }
 }
 
+
+
+@Composable
+fun ChoiceMainCategory(
+    MainCategory: Int,
+    onMainCategorySet: (Int) -> Unit,
+    subCategory: Int,
+    onSubCategorySet: (Int) -> Unit
+) {
+    // 선택된 대분류카테고리 인덱스를 저장하는 상태
+    var selectedCategoryIndex by remember { mutableStateOf(-1) }
+    // 선택된 중분류카테고리 인덱스를 저장하는 상태
+    var selectedSubCategoryIndex by remember { mutableStateOf(-1) }
+    Column(
+        modifier = Modifier
+            .padding(5.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        Text(text = "카테고리 선택", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            val imageModifier = Modifier
+                .size(60.dp, 60.dp)
+                .clip(CircleShape)
+
+            // 햄버거/치킨/피자
+            val borderModifier1 = Modifier.border(
+                width = 3.dp,
+                shape = CircleShape,
+                color = if (selectedCategoryIndex == 1) BrandColor1 else Color.Transparent
+            )
+            Column(
+                modifier = Modifier.clickable {
+                    onMainCategorySet(1)
+                    selectedCategoryIndex = 1
+                }, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.fastfood),
+                    contentDescription = "FastFood",
+                    modifier = imageModifier.then(borderModifier1),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = "버거/치킨/피자", fontWeight = FontWeight.Bold)
+            }
+
+            // 편의점
+            val borderModifier2 = Modifier.border(
+                width = 3.dp,
+                shape = CircleShape,
+                color = if (selectedCategoryIndex == 2) BrandColor1 else Color.Transparent
+            )
+            Column(
+                modifier = Modifier.clickable {
+                    onMainCategorySet(2)
+                    selectedCategoryIndex = 2
+                }, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.conveniencestore),
+                    contentDescription = "ConvenienceStore",
+                    modifier = imageModifier.then(borderModifier2),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = "편의점", fontWeight = FontWeight.Bold)
+            }
+
+            // 카페/베이커리
+            val borderModifier3 = Modifier.border(
+                width = 3.dp,
+                shape = CircleShape,
+                color = if (selectedCategoryIndex == 3) BrandColor1 else Color.Transparent
+            )
+            Column(
+                modifier = Modifier.clickable {
+                    onMainCategorySet(3)
+                    selectedCategoryIndex = 3
+                }, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.cafe),
+                    contentDescription = "Cafe and Bakery",
+                    modifier = imageModifier.then(borderModifier3),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = "카페/베이커리", fontWeight = FontWeight.Bold)
+            }
+
+            // 아이스크림
+            val borderModifier4 = Modifier.border(
+                width = 3.dp,
+                shape = CircleShape,
+                color = if (selectedCategoryIndex == 4) BrandColor1 else Color.Transparent
+            )
+            Column(
+                modifier = Modifier.clickable {
+                    onMainCategorySet(4)
+                    selectedCategoryIndex = 4
+                }, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.icecream),
+                    contentDescription = "IceCream",
+                    modifier = imageModifier.then(borderModifier4),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = "아이스크림", fontWeight = FontWeight.Bold)
+            }
+            //기타
+            val borderModifier5 = Modifier.border(
+                width = 3.dp,
+                shape = CircleShape,
+                color = if (selectedCategoryIndex == 5) BrandColor1 else Color.Transparent
+            )
+            Column(
+                modifier = Modifier.clickable {
+                    onMainCategorySet(5)
+                    selectedCategoryIndex = 5
+                }, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.etc),
+                    contentDescription = "Etc",
+                    modifier = imageModifier.then(borderModifier5),
+                    contentScale = ContentScale.Crop
+                )
+                Text(text = "기타", fontWeight = FontWeight.Bold)
+            }
+        }
+        if (selectedCategoryIndex == 1) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                val imageModifier = Modifier
+                    .size(60.dp, 60.dp)
+                    .clip(CircleShape)
+
+
+                val FastFoodModifier1 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 1) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(1)
+                        selectedSubCategoryIndex = 1
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.hamburger),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(FastFoodModifier1),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "햄버거", fontWeight = FontWeight.Bold)
+                }
+
+
+                val FastFoodModifier2 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 2) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(2)
+                        selectedSubCategoryIndex = 2
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.fry),
+                        contentDescription = "ConvenienceStore",
+                        modifier = imageModifier.then(FastFoodModifier2),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "치킨", fontWeight = FontWeight.Bold)
+                }
+
+
+                val FastFoodModifier3 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 3) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(3)
+                        selectedSubCategoryIndex = 3
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.pizza),
+                        contentDescription = "Cafe and Bakery",
+                        modifier = imageModifier.then(FastFoodModifier3),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "피자", fontWeight = FontWeight.Bold)
+                }
+            }
+        } else if (selectedCategoryIndex == 2) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                val imageModifier = Modifier
+                    .size(60.dp, 60.dp)
+                    .clip(CircleShape)
+
+
+                val ConvenienceModifier1 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 4) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(4)
+                        selectedSubCategoryIndex = 4
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.giftvoucher),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(ConvenienceModifier1),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "상품권", fontWeight = FontWeight.Bold)
+                }
+                val ConvenienceModifier2 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 5) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(5)
+                        selectedSubCategoryIndex = 5
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.snack),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(ConvenienceModifier2),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "과자", fontWeight = FontWeight.Bold)
+                }
+                val ConvenienceModifier3 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 6) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(6)
+                        selectedSubCategoryIndex = 6
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.coca),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(ConvenienceModifier3),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "음료", fontWeight = FontWeight.Bold)
+                }
+                val ConvenienceModifier4 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 7) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(7)
+                        selectedSubCategoryIndex = 7
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.kimbab),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(ConvenienceModifier4),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "도시락/김밥류", fontWeight = FontWeight.Bold)
+                }
+                val ConvenienceModifier5 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(0)
+                        selectedSubCategoryIndex = 0
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.etc),
+                        contentDescription = "FastFood",
+                        modifier = imageModifier.then(ConvenienceModifier5),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "기타", fontWeight = FontWeight.Bold)
+                }
+            }
+        } else if (selectedCategoryIndex == 3) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                val imageModifier = Modifier
+                    .size(60.dp, 60.dp)
+                    .clip(CircleShape)
+
+
+                val BakeryModifier1 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 8) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(8)
+                        selectedSubCategoryIndex = 8
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.coffee),
+                        contentDescription = "GiftVoucher",
+                        modifier = imageModifier.then(BakeryModifier1),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "커피", fontWeight = FontWeight.Bold)
+                }
+                val BakeryModifier2 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 9) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(9)
+                        selectedSubCategoryIndex = 9
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bakery),
+                        contentDescription = "Snack",
+                        modifier = imageModifier.then(BakeryModifier2),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "베이커리", fontWeight = FontWeight.Bold)
+                }
+                val BakeryModifier3 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(0)
+                        selectedSubCategoryIndex = 0
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.etc),
+                        contentDescription = "Drink",
+                        modifier = imageModifier.then(BakeryModifier3),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "기타", fontWeight = FontWeight.Bold)
+                }
+            }
+        } else if (selectedCategoryIndex == 4) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                val imageModifier = Modifier
+                    .size(60.dp, 60.dp)
+                    .clip(CircleShape)
+
+
+                val IceCreamModifier1 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 10) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(10)
+                        selectedSubCategoryIndex = 10
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.baskinrobbins),
+                        contentDescription = "GiftVoucher",
+                        modifier = imageModifier.then(IceCreamModifier1),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "베스킨라빈스", fontWeight = FontWeight.Bold)
+                }
+                val IceCreamModifier2 = Modifier.border(
+                    width = 3.dp,
+                    shape = CircleShape,
+                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                )
+                Column(
+                    modifier = Modifier.clickable {
+                        onSubCategorySet(0)
+                        selectedSubCategoryIndex = 0
+                    }, horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.etc),
+                        contentDescription = "Snack",
+                        modifier = imageModifier.then(IceCreamModifier2),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(text = "기타", fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ChoiceCategory(
@@ -161,16 +613,14 @@ fun ChoiceCategory(
             // 카카오톡
             val borderModifier1 = Modifier.border(
                 width = 3.dp,
-                shape= CircleShape,
+                shape = CircleShape,
                 color = if (selectedCategoryIndex == 0) BrandColor1 else Color.Transparent
             )
             Column(
-                modifier = Modifier
-                    .clickable {
-                        onCategorySet(0)
-                        selectedCategoryIndex = 0
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.clickable {
+                    onCategorySet(0)
+                    selectedCategoryIndex = 0
+                }, horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.kakaotalk),
@@ -184,16 +634,14 @@ fun ChoiceCategory(
             // 싸피
             val borderModifier2 = Modifier.border(
                 width = 3.dp,
-                shape= CircleShape,
+                shape = CircleShape,
                 color = if (selectedCategoryIndex == 1) BrandColor1 else Color.Transparent
             )
             Column(
-                modifier = Modifier
-                    .clickable {
-                        onCategorySet(1)
-                        selectedCategoryIndex = 1
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.clickable {
+                    onCategorySet(1)
+                    selectedCategoryIndex = 1
+                }, horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ssafy),
@@ -207,16 +655,14 @@ fun ChoiceCategory(
             // 기프티쇼
             val borderModifier3 = Modifier.border(
                 width = 3.dp,
-                shape= CircleShape,
+                shape = CircleShape,
                 color = if (selectedCategoryIndex == 2) BrandColor1 else Color.Transparent
             )
             Column(
-                modifier = Modifier
-                    .clickable {
-                        onCategorySet(2)
-                        selectedCategoryIndex = 2
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.clickable {
+                    onCategorySet(2)
+                    selectedCategoryIndex = 2
+                }, horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.giftishow),
@@ -230,16 +676,14 @@ fun ChoiceCategory(
             // 기타
             val borderModifier4 = Modifier.border(
                 width = 3.dp,
-                shape= CircleShape,
+                shape = CircleShape,
                 color = if (selectedCategoryIndex == 3) BrandColor1 else Color.Transparent
             )
             Column(
-                modifier = Modifier
-                    .clickable {
-                        onCategorySet(3)
-                        selectedCategoryIndex = 3
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.clickable {
+                    onCategorySet(3)
+                    selectedCategoryIndex = 3
+                }, horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.etc),

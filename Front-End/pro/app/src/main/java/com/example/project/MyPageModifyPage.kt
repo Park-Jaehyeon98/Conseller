@@ -47,6 +47,11 @@ import com.example.project.reuse_component.EmailTextFieldWithDomain
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 import com.example.project.viewmodels.SignupViewModel
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 @Composable
 fun MyPageModifyPage(navController: NavHostController) {
@@ -56,6 +61,8 @@ fun MyPageModifyPage(navController: NavHostController) {
     // 개인정보 불러오는 로직
     val checkIdResult by viewModel.getMyinfoResponse.collectAsState()
     val chekModifyState by viewModel.modifyUserResponse.collectAsState()
+
+    val isLoading by viewModel.isLoading.collectAsState(initial = false)
     //스크롤
     val scrollState = rememberScrollState()
     // 개인정보
@@ -80,7 +87,16 @@ fun MyPageModifyPage(navController: NavHostController) {
     ) {
         ProfileModifyImage(checkIdResult.userProfileUrl)
         // 나머지 회원정보 수정
-        ModifyUserProfile()
+        // getmyinfo가 완성되면 실행되게끔
+        if (!isLoading) {
+            ModifyUserProfile(
+                initNickname = checkIdResult.userNickname,
+                initPassword = checkIdResult.userPassword,
+                initEmail = checkIdResult.userEmail,
+                initAccout = checkIdResult.userAccountBank,
+                initAccoutBank = checkIdResult.userAccount
+            )
+        }
 
     }
 
@@ -101,14 +117,25 @@ fun ProfileModifyImage(
         }
     val currentImage = selectImage
 
-    if (currentImage != null) {
-        val inputStream = getInputStreamFromUri(context, currentImage)
-        val byteArray = getBytesFromInputStream(inputStream!!)
-        val multipartImage =
-            getMultipartFromByteArray(byteArray, "profile.jpg") // "profile.jpg"는 예시 파일 이름입니다.
-        Log.d("UserProfile", "Multipart data length: ${byteArray.size}")
-        viewModel.profileSend(multipartImage)
+    LaunchedEffect(selectImage) { // selectImage의 변화를 감지
+        val currentImage = selectImage
+        if (currentImage != null) {
+            val inputStream = getInputStreamFromUri(context, currentImage)
+            val byteArray = getBytesFromInputStream(inputStream!!)
+
+            // RequestBody 생성
+            val requestFile: RequestBody = byteArray.toRequestBody("image/*".toMediaTypeOrNull())
+
+            // MultipartBody.Part 생성
+            val multipartImage: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "file", "profile2.jpg", requestFile
+            )
+
+            Log.d("UserProfile", "Multipart data length: ${byteArray.size}")
+            viewModel.profileSend(multipartImage) // 이미지 변화 시 viewModel을 통해 업로드
+        }
     }
+
 
     Column(
         modifier = Modifier.padding(5.dp),
@@ -146,26 +173,28 @@ fun ProfileModifyImage(
 }
 
 @Composable
-fun ModifyUserProfile() {
+fun ModifyUserProfile(
+    initNickname: String,
+    initPassword: String,
+    initEmail: String,
+    initAccout: String,
+    initAccoutBank: String
+) {
     val mypageModel: MyPageViewModel = hiltViewModel()
-    LaunchedEffect(Unit) {
-        mypageModel.getMyInfo()
-    }
 
-    val checkIdResult by mypageModel.getMyinfoResponse.collectAsState()
+
     val checkModel: SignupViewModel = hiltViewModel()
-    val checkNickNameResult by checkModel.checkNickname.collectAsState()
 
-    var modifyNickname by remember { mutableStateOf(TextFieldValue(checkIdResult.userNickname)) }
+    var modifyNickname by remember { mutableStateOf(TextFieldValue(initNickname)) }
     var modifyPassword by remember { mutableStateOf(TextFieldValue("")) }
     var modifyCheckPassword by remember { mutableStateOf(TextFieldValue("")) }
-    var modifyEmail by remember { mutableStateOf(checkIdResult.userEmail) }
-    var modifyAccount by remember { mutableStateOf(checkIdResult.userAccountBank) }
-    var modifyAccountBank by remember { mutableStateOf(TextFieldValue(checkIdResult.userAccount)) }
+    var modifyEmail by remember { mutableStateOf(initEmail) }
+    var modifyAccount by remember { mutableStateOf(initAccout) }
+    var modifyAccountBank by remember { mutableStateOf(TextFieldValue(initAccoutBank)) }
 
-    val emailParts = checkIdResult.userEmail.split("@")
-    var emailPart by remember { mutableStateOf(emailParts?.getOrNull(0) ?: "") }
-    var Domain by remember { mutableStateOf(emailParts?.getOrNull(1) ?: "gmail.com") }
+    val emailParts = initEmail.split("@")
+    var emailPart by remember { mutableStateOf(emailParts.getOrNull(0) ?: "") }
+    var Domain by remember { mutableStateOf(emailParts.getOrNull(1) ?: "gmail.com") }
 
     val checkMarkNickname = remember { mutableStateOf(false) }
     val checkMarkEmail = remember { mutableStateOf(false) }
@@ -199,7 +228,7 @@ fun ModifyUserProfile() {
         val request = userModifyRequest(
             userAccount = modifyAccount,
             userEmail = modifyEmail,
-            userPassword = modifyPassword.text.takeIf { it.isNotBlank() } ?: checkIdResult.userPassword,
+            userPassword = modifyPassword.text.takeIf { it.isNotBlank() } ?: initPassword,
             userAccountBank = modifyAccountBank.text,
             userNickname = modifyNickname.text,
         )

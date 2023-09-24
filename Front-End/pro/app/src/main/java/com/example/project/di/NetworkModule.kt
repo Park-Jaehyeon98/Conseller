@@ -18,13 +18,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Authenticator
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Route
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -35,28 +31,29 @@ object NetworkModule {
     // Retrofit 인스턴스에 OkHttpClient를 포함시켜 인터셉터를 추가하는 방식
     // 각 요청에 알아서 추가함.
 
-//    @Provides
-//    @Singleton
-//    fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil): OkHttpClient {
-//        return OkHttpClient.Builder()
-//            .addInterceptor { chain ->
-//                val token = sharedPreferencesUtil.getUserToken() // 이거 get이름바뀌면 바꾸고
-//                val request = chain.request().newBuilder()       // 토큰 형식 맞는지 확인하고
-//                    .addHeader("Authorization", "Bearer $token")
-//                    .build()
-//                chain.proceed(request)
-//            }
-//            .build()
-//    }
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-//        return Retrofit.Builder()
-//            .baseUrl("https://j9b207.p.ssafy.io")
-//            .client(okHttpClient)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val token = sharedPreferencesUtil.getUserToken() // 이거 get이름바뀌면 바꾸고
+                val request = chain.request().newBuilder()       // 토큰 형식 맞는지 확인하고
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://j9b207.p.ssafy.io/")
+            .client(okHttpClient)
+            .addConverterFactory(NullOnEmptyConverterFactory)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
 //    @Provides
 //    @Singleton
@@ -105,15 +102,15 @@ object NetworkModule {
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
 //    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://j9b207.p.ssafy.io/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl("https://j9b207.p.ssafy.io/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
 
     @Provides
     @Singleton

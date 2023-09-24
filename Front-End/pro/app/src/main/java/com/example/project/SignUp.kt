@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -71,8 +72,9 @@ fun SignUpPage(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var account by remember { mutableStateOf("은행명을 선택하세요") }
     var accountBank by remember { mutableStateOf(TextFieldValue("")) }
-
-
+    // 알림
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
         val request = RegistRequest(
             userId = userId.text,
             userGender=gender,
@@ -144,15 +146,23 @@ fun SignUpPage(navController: NavHostController) {
     var nickNameError by remember { mutableStateOf<String?>(null) }
 
 
+    // signupmodal 용
+    var Signstatus by remember { mutableStateOf(0) }
     // 로그인 결과에 따른 값 변화
-    LaunchedEffect(key1 = signUpResult) {
-        if (signUpResult.status == 1) {
+    LaunchedEffect(Signstatus) {
+        if (signUpResult.code==200) {
             navController.navigate("Home") {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true
             }
-        } else if (signUpResult.status == 0) {
-            // signup 실패 알람
+            // 성공 모달 표시
+            dialogMessage = "회원가입 성공"
+            showDialog = true
+        }
+        if(signUpResult.code>=400){
+            // 실패 모달 표시
+            dialogMessage = "회원가입이 실패했습니다."
+            showDialog = true
         }
     }
     //인증마크
@@ -160,15 +170,15 @@ fun SignUpPage(navController: NavHostController) {
     LaunchedEffect(checkIdResult, checkEmailResult, checkPhoneNumberResult, checkNickNameResult) {
         if (checkIdResult.status == 1) {
             checkMarkId.value = true
-        } else if (checkEmailResult.status == 1) {
+        }
+        if (checkEmailResult.status == 1) {
             checkMarkEmail.value = true
-        } else if (checkPhoneNumberResult.status == 1) {
+        }
+        if (checkPhoneNumberResult.status == 1) {
             checkMarkPhone.value = true
-        } else if (checkNickNameResult.status == 1) {
+        }
+        if (checkNickNameResult.status == 1) {
             checkMarkNickname.value = true
-        } else {
-            // 유효성 검사 실패 알람
-
         }
     }
 
@@ -284,11 +294,11 @@ fun SignUpPage(navController: NavHostController) {
                             emailError = if (isValidEmail(email)) null else "이메일 형식이 틀립니다."
                         },
                         showIcon = checkMarkEmail.value,
-
                         )
 
                     Button(
-                        onClick = { viewModel.checkDuplicateEmail(email) },
+                        onClick = { viewModel.checkDuplicateEmail(email)
+                           },
                         Modifier
                             .size(120.dp, 40.dp)
                             .fillMaxHeight()
@@ -299,6 +309,7 @@ fun SignUpPage(navController: NavHostController) {
                             text = "중복확인", fontWeight = FontWeight.Bold
                         )
                     }
+
                     CustomDropdown(selectedBank = account, onBankSelected = { bank ->
                         account = bank
 
@@ -312,8 +323,27 @@ fun SignUpPage(navController: NavHostController) {
                             }
                         },
                     )
+                    if (showDialog) {
+                        AlertDialog(
+                            onDismissRequest = {
+                                showDialog = false
+                            },
+                            title = {
+                                Text("알림")
+                            },
+                            text = {
+                                Text(dialogMessage)
+                            },
+                            confirmButton = {
+                                Button(onClick = { showDialog = false }) {
+                                    Text("확인")
+                                }
+                            }
+                        )
+                    }
                     Button(
-                        onClick = { viewModel.registerUser(request) },
+                        onClick = { viewModel.registerUser(request)
+                            Signstatus++ },
                         Modifier.size(120.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(BrandColor1)
                     ) {

@@ -1,6 +1,7 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -185,6 +187,34 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         user.setUserDeposit(deposit);
+    }
+
+    @Override
+    public List<GifticonResponse> getGifticons(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        List<Gifticon> userGifticons = user.getGifticons();
+
+        List<GifticonResponse> userGifticonsResponse = new ArrayList<>();
+
+        for (Gifticon gifticon : userGifticons) {
+            userGifticonsResponse.add(GifticonResponse.builder()
+                    .gifticonIdx(gifticon.getGifticonIdx())
+                    .gifticonBarcode(gifticon.getGifticonBarcode())
+                    .gifticonName(gifticon.getGifticonName())
+                    .gifticonStartDate(gifticon.getGifticonStartDate().toString())
+                    .gifticonEndDate(gifticon.getGifticonEndDate().toString())
+                    .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
+                    .gifticonStatus(gifticon.getGifticonStatus())
+                    .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
+                    .userIdx(gifticon.getUser().getUserIdx())
+                    .subCategoryIdx(gifticon.getSubCategory().getSubCategoryIdx())
+                    .mainCategoryIdx(gifticon.getMainCategory().getMainCategoryIdx())
+                    .build()
+            );
+        }
+        return userGifticonsResponse;
     }
 
     @Override

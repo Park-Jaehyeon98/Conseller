@@ -1,6 +1,7 @@
 package com.conseller.conseller.user;
 
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
@@ -132,6 +133,13 @@ public class UserController {
     public ResponseEntity<Void> deposit(@PathVariable long userIdx, @RequestBody int deposit) {
         userService.deposit(userIdx, deposit);
         return ResponseEntity.ok().build();
+    }
+
+    //내 기프티콘 보기
+    @GetMapping("{userIdx}/gifticons")
+    public ResponseEntity<List<GifticonResponse>> getUserGifticons(@PathVariable long userIdx) {
+        return ResponseEntity.ok()
+                .body(userService.getGifticons(userIdx));
     }
 
     //내 판매 보기

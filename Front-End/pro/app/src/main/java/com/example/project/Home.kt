@@ -67,7 +67,6 @@ fun HomeLayout2() {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .padding(horizontal = 16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -81,7 +80,6 @@ fun HomeLayout3(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(horizontal = 16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -93,7 +91,7 @@ fun HomeLayout3(navController: NavHostController) {
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 ImageButton("스토어") { navController.navigate("StorePage") }
                 ImageButton("경매") { navController.navigate("AuctionPage") }
                 ImageButton("물물교환") { navController.navigate("BarterPage") }
@@ -156,7 +154,7 @@ fun HomeLayout4(navController: NavController) {
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
 
     Row(
-        modifier = Modifier.fillMaxWidth().height(300.dp).padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().height(300.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Box(
@@ -289,7 +287,6 @@ fun HomeLayout5() {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .padding(horizontal = 16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -303,7 +300,6 @@ fun HomeLayout6() {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .padding(horizontal = 16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -317,7 +313,6 @@ fun HomeLayout7() {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .padding(horizontal = 16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {

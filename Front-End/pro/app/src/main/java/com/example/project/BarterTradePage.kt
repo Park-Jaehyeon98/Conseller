@@ -1,5 +1,6 @@
 package com.example.project
 
+import SelectButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -28,9 +31,9 @@ import com.example.project.viewmodels.BarterViewModel
 fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<Long>, index: String?) {
     val barterviewModel: BarterViewModel = hiltViewModel()
     val selectedItems = barterviewModel.getSelectedItems(selectedItemIndices) // 내가 고른사진
-    val barterItems by barterviewModel.barterItems.collectAsState()
+    val barterItems by barterviewModel.barterItems.collectAsState() // 게시글 사진
 
-    val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 사진
+    val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 일치
 
     var showCancelDialog by remember { mutableStateOf(false) } // 취소 대화상자 표시 상태
     var showTradeProposalDialog by remember { mutableStateOf(false) } //거래신청 대화상자
@@ -45,15 +48,16 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(listOf(currentItem?.gifticonDataImageName).filterNotNull()) { imageUrl ->
-                Image(
-                    painter = rememberAsyncImagePainter(model = imageUrl),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
-                        .background(Color.Gray)
-                )
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val imagePainter =
+                        rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
         }
 
@@ -81,74 +85,81 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(onClick = {
-                showTradeProposalDialog = true
-            }, modifier = Modifier.weight(1f)) {
-                Text("거래신청")
-            }
+            SelectButton(
+                text = "거래신청",
+                onClick = { showTradeProposalDialog = true },
+                modifier = Modifier.weight(1f)
+            )
 
-            Button(onClick = {
-                showCancelDialog = true
-            }, modifier = Modifier.weight(1f)) {
-                Text("취소하기")
-            }
+            SelectButton(
+                text = "취소하기",
+                onClick = { showCancelDialog = true },
+                modifier = Modifier.weight(1f)
+            )
         }
-    }
 
-    if (showCancelDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                showCancelDialog = false
-            },
-            title = {
-                Text(text = "거래 취소")
-            },
-            text = {
-                Text("거래를 그만두고 돌아가시겠습니까?")
-            },
-            dismissButton = {
-                Button(onClick = {
-                    navController.navigate("BarterDetailPage/${index}")
-                }) {
-                    Text("네")
-                }
-            },
-            confirmButton = {
-                Button(onClick = {
+        if (showCancelDialog) {
+            AlertDialog(
+                onDismissRequest = {
                     showCancelDialog = false
-                }) {
-                    Text("아니오")
+                },
+                title = {
+                    Text(text = "거래 취소")
+                },
+                text = {
+                    Text("거래를 그만두고 돌아가시겠습니까?")
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "네",
+                        onClick = {
+                            navController.navigate("BarterDetailPage/${index}")
+                        }
+                    )
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showCancelDialog = false
+                        }
+                    )
                 }
-            }
-        )
-    }
-    if (showTradeProposalDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                showTradeProposalDialog = false
-            },
-            title = {
-                Text(text = "거래 제안")
-            },
-            text = {
-                Text("거래를 제안하시겠습니까?")
-            },
-            dismissButton = {
-                Button(onClick = {
+            )
+        }
+
+        if (showTradeProposalDialog) {
+            AlertDialog(
+                onDismissRequest = {
                     showTradeProposalDialog = false
-                    barterviewModel.proposeBarterTrade(index?.toLongOrNull() ?: return@Button, selectedItemIndices)
-                    // TODO: 거래 제안 결과에 따른 메시지 처리 로직 추가
-                }) {
-                    Text("예")
+                },
+                title = {
+                    Text(text = "거래 제안")
+                },
+                text = {
+                    Text("거래를 제안하시겠습니까?")
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "예",
+                        onClick = {
+                            showTradeProposalDialog = false
+                            barterviewModel.proposeBarterTrade(
+                                index?.toLongOrNull() ?: return@SelectButton, selectedItemIndices
+                            )
+                            // TODO: 거래 제안 결과에 따른 메시지 처리 로직 추가
+                        }
+                    )
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showTradeProposalDialog = false
+                        }
+                    )
                 }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    showTradeProposalDialog = false
-                }) {
-                    Text("아니오")
-                }
-            }
-        )
+            )
+        }
     }
 }

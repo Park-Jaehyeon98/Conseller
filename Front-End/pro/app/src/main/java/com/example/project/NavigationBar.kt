@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.project.ui.theme.logocolor
 
 @Composable
 fun TopBar(navController: NavHostController) {
@@ -58,7 +59,7 @@ fun TopBar(navController: NavHostController) {
                     Image(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = null,
-                        modifier = Modifier.size(400.dp, 400.dp)
+                        Modifier.padding(start = 120.dp).scale(1.5f)
                     )
                 }
 
@@ -69,12 +70,18 @@ fun TopBar(navController: NavHostController) {
                         modifier = Modifier
                             .clickable { navController.navigate("AlertPage") }
                             .size(70.dp)
-                            .scale(1.2f)
-                            .padding(top = 12.dp)
+                            .scale(1.4f)
+                            .padding(top = 16.dp)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(logocolor)
+            )
         }
     }
 }

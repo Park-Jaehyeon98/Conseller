@@ -1,6 +1,8 @@
 package com.example.project
 
 import FilterButton
+import SelectButton
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -24,24 +26,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.viewmodels.MygifticonViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>) {
     val barterviewModel: BarterViewModel = hiltViewModel()
-    val selectedItems = barterviewModel.getSelectedItems(selectedItemIndices)
+    val mygifticonViewModel : MygifticonViewModel = hiltViewModel()
+    val selectedItems = mygifticonViewModel.getSelectedItems(selectedItemIndices)
     val navigateToIdx by barterviewModel.navigateToBarterDetail.collectAsState() // 등록시 idx받기
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
+
     // 게시글 제목 및 내용을 위한 상태값
     var postTitle by remember { mutableStateOf("") }
     var postContent by remember { mutableStateOf("") }
+    var showRegisterConfirmDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -72,12 +79,14 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             items(selectedItems.size) { index ->
                 val item = selectedItems[index]
                 Image(
-                    painter = rememberAsyncImagePainter(model = item.gifticonDataImageName),
+                    painter = rememberAsyncImagePainter(model = item.gifticonAllImagName),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(4.dp)
                         .width(150.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
                 )
             }
         }
@@ -97,7 +106,14 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         ) {
             FilterButton(
                 selectedOption = filter1Selected,
-                options = listOf("대분류", "a", "b", "c"),
+                options = listOf(
+                    "대분류",
+                    "버거/치킨/피자",
+                    "편의점",
+                    "카페/베이커리",
+                    "아이스크림",
+                    "기타"
+                ),
             ) { selectedOption ->
                 filter1Selected = selectedOption
                 // 첫 번째 필터가 변경되면, 두 번째 필터를 초기값으로 설정
@@ -109,11 +125,13 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             FilterButton(
                 selectedOption = filter2Selected,
                 options = when (filter1Selected) {
-                    "a" -> listOf("소분류", "a-1", "a-2", "a-3")
-                    "b" -> listOf("소분류", "b-1", "b-2", "b-3")
-                    "c" -> listOf("소분류", "c-1", "c-2", "c-3")
-                    else -> listOf("소분류")
-                }
+                    "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
+                    "편의점" -> listOf("전체", "금액권", "과자", "음료", "도시락/김밥류", "기타")
+                    "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
+                    "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
+                    "기타" -> listOf("전체")
+                    else -> listOf("전체")
+                },
             ) { selectedOption ->
                 filter2Selected = selectedOption
             }
@@ -160,34 +178,25 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                 .padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Button(
+            SelectButton(
+                text = "등록",
                 onClick = {
-                    barterviewModel.createBarterItem(
-                        kindBigStatus = filter1Selected,
-                        kindSmallStatus = filter2Selected,
-                        barterName = postTitle,
-                        barterText = postContent,
-                        barterEndDate = "123", // 나중에하자....
-                        selectedItemIndices = selectedItemIndices,
-                    )
+                    showRegisterConfirmDialog = true
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text(text = "등록")
-            }
+            )
 
             Spacer(modifier = Modifier.width(16.dp))  // 버튼 사이 간격 조절
 
-            Button(
+            SelectButton(
+                text = "이전",
                 onClick = {
                     navController.navigate("BarterCreatePage")
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
-            ) {
-                Text("이전")
-            }
+            )
 
             LaunchedEffect(navigateToIdx) {
                 navigateToIdx?.let { auctionIdx ->
@@ -195,6 +204,45 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                     barterviewModel.resetNavigation()
                 }
             }
+        }
+
+        // 등록 확인 대화상자
+        if (showRegisterConfirmDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showRegisterConfirmDialog = false
+                },
+                title = {
+                    Text(text = "바터 아이템 등록")
+                },
+                text = {
+                    Text("등록하시겠습니까?", fontSize = 18.sp)
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "예",
+                        onClick = {
+                            barterviewModel.createBarterItem(
+                                kindBigStatus = filter1Selected,
+                                kindSmallStatus = filter2Selected,
+                                barterName = postTitle,
+                                barterText = postContent,
+                                barterEndDate = "123", // 나중에하자....
+                                selectedItemIndices = selectedItemIndices,
+                            )
+                            showRegisterConfirmDialog = false
+                        }
+                    )
+                }
+            )
         }
     }
 }

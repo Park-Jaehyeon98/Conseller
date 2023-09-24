@@ -1,7 +1,10 @@
 package com.example.project
 
+import SelectButton
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +30,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -56,6 +61,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var showBidDialog by remember { mutableStateOf(false) }
     var showConfirmBidDialog by remember { mutableStateOf(false) } // 입찰재확인
     var showAlertBidDialog by remember { mutableStateOf(false) } // 경고 다이얼로그
+    var showConfirmDropDialog by remember { mutableStateOf(false) } // 낙찰하기
 
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
@@ -76,251 +82,309 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
         myAuctionViewModel.fetchMyAuctions()
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .padding(16.dp)
-            .verticalScroll(scrollState)
     ) {
-        if (showSnackbar) {
-            Snackbar(dismissAction = { showSnackbar = false }) {
-                Text(text = snackbarText)
-            }
-            LaunchedEffect(key1 = showSnackbar) {
-                if (showSnackbar&&currentBidResponse?.success == true) {
-                    kotlinx.coroutines.delay(3000)
-                    showSnackbar = false
-                }
-            }
-        }
-
-        if (currentBidResponse?.success == true) {
-            snackbarText = "입찰이 성공적으로 완료되었습니다!"
-            showSnackbar = true
-        } else if (currentBidResponse != null) {
-            snackbarText = currentBidResponse!!.message ?: "입찰에 문제가 발생했습니다."
-            showSnackbar = true
-        } else if (currentBidResponse?.success != true){
-            snackbarText = "인터넷 연결을 확인해주세요."
-            showSnackbar = true
-        }
-
-        currentItem?.let {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 이미지를 표시
-            val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
-            Image(
-                painter = imagePainter,
-                contentDescription = null,
-                modifier = Modifier.size(200.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 글자 크기 조정
-            val textStyle = Modifier.padding(vertical = 4.dp)  // 여백을 추가하여 가독성 향상
-
-            Text("상한가 : ${it.upperPrice}", modifier = textStyle, fontSize = 18.sp)
-            Text("하한가 : ${it.lowerPrice}", modifier = textStyle, fontSize = 18.sp)
-            Text("유효기간 : ${it.gifticonEndDate}", modifier = textStyle, fontSize = 18.sp)
-            Text("경매기간 : ${it.auctionEndDate}", modifier = textStyle, fontSize = 18.sp)
-        }
-
-        auctionDetail?.let {
-            Text("User: ${it.auctionUserNickname}")
-            Text("User: ${it.postContent}")
-
-            it.auctionBid.forEach { bid ->
-                Text("입찰 : ${bid.auctionBidPrice}", fontSize = 18.sp)
-            }
-        }
-        // 개발되면 지울예정인 더미 4개
-        Text("판매자 : 테스트", fontSize = 18.sp)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("내용 : 테스트내용", fontSize = 18.sp)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("입찰가 1 : 800", fontSize = 18.sp)
-        Text("입찰가 2 : 700", fontSize = 18.sp)
-        Text("입찰가 3 : 800", fontSize = 18.sp)
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        matchingAuction?.let {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("현재 나의 입찰가: ${it.auctionBidPrice}", fontSize = 18.sp)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
-            if (selectedItemIndex != auctionDetail?.auctionUserIdx && true /*개발용*/) {
-                Button(onClick = { navController.navigate("AuctionTradePage/${currentItem?.auctionIdx}") }) {
-                    Text("즉시구매")
+            if (showSnackbar) {
+                Snackbar(dismissAction = { showSnackbar = false }) {
+                    Text(text = snackbarText)
+                }
+                LaunchedEffect(key1 = showSnackbar) {
+                    if (showSnackbar && currentBidResponse?.success == true) {
+                        kotlinx.coroutines.delay(3000)
+                        showSnackbar = false
+                    }
+                }
+            }
+
+            if (currentBidResponse?.success == true) {
+                snackbarText = "입찰이 성공적으로 완료되었습니다!"
+                showSnackbar = true
+            } else if (currentBidResponse != null) {
+                snackbarText = currentBidResponse!!.message ?: "입찰에 문제가 발생했습니다."
+                showSnackbar = true
+            } else if (currentBidResponse?.success != true) {
+                snackbarText = "인터넷 연결을 확인해주세요."
+                showSnackbar = true
+            }
+
+            currentItem?.let {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 이미지를 표시
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
                 }
 
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                val bidButtonText = matchingAuction?.let { "재입찰하기" } ?: "입찰하기"
-                Button(onClick = { showBidDialog = true }) {
-                    Text(bidButtonText)
+                // 글자 크기 조정
+                val textStyle = Modifier.padding(vertical = 4.dp)  // 여백을 추가하여 가독성 향상
+
+                Text("상한가 : ${it.upperPrice}", modifier = textStyle, fontSize = 18.sp)
+                Text("하한가 : ${it.lowerPrice}", modifier = textStyle, fontSize = 18.sp)
+                Text("유효기간 : ${it.gifticonEndDate}", modifier = textStyle, fontSize = 18.sp)
+                Text("경매기간 : ${it.auctionEndDate}", modifier = textStyle, fontSize = 18.sp)
+            }
+
+            auctionDetail?.let {
+                Text("User: ${it.auctionUserNickname}")
+                Text("User: ${it.postContent}")
+
+                it.auctionBid.forEach { bid ->
+                    Text("입찰 : ${bid.auctionBidPrice}", fontSize = 18.sp)
+                }
+            }
+            // 개발되면 지울예정인 더미 4개
+            Text("판매자 : 테스트", fontSize = 18.sp)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("내용 : 테스트내용", fontSize = 18.sp)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("입찰가 1 : 800", fontSize = 18.sp)
+            Text("입찰가 2 : 700", fontSize = 18.sp)
+            Text("입찰가 3 : 800", fontSize = 18.sp)
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            matchingAuction?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("현재 나의 입찰가: ${it.auctionBidPrice}", fontSize = 18.sp)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp)) // 버튼들 사이의 간격 조절
+
+            if (selectedItemIndex != auctionDetail?.auctionUserIdx && true /*개발용*/) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    SelectButton(
+                        text = "즉시구매",
+                        onClick = { navController.navigate("AuctionTradePage/${currentItem?.auctionIdx}") }
+                    )
+
+                    Spacer(modifier = Modifier.width(24.dp))
+
+                    val bidButtonText = matchingAuction?.let { "재입찰하기" } ?: "입찰하기"
+
+                    SelectButton(
+                        text = bidButtonText,
+                        onClick = { showBidDialog = true }
+                    )
                 }
             } else {
-                Button(onClick = { }) {
-                    Text("낙찰하기")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    SelectButton(
+                        text = "낙찰하기",
+                        onClick = { showConfirmDropDialog = true }
+                    )
                 }
 
-                Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.height(16.dp)) // 낙찰하기와 수정하기 사이의 간격 조절
 
-                Button(onClick = { navController.navigate("auctionUpdate/${currentItem?.auctionIdx}") }) {
-                    Text("수정하기")
-                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    SelectButton(
+                        text = "수정하기",
+                        onClick = { navController.navigate("auctionUpdate/${currentItem?.auctionIdx}") }
+                    )
 
-                Spacer(modifier = Modifier.width(24.dp))
+                    Spacer(modifier = Modifier.width(24.dp))
 
-                Button(onClick = { showDeleteDialog = true }) {
-                    Text("삭제하기")
+                    SelectButton(
+                        text = "삭제하기",
+                        onClick = { showDeleteDialog = true }
+                    )
                 }
             }
-        }
 
-        if (showBidDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    showBidDialog = false
-                },
-                title = {
-                    Text(text = "입찰가격 입력 *입찰취소는 0원을 입력하면 됩니다.")
-                },
-                text = {
-                    TextField(
-                        value = bidPrice,
-                        onValueChange = {
-                            if (it.all { char -> char.isDigit() }) {
-                                bidPrice = it
-                            }
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        label = { Text("입찰가격") }
-                    )
-                },
-                dismissButton = {
-                    Button(onClick = {
-                        val bidValue = bidPrice.toIntOrNull() ?: 0
-
-                        // 상한가보다 입찰가격이 같거나 높은 경우
-                        if (bidValue >= currentItem?.upperPrice ?: Int.MAX_VALUE) {
-                            showBidDialog = false
-                            showAlertBidDialog = true
-                        } else {
-                            showConfirmBidDialog = true
-                        }
-                    }) {
-                        Text("입찰")
-                    }
-                },
-                confirmButton = {
-                    Button(onClick = {
+            if (showBidDialog) {
+                AlertDialog(
+                    onDismissRequest = {
                         showBidDialog = false
-                    }) {
-                        Text("취소")
-                    }
-                }
-            )
-        }
+                    },
+                    title = {
+                        Text(text = "입찰가격 입력 *입찰취소는 0원을 입력하면 됩니다.")
+                    },
+                    text = {
+                        TextField(
+                            value = bidPrice,
+                            onValueChange = {
+                                if (it.all { char -> char.isDigit() }) {
+                                    bidPrice = it
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            label = { Text("입찰가격") }
+                        )
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "입찰",
+                            onClick = {
+                                val bidValue = bidPrice.toIntOrNull() ?: 0
 
-        if (showConfirmBidDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    showConfirmBidDialog = false
-                },
-                title = {
-                    Text(text = "입찰 확인")
-                },
-                text = {
-                    Text("${bidPrice}원 으로 입찰하시겠습니까?")
-                },
-                dismissButton = {
-                    Button(onClick = {
-                        index?.toLongOrNull()?.let {
-                            auctionViewModel.bidOnAuction(it, bidPrice.toInt())
-                            showBidDialog = false
-                            showConfirmBidDialog = false
-                            showAlertBidDialog = false
-                            showDeleteDialog = false
-                        }
-                    }) {
-                        Text("예")
+                                // 상한가보다 입찰가격이 같거나 높은 경우
+                                if (bidValue >= currentItem?.upperPrice ?: Int.MAX_VALUE) {
+                                    showBidDialog = false
+                                    showAlertBidDialog = true
+                                } else {
+                                    showConfirmBidDialog = true
+                                }
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "취소",
+                            onClick = { showBidDialog = false }
+                        )
                     }
-                },
-                confirmButton = {
-                    Button(onClick = {
+                )
+            }
+
+            if (showConfirmBidDialog) {
+                AlertDialog(
+                    onDismissRequest = {
                         showConfirmBidDialog = false
-                    }) {
-                        Text("아니오")
+                    },
+                    title = {
+                        Text(text = "입찰 확인")
+                    },
+                    text = {
+                        Text("${bidPrice}원 으로 입찰하시겠습니까?")
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "예",
+                            onClick = {
+                                index?.toLongOrNull()?.let {
+                                    auctionViewModel.bidOnAuction(it, bidPrice.toInt())
+                                    showBidDialog = false
+                                    showConfirmBidDialog = false
+                                    showAlertBidDialog = false
+                                    showDeleteDialog = false
+                                }
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "아니오",
+                            onClick = { showConfirmBidDialog = false }
+                        )
                     }
-                }
-            )
-        }
+                )
+            }
 
-        if (showAlertBidDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    showAlertBidDialog = false
-                },
-                title = { Text("경고") },
-                text = { Text("입찰 가격이 상한가보다 같거나 높습니다.") },
-                confirmButton = {
-                    Button(onClick = {
+            if (showAlertBidDialog) {
+                AlertDialog(
+                    onDismissRequest = {
                         showAlertBidDialog = false
-                    }) {
-                        Text("확인")
+                    },
+                    title = { Text("경고") },
+                    text = { Text("입찰 가격이 상한가보다 같거나 높습니다.") },
+                    confirmButton = {
+                        Button(onClick = {
+                            showAlertBidDialog = false
+                        }) {
+                            Text("확인")
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-
-        if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    showDeleteDialog = false
-                },
-                title = {
-                    Text(text = "게시글 삭제")
-                },
-                text = {
-                    Text("정말 삭제하시겠습니까?")
-                },
-                dismissButton = {
-                    Button(onClick = {
-                        auctionViewModel.deleteAuctionItem(index!!.toLong())
-                        navController.navigate("AuctionPage")
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = {
                         showDeleteDialog = false
-                    }) {
-                        Text("네")
+                    },
+                    title = {
+                        Text(text = "게시글 삭제")
+                    },
+                    text = {
+                        Text("정말 삭제하시겠습니까?", fontSize = 18.sp)
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "네",
+                            onClick = {
+                                auctionViewModel.deleteAuctionItem(index!!.toLong())
+                                navController.navigate("AuctionPage")
+                                showDeleteDialog = false
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "아니오",
+                            onClick = {
+                                showDeleteDialog = false
+                            }
+                        )
                     }
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        showDeleteDialog = false
-                    }) {
-                        Text("아니오")
+                )
+            }
+            if (showConfirmDropDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showConfirmDropDialog = false
+                    },
+                    title = {
+                        Text(text = "낙찰 확인")
+                    },
+                    text = {
+                        Text("${currentItem?.upperPrice}원에 낙찰하시겠습니까?", fontSize = 18.sp)
+                        // TODO 나중에 최고입찰가 가지고와야함 상한가말고
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "예",
+                            onClick = {
+                                // TODO
+                                showConfirmDropDialog = false
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "아니오",
+                            onClick = { showConfirmDropDialog = false }
+                        )
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

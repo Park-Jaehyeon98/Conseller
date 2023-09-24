@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.project.viewmodels.GifticonData
 
 @Composable
@@ -29,5 +30,5 @@ fun FormattedDateText(gifticonTime: String, prefix: String, modifier: Modifier =
     val minute = gifticonTime.substring(10, 12)           // MM
 
     val formattedTime = "${year}년 ${month}월 ${day}일"
-    Text("$prefix : $formattedTime", modifier = modifier)
+    Text("$prefix : $formattedTime", modifier = modifier, fontWeight = FontWeight.Bold, fontSize = 16.sp)
 }

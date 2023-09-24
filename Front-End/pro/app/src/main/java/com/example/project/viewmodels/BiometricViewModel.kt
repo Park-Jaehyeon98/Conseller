@@ -4,10 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.PatternState
 import com.example.project.api.LoginService
+import com.example.project.api.PatternSaveRequest
 import com.example.project.api.PatternVerificationRequest
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,8 +21,17 @@ class BiometricViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    private val _authenticationState = MutableLiveData<AuthenticationState>()
-    val authenticationState: LiveData<AuthenticationState> get() = _authenticationState
+    private val _authenticationState = MutableStateFlow<AuthenticationState?>(null)
+    val authenticationState: StateFlow<AuthenticationState?> get() = _authenticationState
+
+    // 패턴 데이터 셋
+    private val _patternState = MutableStateFlow<PatternState>(PatternState.Initial)
+    val patternState: StateFlow<PatternState> get() = _patternState
+
+    // 패턴 넣기
+    fun setPatternState(state: PatternState) {
+        _patternState.value = state
+    }
 
     fun verifyPattern(pattern: String) {
         viewModelScope.launch {
@@ -46,6 +59,31 @@ class BiometricViewModel @Inject constructor(
         }
     }
 
+    fun savePattern(pattern: String) {
+        viewModelScope.launch {
+            val userId = sharedPreferencesUtil.getUserId()
+            if (userId == null) {
+                _authenticationState.value = AuthenticationState.ERROR("정상적인 경로로 회원가입을 진행후 패턴 저장을 시도해주세요.")
+                return@launch
+            }
+            val request = PatternSaveRequest(userId, pattern)
+            try {
+                val response = loginService.savePattern(request)
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody?.success == true) {
+                        _authenticationState.value = AuthenticationState.SUCCESS
+                    } else {
+                        _authenticationState.value = AuthenticationState.ERROR(responseBody?.message ?: "Unknown error")
+                    }
+                } else {
+                    _authenticationState.value = AuthenticationState.ERROR("Network Error: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.localizedMessage}")
+            }
+        }
+    }
 
     // 인증 상태
     fun setAuthenticationState(state: AuthenticationState) {
@@ -58,3 +96,4 @@ sealed class AuthenticationState {
     object FAILURE : AuthenticationState()
     data class ERROR(val message: String) : AuthenticationState()
 }
+

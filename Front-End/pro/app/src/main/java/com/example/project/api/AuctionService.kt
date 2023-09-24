@@ -1,6 +1,6 @@
 package com.example.project.api
 
-import com.example.project.viewmodels.AuctionBidData
+import com.example.project.viewmodels.AuctionBid
 import com.example.project.viewmodels.AuctionItemData
 import retrofit2.Response
 import retrofit2.http.Body
@@ -71,7 +71,7 @@ interface AuctionService {
     ): Response<Void>
 
     // 경매진행 입금완료 API
-    @POST("api/auction/complete/{auctionIdx}")
+    @PATCH("api/auction/complete/{auctionIdx}")
     suspend fun completeAuctionPayment(
         @Path("auctionIdx") auctionIdx: Long
     ): Response<AuctionTradeCompleteResponseDTO>
@@ -96,8 +96,8 @@ data class AuctionResponse(
 
 // 경매 등록 요청 DTO
 data class RegisterAuctionDTO(
-    val upperLimit: Int,         // 상한가
-    val lowerLimit: Int,         // 하한가
+    val upperPrice: Int,         // 상한가
+    val lowerPrice: Int,         // 하한가
     val auctionText: String,     // 게시글 내용
     val gifticonIdx: Long,       // gifticon의 인덱스
     val userIdx: Long            // 사용자의 인덱스
@@ -132,10 +132,12 @@ data class DeleteAuctionResponse(
 // 경매글 상세보기 요청 DTO = Path형식
 // 경매글 상세보기 응답 DTO
 data class AuctionDetailResponseDTO(
-    val postContent: String,              // 게시글 내용
+    val auctionText: String,              // 게시글 내용
     val auctionUserIdx: Long,           // 게시글 유저 idx
     val auctionUserNickname: String,    // 게시글 유저 닉네임
-    val auctionBid: List<AuctionBidData>,  // 경매입찰정보
+    val auctionUserProfileUrl: String,  // 게시글 유저 사진
+    val auctionUserDeposit: Long,       // 게시글 유저 보증금
+    val auctionBidList: List<AuctionBid>,  // 경매입찰정보
 )
 
 // 경매 입찰하기 요청 DTO

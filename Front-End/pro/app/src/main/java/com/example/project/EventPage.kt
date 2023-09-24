@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
@@ -23,9 +24,11 @@ fun EventPage(modifier: Modifier = Modifier, navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { EventLayout2() }
+            item { EventLayout1() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { EventLayout3(navController) }
+            item { EventLayout2(navController) }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
+            item { EventLayout3() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { EventLayout4() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
@@ -34,15 +37,13 @@ fun EventPage(modifier: Modifier = Modifier, navController: NavHostController) {
             item { EventLayout6() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { EventLayout7() }
-            item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { EventLayout8() }
 
         }
     }
 }
 
 @Composable
-fun EventLayout2() {
+fun EventLayout1() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,12 +52,12 @@ fun EventLayout2() {
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ){
-        Text("Event")
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }
 
 @Composable
-fun EventLayout3(navController: NavHostController) {
+fun EventLayout2(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,31 +66,12 @@ fun EventLayout3(navController: NavHostController) {
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ){
-        Text("Event")
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }
 
 @Composable
-fun EventImageButton(imageName: String, onClick: () -> Unit) {
-    val resourceId = when (imageName) {
-        "경매" -> R.drawable.auction
-        "물물교환" -> R.drawable.barter
-        "스토어" -> R.drawable.store
-        "이벤트" -> R.drawable.event
-        else -> R.drawable.chatbot
-    }
-
-    Image(
-        painter = painterResource(id = resourceId),
-        contentDescription = null,
-        modifier = Modifier
-            .size(88.dp)
-            .clickable(onClick = onClick)
-    )
-}
-
-@Composable
-fun EventLayout4() {
+fun EventLayout3() {
     Row(
         modifier = Modifier.fillMaxWidth().height(250.dp).padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -101,7 +83,7 @@ fun EventLayout4() {
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ){
-            Text("Event")
+            Text("준비중입니다", fontSize = 20.sp)
         }
         Spacer(modifier = Modifier.width(20.dp))
         Box(
@@ -111,8 +93,22 @@ fun EventLayout4() {
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ){
-            Text("Event")
+            Text("준비중입니다", fontSize = 20.sp)
         }
+    }
+}
+
+@Composable
+fun EventLayout4() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .padding(horizontal = 16.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
+    ){
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }
 
@@ -126,7 +122,7 @@ fun EventLayout5() {
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ){
-        Text("Event")
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }
 
@@ -140,7 +136,7 @@ fun EventLayout6() {
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ){
-        Text("Event")
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }
 
@@ -149,24 +145,10 @@ fun EventLayout7() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
-            .padding(horizontal = 16.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center
-    ){
-        Text("Event")
-    }
-}
-
-@Composable
-fun EventLayout8() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
             .height(100.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ){
-        Text("Event")
+        Text("준비중입니다", fontSize = 20.sp)
     }
 }

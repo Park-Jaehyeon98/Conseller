@@ -338,17 +338,17 @@ class AuctionViewModel @Inject constructor(
 data class AuctionItemData(
     val auctionIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val auctionEndDate: String,
-    val popular: String,
+    val isDeposit: Boolean,
     val upperPrice: Int,
     val lowerPrice: Int,
     val auctionHighestBid: Int
 )
 
 // 상세보기용 데이터 클래스
-data class AuctionBidData(
+data class AuctionBid(
     val auctionBidIdx: Long,
     val auctionBidPrice: Int,
     val auctionRegistedDate: String,
@@ -360,10 +360,10 @@ data class AuctionBidData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<AuctionItemData> {
     return listOf(
-        AuctionItemData(1,"https://via.placeholder.com/150", "Item1", "20231001235959", "20231001235959", "서버미연결", 1000, 500, 800),
-        AuctionItemData(2,"image2", "Item2", "20231002235959", "20231002235959", "중간", 2000, 1000, 1500),
-        AuctionItemData(3,"image3", "Item3", "20231003235959", "20231003235959", "낮음", 3000,2000, 2500),
-        AuctionItemData(4,"image4", "Item4", "20231004235959", "20231004235959", "높음", 40000,2500, 3500),
-        AuctionItemData(5,"image5", "Item5", "20231005235959", "20231005235959", "중간", 5000,3000, 4500)
+        AuctionItemData(1,"https://via.placeholder.com/150", "Item1", "20231001235959", "20231001235959", true, 1000, 500, 800),
+        AuctionItemData(2,"image2", "Item2", "20231002235959", "20231002235959", true, 2000, 1000, 1500),
+        AuctionItemData(3,"image3", "Item3", "20231003235959", "20231003235959", false, 3000,2000, 2500),
+        AuctionItemData(4,"image4", "Item4", "20231004235959", "20231004235959", false, 40000,2500, 3500),
+        AuctionItemData(5,"image5", "Item5", "20231005235959", "20231005235959", true, 5000,3000, 4500)
     )
 }

@@ -1,5 +1,6 @@
 package com.conseller.conseller.barter.barter.barterDto;
 
+import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.SubCategory;
 import com.conseller.conseller.entity.User;

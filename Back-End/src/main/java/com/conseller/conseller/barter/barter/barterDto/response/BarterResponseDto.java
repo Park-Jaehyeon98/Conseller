@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.barter.barterDto;
+package com.conseller.conseller.barter.barter.barterDto.response;
 
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.entity.SubCategory;
@@ -13,14 +13,14 @@ public class BarterResponseDto {
     private String barterText;
     private LocalDateTime barterCreatedDate;
     private LocalDateTime barterEndDate;
-    private BarterStatus barterStatus;
-    private SubCategory subCategory;
-    private SubCategory preferSubCategory;
+    private String barterStatus;
+    private String subCategory;
+    private String preferSubCategory;
     private User barterHost;
     private User barterCompleteGuest;
 
     @Builder
-    public BarterResponseDto(Long barterIdx, String barterName, String barterText, LocalDateTime barterCreatedDate, LocalDateTime barterEndDate, BarterStatus barterStatus, SubCategory subCategory, SubCategory preferSubCategory, User barterHost, User barterCompleteGuest) {
+    public BarterResponseDto(Long barterIdx, String barterName, String barterText, LocalDateTime barterCreatedDate, LocalDateTime barterEndDate, String barterStatus, String subCategory, String preferSubCategory, User barterHost, User barterCompleteGuest) {
         this.barterIdx = barterIdx;
         this.barterName = barterName;
         this.barterText = barterText;

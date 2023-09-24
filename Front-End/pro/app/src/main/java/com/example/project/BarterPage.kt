@@ -3,6 +3,7 @@ package com.example.project
 import FilterButton
 import FormattedDateText
 import PaginationControls
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,14 +26,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.BarterFilterDTO
+import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.BarterViewModel
 import convertNameToNum
 
@@ -50,123 +58,123 @@ fun BarterPage(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
                 .verticalScroll(scrollState)
         ) {
-            // 검색창
-            var searchText by remember { mutableStateOf("") }
-            val keyboardController = LocalSoftwareKeyboardController.current
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                leadingIcon = {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier.clickable {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    // 검색창
+                    var searchText by remember { mutableStateOf("") }
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    viewModel.searchItems(searchText)
+                                    keyboardController?.hide() // 키보드 숨기기
+                                }
+                                    .padding(16.dp)
+                            )
+                        },
+                        placeholder = { Text("검색") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = {
                             viewModel.searchItems(searchText)
                             keyboardController?.hide() // 키보드 숨기기
-                        }
+                        })
                     )
-                },
-                placeholder = { Text("검색") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    viewModel.searchItems(searchText)
-                    keyboardController?.hide() // 키보드 숨기기
-                })
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            var filter1Selected by remember { mutableStateOf("대분류") } // 필터1의 초기값
-            var filter2Selected by remember { mutableStateOf("소분류") } // 필터2의 초기값
-            var filter3Selected by remember { mutableStateOf("등록일") } // 필터2의 초기값
+                    var filter1Selected by remember { mutableStateOf("대분류") } // 필터1의 초기값
+                    var filter2Selected by remember { mutableStateOf("소분류") } // 필터2의 초기값
+                    var filter3Selected by remember { mutableStateOf("등록일") } // 필터3의 초기값
 
-            // 필터 버튼
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item {
-                    FilterButton(
-                        selectedOption = filter1Selected,
-                        options = listOf("대분류", "버거/치킨/피자", "편의점", "카페/베이커리", "아이스크림", "기타"),
+                    // 필터 버튼
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        filter1Selected = it
-                        filter2Selected = "소분류"
-                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected
-                        )
-                        viewModel.applyFilter(
-                            BarterFilterDTO(
-                                filter1Id,
-                                filter2Id,
-                                filter3Id,
-                                searchText,
-                                currentPage
-                            )
-                        )
-                    }
+                        item {
+                            FilterButton(
+                                selectedOption = filter1Selected,
+                                options = listOf(
+                                    "대분류",
+                                    "버거/치킨/피자",
+                                    "편의점",
+                                    "카페/베이커리",
+                                    "아이스크림",
+                                    "기타"
+                                ),
+                            ) {
+                                filter1Selected = it
+                                filter2Selected = "소분류"
+                                val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                                    filter1Selected,
+                                    filter2Selected,
+                                    filter3Selected
+                                )
+                                viewModel.applyFilter(
+                                    BarterFilterDTO(
+                                        filter1Id,
+                                        filter2Id,
+                                        filter3Id,
+                                        searchText,
+                                        currentPage
+                                    )
+                                )
+                            }
 
-                }
-                item {
-                    FilterButton(
-                        selectedOption = filter2Selected,
-                        options = when (filter1Selected) {
-                            "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
-                            "편의점" -> listOf("전체", "금액권", "과자", "음료","도시락/김밥류","기타")
-                            "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
-                            "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
-                            "기타" -> listOf("전체")
-                            else -> listOf("전체")
                         }
-                    ) {
-                        filter2Selected = it
-                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected
-                        )
-                        viewModel.applyFilter(
-                            BarterFilterDTO(
-                                filter1Id,
-                                filter2Id,
-                                filter3Id,
-                                searchText,
-                                currentPage
-                            )
-                        )
-                    }
-                }
-                item {
-                    FilterButton(
-                        selectedOption = filter3Selected,
-                        options = listOf("등록일", "유효기한", "입찰가", "즉시구입가")
-                    ) {
-                        filter3Selected = it
-                        val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
-                            filter1Selected,
-                            filter2Selected,
-                            filter3Selected
-                        )
-                        viewModel.applyFilter(
-                            BarterFilterDTO(
-                                filter1Id,
-                                filter2Id,
-                                filter3Id,
-                                searchText,
-                                currentPage
-                            )
-                        )
+                        item {
+                            FilterButton(
+                                selectedOption = filter2Selected,
+                                options = when (filter1Selected) {
+                                    "버거/치킨/피자" -> listOf("전체", "버거", "치킨", "피자")
+                                    "편의점" -> listOf("전체", "금액권", "과자", "음료", "도시락/김밥류", "기타")
+                                    "카페/베이커리" -> listOf("전체", "카페", "베이커리", "기타")
+                                    "아이스크림" -> listOf("전체", "베스킨라빈스", "기타")
+                                    "기타" -> listOf("전체")
+                                    else -> listOf("전체")
+                                }
+                            ) {
+                                filter2Selected = it
+                                val (filter1Id, filter2Id, filter3Id) = convertNameToNum(
+                                    filter1Selected,
+                                    filter2Selected,
+                                    filter3Selected
+                                )
+                                viewModel.applyFilter(
+                                    BarterFilterDTO(
+                                        filter1Id,
+                                        filter2Id,
+                                        filter3Id,
+                                        searchText,
+                                        currentPage
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(logocolor)
+            )
 
             // BarterItem 넣기
             barterItems.forEach { item ->
@@ -240,8 +248,13 @@ fun BarterItem(
                 .background(Color.Gray),
             contentAlignment = Alignment.Center
         ) {
-            // Home 아이콘 임시 image가 들어갈자리
-            Icon(Icons.Default.Home, contentDescription = "Image")
+            // 이미지
+            AsyncImage(
+                model = image,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
         }
 
         // 10% 이름 및 유효기간
@@ -253,12 +266,14 @@ fun BarterItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Text(name, fontSize = 20.sp)
+            Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             FormattedDateText(gifticonTime,"유효기간")
         }
 
         // 구분 줄
+        Spacer(modifier = Modifier.height(4.dp))
         Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         // 5% 경매기간
         FormattedDateText(
@@ -286,7 +301,7 @@ fun BarterItem(
                     modifier = Modifier.weight(0.6f),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Text("대상품목: $preper", modifier = Modifier.weight(0.4f))
+                    Text("대상품목: $preper", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }

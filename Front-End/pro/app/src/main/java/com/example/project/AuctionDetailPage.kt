@@ -1,8 +1,13 @@
 package com.example.project
 
+import FormattedDateDot
 import SelectButton
+import UserDetailDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,6 +70,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var showConfirmBidDialog by remember { mutableStateOf(false) } // 입찰재확인
     var showAlertBidDialog by remember { mutableStateOf(false) } // 경고 다이얼로그
     var showConfirmDropDialog by remember { mutableStateOf(false) } // 낙찰하기
+    var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
 
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
@@ -72,6 +81,10 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
     // myAuctions의 index값이 들고온 값이랑 같은것들을 세팅
     val matchingAuction = myAuctions.find { it.auctionIdx == index?.toLongOrNull() }
+
+    // 입찰가 상위 3개
+    val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
+    val top3Bids = sortedBids?.take(3)
 
     LaunchedEffect(key1 = index) {
         index?.toLongOrNull()?.let {
@@ -117,51 +130,93 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
             }
 
             currentItem?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+                        .padding(8.dp)
+                ) {
+                    Column {
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                // 이미지를 표시
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp),
-                        contentScale = ContentScale.Crop,
-                    )
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
+                            Image(
+                                painter = imagePainter,
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FormattedDateDot(it.gifticonEndDate, fontSize = 18.sp)
+                        Text(
+                            "판매자 : ${auctionDetail?.auctionUserNickname}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .clickable(
+                                    indication = rememberRipple(),  // Ripple 효과 추가
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    showUserDetailDialog = true
+                                },
+                            textDecoration = TextDecoration.Underline,  // 텍스트에 밑줄 추가
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FormattedDateDot(it.gifticonEndDate, fontSize = 18.sp, label = "경매기간 :")
+                        Text("", fontSize = 18.sp) // 비어있는 텍스트
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "상한가 : ${it.upperPrice}",
+                            modifier = Modifier.weight(1f),
+                            fontSize = 18.sp
+                        )
+                        Text("", fontSize = 18.sp) // 비어있는 텍스트
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "하한가 : ${it.lowerPrice}",
+                            modifier = Modifier.weight(1f),
+                            fontSize = 18.sp
+                        )
+                        Text("", fontSize = 18.sp) // 비어있는 텍스트
+                    }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // 글자 크기 조정
-                val textStyle = Modifier.padding(vertical = 4.dp)  // 여백을 추가하여 가독성 향상
-
-                Text("상한가 : ${it.upperPrice}", modifier = textStyle, fontSize = 18.sp)
-                Text("하한가 : ${it.lowerPrice}", modifier = textStyle, fontSize = 18.sp)
-                Text("유효기간 : ${it.gifticonEndDate}", modifier = textStyle, fontSize = 18.sp)
-                Text("경매기간 : ${it.auctionEndDate}", modifier = textStyle, fontSize = 18.sp)
             }
-
-            auctionDetail?.let {
-                Text("User: ${it.auctionUserNickname}")
-                Text("User: ${it.postContent}")
-
-                it.auctionBid.forEach { bid ->
-                    Text("입찰 : ${bid.auctionBidPrice}", fontSize = 18.sp)
-                }
-            }
-            // 개발되면 지울예정인 더미 4개
-            Text("판매자 : 테스트", fontSize = 18.sp)
+        }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("내용 : 테스트내용", fontSize = 18.sp)
+            Text("내용 : ${auctionDetail?.auctionText}", fontSize = 18.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("입찰가 1 : 800", fontSize = 18.sp)
-            Text("입찰가 2 : 700", fontSize = 18.sp)
-            Text("입찰가 3 : 800", fontSize = 18.sp)
+            Column {
+                top3Bids?.forEachIndexed { index, bid ->
+                    Text("입찰가 ${index + 1}순위 : ${bid.auctionBidPrice}", fontSize = 18.sp)
+                }
+            }
 
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -382,6 +437,21 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                             text = "아니오",
                             onClick = { showConfirmDropDialog = false }
                         )
+                    }
+                )
+            }
+            // 유저 상세보기
+            if (showUserDetailDialog) {
+                UserDetailDialog(
+                    userImageUrl = auctionDetail?.auctionUserProfileUrl,
+                    userNickname = auctionDetail?.auctionUserNickname,
+                    userDeposit = auctionDetail?.auctionUserDeposit,
+                    onDismiss = { showUserDetailDialog = false },
+                    onReportClick = {
+                        // Handle report logic here
+                    },
+                    onMessageClick = {
+                        // Handle message sending logic here
                     }
                 )
             }

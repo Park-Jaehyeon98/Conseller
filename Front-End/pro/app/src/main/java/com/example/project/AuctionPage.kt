@@ -207,7 +207,7 @@ fun AuctionPage(navController: NavHostController) {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(2.5.dp)
                     .background(logocolor)
             )
 
@@ -215,10 +215,10 @@ fun AuctionPage(navController: NavHostController) {
             auctionItems.forEach { item ->
                 AuctionItem(
                     image = item.gifticonDataImageName,
-                    name = item.giftconName,
+                    name = item.gifticonName,
                     gifticonTime = item.gifticonEndDate,
                     auctionTime = item.auctionEndDate,
-                    popular = item.popular,
+                    isDeposit = item.isDeposit,
                     upperprice = item.upperPrice,
                     nowprice = item.auctionHighestBid,
                     onItemClick = {
@@ -265,7 +265,7 @@ fun AuctionItem(
     name: String,
     gifticonTime: String,
     auctionTime: String,
-    popular: String,
+    isDeposit: Boolean,
     upperprice: Int,
     nowprice: Int,
     onItemClick: () -> Unit
@@ -324,7 +324,12 @@ fun AuctionItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // 40% 인기
-                Text("인기: $popular", modifier = Modifier.weight(0.4f))
+                Text(
+                    text = if (isDeposit) "보증금 있음" else "보증금 없음",
+                    modifier = Modifier.weight(0.4f),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
 
                 // 60% 박스2
                 Column(

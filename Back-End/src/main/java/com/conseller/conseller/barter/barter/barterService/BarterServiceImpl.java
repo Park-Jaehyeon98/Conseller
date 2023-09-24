@@ -112,7 +112,7 @@ public class BarterServiceImpl implements BarterService{
             for(BarterGuestItem bg : barterGuestItemList) {
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException());
-                gifticon.setGifticonStatus(GifticonStatus.KEEP);
+                gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
                 gifticonRepository.save(gifticon);
             }
         }

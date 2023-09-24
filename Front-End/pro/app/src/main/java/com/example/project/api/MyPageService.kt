@@ -44,15 +44,15 @@ interface MyPageService {
 
     // 이미지 업로드
     @Multipart
-    @POST("api/user/profile")
+    @POST("api/image/{userIdx}/profile")
     suspend fun profileSend(
-        @Part("userIdx") userIdx: Long,
-        @Part imageFile : MultipartBody.Part
-    ):Response<uploadImageResponse>
+        @Path("userIdx") userIdx: Long,
+        @Part file : MultipartBody.Part
+    ):Response<Void>
 
 
     // 유저 정보 확인
-    @GET("api/user/{userIdx}/userinfo")
+    @GET("api/user/{userIdx}/userInfo")
     suspend fun getUserInfo(
         @Path("userIdx") userIdx:Long,
     ) :Response<userInfoResponse>

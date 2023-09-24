@@ -13,7 +13,6 @@ public class GifticonResponse {
     private String gifticonName;
     private String gifticonStartDate;
     private String gifticonEndDate;
-    private String gifticonModifiedDate;
     private String gifticonAllImageUrl;
     private String gifticonDataImageUrl;
     private String gifticonStatus;

@@ -20,8 +20,8 @@ public class GifticonController {
     private final GifticonService gifticonService;
     private final S3Service s3Service;
 
-    @PostMapping("/{userIdx}")
-    public ResponseEntity<Void> registGifticon(@RequestBody GifticonRegisterRequest gifticonRequest
+    @PostMapping(value = "/{userIdx}", consumes = "multipart/form-data")
+    public ResponseEntity<Void> registGifticon(@PathVariable long userIdx, @RequestPart(name = "gifticonPostRequest") GifticonRegisterRequest gifticonRequest
             ,@RequestPart(name = "originalFile") MultipartFile originalFile
             ,@RequestPart(name = "cropFile") MultipartFile cropFile) throws IOException {
 
@@ -29,10 +29,10 @@ public class GifticonController {
         String dataImageUrl = null;
 
         if (!cropFile.isEmpty()) {
-            s3Service.uploadFile(cropFile);
+            dataImageUrl = s3Service.uploadFile(cropFile);
         }
 
-        gifticonService.registGifticon(gifticonRequest, allImageUrl, dataImageUrl);
+        gifticonService.registGifticon(userIdx, gifticonRequest, allImageUrl, dataImageUrl);
 
         return ResponseEntity.ok()
                 .build();

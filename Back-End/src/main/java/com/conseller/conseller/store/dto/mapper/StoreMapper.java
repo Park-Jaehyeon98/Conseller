@@ -26,6 +26,9 @@ public interface StoreMapper {
     //User, Store -> DetailStoreResponse 매핑
     @Mapping(source = "user.userIdx", target = "storeUserIdx")
     @Mapping(source = "user.userNickname", target = "storeUserNickname")
+    @Mapping(source = "user.userProfileUrl", target = "storeUserProfileUrl")
+    @Mapping(source = "user.userDeposit", target = "storeUserDeposit")
+    @Mapping(source = "store.storeText", target = "postContent")
     DetailStoreResponse entityToDetailStoreResponse(User user, Store store);
 
     //StoreList -> StoreItemDataList 매핑

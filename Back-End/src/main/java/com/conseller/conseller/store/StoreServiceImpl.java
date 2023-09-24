@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -93,6 +94,13 @@ public class StoreServiceImpl implements StoreService {
 
     // 스토어 글 삭제
     public void deleteStore(Long storeIdx) {
+        Store store = storeRepository.findById(storeIdx)
+                .orElseThrow(() -> new RuntimeException());
+        Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new RuntimeException());
+
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+
         storeRepository.deleteById(storeIdx);
     }
 
@@ -142,8 +150,8 @@ public class StoreServiceImpl implements StoreService {
         store.setStoreStatus(StoreStatus.AWARDED.getStatus());
 
         gifticon.setUser(user);
-        
-        // 알림
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+        store.setStoreEndDate(LocalDateTime.now());
     }
 
 }

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -99,7 +100,16 @@ public class AuctionServiceImpl implements AuctionService{
     // 경매 글 삭제
     @Override
     public void deleteAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+        Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new RuntimeException());
+
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+
+
         auctionRepository.deleteById(auctionIdx);
+
     }
 
     // 경매 거래 진행
@@ -142,7 +152,8 @@ public class AuctionServiceImpl implements AuctionService{
             auction.setHighestBidUser(auctionBidList.get(1).getUser());
         }
 
-        auctionBidRepository.deleteByUser_UserIdx(auctionBidList.get(0).getUser().getUserIdx());
+        //여기서 유저가 같으니 다 삭제됨
+        auctionBidRepository.deleteByUser_UserIdxAndAuction_AuctionIdx(auctionBidList.get(0).getUser().getUserIdx(), auctionIdx);
 
     }
 
@@ -169,5 +180,7 @@ public class AuctionServiceImpl implements AuctionService{
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+        auction.setAuctionEndDate(LocalDateTime.now());
+        auction.setAuctionCompletedDate(LocalDateTime.now());
     }
 }

@@ -29,6 +29,9 @@ public interface AuctionMapper {
     @Mapping(source = "auctionBidList", target = "auctionBidList")
     @Mapping(source = "user.userIdx", target = "auctionUserIdx")
     @Mapping(source = "user.userNickname", target = "auctionUserNickname")
+    @Mapping(source = "user.userProfileUrl", target = "auctionUserProfileUrl")
+    @Mapping(source = "user.userDeposit", target = "auctionUserDeposit")
+    @Mapping(source = "auction.auctionText", target = "postContent")
     DetailAuctionResponse entityToDetailAuctionResponse(User user, Auction auction, List<AuctionBidItemData> auctionBidList);
 
     //AuctionList -> AuctionItemDataList 매핑

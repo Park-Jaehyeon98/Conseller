@@ -12,6 +12,7 @@ public class UserInfoResponse {
     private String userPassword;
     private String userNickname;
     private String userEmail;
+    private String userProfileUrl;
     private String userAccount;
     private String userAccountBank;
     private String userPhoneNumber;

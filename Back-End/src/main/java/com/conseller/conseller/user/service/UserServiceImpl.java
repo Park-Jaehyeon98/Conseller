@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
                 .userNickname(user.getUserNickname())
                 .userPassword(user.getUserPassword())
                 .userEmail(user.getUserEmail())
+                .userProfileUrl(user.getUserProfileUrl())
                 .userPhoneNumber(user.getUserPhoneNumber())
                 .userAccount(user.getUserAccount())
                 .userAccountBank(user.getUserAccountBank())

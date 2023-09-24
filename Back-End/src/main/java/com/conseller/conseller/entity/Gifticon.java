@@ -1,10 +1,7 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,8 +10,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @Getter @Setter @ToString
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @EqualsAndHashCode(of = "gifticonIdx")
 public class Gifticon {
     @Id
@@ -30,27 +30,25 @@ public class Gifticon {
     /*
     생성 시에 초 단위는 어떻게 할껀지?
      */
+    @CreatedDate
     @Column(name = "gifticon_start_date", nullable = false)
     private LocalDateTime gifticonStartDate;
 
     @Column(name = "gifticon_end_date", nullable = false)
     private LocalDateTime gifticonEndDate;
 
-    @LastModifiedDate
-    private LocalDateTime gifticonRegistedDate;
-
     /*
     원본이미지 : not null
     짜른 이미지 : null
      */
-    @Column(name = "gifticon_all_image_name")
-    private String gifticonAllImageName;
+    @Column(name = "gifticon_all_image_url", nullable = false)
+    private String gifticonAllImageUrl;
 
-    @Column(name = "gifticon_data_image_name")
-    private String gifticonDateImageName;
+    @Column(name = "gifticon_data_image_url")
+    private String gifticonDataImageUrl;
 
-    @Enumerated(EnumType.STRING)
-    private GifticonStatus gifticonStatus;
+    @Column(name = "gifticon_status", nullable = false)
+    private String gifticonStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")

@@ -86,7 +86,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("이미 존재하는 id를 입력하면 1과 이미 존재한다는 메세지가 나온다.")
+    @DisplayName("이미 존재하는 id를 입력하면 0과 이미 존재한다는 메세지가 나온다.")
     void checkUserId() {
         // given
         given(userRepository.existsByUserId(user.getUserId())).willReturn(true);
@@ -97,6 +97,20 @@ public class UserServiceTest {
         // then
         assertThat(result.getStatus()).isEqualTo(0);
         assertThat(result.getMessage()).isEqualTo("이미 존재하는 아이디 입니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 id를 입력하면 1과 사용할 수 있는 아이디 입니다라는 메세지가 나온다.")
+    void checkNotExistsUserId() {
+        // given
+        given(userRepository.existsByUserId(any(String.class))).willReturn(false);
+
+        // when
+        InfoValidationRequest result = userService.checkId("test4444");
+
+        // then
+        assertThat(result.getStatus()).isEqualTo(1);
+        assertThat(result.getMessage()).isEqualTo("사용할 수 있는 아이디 입니다");
     }
 
     @Test

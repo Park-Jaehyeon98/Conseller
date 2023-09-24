@@ -58,9 +58,9 @@ public class UserController {
 
     //닉네임 중복체크
     @PostMapping("/nickname")
-    public ResponseEntity<Object> checkNickname(@RequestBody String userNickname) {
+    public ResponseEntity<Object> checkNickname(@RequestBody NicknameRequest nicknameRequest) {
 
-        InfoValidationRequest infoValidationRequest = userService.checkNickname(userNickname);
+        InfoValidationRequest infoValidationRequest = userService.checkNickname(nicknameRequest.getUserNickname());
 
         return ResponseEntity.ok()
                 .body(infoValidationRequest);
@@ -68,17 +68,16 @@ public class UserController {
 
     //id 중복체크
     @PostMapping("/id")
-    public ResponseEntity<Object> checkId(@RequestBody String userId) {
-        InfoValidationRequest infoValidationRequest = userService.checkId(userId);
-
+    public ResponseEntity<Object> checkId(@RequestBody IdRequest idRequest) {
+        InfoValidationRequest infoValidationRequest = userService.checkId(idRequest.getUserId());
         return ResponseEntity.ok()
                 .body(infoValidationRequest);
     }
 
     //이메일 중복체크
     @PostMapping("/email")
-    public ResponseEntity<Object> checkEmail(@RequestBody String userEmail) {
-        InfoValidationRequest infoValidationRequest = userService.checkEmail(userEmail);
+    public ResponseEntity<Object> checkEmail(@RequestBody EmailRequest emailRequest) {
+        InfoValidationRequest infoValidationRequest = userService.checkEmail(emailRequest.getUserEmail());
 
         return ResponseEntity.ok()
                 .body(infoValidationRequest);
@@ -86,8 +85,8 @@ public class UserController {
 
     //전화번호 중복체크
     @PostMapping("/phone-number")
-    public ResponseEntity<Object> checkPhoneNumber(@RequestBody String userPhoneNumber) {
-        InfoValidationRequest infoValidationRequest = userService.checkPhoneNumber(userPhoneNumber);
+    public ResponseEntity<Object> checkPhoneNumber(@RequestBody PhoneNumberRequest phoneNumberRequest) {
+        InfoValidationRequest infoValidationRequest = userService.checkPhoneNumber(phoneNumberRequest.getUserPhoneNumber());
 
         return ResponseEntity.ok()
                 .body(infoValidationRequest);

@@ -20,7 +20,6 @@ public class ImageController {
 
     @PostMapping("/{userIdx}/profile")
     public ResponseEntity<Void> uploadUserProfile(@PathVariable Long userIdx, @RequestPart("file") MultipartFile file) throws IOException {
-
         //S3 서버에 이미지를 업로드 한다.
         String url = s3Service.uploadFile(file);
 

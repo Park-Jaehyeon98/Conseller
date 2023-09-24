@@ -9,6 +9,7 @@ import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
+import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final UserValidator userValidator;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final DateTimeConverter dateTimeConverter;
 
     @Override
     public User register(SignUpRequest signUpRequest) {
@@ -68,6 +70,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
+
+        //입력 정보가 유효한지 확인
+        if (!userRepository.existsByUserId(loginRequest.getUserId())) {
+            throw new RuntimeException("올바르지 않은 ID 입니다.");
+        }
+        if (!userRepository.existsByUserPassword(loginRequest.getUserPassword())) {
+            throw new RuntimeException("올바르지 않은 password 입니다.");
+        }
 
        // 1. 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
         Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());
@@ -203,8 +213,8 @@ public class UserServiceImpl implements UserService {
                     .gifticonIdx(gifticon.getGifticonIdx())
                     .gifticonBarcode(gifticon.getGifticonBarcode())
                     .gifticonName(gifticon.getGifticonName())
-                    .gifticonStartDate(gifticon.getGifticonStartDate().toString())
-                    .gifticonEndDate(gifticon.getGifticonEndDate().toString())
+                    .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
+                    .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
                     .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
                     .gifticonStatus(gifticon.getGifticonStatus())
                     .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())

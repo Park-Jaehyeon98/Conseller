@@ -42,7 +42,11 @@ public class Store {
     private Gifticon gifticon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "store_user_idx")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_consumer_idx")
+    private User consumer;
 
 }

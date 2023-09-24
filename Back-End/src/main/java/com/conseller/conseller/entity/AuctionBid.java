@@ -34,7 +34,7 @@ public class AuctionBid {
     private String auctionBidStatus = BidStatus.BIDED.getStatus();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gifticon_idx")
+    @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

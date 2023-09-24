@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
                 .userNickname(user.getUserNickname())
                 .userPassword(user.getUserPassword())
                 .userEmail(user.getUserEmail())
+                .userProfileUrl(user.getUserProfileUrl())
                 .userPhoneNumber(user.getUserPhoneNumber())
                 .userAccount(user.getUserAccount())
                 .userAccountBank(user.getUserAccountBank())
@@ -282,6 +283,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public InfoValidationRequest checkId(String id) {
         boolean idExists = userRepository.existsByUserId(id);
+
+        log.info(id + "is" + idExists);
 
         return InfoValidationRequest.builder()
                 .status(idExists ? 0 : 1)

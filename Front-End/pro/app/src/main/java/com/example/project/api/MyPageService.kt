@@ -17,30 +17,33 @@ import retrofit2.http.Path
 
 interface MyPageService {
 
-//    @GET("api/user/auction/{useridx}/{status}")
-//    suspend fun getUserAuction(
-//        @Path("useridx") useridx: String,
-//        @Path("status") status: String,
-//    ): Response<RegistResponse>
-//
-//
-//    @GET("api/user/barter/{useridx}/{status}")
-//    suspend fun getUserBarter(
-//        @Path("useridx") useridx: String,
-//        @Path("status") status: String,
-//    ): Response<RegistResponse>
-//
-//    @GET("api/user/store/{useridx}/{status}")
-//    suspend fun getUserStore(
-//        @Path("useridx") useridx: String,
-//        @Path("status") status: String,
-//    ): Response<RegistResponse>
-//
-//    @GET("api/user/gifticon/{useridx}/{status}")
-//    suspend fun getUserGifticon(
-//        @Path("useridx") useridx: String,
-//        @Path("status") status: String,
-//    ): Response<RegistResponse>
+    @GET("/api/user/{userIdx}/store")
+    suspend fun getUserStore(
+        @Path("useridx") useridx: String,
+    ): Response<Void>
+
+
+    @GET("/api/user/{userIdx}/auction-bid")
+    suspend fun getUserAuctionBid(
+        @Path("useridx") useridx: String,
+    ): Response<Void>
+
+    @GET("/api/user/{userIdx}/auction")
+    suspend fun getUserAuction(
+        @Path("useridx") useridx: String,
+    ): Response<Void>
+
+    @GET("/api/user/{userIdx}/barter")
+    suspend fun getUserBarter(
+        @Path("useridx") useridx: String,
+    ): Response<Void>
+
+    @GET("/api/user/{userIdx}/barter-request")
+    suspend fun getUserBarterRequest(
+        @Path("useridx") useridx: String,
+    ): Response<Void>
+
+
 
     // 이미지 업로드
     @Multipart
@@ -49,7 +52,15 @@ interface MyPageService {
         @Path("userIdx") userIdx: Long,
         @Part file : MultipartBody.Part
     ):Response<Void>
-
+    //기프티콘 업로드
+    @Multipart
+    @POST("api/gifticon/{userIdx}")
+    suspend fun uploadgifiticon(
+        @Path("userIdx") userIdx:Long,
+        @Part request:  MultipartBody.Part,
+        @Part originalFile : MultipartBody.Part,
+        @Part cropFile : MultipartBody.Part
+    ):Response<Void>
 
     // 유저 정보 확인
     @GET("api/user/{userIdx}/userInfo")
@@ -68,6 +79,14 @@ interface MyPageService {
         @Body request: userModifyRequest
     ) :Response<userModifyResponse>
 }
+
+data class userUploadGifticonResponse(
+    val gifticonBarcode: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+    val subCategory: Int,
+    val mainCategory: Int
+)
 
 data class userModifyRequest(
     val userNickname: String,

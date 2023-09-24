@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,10 +13,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
@@ -23,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +57,7 @@ import java.io.InputStream
 fun MyPage(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
     val checkIdResult by viewModel.getMyinfoResponse.collectAsState()
-
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         viewModel.getMyInfo()
@@ -60,27 +66,30 @@ fun MyPage(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.verticalScroll(scrollState),
         ) {
             UserProfile(
-                profileImage=checkIdResult.userProfileUrl,
+                profileImage = checkIdResult.userProfileUrl,
                 userNickName = checkIdResult.userNickname,
                 userEmail = checkIdResult.userEmail,
                 userPhoneNumber = checkIdResult.userPhoneNumber
             )
 
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Button(onClick = {
-                    navController.navigate("MyPageValid")
-                },
+                Button(
+                    onClick = {
+                        navController.navigate("MyPageValid")
+                    },
                     modifier = Modifier.padding(end = 8.dp),
                     colors = ButtonDefaults.buttonColors(BrandColor1)
                 ) {
                     Text("개인정보 변경")
                 }
-                Button(onClick = {
-                    navController.navigate("MyGifticonAdd")
-                },
+                Button(
+                    onClick = {
+                        navController.navigate("MyGifticonAdd")
+                    },
                     modifier = Modifier.padding(start = 8.dp),
                     colors = ButtonDefaults.buttonColors(BrandColor1)
                 ) {
@@ -88,6 +97,8 @@ fun MyPage(navController: NavHostController) {
                 }
 
             }
+            Spacer(modifier = Modifier.height(14.dp))
+            MypageCheck()
 
         }
     }
@@ -108,19 +119,23 @@ fun UserProfile(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (profileImage != null) {
-            Image(painter = rememberAsyncImagePainter(profileImage),
+            Image(
+                painter = rememberAsyncImagePainter(profileImage),
                 contentDescription = "유저 프로필 이미지",
                 modifier = Modifier
                     .size(200.dp)
                     .clip(CircleShape),
-                contentScale = ContentScale.FillHeight)
+                contentScale = ContentScale.FillHeight
+            )
         } else {
-            Image(painter = painterResource(id = R.drawable.defaultimage),
+            Image(
+                painter = painterResource(id = R.drawable.defaultimage),
                 contentDescription = "Default User Image",
                 modifier = Modifier
                     .size(150.dp)
                     .clip(CircleShape),
-                contentScale = ContentScale.FillHeight)
+                contentScale = ContentScale.FillHeight
+            )
         }
         Text(text = userNickName, fontSize = 22.sp)
         Text(text = userEmail)
@@ -143,6 +158,78 @@ fun getMultipartFromByteArray(byteArray: ByteArray, fileName: String): Multipart
     return MultipartBody.Part.createFormData("image", fileName, requestBody)
 }
 
+@Composable
+fun MypageCheck() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White, shape = RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                CustomCard(label = "내 쿠폰", imageResId = R.drawable.coupon1, number = 1, modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(8.dp))
+                CustomCard(label = "경매 관리", imageResId = R.drawable.coupon, number = 1, modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                CustomCard(label = "판매 관리", imageResId = R.drawable.coupon1, number = 1, modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(8.dp))
+                CustomCard(label = "물물교환 관리", imageResId = R.drawable.coupon, number = 1, modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun CustomCard(label: String, imageResId: Int, number: Int, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Surface(
+            modifier = Modifier
+                .background(Color.Black)
+                .fillMaxWidth(1f)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(text = label, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = imageResId),
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Text(text = number.toString(), fontWeight = FontWeight.Bold, fontSize = 32.sp)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun GiftCard(

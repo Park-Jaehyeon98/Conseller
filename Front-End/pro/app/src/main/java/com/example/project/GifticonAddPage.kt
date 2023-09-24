@@ -46,11 +46,11 @@ fun GifticonAddPage(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(BrandColor1),
                 onClick = {navController.navigate("MyGifticonAddDetail")},
                 modifier = Modifier
-                    .size(250.dp, 70.dp) // 버튼의 크기 설정
+                    .size(250.dp, 50.dp) // 버튼의 크기 설정
             ) {
                 Text(
                     text = "기프티콘 등록",
-                    fontSize = 32.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                 )
 

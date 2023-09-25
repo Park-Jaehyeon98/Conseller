@@ -1,5 +1,6 @@
 package com.example.project.api
 
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -19,6 +20,10 @@ interface LoginService {
     // User 일반로그인
     @POST("api/user/login")
     suspend fun textLogin(@Body request:IdPwLoginRequest ): Response<IdPwLoginResponse>
+
+    // firebase 토큰
+    @POST("api/user/firebaseToken")
+    fun sendToken(@Body token: firebaseToken): Call<Void>
 
 }
 
@@ -57,4 +62,8 @@ data class  IdPwLoginResponse(
     val userNickname :String,
     val accessToken :String,
     val refreshToken:String,
+)
+// firebase 토큰
+data class firebaseToken(
+    val firebaseToken: String
 )

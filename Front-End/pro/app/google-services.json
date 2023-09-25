@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "545871569876",
+    "project_id": "conseller-16ce0",
+    "storage_bucket": "conseller-16ce0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545871569876:android:f4f119ba40a58c672f6c41",
+        "android_client_info": {
+          "package_name": "com.ssafy9.conseller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxWtwgy66W4SmjP4nkdCkNxBlUFE9dQkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

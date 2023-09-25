@@ -5,12 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.BasicResponse
+import com.example.project.api.HttpResponse
 import com.example.project.api.LoginService
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.api.IdPwLoginResponse
+import com.example.project.api.accessToken
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +28,40 @@ class TextloginViewModel @Inject constructor(
 
     private val _idPwLoginState = MutableLiveData<ResponseState<IdPwLoginResponse>>()
     val idPwLoginState: LiveData<ResponseState<IdPwLoginResponse>> = _idPwLoginState
+
+
+    private val _getAccessToken = MutableStateFlow(accessToken(""))
+    val getaccessToken: StateFlow<accessToken> get() = _getAccessToken
+
+    private val _checkError = MutableStateFlow(false)
+    val checkError: StateFlow<Boolean> get() = _checkError
+    fun getUserIdFromPreference(): Long {
+        return sharedPreferencesUtil.getUserId()
+    }
+    suspend fun getAccessToken(): Boolean {
+        val userIdx = getUserIdFromPreference()
+        return try {
+            val response = loginService.accessToken(userIdx)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    response.body()?.accessToken?.let { token ->
+                        sharedPreferencesUtil.setUserToken(token)
+                        return@withContext true
+                    } ?: run {
+                        // accessToken이 null인 경우의 처리 로직
+                        return@withContext false
+                    }
+                } else {
+                    // 응답이 성공적이지 않은 경우의 처리 로직
+                    _checkError.value=true
+                    return@withContext false
+                }
+            }
+        } catch (e: Exception) {
+            // 예외 처리 로직
+            false
+        }
+    }
 
     fun loginWithIdPw(request: IdPwLoginRequest) {
         viewModelScope.launch {
@@ -52,6 +93,12 @@ class TextloginViewModel @Inject constructor(
                 } else {
                     Log.d("TextloginViewModel", "ID/PW login failed with response code: ${response.code()}")
                     _idPwLoginState.value = ResponseState.Error("ID/PW login failed")
+                    val token=getAccessToken()
+                    if(token){
+                        loginWithIdPw(request)
+                    }else{
+                        _idPwLoginState.value = ResponseState.Error("ID/PW login failed")
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("TextloginViewModel", "Exception occurred during ID/PW login", e)

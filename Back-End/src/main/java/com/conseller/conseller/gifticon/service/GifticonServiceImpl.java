@@ -62,6 +62,7 @@ public class GifticonServiceImpl implements GifticonService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("유효하지 않은 유저 idx 값 입니다."));
 
+
         Gifticon gifticon = Gifticon.builder()
                 .gifticonBarcode(gifticonRegisterRequest.getGifticonBarcode())
                 .gifticonName(gifticonRegisterRequest.getGifticonName())
@@ -75,6 +76,8 @@ public class GifticonServiceImpl implements GifticonService {
                 .build();
 
         gifticonRepository.save(gifticon);
+
+        log.info("기프티콘 등록 완료");
     }
 
     @Override

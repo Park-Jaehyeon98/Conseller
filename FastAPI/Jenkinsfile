@@ -1,21 +1,34 @@
 pipeline {
     agent any
-    stages {
-        stage('github clone') {
-            steps {
-                git branch: 'fastapi', credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207.git'
-            }
-        }
-        stage('Deployment') {
-            steps {
-                sshagent(credentials: ['ssh_key']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@43.202.44.111
-                        scp -r /var/jenkins_home/workspace/conseller-OCR/FastAPI/ ubuntu@43.202.44.111:/home/ubuntu/conseller-OCR/
-                        ssh -t ubuntu@43.202.44.111 ./deploy_ai.sh
-                    '''
-                }
+
+stages {
+    stage('Dockerimage build') {
+        steps {
+            dir('fastapi'){
+                sh '''
+                echo 'Dockerimage build'
+                docker build -t fastapi:0.1 .
+                '''
             }
         }
     }
+    stage('Deploy') {
+        steps {
+            dir('fastapi'){
+
+                sh '''
+                echo 'Deploy'
+                docker stop fastapi
+                docker rm fastapi
+                docker run -d -p 127.0.0.1:8000:8000 --name fastapi fastapi:0.1
+                docker images -f "conseller=true" -q | xargs -r docker rmi
+                '''
+            }
+        }
+    }
+
+
+
+
+}
 }

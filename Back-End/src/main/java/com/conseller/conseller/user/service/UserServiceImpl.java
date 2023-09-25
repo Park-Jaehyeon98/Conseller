@@ -249,18 +249,20 @@ public class UserServiceImpl implements UserService {
         List<StoreResponse> storeResponses = new ArrayList<>();
 
         for (Store store : user.getStores()) {
-            StoreResponse response = StoreResponse.builder()
+            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
                     .storeIdx(store.getStoreIdx())
                     .gifticonIdx(store.getGifticon().getGifticonIdx())
                     .storePrice(store.getStorePrice())
                     .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
                     .storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()))
                     .storeText(store.getStoreText())
-                    .storeStatus(store.getStoreStatus())
-                    .consumeridx(store.getConsumer().getUserIdx())
-                    .build();
+                    .storeStatus(store.getStoreStatus());
 
-            storeResponses.add(response);
+                    if (store.getConsumer() != null) {
+                        response.consumeridx(store.getConsumer().getUserIdx());
+                    }
+
+            storeResponses.add(response.build());
         }
 
         return storeResponses;

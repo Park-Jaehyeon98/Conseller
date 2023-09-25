@@ -18,12 +18,16 @@ pipeline {
                     # 예: pip install -r requirements.txt
                     # 예: python main.py
                     '''
-                    pip install -r requirements.txt
-                    uvicorn scr.main:app --host 0.0.0.0 --port 8000
+                    sh 'pip install -r requirements.txt'
+                    sh 'uvicorn scr.main:app --host 0.0.0.0 --port 8000'
 
                     echo 'Building Docker image'
-                    docker.build('fastapi-app:latest', '.')
-                    
+                    script {
+                        docker.withRegistry('', 'docker-hub-credentials') {
+                            def customImage = docker.build('fastapi-app:latest', '.')
+                            customImage.push()
+                        }
+                    }
                 }
             }
         }

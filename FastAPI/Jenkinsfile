@@ -16,7 +16,7 @@ pipeline {
                     echo 'Building FastAPI application'
                     '''
 
-                    // sh 'export PATH="/usr/bin:$PATH"'  // 파이썬 및 pip 설치 경로 추가
+                    sh 'export PATH="/usr/bin:$PATH"'  // 파이썬 및 pip 설치 경로 추가
                     sh 'pip install -r requirements.txt'
                     sh 'uvicorn scr.main:app --host 0.0.0.0 --port 8000'
                     

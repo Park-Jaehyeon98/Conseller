@@ -6,12 +6,14 @@ import com.conseller.conseller.gifticon.dto.response.ImageUrlsResponse;
 import com.conseller.conseller.gifticon.service.GifticonService;
 import com.conseller.conseller.image.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/gifticon")
@@ -24,6 +26,8 @@ public class GifticonController {
     public ResponseEntity<Void> registGifticon(@PathVariable long userIdx, @RequestPart(name = "gifticonPostRequest") GifticonRegisterRequest gifticonRequest
             ,@RequestPart(name = "originalFile") MultipartFile originalFile
             ,@RequestPart(name = "cropFile") MultipartFile cropFile) throws IOException {
+
+        log.info("기프티콘 등록 호출");
 
         String allImageUrl = s3Service.uploadFile(originalFile);
         String dataImageUrl = null;
@@ -40,12 +44,17 @@ public class GifticonController {
 
     @GetMapping("/{gifticonIdx}")
     public ResponseEntity<GifticonResponse> getGifticon(@PathVariable long gifticonIdx) {
+
+        log.info("기프티콘 조회 호출");
+
         return ResponseEntity.ok()
                 .body(gifticonService.getGifticonResponse(gifticonIdx));
     }
 
     @DeleteMapping("/{gifticonIdx}")
     public ResponseEntity<Void> deleteGifticon(@PathVariable long gifticonIdx) {
+
+        log.info("기프티콘 삭제 호출");
 
         //기프티콘 엔티티를 삭제하고 url을 리턴한다.
         ImageUrlsResponse urls = gifticonService.deleteGifticon(gifticonIdx);

@@ -1,5 +1,7 @@
 package com.conseller.conseller.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -7,7 +9,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeConverter {
+
+    private static final DateTimeConverter INSTANCE = new DateTimeConverter();
+
+    public static DateTimeConverter getInstance() {
+        return INSTANCE;
+    }
 
     public LocalDateTime convertDateTime(String date) {
 

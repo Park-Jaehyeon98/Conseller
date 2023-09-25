@@ -6,6 +6,7 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
 import com.conseller.conseller.store.dto.response.StoreItemData;
+import com.conseller.conseller.utils.DateTimeConverter;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -39,8 +40,8 @@ public interface StoreMapper {
         itemData.setStoreIdx(store.getStoreIdx());
         itemData.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
         itemData.setGifticonName(store.getGifticon().getGifticonName());
-        itemData.setGifticonEndDate(store.getGifticon().getGifticonEndDate());
-        itemData.setStoreEndDate(store.getStoreEndDate());
+        itemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(store.getGifticon().getGifticonEndDate()));
+        itemData.setStoreEndDate(DateTimeConverter.getInstance().convertString(store.getStoreEndDate()));
         itemData.setDeposit(false);
         itemData.setStorePrice(store.getStorePrice());
 

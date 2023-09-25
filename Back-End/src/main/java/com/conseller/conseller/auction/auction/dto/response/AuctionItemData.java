@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,9 +13,9 @@ public class AuctionItemData {
     private Long auctionIdx;
     private String gifticonDataImageName;
     private String gifticonName;
-    private LocalDateTime gifticonEndDate;
-    private LocalDateTime auctionEndDate;
-    private Boolean Deposit;
+    private String gifticonEndDate;
+    private String auctionEndDate;
+    private Boolean deposit;
     private Integer upperPrice;
     private Integer lowerPrice;
     private Integer auctionHighestBid;

@@ -1,5 +1,8 @@
 package com.conseller.conseller.user.service;
 
+import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
+import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
+import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.UserRepository;
@@ -239,10 +242,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Auction> getUserAuctions(long userIdx) {
+    public List<DetailAuctionResponse> getUserAuctions(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getAuctions();
+
+        List<DetailAuctionResponse> detailAuctionResponses = new ArrayList<>();
+
+        for (Auction auction : user.getAuctions()) {
+            List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
+            DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidItemDataList);
+            detailAuctionResponses.add(detailAuctionResponse);
+        }
+
+        return detailAuctionResponses;
     }
 
     @Override

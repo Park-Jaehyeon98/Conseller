@@ -1,5 +1,7 @@
 package com.conseller.conseller.user;
 
+import com.conseller.conseller.auction.auction.AuctionService;
+import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.dto.request.*;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuctionService auctionService;
 
     //회원가입
     @PostMapping
@@ -151,7 +154,7 @@ public class UserController {
 
     //내 경매 보기
     @GetMapping("/{userIdx}/auction")
-    public ResponseEntity<List<Auction>> getUserAuctions(@PathVariable long userIdx) {
+    public ResponseEntity<List<DetailAuctionResponse>> getUserAuctions(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserAuctions(userIdx));
     }

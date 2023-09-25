@@ -14,34 +14,42 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Path
+import java.net.URL
+import java.time.LocalDateTime
 
 interface MyPageService {
 
+    @GET("/api/user/{userIdx}/gifticons")
+    suspend fun getUserGifticon(
+        @Path("userIdx") useridx: Long,
+    ): Response<myGifticonResponse>
+
     @GET("/api/user/{userIdx}/store")
     suspend fun getUserStore(
-        @Path("useridx") useridx: String,
-    ): Response<Void>
+        @Path("userIdx") useridx: Long,
+    ): Response<myStoreItems>
 
 
     @GET("/api/user/{userIdx}/auction-bid")
     suspend fun getUserAuctionBid(
-        @Path("useridx") useridx: String,
-    ): Response<Void>
+        @Path("userIdx") useridx: Long,
+    ): Response<myAuctionBidItems>
 
     @GET("/api/user/{userIdx}/auction")
     suspend fun getUserAuction(
-        @Path("useridx") useridx: String,
-    ): Response<Void>
+        @Path("userIdx") useridx: Long,
+    ): Response<myAuctionItems>
 
     @GET("/api/user/{userIdx}/barter")
     suspend fun getUserBarter(
-        @Path("useridx") useridx: String,
-    ): Response<Void>
+        @Path("userIdx") useridx: Long,
+    ): Response<myBarterItems>
 
     @GET("/api/user/{userIdx}/barter-request")
     suspend fun getUserBarterRequest(
-        @Path("useridx") useridx: String,
-    ): Response<Void>
+        @Path("userIdx") useridx: Long,
+    ): Response<myBarterRequestItems>
+
 
 
 
@@ -72,7 +80,7 @@ interface MyPageService {
     @POST("api/user/valid")
     suspend fun checkUserValid(
         @Body request:userValidRequest
-    ,) :Response<uploadImageResponse> // response가 똑같아서 활용
+        ,) :Response<uploadImageResponse> // response가 똑같아서 활용
     @PUT("api/user/{userIdx}")
     suspend fun modifyUserInfo(
         @Path("userIdx") userIdx:Long,
@@ -121,3 +129,90 @@ data class userInfoResponse(
     val userAccountBank: String,
     val userPhoneNumber:String
 )
+
+data class myGifticon(
+    val gifticonIdx: Long,
+    val gifticonBarcode: String,
+    val gifticonName: String,
+    val gifticonStartDate: String,
+    val gifticonEndDate: String,
+    val gifticonAllImageUrl: String,
+    val gifticonDataImageUrl: String,
+    val gifticonStatus: String, // 보관 // 경매//물물교환
+    val userIdx: Long,
+    val subCategoryIdx: Int,
+    val mainCategoryIdx: Int
+)
+
+data class myGifticonResponse(
+    val items : List<myGifticon>
+)
+
+// 경매
+data class myAuctionItems(
+    val items : List<myAuctionData>
+)
+data class myAuctionData(
+    val postContent: String,
+    val auctionUserIdx: Long,
+    val auctionUserNickname: String,
+    val auctionUserProfileUrl: String,
+    val auctionUserDeposit: Long,
+    val auctionBidList: List<myAuctionBidData>
+)
+
+data class myAuctionBidItems(
+    val items: List<myAuctionBidData>
+)
+
+data class myAuctionBidData(
+    val auctionBidIdx: Long,
+    val auctionBidPrice: Int,
+    val auctionRegistedDate: String,
+    val auctionBidStatus: String,
+    val userIdx: Long,
+    val auctionIdx: Long
+)
+
+data class myBarterItems(
+    val items: List<myBarterData>
+)
+data class myBarterData(
+    val barterIdx: Long,
+    val barterName: String,
+    val barterText: String,
+    val barterCreatedDate: String,
+    val barterEndDate: String,
+    val barterStatus: String,
+    val subCategory: String,
+    val preferSubCategory: String,
+    val barterHostIdx: Long,
+    val barterCompleteGuest: Long,
+    val barterHostItems: List<myGifticon>
+)
+
+data class myBarterRequestItems(
+    val items:List<myBarterRequestData>
+)
+data class myBarterRequestData(
+    val barterRequestIdx: Long,
+    val barterRequestStatus: String,
+    val barterIdx: Long,
+    val barterGuestItems: List<myGifticon>
+)
+
+data  class myStoreItems(
+    val items:List<myStoreData>
+)
+data class myStoreData(
+    val storeIdx: Long,
+    val storePrice: Int,
+    val storeCreatedDate: String,
+    val storeEndDate: String,
+    val storeText: String,
+    val storeStatus: String,
+    val gifticonIdx: Long,
+    val consumerIdx: Long
+)
+
+

@@ -3,7 +3,9 @@ package com.example.project.api
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface LoginService {
 
@@ -24,6 +26,10 @@ interface LoginService {
     // firebase 토큰
     @POST("api/user/firebaseToken")
     fun sendToken(@Body token: firebaseToken): Call<Void>
+
+    //access token 재발금
+    @GET("/api/user/refresh/{userIdx}")
+    fun accessToken(@Path("userIdx") useridx: Long):Response<accessToken>
 
 }
 
@@ -66,4 +72,9 @@ data class  IdPwLoginResponse(
 // firebase 토큰
 data class firebaseToken(
     val firebaseToken: String
+)
+
+// AccessToken
+data class accessToken(
+    val accessToken: String
 )

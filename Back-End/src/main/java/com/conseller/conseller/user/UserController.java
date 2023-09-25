@@ -2,6 +2,7 @@ package com.conseller.conseller.user;
 
 import com.conseller.conseller.auction.auction.AuctionService;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
@@ -163,7 +164,7 @@ public class UserController {
 
     //내 입찰 보기
     @GetMapping("/{userIdx}/auction-bid")
-    public ResponseEntity<List<AuctionBid>> getUserAuctionBids(@PathVariable long userIdx) {
+    public ResponseEntity<List<AuctionBidResponse>> getUserAuctionBids(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserAuctionBids(userIdx));
     }

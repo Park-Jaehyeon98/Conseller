@@ -3,6 +3,7 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.entity.*;
@@ -279,10 +280,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuctionBid> getUserAuctionBids(long userIdx) {
+    public List<AuctionBidResponse> getUserAuctionBids(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getAuctionBids();
+
+        List<AuctionBidResponse> auctionBidResponses = new ArrayList<>();
+
+        for (AuctionBid bid : user.getAuctionBids()) {
+            AuctionBidResponse bidResponse = AuctionBidResponse.builder()
+                    .auctionBidIdx(bid.getAuctionBidIdx())
+                    .auctionBidPrice(bid.getAuctionBidPrice())
+                    .auctionBidStatus(bid.getAuctionBidStatus())
+                    .auctionRegistedDate(dateTimeConverter.convertString(bid.getAuctionRegistedDate()))
+                    .auctionIdx(bid.getAuction().getAuctionIdx())
+                    .build();
+
+            auctionBidResponses.add(bidResponse);
+        }
+
+        return auctionBidResponses;
     }
 
     @Override

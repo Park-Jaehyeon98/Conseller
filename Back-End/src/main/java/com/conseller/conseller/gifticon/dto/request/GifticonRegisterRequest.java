@@ -11,7 +11,7 @@ public class GifticonRegisterRequest {
     private String gifticonBarcode;
     private String gifticonName;
     private String gifticonEndDate;
-    private long subCategory;
-    private long mainCategory;
+    private int subCategory;
+    private int mainCategory;
 
 }

@@ -1,6 +1,7 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
@@ -8,6 +9,7 @@ import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
+import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final UserValidator userValidator;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final DateTimeConverter dateTimeConverter;
 
     @Override
     public User register(SignUpRequest signUpRequest) {
@@ -67,22 +71,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
 
-       // 1. 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
+        // 입력 id 정보가 유효한지 확인
+        User user = userRepository.findByUserId(loginRequest.getUserId())
+                .orElseThrow(() -> new RuntimeException("유효하지 않은 id 입니다."));
+
+        // 입력한 password 정보가 유효한지 확인
+        if (!user.checkPassword(new BCryptPasswordEncoder(), loginRequest.getUserPassword())) {
+            throw new RuntimeException("유효하지 않은 password 입니다.");
+        }
+
+        // 입력한 유저가 탈퇴한 유저인지 확인
+        if (user.getUserDeletedDate() == null) {
+            throw new RuntimeException("이미 탈퇴한 유저입니다.");
+        }
+
+        //입력한 유저가 사용 제한된 유저인지 확인
+        if (UserStatus.RESTRICTED.equals(user.getUserStatus())) {
+            throw new RuntimeException("서비스 이용 제한된 유저입니다.");
+        }
+
+       // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
         Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());
 
-        // 2. 인증 정보를 기반으로 JWT 토큰 생성
+        // 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
-
-        // 3. 유저 정보를 따로 가져오기 위한 호출
-        Optional<User> loginedUser = userRepository.findByUserId(loginRequest.getUserId());
-        User user = loginedUser.get();
 
         //4. refresh token db 저장
         user.setRefreshToken(jwtToken.getRefreshToken());
-
-        if (jwtToken.getAccessToken() != null) {
-            loginedUser = userRepository.findByUserId(loginRequest.getUserId());
-        }
 
         // 5. 토큰 정보로 response 생성 후 리턴
         return LoginResponse.builder()
@@ -115,11 +130,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserEmailAndUserId(emailAndIdRequest.getUserEmail(), emailAndIdRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("없는 유저 정보 입니다."));
 
-        // 3. 임시 비밀번호로 저장
+        // 3. 임시 비밀번호로 변경 및 암호화
         user.setUserPassword(tempPassword);
+        user.encryptPassword(new BCryptPasswordEncoder());
 
         return TemporaryPasswordResponse.builder()
-                .temporaryPassword(user.getPassword())
+                .temporaryPassword(tempPassword)
                 .build();
     }
 
@@ -188,6 +204,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<GifticonResponse> getGifticons(long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        List<Gifticon> userGifticons = user.getGifticons();
+
+        List<GifticonResponse> userGifticonsResponse = new ArrayList<>();
+
+        for (Gifticon gifticon : userGifticons) {
+            userGifticonsResponse.add(GifticonResponse.builder()
+                    .gifticonIdx(gifticon.getGifticonIdx())
+                    .gifticonBarcode(gifticon.getGifticonBarcode())
+                    .gifticonName(gifticon.getGifticonName())
+                    .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
+                    .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
+                    .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
+                    .gifticonStatus(gifticon.getGifticonStatus())
+                    .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
+                    .userIdx(gifticon.getUser().getUserIdx())
+                    .subCategoryIdx(gifticon.getSubCategory().getSubCategoryIdx())
+                    .mainCategoryIdx(gifticon.getMainCategory().getMainCategoryIdx())
+                    .build()
+            );
+        }
+        return userGifticonsResponse;
+    }
+
+    @Override
     public List<Store> getUserStores(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
@@ -231,16 +275,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AccessTokenResponse reCreateAccessToken(HttpServletRequest request, long userIdx) {
-        log.info("refresh token service layer");
         // 0.요청이 들어온 유저의 정보를 db에서 가져온다.
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
 
-        // 1. authentication 발급
-        Authentication authentication = getAuthentication(user.getUserId(), user.getUserPassword());
-
-        // 2. header에서 refresh token 추출
+        // 1. header에서 refresh token 추출
         String refreshToken = jwtTokenProvider.resolveToken(request);
+
+        // 2. authentication 발급
+        Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
         // 3. 토큰의 유효성 검사
         if (refreshToken != null
@@ -257,14 +300,16 @@ public class UserServiceImpl implements UserService {
     }
 
     private Authentication getAuthentication(String userId, String userPassword) {
-        log.info("user ID : " + userId);
-        log.info("user Password : " + userPassword);
+        log.info("getAuthentication 호출");
+
         // 1. username + password 를 기반으로 Authentication 객체 생성
         // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userId, userPassword);
 
+        log.info("authenticationToken:" + authenticationToken.getName());
         log.info(authenticationManagerBuilder.getObject().toString());
+
         // 2. 실제 검증. authenticate() 메서드를 통해 요청된 User에 대한 검증 진행
         // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
         return authenticationManagerBuilder.getObject().authenticate(authenticationToken);

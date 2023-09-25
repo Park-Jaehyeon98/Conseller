@@ -5,14 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum UserStatus {
     RESTRICTED("제한"),
     ACTIVE("정상");
 
     private final String status;
-
-    UserStatus(String status) {
-        this.status = status;
-    }
-
 }

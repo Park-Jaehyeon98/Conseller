@@ -27,9 +27,6 @@ public class Gifticon {
     @Column(name = "gifticon_name", nullable = false)
     private String gifticonName;
 
-    /*
-    생성 시에 초 단위는 어떻게 할껀지?
-     */
     @CreatedDate
     @Column(name = "gifticon_start_date", nullable = false)
     private LocalDateTime gifticonStartDate;

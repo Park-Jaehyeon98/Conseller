@@ -79,7 +79,7 @@ data class StoreFilterDTO(
 
 // 목록, 검색 응답 DTO
 data class StoreResponse(
-    val totalNum: Int,
+    val totalElements: Long,
     val items: List<StoreItemData>
 )
 

@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.*
@@ -22,8 +23,8 @@ class StoreViewModel @Inject constructor(
     private val _storeItems = MutableStateFlow<List<StoreItemData>>(emptyList())
     val storeItems: StateFlow<List<StoreItemData>> = _storeItems
 
-    private val _totalItems = MutableStateFlow<Int>(0)
-    val totalItems: StateFlow<Int> = _totalItems
+    private val _totalItems = MutableStateFlow<Long>(0)
+    val totalItems: StateFlow<Long> = _totalItems
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -83,18 +84,24 @@ class StoreViewModel @Inject constructor(
         fetchStoreItems()
     }
 
-    private fun fetchStoreItems() {
+    fun fetchStoreItems() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
+                Log.d("@@@@@","$")
                 val response = service.getAllStoreItems(currentFilter)
 
                 if (response.isSuccessful && response.body() != null) {
                     _storeItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.totalNum
+                    _totalItems.value = response.body()!!.totalElements
+                    Log.d("@@@@@","222222222222222222222")
+                    Log.d("#####","${response.body()}")
+                    Log.d("$$$$$","${response.body()!!.items}")
+                    Log.d("%%%%%","${response.body()!!.totalElements}")
                 } else {
                     _error.value = "Failed to load data: ${response.message()}"
+                    Log.d("@@@@@","1111111111111111111")
                     _storeItems.value = getSampleData()
                 }
             } catch (e: Exception) {

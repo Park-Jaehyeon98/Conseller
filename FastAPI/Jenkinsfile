@@ -1,36 +1,43 @@
 pipeline {
     agent any
 
-    environment {
-        imagename = "fastapi-app"
-        version = "${GIT_COMMIT}"
-        registryCredential = credentials('docker-hub-credentials') // Docker Hub 자격 증명 ID
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Checkout FastAPI Code') {
             steps {
-                checkout scm
+                // FastAPI 코드가 있는 브랜치로 체크아웃
+                checkout([$class: 'GitSCM', branches: [[name: 'fastapi']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'fxddcs8624#gmail.com', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207']]])
+            }
+        }
+        
+        stage('FastAPI Build and Docker Image') {
+            steps {
+                dir('FastAPI') {
+                    sh '''
+                    echo 'Building FastAPI application'
+                    # FastAPI 빌드 스크립트 실행
+                    # 예: pip install -r requirements.txt
+                    # 예: python main.py
+                    '''
+                    pip install -r requirements.txt
+                    uvicorn scr.main:app --host 0.0.0.0 --port 8000
+
+                    echo 'Building Docker image'
+                    docker.build('fastapi-app:latest', '.')
+                    '''
+                }
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Deploy FastAPI') {
             steps {
                 script {
-                    dockerImage = docker.build("${imagename}:${version}", "--no-cache .")
+                    def containerExists = sh(script: 'docker ps -a --format "{{.Names}}" | grep -q "fastapi"', returnStatus: true)
+                    if (containerExists == 0) {
+                        sh 'docker stop fastapi'
+                        sh 'docker rm fastapi'
+                    }
+                    sh 'docker run -d -p 8000:8000 --name fastapi fastapi-app:latest'
                 }
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                    sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
-                    sh "docker push ${imagename}:${version}"
-                }
-            }
-        }
-
-        stage('Deploy Docker Container') {
-            steps {
-                sh "docker stop ${imagename}:${version}" // 이전 컨테이너 중지 (만약 이미 실행 중이면)
-                sh "docker rm ${imagename}:${version}"   // 이전 컨테이너 삭제 (만약 이미 실행 중이면)
-                sh "docker run -d --name ${imagename}:${version} -p 80:80 ${imagename}:${version}" // 새 컨테이너 실행
             }
         }
     }

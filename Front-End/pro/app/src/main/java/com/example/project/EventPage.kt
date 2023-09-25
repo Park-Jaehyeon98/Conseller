@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -20,7 +19,9 @@ fun EventPage(modifier: Modifier = Modifier, navController: NavHostController) {
         modifier = modifier.fillMaxSize(),
     ) {
         LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(10.dp)) }
@@ -58,6 +59,8 @@ fun EventLayout1() {
 
 @Composable
 fun EventLayout2(navController: NavHostController) {
+    val firebaseService = MyFirebaseMessagingService()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,13 +70,20 @@ fun EventLayout2(navController: NavHostController) {
         contentAlignment = Alignment.Center
     ){
         Text("준비중입니다", fontSize = 20.sp)
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { firebaseService.getFirebaseToken() }) {
+            Text("토큰임시")
+        }
     }
 }
 
 @Composable
 fun EventLayout3() {
     Row(
-        modifier = Modifier.fillMaxWidth().height(250.dp).padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Box(

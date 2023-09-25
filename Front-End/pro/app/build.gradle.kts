@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -10,7 +11,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.project"
+        applicationId = "com.ssafy9.conseller"
         minSdk = 23
         targetSdk = 33
         versionCode = 1
@@ -81,6 +82,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     //icon 추가
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation ("com.google.firebase:firebase-messaging-ktx")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

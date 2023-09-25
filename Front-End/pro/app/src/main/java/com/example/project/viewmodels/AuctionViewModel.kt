@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -119,6 +120,8 @@ class AuctionViewModel @Inject constructor(
                     _error.value = "Failed to load data: ${response.message()}"
                     _auctionItems.value = getSampleData()
                 }
+            } catch (e: IOException) {
+                _error.value = "Internet connection failed. Please check your network."
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _auctionItems.value = getSampleData()

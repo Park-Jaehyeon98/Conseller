@@ -6,6 +6,7 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.AuctionTradeResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.auction.dto.response.RegistAuctionResponse;
 import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,13 @@ public class AuctionController {
 
     // 경매 글 등록
     @PostMapping("/regist")
-    public ResponseEntity<Object> registAuction(@RequestBody RegistAuctionRequest request) {
-        auctionService.registAuction(request);
+    public ResponseEntity<RegistAuctionResponse> registAuction(@RequestBody RegistAuctionRequest request) {
+        Long auctionIdx = auctionService.registAuction(request);
+
+        RegistAuctionResponse response = new RegistAuctionResponse(auctionIdx);
+
         return ResponseEntity.ok()
-                .build();
+                .body(response);
     }
 
     // 경매 글 상세 보기

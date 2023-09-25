@@ -10,7 +10,7 @@ import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 public interface StoreService {
     public StoreListResponse getStoreList(StoreListRequest request);
 
-    public void registStore(RegistStoreRequest request);
+    public Long registStore(RegistStoreRequest request);
 
     public DetailStoreResponse detailStore(Long storeIdx);
 

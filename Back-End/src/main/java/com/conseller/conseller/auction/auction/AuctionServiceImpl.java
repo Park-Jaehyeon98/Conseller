@@ -42,7 +42,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     @Transactional(readOnly = true)
     public AuctionListResponse getAuctionList(AuctionListRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), 10);
+        Pageable pageable = PageRequest.of(request.getPage() - 1, 10);
 
         Page<Auction> auctions = auctionImplRepository.findAuctionList(request, pageable);
 
@@ -61,7 +61,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     // 경매 글 등록
     @Override
-    public void registAuction(RegistAuctionRequest request) {
+    public Long registAuction(RegistAuctionRequest request) {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
@@ -69,6 +69,7 @@ public class AuctionServiceImpl implements AuctionService{
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
             //등록 x 예외처리
+            return null;
         }else {
             Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
@@ -76,7 +77,9 @@ public class AuctionServiceImpl implements AuctionService{
 
             gifticon.setGifticonStatus(GifticonStatus.AUCTION.getStatus());
 
-            auctionRepository.save(auction);
+            Auction saveAuction = auctionRepository.save(auction);
+
+            return saveAuction.getAuctionIdx();
         }
     }
 

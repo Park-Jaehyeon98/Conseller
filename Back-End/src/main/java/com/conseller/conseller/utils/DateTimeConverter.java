@@ -29,7 +29,7 @@ public class DateTimeConverter {
     }
 
     public LocalDateTime convertLocalDateTime(String dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime date = LocalDateTime.parse(dateTime, formatter);
 
         return date;
@@ -38,7 +38,7 @@ public class DateTimeConverter {
     public String convertString(LocalDateTime dateTime) {
 
         //LocaldateTime 포맷터 설정
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         return dateTime.format(formatter);
     }

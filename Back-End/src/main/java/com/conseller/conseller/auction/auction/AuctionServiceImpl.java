@@ -65,6 +65,8 @@ public class AuctionServiceImpl implements AuctionService{
         }else {
             Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
+            auction.setAuctionEndDate(gifticon.getGifticonEndDate());
+
             gifticon.setGifticonStatus(GifticonStatus.AUCTION.getStatus());
 
             auctionRepository.save(auction);
@@ -180,7 +182,6 @@ public class AuctionServiceImpl implements AuctionService{
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-        auction.setAuctionEndDate(LocalDateTime.now());
         auction.setAuctionCompletedDate(LocalDateTime.now());
     }
 }

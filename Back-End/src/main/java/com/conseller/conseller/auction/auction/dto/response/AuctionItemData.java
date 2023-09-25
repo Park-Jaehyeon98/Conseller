@@ -17,7 +17,7 @@ public class AuctionItemData {
     private String gifticonName;
     private LocalDateTime gifticonEndDate;
     private LocalDateTime auctionEndDate;
-    private String popular;
+    private Boolean Deposit;
     private Integer upperPrice;
     private Integer lowerPrice;
     private Integer auctionHighestBid;

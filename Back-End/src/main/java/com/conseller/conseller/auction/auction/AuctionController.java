@@ -69,7 +69,7 @@ public class AuctionController {
     public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestParam(name = "im") Integer index ) {
         AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, index);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "거래 진행 중입니다.", index);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@거래 진행 중입니다.", index, 1);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -81,8 +81,8 @@ public class AuctionController {
         auctionService.cancelAuction(auctionIdx);
 
         // 거래 취소 알림
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 1);
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 2);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 1, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 2, 1);
 
         return ResponseEntity.ok()
                 .build();
@@ -92,7 +92,7 @@ public class AuctionController {
     @PatchMapping("/complete/{auction_idx}")
     public ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
         // 판매자에게 알림
-        notificationService.sendAuctionNotification(auctionIdx, "경매 입금 완료", "구매자가 입금을 완료하였습니다.", 2);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 입금 완료", "구매자가 입금을 완료하였습니다.", 2, 1);
 
         return ResponseEntity.ok()
                 .build();
@@ -103,7 +103,7 @@ public class AuctionController {
     public  ResponseEntity<Object> confirmAuction(@PathVariable("auction_idx") Long auctionIdx) {
         auctionService.confirmAuction(auctionIdx);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 완료", "거래가 완료가 되었습니다.", 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 완료", "거래가 완료가 되었습니다.", 1, 1);
 
         return ResponseEntity.ok()
                 .build();

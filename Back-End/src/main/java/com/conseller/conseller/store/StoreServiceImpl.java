@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -62,6 +61,8 @@ public class StoreServiceImpl implements StoreService {
 
         }else {
             Store store = StoreMapper.INSTANCE.registStoreRequestToStore(request, user, gifticon);
+
+            store.setStoreEndDate(gifticon.getGifticonEndDate());
 
             gifticon.setGifticonStatus(GifticonStatus.STORE.getStatus());
 
@@ -151,7 +152,6 @@ public class StoreServiceImpl implements StoreService {
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-        store.setStoreEndDate(LocalDateTime.now());
     }
 
 }

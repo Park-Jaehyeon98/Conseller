@@ -17,6 +17,6 @@ public class StoreItemData {
     private String gifticonName;
     private LocalDateTime gifticonEndDate;
     private LocalDateTime storeEndDate;
-    private String popular;
+    private Boolean Deposit;
     private Integer storePrice;
 }

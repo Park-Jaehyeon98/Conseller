@@ -43,7 +43,7 @@ public interface AuctionMapper {
         itemData.setGifticonName(auction.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(auction.getGifticon().getGifticonEndDate());
         itemData.setAuctionEndDate(auction.getAuctionEndDate());
-        itemData.setPopular("0");
+        itemData.setDeposit(false);
         itemData.setUpperPrice(auction.getUpperPrice());
         itemData.setLowerPrice(auction.getLowerPrice());
         itemData.setAuctionHighestBid(auction.getAuctionHighestBid());

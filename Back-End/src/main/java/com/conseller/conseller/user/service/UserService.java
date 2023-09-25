@@ -1,8 +1,12 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 
@@ -57,19 +61,19 @@ public interface UserService {
     public List<GifticonResponse> getGifticons(long userIdx);
 
     //내 판매목록 불러오기
-    public List<Store> getUserStores(long userIdx);
+    public List<StoreResponse> getUserStores(long userIdx);
 
     //내 경매목록 불러오기
     public List<DetailAuctionResponse> getUserAuctions(long userIdx);
 
     //내 입찰내역 불러오기
-    public List<AuctionBid> getUserAuctionBids(long userIdx);
+    public List<AuctionBidResponse> getUserAuctionBids(long userIdx);
 
     //내 교환목록 불러오기
-    public List<Barter> getUserBarters(long userIdx);
+    public List<BarterResponseDto> getUserBarters(long userIdx);
 
     //내 교환 요청목록 불러오기
-    public List<BarterRequest> getUserBarterRequests(long userIdx);
+    public List<MyBarterRequestResponseDto> getUserBarterRequests(long userIdx);
 
     //회원탈퇴
     public void deleteUser(long userIdx);

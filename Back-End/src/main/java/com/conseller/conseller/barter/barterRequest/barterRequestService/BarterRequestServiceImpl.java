@@ -1,14 +1,15 @@
 package com.conseller.conseller.barter.barterRequest.barterRequestService;
 
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterGuestItemDto;
 import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
-import com.conseller.conseller.entity.Barter;
-import com.conseller.conseller.entity.BarterRequest;
-import com.conseller.conseller.entity.User;
+import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
 
     private final BarterRequestRepository barterRequestRepository;
     private final BarterGuestItemService barterGuestItemService;
+    private final GifticonRepository gifticonRepository;
     private final BarterRepository barterRepository;
     private final UserRepository userRepository;
     List<BarterRequestResponseDto> barterRequestResponseDtoList;
@@ -43,7 +45,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public BarterRequestResponseDto getBarterRequest(Long barterRequestIdx) {
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
         Barter barter = barterRequest.getBarter();
         BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
         BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest, barterResponseDto);
@@ -84,9 +86,10 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx) {
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
+
         User user = userRepository.findByUserId(barterRequestRegistDto.getUserId())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);
 
@@ -94,13 +97,25 @@ public class BarterRequestServiceImpl implements BarterRequestService{
             barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);
         } catch(Exception e) {
             barterRequestRepository.deleteById(barterRequest.getBarterRequestIdx());
-            throw new RuntimeException();
+            throw new RuntimeException("보관 상태인 기프티콘만 등록할 수 있습니다.");
         }
 
     }
 
     @Override
     public void deleteBarterRequest(Long barterRequestIdx) {
+        BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
+        List<BarterGuestItem> barterGuestItemList = barterRequest.getBarterGuestItemList();
+
+        List<BarterGuestItemDto> barterGuestItemDtoList = new ArrayList<>();
+        for(BarterGuestItem bgi : barterGuestItemList) {
+            Gifticon gifticon = gifticonRepository.findById(bgi.getGifticon().getGifticonIdx())
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
+            gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+            gifticonRepository.save(gifticon);
+        }
+
         barterRequestRepository.deleteById(barterRequestIdx);
     }
 }

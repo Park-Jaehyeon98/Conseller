@@ -42,7 +42,7 @@ public class BarterRequestController {
 
     //1. 교환 신청 등록
     @PostMapping("/{barterIdx}")
-    public ResponseEntity<Void> addBarterRequest(@PathVariable Long barterIdx, BarterRequestRegistDto barterRequestRegistDto){
+    public ResponseEntity<Void> addBarterRequest(@PathVariable Long barterIdx, @RequestBody BarterRequestRegistDto barterRequestRegistDto){
         barterRequestService.addBarterRequest(barterRequestRegistDto, barterIdx);
         return ResponseEntity.ok()
                 .build();

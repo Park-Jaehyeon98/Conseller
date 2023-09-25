@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PATH = "/usr/bin:${env.PATH}" // 기존의 PATH 변수에 /usr/bin을 추가합니다.
+        PATH = "/usr/bin/pip" // 기존의 PATH 변수에 /usr/bin을 추가합니다.
     }
 
     stages {

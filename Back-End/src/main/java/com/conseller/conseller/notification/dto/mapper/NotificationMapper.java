@@ -4,6 +4,7 @@ import com.conseller.conseller.entity.NotificationEntity;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
@@ -15,6 +16,7 @@ public interface NotificationMapper {
 
     //NotificationList -> NotificationItemDataList 매핑
     @Named("N2N")
+    @Mapping(source = "notification.notificationContent", target = "notificationStatus")
     NotificationItemData notificationToItemData(NotificationEntity notification);
 
     @IterableMapping(qualifiedByName = "N2N")

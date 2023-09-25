@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotificationItemData {
     private Long notificationIdx;
-    private String notificationTitle;
-    private String notificationContent;
+    private Integer notificationType;
     private LocalDateTime notificationCreatedDate;
     private String notificationStatus;
-    private Boolean seller;
 }

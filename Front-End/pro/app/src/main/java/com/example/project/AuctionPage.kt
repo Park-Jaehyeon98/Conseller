@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -66,6 +67,10 @@ fun AuctionPage(navController: NavHostController) {
 
     var currentPage by remember { mutableIntStateOf(1) } // 현재 페이지 초기값
     val itemsPerPage = 10 // 페이지 당 표시할 항목 수
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchAuctionItems()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -218,7 +223,7 @@ fun AuctionPage(navController: NavHostController) {
                     name = item.gifticonName,
                     gifticonTime = item.gifticonEndDate,
                     auctionTime = item.auctionEndDate,
-                    isDeposit = item.isDeposit,
+                    isDeposit = item.deposit,
                     upperprice = item.upperPrice,
                     nowprice = item.auctionHighestBid,
                     onItemClick = {

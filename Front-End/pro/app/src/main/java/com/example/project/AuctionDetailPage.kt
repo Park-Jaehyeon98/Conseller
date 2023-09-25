@@ -208,7 +208,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("내용 : ${auctionDetail?.auctionText}", fontSize = 18.sp)
+            Text("내용 : ${auctionDetail?.postContent}", fontSize = 18.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -228,7 +228,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
             Spacer(modifier = Modifier.height(16.dp)) // 버튼들 사이의 간격 조절
 
-            if (selectedItemIndex != auctionDetail?.auctionUserIdx && true /*개발용*/) {
+            if (selectedItemIndex != auctionDetail?.auctionUserIdx && false /*개발용*/) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -56,7 +56,7 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // 상태값을 저장할 변수 추가
-    var auctionText by remember { mutableStateOf(auctionDetail?.auctionText ?: "") }
+    var auctionText by remember { mutableStateOf(auctionDetail?.postContent ?: "") }
     var showEditConfirmDialog by remember { mutableStateOf(false) }
 
     // 입력값 업데이트 처리

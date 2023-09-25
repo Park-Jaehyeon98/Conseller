@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionBidRequestDTO
@@ -26,15 +27,15 @@ class AuctionViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    private var currentPage = 1
+    private var currentPage = 0
     private var currentFilter = AuctionFilterDTO(0, 0, 0, null, currentPage)
 
     // 경매글 전체 목록 불러오기
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
     val auctionItems: StateFlow<List<AuctionItemData>> = _auctionItems
 
-    private val _totalItems = MutableStateFlow<Int>(0)
-    val totalItems: StateFlow<Int> = _totalItems
+    private val _totalItems = MutableStateFlow<Long>(0)
+    val totalItems: StateFlow<Long> = _totalItems
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -106,7 +107,7 @@ class AuctionViewModel @Inject constructor(
     }
 
     // 경매글 리스트 불러오기
-    private fun fetchAuctionItems() {
+    fun fetchAuctionItems() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -115,10 +116,16 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _auctionItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.totalNum
+                    _totalItems.value = response.body()!!.totalElements
+                    Log.d("!!!!!!!!!!","${response}")
+                    Log.d("@@@@@","222222222222222222222")
+                    Log.d("#####","${response.body()}")
+                    Log.d("$$$$$","${response.body()!!.items}")
+                    Log.d("%%%%%","${response.body()!!.totalElements}")
                 } else {
                     _error.value = "Failed to load data: ${response.message()}"
                     _auctionItems.value = getSampleData()
+                    Log.d("@@@@@","1111111111111111111")
                 }
             } catch (e: IOException) {
                 _error.value = "Internet connection failed. Please check your network."
@@ -162,12 +169,18 @@ class AuctionViewModel @Inject constructor(
             try {
                 val updateData = UpdateAuctionDTO(endDate, postContent)
                 val response = service.updateAuctionItem(auctionIdx, updateData)
+                Log.d("!!!!!!!!!!!!!1","${auctionIdx}")
+                Log.d("!!!!!!!!!!!!!1","${updateData}")
 
                 if (response.isSuccessful) {
                     fetchAuctionDetail(auctionIdx)
                     _error.value = null
+                    Log.d("!!!!!!!!!!!!!1","${response.body()}")
+                    Log.d("!!!!!!!!!!!!!2","${response}")
                 } else {
                     _error.value = "Failed to update item: ${response.message()}"
+                    Log.d("!!!!!!!!!!!!!3","${response.body()}")
+                    Log.d("!!!!!!!!!!!!!4","${response}")
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
@@ -344,7 +357,7 @@ data class AuctionItemData(
     val gifticonName: String,
     val gifticonEndDate: String,
     val auctionEndDate: String,
-    val isDeposit: Boolean,
+    val deposit: Boolean,
     val upperPrice: Int,
     val lowerPrice: Int,
     val auctionHighestBid: Int

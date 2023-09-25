@@ -88,6 +88,10 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation ("com.google.firebase:firebase-messaging-ktx")
 
+    //인터넷연결확인
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.8.0")
+    implementation ("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

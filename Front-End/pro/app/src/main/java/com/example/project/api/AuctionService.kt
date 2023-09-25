@@ -32,20 +32,20 @@ interface AuctionService {
     ): Response<RegisterAuctionResponse>
 
     // 경매글 수정 API
-    @PATCH("api/auction/update/{auctionIdx}")
+    @PATCH("api/auction/{auctionIdx}")
     suspend fun updateAuctionItem(
         @Path("auctionIdx") auctionIdx: Long,
         @Body updateData: UpdateAuctionDTO
     ): Response<UpdateAuctionResponse>
 
     // 경매글 삭제 API
-    @DELETE("api/auction/delete/{auctionIdx}")
+    @DELETE("api/auction/{auctionIdx}")
     suspend fun deleteAuctionItem(
         @Path("auctionIdx") auctionIdx: Long
     ): Response<DeleteAuctionResponse>
 
     // 경매글 상세보기 API
-    @GET("api/auction/detail/{auctionIdx}")
+    @GET("api/auction/{auctionIdx}")
     suspend fun getAuctionDetail(
         @Path("auctionIdx") auctionIdx: Long
     ): Response<AuctionDetailResponseDTO>
@@ -90,7 +90,8 @@ data class AuctionFilterDTO(
 
 // 목록, 검색 응답 DTO
 data class AuctionResponse(
-    val totalNum: Int,
+    val totalElements: Long,
+    val totalPages: Int,
     val items: List<AuctionItemData>
 )
 
@@ -132,7 +133,7 @@ data class DeleteAuctionResponse(
 // 경매글 상세보기 요청 DTO = Path형식
 // 경매글 상세보기 응답 DTO
 data class AuctionDetailResponseDTO(
-    val auctionText: String,              // 게시글 내용
+    val postContent: String,              // 게시글 내용
     val auctionUserIdx: Long,           // 게시글 유저 idx
     val auctionUserNickname: String,    // 게시글 유저 닉네임
     val auctionUserProfileUrl: String,  // 게시글 유저 사진

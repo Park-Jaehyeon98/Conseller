@@ -1,5 +1,6 @@
 package com.conseller.conseller.user.service;
 
+import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.dto.request.*;
@@ -59,7 +60,7 @@ public interface UserService {
     public List<Store> getUserStores(long userIdx);
 
     //내 경매목록 불러오기
-    public List<Auction> getUserAuctions(long userIdx);
+    public List<DetailAuctionResponse> getUserAuctions(long userIdx);
 
     //내 입찰내역 불러오기
     public List<AuctionBid> getUserAuctionBids(long userIdx);

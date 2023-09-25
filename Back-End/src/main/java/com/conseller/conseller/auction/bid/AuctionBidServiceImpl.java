@@ -32,7 +32,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        if(auction.getAuctionStatus() == AuctionStatus.IN_PROGRESS.getStatus()) {
+        if(auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS.getStatus())) {
 
             if (request.getAuctionBidPrice() < auction.getLowerPrice() || request.getAuctionBidPrice() > auction.getUpperPrice()) {
                 // 입찰금 범위 이상 예외처리

@@ -5,6 +5,7 @@ import com.conseller.conseller.auction.auction.dto.response.DetailAuctionRespons
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
@@ -148,7 +149,7 @@ public class UserController {
 
     //내 판매 보기
     @GetMapping("/{userIdx}/store")
-    public ResponseEntity<List<Store>> getUserStores(@PathVariable long userIdx) {
+    public ResponseEntity<List<StoreResponse>> getUserStores(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserStores(userIdx));
     }

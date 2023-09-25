@@ -7,6 +7,7 @@ import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
@@ -237,10 +238,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Store> getUserStores(long userIdx) {
+    public List<StoreResponse> getUserStores(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getStores();
+
+        List<StoreResponse> storeResponses = new ArrayList<>();
+
+        for (Store store : user.getStores()) {
+            StoreResponse response = StoreResponse.builder()
+                    .storeIdx(store.getStoreIdx())
+                    .gifticonIdx(store.getGifticon().getGifticonIdx())
+                    .storePrice(store.getStorePrice())
+                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
+                    .storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()))
+                    .storeText(store.getStoreText())
+                    .storeStatus(store.getStoreStatus())
+                    .consumeridx(store.getConsumer().getUserIdx())
+                    .build();
+
+            storeResponses.add(response);
+        }
+
+        return storeResponses;
     }
 
     @Override

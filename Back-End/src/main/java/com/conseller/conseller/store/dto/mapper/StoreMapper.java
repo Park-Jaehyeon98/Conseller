@@ -37,7 +37,7 @@ public interface StoreMapper {
         StoreItemData itemData = new StoreItemData();
 
         itemData.setStoreIdx(store.getStoreIdx());
-        itemData.setGifticonDataImageName(store.getGifticon().getGifticonDateImageName());
+        itemData.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
         itemData.setGifticonName(store.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(store.getGifticon().getGifticonEndDate());
         itemData.setStoreEndDate(store.getStoreEndDate());

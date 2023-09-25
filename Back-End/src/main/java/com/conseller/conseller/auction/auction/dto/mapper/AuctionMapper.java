@@ -39,7 +39,7 @@ public interface AuctionMapper {
     default AuctionItemData auctionToItemData(Auction auction){
         AuctionItemData itemData = new AuctionItemData();
         itemData.setAuctionIdx(auction.getAuctionIdx());
-        itemData.setGifticonDataImageName(auction.getGifticon().getGifticonDateImageName());
+        itemData.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
         itemData.setGifticonName(auction.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(auction.getGifticon().getGifticonEndDate());
         itemData.setAuctionEndDate(auction.getAuctionEndDate());

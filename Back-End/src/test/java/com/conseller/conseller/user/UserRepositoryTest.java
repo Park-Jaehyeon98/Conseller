@@ -133,4 +133,19 @@ public class UserRepositoryTest {
         // then
         assertThat(findRefreshToken).isEqualTo(REFRESH_TOKEN);
     }
+
+    @Test
+    @DisplayName("이미 존재하는 유저 id일 경우에 true를 반환한다.")
+    void existsUserId() {
+
+        // given
+        userRepository.save(user);
+
+        // when
+        boolean isExists = userRepository.existsByUserId("test123123");
+
+        // then
+        System.out.println(isExists);
+        assertThat(isExists).isTrue();
+    }
 }

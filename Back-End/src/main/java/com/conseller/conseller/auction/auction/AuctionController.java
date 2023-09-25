@@ -25,6 +25,10 @@ public class AuctionController {
     public ResponseEntity<AuctionListResponse> getAuctionList(@RequestBody AuctionListRequest request) {
         AuctionListResponse response = auctionService.getAuctionList(request);
 
+        log.info(response.toString());
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        log.info(response.getItems().toString());
+
         return ResponseEntity.ok()
                 .body(response);
     }

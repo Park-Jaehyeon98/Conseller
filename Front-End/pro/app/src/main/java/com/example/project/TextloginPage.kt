@@ -19,6 +19,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +51,13 @@ fun TextLoginPage(navController: NavHostController) {
 
     // 상태 확인
     val loginState by textLoginModel.idPwLoginState.observeAsState()
-
+    val ErrorState by textLoginModel.checkError.collectAsState()
+    val firebaseService = MyFirebaseMessagingService()
+    LaunchedEffect(ErrorState){
+        if(ErrorState){
+            navController.navigate("TextLoginPage")
+        }
+    }
     val onLoginClick = {
         val request = IdPwLoginRequest(
             userId = loginText.text,
@@ -193,6 +201,7 @@ fun TextLoginPage(navController: NavHostController) {
                 is ResponseState.Success -> {
                     // 로그인 성공 시 Home으로 이동
                     navController.navigate("Home")
+                    firebaseService.getFirebaseToken()
                 }
                 is ResponseState.Error -> {
                    // 로그인 실패 에러 알림

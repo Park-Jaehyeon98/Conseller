@@ -1,5 +1,7 @@
 package com.example.project
 
+import MypageAuction
+import MypageStore
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -62,6 +64,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MyPage") { MyPage(navController = navController) }
                     composable("MyPageModify") { MyPageModifyPage(navController = navController) }
                     composable("MyPageValid") { MyPageValidPage(navController = navController) }
+                    composable("MypageCoupon") { MypageCoupon(navController = navController) }
+                    composable("MypageBarter") { MypageBarter(navController = navController) }
+                    composable("MypageStore") { MypageStore(navController = navController) }
+                    composable("MypageAuction") { MypageAuction(navController = navController) }
                     composable("MyGifticonAdd") { GifticonAddPage(navController = navController) }
                     composable("MyGifticonAddDetail") { GifticonAddDetailPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }

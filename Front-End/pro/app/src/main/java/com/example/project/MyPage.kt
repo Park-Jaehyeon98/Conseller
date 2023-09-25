@@ -61,6 +61,9 @@ fun MyPage(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         viewModel.getMyInfo()
+        viewModel.getMyAuction()
+        viewModel.getMyBarterRequest()
+        viewModel.getMyStore()
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -98,7 +101,11 @@ fun MyPage(navController: NavHostController) {
 
             }
             Spacer(modifier = Modifier.height(14.dp))
-            MypageCheck()
+            MypageCheck(
+                onClick1 = { navController.navigate("MypageCoupon") },
+                onClick2 = { navController.navigate("MypageAuction") },
+                onClick3 = { navController.navigate("MypageStore") },
+                onClick4 = { navController.navigate("MypageBarter") })
 
         }
     }
@@ -159,7 +166,18 @@ fun getMultipartFromByteArray(byteArray: ByteArray, fileName: String): Multipart
 }
 
 @Composable
-fun MypageCheck() {
+fun MypageCheck(
+    onClick1: () -> Unit,
+    onClick2: () -> Unit,
+    onClick3: () -> Unit,
+    onClick4: () -> Unit
+) {
+    val viewModel: MyPageViewModel = hiltViewModel()
+    val myGift by viewModel.getMyGifticonResponse.collectAsState()
+    val myAuction by viewModel.getMyAuctionResponse.collectAsState()
+    val myBarter by viewModel.getMyBarterResponse.collectAsState()
+    val myStore by viewModel.getMyStoreResponse.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -167,8 +185,7 @@ fun MypageCheck() {
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
@@ -177,9 +194,21 @@ fun MypageCheck() {
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                CustomCard(label = "내 쿠폰", imageResId = R.drawable.coupon1, number = 1, modifier = Modifier.weight(1f))
+                CustomCard(
+                    label = "내 쿠폰",
+                    imageResId = R.drawable.coupon1,
+                    number = myGift.size,
+                    modifier = Modifier.weight(1f),
+                    onClick = onClick1
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                CustomCard(label = "경매 관리", imageResId = R.drawable.coupon, number = 1, modifier = Modifier.weight(1f))
+                CustomCard(
+                    label = "경매 관리",
+                    imageResId = R.drawable.coupon,
+                    number = myAuction.size,
+                    modifier = Modifier.weight(1f),
+                    onClick = onClick2
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -189,9 +218,21 @@ fun MypageCheck() {
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                CustomCard(label = "판매 관리", imageResId = R.drawable.coupon1, number = 1, modifier = Modifier.weight(1f))
+                CustomCard(
+                    label = "판매 관리",
+                    imageResId = R.drawable.coupon1,
+                    number = myStore.size,
+                    modifier = Modifier.weight(1f),
+                    onClick = onClick3
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                CustomCard(label = "물물교환 관리", imageResId = R.drawable.coupon, number = 1, modifier = Modifier.weight(1f))
+                CustomCard(
+                    label = "물물교환 관리",
+                    imageResId = R.drawable.coupon,
+                    number = myBarter.size,
+                    modifier = Modifier.weight(1f),
+                    onClick = onClick4
+                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -200,10 +241,17 @@ fun MypageCheck() {
 }
 
 @Composable
-fun CustomCard(label: String, imageResId: Int, number: Int, modifier: Modifier = Modifier) {
+fun CustomCard(
+    label: String,
+    imageResId: Int,
+    number: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     Card(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick)
     ) {
         Surface(
             modifier = Modifier

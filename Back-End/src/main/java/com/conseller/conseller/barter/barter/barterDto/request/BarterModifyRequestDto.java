@@ -1,4 +1,4 @@
-package com.conseller.conseller.barter.barter.barterDto;
+package com.conseller.conseller.barter.barter.barterDto.request;
 
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.SubCategory;
@@ -13,17 +13,17 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class BarterModifyRequestDto {
-    private Integer mainCategoryIdx;
     private Integer subCategoryIdx;
-    private SubCategory preferSubCategory;
+    private Integer preferSubCategory;
     private String barterName;
     private String barterText;
     private LocalDateTime barterEndDate;
 
     @Builder
-    public Barter toEntity(BarterModifyRequestDto barterModifyRequestDto) {
+    public Barter toEntity(BarterModifyRequestDto barterModifyRequestDto, SubCategory subCategory, SubCategory preferSubCategory) {
         return Barter.builder()
-                .subCategory(barterModifyRequestDto.getPreferSubCategory())
+                .subCategory(subCategory)
+                .preferSubCategory(preferSubCategory)
                 .barterName(barterModifyRequestDto.getBarterName())
                 .barterText(barterModifyRequestDto.getBarterText())
                 .barterEndDate(barterModifyRequestDto.getBarterEndDate())

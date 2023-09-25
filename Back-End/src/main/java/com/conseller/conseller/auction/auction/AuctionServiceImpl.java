@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -99,7 +100,16 @@ public class AuctionServiceImpl implements AuctionService{
     // 경매 글 삭제
     @Override
     public void deleteAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new RuntimeException());
+        Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new RuntimeException());
+
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+
+
         auctionRepository.deleteById(auctionIdx);
+
     }
 
     // 경매 거래 진행
@@ -107,13 +117,6 @@ public class AuctionServiceImpl implements AuctionService{
     public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
-
-        if(index == 1) { // 경매
-            //가장 높은 입찰자에게 알림
-        }
-        else if(index == 2) { // 즉시 구매
-            // 판매자에게 알림
-        }
 
         // 경매 상태 거래중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
@@ -132,8 +135,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        // 거래 취소 알림
-
         // 경매 상태 진행 중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_PROGRESS.getStatus());
 
@@ -151,14 +152,9 @@ public class AuctionServiceImpl implements AuctionService{
             auction.setHighestBidUser(auctionBidList.get(1).getUser());
         }
 
-        auctionBidRepository.deleteByUser_UserIdx(auctionBidList.get(0).getUser().getUserIdx());
+        //여기서 유저가 같으니 다 삭제됨
+        auctionBidRepository.deleteByUser_UserIdxAndAuction_AuctionIdx(auctionBidList.get(0).getUser().getUserIdx(), auctionIdx);
 
-    }
-
-    // 경매 입금 완료
-    @Override
-    public void completeAuction(Long auctionIdx) {
-        // 판매자에게 알림
     }
 
     // 경매 거래 확정
@@ -184,8 +180,7 @@ public class AuctionServiceImpl implements AuctionService{
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-
-        // 구매자에게 알림?
-
+        auction.setAuctionEndDate(LocalDateTime.now());
+        auction.setAuctionCompletedDate(LocalDateTime.now());
     }
 }

@@ -14,10 +14,11 @@ pipeline {
                 dir('FastAPI') {
                     sh '''
                     echo 'Building FastAPI application'
-                    export PATH="/usr/bin/pip3"  # 파이썬 바이너리 경로 추가
-                    pip install -r requirements.txt
-                    uvicorn scr.main:app --host 0.0.0.0 --port 8000
                     '''
+
+                    sh 'export PATH="/usr/bin/pip3"' 
+                    sh 'pip install -r requirements.txt'
+                    sh 'uvicorn scr.main:app --host 0.0.0.0 --port 8000'
                     
                     echo 'Building Docker image'
                     script {

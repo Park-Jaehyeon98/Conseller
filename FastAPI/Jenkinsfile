@@ -1,6 +1,8 @@
 pipeline {
-    agent {
-        docker { image 'python:3' }
+    agent any
+
+    environment {
+        PATH = "/usr/bin:${env.PATH}" // 기존의 PATH 변수에 /usr/bin을 추가합니다.
     }
 
     stages {
@@ -18,7 +20,6 @@ pipeline {
                     echo 'Building FastAPI application'
                     '''
 
-                    sh 'export PATH="$PATH"'  // 파이썬 및 pip 설치 경로 추가
                     sh 'pip install -r requirements.txt'
                     sh 'uvicorn scr.main:app --host 0.0.0.0 --port 8000'
                     

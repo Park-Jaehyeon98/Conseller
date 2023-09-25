@@ -9,6 +9,7 @@ import base64
 from starlette.datastructures import UploadFile as StarletteUploadFile
 import sys
 import re
+import uvicorn
 
 def isHangul(text):
     #Check the Python Version
@@ -278,3 +279,6 @@ def ocr_image(category: int = Form(...), image: UploadFile = File(...)):
 
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)

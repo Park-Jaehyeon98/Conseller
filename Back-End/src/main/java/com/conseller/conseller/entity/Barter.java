@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
@@ -76,6 +77,11 @@ public class Barter {
     }
 
     public static BarterResponseDto toBarterResponseDto(Barter barter){
+        List<BarterHostItemDto> barterHostItemDtoList= new ArrayList<>();
+        for(BarterHostItem bhi : barter.getBarterHostItemList()) {
+            BarterHostItemDto bhiDto = bhi.toBarterHostItemDto(bhi);
+            barterHostItemDtoList.add(bhiDto);
+        }
         return BarterResponseDto.builder()
                 .barterIdx(barter.getBarterIdx())
                 .barterName(barter.getBarterName())
@@ -86,6 +92,7 @@ public class Barter {
                 .preferSubCategory(barter.getPreferSubCategory().getSubCategoryContent())
                 .barterHost(barter.getBarterHost())
                 .barterCompleteGuest(barter.getBarterCompleteGuest())
+                .barterHostItemDtoList(barterHostItemDtoList)
                 .build();
     }
 

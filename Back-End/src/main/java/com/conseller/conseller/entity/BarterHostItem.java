@@ -36,4 +36,12 @@ public class BarterHostItem {
 
         return barterHostItemDto;
     }
+
+    public BarterHostItemDto toBarterHostItemDto(BarterHostItem barterHostItem) {
+        return BarterHostItemDto.builder()
+                .barter(barterHostItem.getBarter())
+                .gifticon(barterHostItem.getGifticon())
+                .build();
+
+    }
 }

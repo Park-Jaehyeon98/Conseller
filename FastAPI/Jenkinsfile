@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('github clone') {
             steps {
-                git branch: 'release-ai', credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207.git'
+                git branch: 'fastapi', credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207.git'
             }
         }
         stage('Deployment') {

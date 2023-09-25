@@ -19,6 +19,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -30,11 +31,15 @@ object NetworkModule {
     // 토큰이 생기면 밑에 provideRetrofit를 지우고 이거를 사용하면됨.
     // Retrofit 인스턴스에 OkHttpClient를 포함시켜 인터셉터를 추가하는 방식
     // 각 요청에 알아서 추가함.
+    val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
     @Provides
     @Singleton
     fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val token = sharedPreferencesUtil.getUserToken() // 이거 get이름바뀌면 바꾸고
                 val request = chain.request().newBuilder()       // 토큰 형식 맞는지 확인하고

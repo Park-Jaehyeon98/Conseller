@@ -39,10 +39,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 if(remoteMessage.data.isNotEmpty()){
                         sendNotification(remoteMessage.notification?.title,
                                 remoteMessage.notification?.body!!)
+                        Log.d("@@@@@@@@@@@@@@@@@@@@@@@", "222222222222222")
                 }
                 else{
-
+                        Log.d("@@@@@@@@@@@@@@@@@@@@@@@", "11111111111111111")
+                        Log.d("1111111111111111111", "$remoteMessage")
                 }
+
         }
 
         // 새로운 토큰이 생성 될 때 호출
@@ -72,7 +75,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         val channel = NotificationChannel(channelId,
                                 "Conseller 알림",
-                                NotificationManager.IMPORTANCE_DEFAULT)
+                                NotificationManager.IMPORTANCE_HIGH)
                         notificationManager.createNotificationChannel(channel)
                 }
 

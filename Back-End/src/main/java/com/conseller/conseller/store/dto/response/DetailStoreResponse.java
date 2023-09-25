@@ -5,21 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailStoreResponse {
-    private LocalDateTime storeCreatedDate;
-
-    private LocalDateTime storeEndDate;
-
-    private String storeText;
+    private String postContent;
 
     private Long storeUserIdx;
 
     private String storeUserNickname;
+
+    private String storeUserProfileUrl;
+
+    private Long storeUserDeposit;
+
 
 }

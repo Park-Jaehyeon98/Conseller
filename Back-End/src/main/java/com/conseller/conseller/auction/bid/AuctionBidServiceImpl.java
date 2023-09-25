@@ -1,6 +1,7 @@
 package com.conseller.conseller.auction.bid;
 
 import com.conseller.conseller.auction.auction.AuctionRepository;
+import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.dto.request.AuctionBidRequest;
 import com.conseller.conseller.entity.Auction;
@@ -31,40 +32,45 @@ public class AuctionBidServiceImpl implements AuctionBidService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        if(request.getAuctionBidPrice() < auction.getLowerPrice() || request.getAuctionBidPrice() > auction.getUpperPrice()) {
-            // 입찰금 범위 이상 예외처리
-        }
+        if(auction.getAuctionStatus() == AuctionStatus.IN_PROGRESS.getStatus()) {
 
-        // 현재 최대 입찰금보다 지금 입찰한 금액이 더 크다면 최대 입찰금, 최대 금액 입찰한 유저 갱신
-        if(request.getAuctionBidPrice() > auction.getAuctionHighestBid()) {
-            auction.setAuctionHighestBid(request.getAuctionBidPrice());
-            auction.setHighestBidUser(user);
-        }
+            if (request.getAuctionBidPrice() < auction.getLowerPrice() || request.getAuctionBidPrice() > auction.getUpperPrice()) {
+                // 입찰금 범위 이상 예외처리
+            }
 
-        boolean isExist = false;
-        Long bidIdx = 0L;
+            // 현재 최대 입찰금보다 지금 입찰한 금액이 더 크다면 최대 입찰금, 최대 금액 입찰한 유저 갱신
+            if (request.getAuctionBidPrice() > auction.getAuctionHighestBid()) {
+                auction.setAuctionHighestBid(request.getAuctionBidPrice());
+                auction.setHighestBidUser(user);
+            }
 
-        // 이미 입찰이 있고 그 입찰이 지금 경매라면
-        for(AuctionBid bid : auction.getAuctionBidList()) {
-            if(bid.getUser().getUserIdx().equals(request.getUserIdx())){
-                isExist = true;
-                bidIdx = bid.getAuctionBidIdx();
+            boolean isExist = false;
+            Long bidIdx = 0L;
+
+            // 이미 입찰이 있고 그 입찰이 지금 경매라면
+            for (AuctionBid bid : auction.getAuctionBidList()) {
+                if (bid.getUser().getUserIdx().equals(request.getUserIdx())) {
+                    isExist = true;
+                    bidIdx = bid.getAuctionBidIdx();
+                }
+            }
+
+            if (isExist) {
+                AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
+                        .orElseThrow(() -> new RuntimeException());
+
+                // 입찰 정보 수정
+                auctionBid.setAuctionBidPrice(request.getAuctionBidPrice());
+                auctionBid.setAuction(auction);
+            } else { // 없으면
+                AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registRequestToAuctionBid(user, auction, request);
+
+                // 새로 등록
+                auctionBidRepository.save(auctionBid);
             }
         }
-
-        if(isExist){
-            AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
-                    .orElseThrow(() -> new RuntimeException());
-
-            // 입찰 정보 수정
-            auctionBid.setAuctionBidPrice(request.getAuctionBidPrice());
-            auctionBid.setAuction(auction);
-        }
-        else { // 없으면
-            AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registRequestToAuctionBid(user, auction, request);
-
-            // 새로 등록
-            auctionBidRepository.save(auctionBid);
+        else {
+            // 이미 거래중 예외처리
         }
 
     }

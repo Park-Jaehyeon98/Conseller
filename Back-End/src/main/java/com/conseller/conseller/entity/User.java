@@ -1,7 +1,6 @@
 package com.conseller.conseller.entity;
 
 import lombok.*;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,6 +76,9 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Column(name = "fcm_token")
+    private String fcm;
+
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Auction> auctions = new ArrayList<>();
@@ -107,7 +109,7 @@ public class User extends BaseTime implements UserDetails {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<Notification> notifications = new ArrayList<>();
+    private List<NotificationEntity> notificationEntities = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)

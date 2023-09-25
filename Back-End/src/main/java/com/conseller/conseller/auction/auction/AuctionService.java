@@ -23,7 +23,5 @@ public interface AuctionService {
 
     public void cancelAuction(Long auctionIdx);
 
-    public void completeAuction(Long auctionIdx);
-
     public void confirmAuction(Long auctionIdx);
 }

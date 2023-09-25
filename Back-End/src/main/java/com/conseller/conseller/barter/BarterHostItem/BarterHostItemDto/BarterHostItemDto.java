@@ -3,6 +3,7 @@ package com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto;
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.BarterHostItem;
 import com.conseller.conseller.entity.Gifticon;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,19 +13,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BarterHostItemDto {
-    private Barter barter;
-    private Gifticon gifticon;
+    private long barterIdx;
+    private GifticonResponse gifticon;
 
     @Builder
-    public BarterHostItemDto(Barter barter, Gifticon gifticon){
-        this.barter = barter;
+    public BarterHostItemDto(long barterIdx, GifticonResponse gifticon){
+        this.barterIdx = barterIdx;
         this.gifticon = gifticon;
-    }
-
-    public BarterHostItem toEntity(BarterHostItemDto barterHostItemDto){
-        return BarterHostItem.builder()
-                .barter(barterHostItemDto.getBarter())
-                .gifticon(barterHostItemDto.getGifticon())
-                .build();
     }
 }

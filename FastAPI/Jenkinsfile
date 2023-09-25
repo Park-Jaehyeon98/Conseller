@@ -14,7 +14,7 @@ pipeline {
                 dir('FastAPI') {
                     sh '''
                     echo 'Building FastAPI application'
-                    export PATH="$PATH:/usr/local/bin"  # 파이썬 바이너리 경로 추가
+                    export PATH="/usr/bin/"  # 파이썬 바이너리 경로 추가
                     pip install -r requirements.txt
                     uvicorn scr.main:app --host 0.0.0.0 --port 8000
                     '''

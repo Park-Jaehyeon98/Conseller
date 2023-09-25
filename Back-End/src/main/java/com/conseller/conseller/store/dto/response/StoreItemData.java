@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,8 +13,8 @@ public class StoreItemData {
     private Long storeIdx;
     private String gifticonDataImageName;
     private String gifticonName;
-    private LocalDateTime gifticonEndDate;
-    private LocalDateTime storeEndDate;
-    private Boolean Deposit;
+    private String gifticonEndDate;
+    private String storeEndDate;
+    private Boolean deposit;
     private Integer storePrice;
 }

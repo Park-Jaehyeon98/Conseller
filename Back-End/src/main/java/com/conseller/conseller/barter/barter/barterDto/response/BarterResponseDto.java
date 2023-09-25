@@ -4,11 +4,13 @@ import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHos
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.entity.SubCategory;
 import com.conseller.conseller.entity.User;
-import lombok.Builder;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter @Setter @ToString
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BarterResponseDto {
     private Long barterIdx;
     private String barterName;

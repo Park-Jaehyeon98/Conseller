@@ -18,9 +18,9 @@ import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.DateTimeConverter;
+import com.conseller.conseller.utils.TemporaryValueGenerator;
 import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
-import com.conseller.conseller.utils.TemporaryValueGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +34,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -107,7 +106,10 @@ public class UserServiceImpl implements UserService {
         //4. refresh token db 저장
         user.setRefreshToken(jwtToken.getRefreshToken());
 
-        // 5. 토큰 정보로 response 생성 후 리턴
+        // 5. fcm token db 저장
+        user.setFcm(loginRequest.getFcm());
+
+        // 6. 토큰 정보로 response 생성 후 리턴
         return LoginResponse.builder()
                 .userIdx(user.getUserIdx())
                 .userNickname(user.getUserNickname())

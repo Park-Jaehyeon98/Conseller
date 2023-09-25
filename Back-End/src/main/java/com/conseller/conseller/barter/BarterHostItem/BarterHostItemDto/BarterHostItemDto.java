@@ -21,4 +21,5 @@ public class BarterHostItemDto {
         this.barterIdx = barterIdx;
         this.gifticon = gifticon;
     }
+
 }

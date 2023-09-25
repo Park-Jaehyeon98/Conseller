@@ -254,9 +254,12 @@ public class UserServiceImpl implements UserService {
                     .gifticonIdx(store.getGifticon().getGifticonIdx())
                     .storePrice(store.getStorePrice())
                     .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
-                    .storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()))
                     .storeText(store.getStoreText())
                     .storeStatus(store.getStoreStatus());
+
+                    if (store.getStoreEndDate() != null) {
+                        response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
+                    }
 
                     if (store.getConsumer() != null) {
                         response.consumeridx(store.getConsumer().getUserIdx());

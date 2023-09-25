@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 입력한 유저가 탈퇴한 유저인지 확인
-        if (user.getUserDeletedDate() == null) {
+        if (user.getUserDeletedDate() != null) {
             throw new RuntimeException("이미 탈퇴한 유저입니다.");
         }
 

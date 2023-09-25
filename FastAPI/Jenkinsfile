@@ -23,7 +23,7 @@ pipeline {
 
                     echo 'Building Docker image'
                     docker.build('fastapi-app:latest', '.')
-                    '''
+                    
                 }
             }
         }

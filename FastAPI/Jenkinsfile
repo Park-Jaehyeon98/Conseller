@@ -2,62 +2,36 @@ pipeline {
     agent any
 
     environment {
-        imagename = "ocr"
-        registryCredential = 'fsddcx8624@gmail.com'
-        version = '1.1'
-        dockerImage = ''
+        imagename = "fastapi-app"
+        version = "${GIT_COMMIT}"
+        registryCredential = credentials('docker-hub-credentials') // Docker Hub 자격 증명 ID
     }
 
     stages {
-
-        // docker build
-        stage('Bulid Docker') {
-          agent any
-          steps {
-            echo 'Bulid Docker'
-            script {
-                dockerImage = docker.build("${imagename}:${version}", "--no-cache .")
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
-          }
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
         }
 
-        // docker Deploy
-        stage('Deploy Docker') {
-          agent any
-          steps {
-            echo 'Deploy Docker '
-            sh 'tag=${version} docker-compose -f ./docker/docker-compose.yml up -d'
-          }
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
-        }
-
-        // docker push
-        stage('Push Docker') {
-          agent any
-          steps {
-            echo 'Push Docker'
-            script {
-                docker.withRegistry( '', registryCredential) {
-                    dockerImage.push(version)  // ex) "1.0"
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${imagename}:${version}", "--no-cache .")
+                }
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
+                    sh "docker push ${imagename}:${version}"
                 }
             }
-          }
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
         }
 
-
+        stage('Deploy Docker Container') {
+            steps {
+                sh "docker stop ${imagename}:${version}" // 이전 컨테이너 중지 (만약 이미 실행 중이면)
+                sh "docker rm ${imagename}:${version}"   // 이전 컨테이너 삭제 (만약 이미 실행 중이면)
+                sh "docker run -d --name ${imagename}:${version} -p 80:80 ${imagename}:${version}" // 새 컨테이너 실행
+            }
+        }
     }
 }

@@ -170,7 +170,7 @@ public class UserController {
     }
 
     //내 물물교환 보기
-    @GetMapping("/{userIdx}/batrer")
+    @GetMapping("/{userIdx}/barter")
     public ResponseEntity<List<BarterResponseDto>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserBarters(userIdx));

@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        imagename = "fastapiOCR"
+        imagename = "ocr"
         registryCredential = 'fsddcx8624@gmail.com'
         version = '1.1'
         dockerImage = ''

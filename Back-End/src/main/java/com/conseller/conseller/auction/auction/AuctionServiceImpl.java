@@ -15,6 +15,7 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -101,7 +102,7 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        auction.setAuctionEndDate(auctionRequest.getAuctionEndDate());
+        auction.setAuctionEndDate(DateTimeConverter.getInstance().convertLocalDateTime(auctionRequest.getAuctionEndDate()));
         auction.setAuctionText(auctionRequest.getAuctionText());
     }
 

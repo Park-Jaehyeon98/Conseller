@@ -28,6 +28,13 @@ public class DateTimeConverter {
         return localDate.atTime(23, 59, 59);
     }
 
+    public LocalDateTime convertLocalDateTime(String dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
+        LocalDateTime date = LocalDateTime.parse(dateTime, formatter);
+
+        return date;
+    }
+
     public String convertString(LocalDateTime dateTime) {
 
         //LocaldateTime 포맷터 설정

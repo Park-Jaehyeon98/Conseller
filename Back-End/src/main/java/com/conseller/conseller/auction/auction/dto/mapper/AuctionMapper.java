@@ -62,7 +62,7 @@ public interface AuctionMapper {
 
         itemData.setAuctionBidIdx(auctionBid.getAuctionBidIdx());
         itemData.setAuctionBidPrice(auctionBid.getAuctionBidPrice());
-        itemData.setAuctionRegistedDate(auctionBid.getAuctionRegistedDate());
+        itemData.setAuctionRegistedDate(DateTimeConverter.getInstance().convertString(auctionBid.getAuctionRegistedDate()));
         itemData.setAuctionBidStatus(auctionBid.getAuctionBidStatus());
         itemData.setUserIdx(auctionBid.getUser().getUserIdx());
         itemData.setAuctionIdx(auctionBid.getAuction().getAuctionIdx());

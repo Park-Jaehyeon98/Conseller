@@ -11,7 +11,7 @@ public interface AuctionService {
 
     public AuctionListResponse getAuctionList(AuctionListRequest request);
 
-    public void registAuction(RegistAuctionRequest request);
+    public Long registAuction(RegistAuctionRequest request);
 
     public DetailAuctionResponse detailAuction(Long auctionIdx);
 

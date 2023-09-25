@@ -24,6 +24,4 @@ public interface StoreService {
 
     public void confirmStore(Long storeIdx);
 
-    public void completeStore(Long storeIdx);
-
 }

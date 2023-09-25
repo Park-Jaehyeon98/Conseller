@@ -3,6 +3,7 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreResponse;
@@ -72,7 +73,7 @@ public interface UserService {
     public List<BarterResponseDto> getUserBarters(long userIdx);
 
     //내 교환 요청목록 불러오기
-    public List<BarterRequest> getUserBarterRequests(long userIdx);
+    public List<MyBarterRequestResponseDto> getUserBarterRequests(long userIdx);
 
     //회원탈퇴
     public void deleteUser(long userIdx);

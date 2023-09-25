@@ -6,6 +6,7 @@ import com.conseller.conseller.auction.auction.dto.response.DetailAuctionRespons
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreResponse;
@@ -317,10 +318,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BarterRequest> getUserBarterRequests(long userIdx) {
+    public List<MyBarterRequestResponseDto> getUserBarterRequests(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getBarterRequests();
+
+        List<MyBarterRequestResponseDto> myBarterRequests = new ArrayList<>();
+
+        for (BarterRequest barterRequest : user.getBarterRequests()) {
+
+            List<GifticonResponse> barterGuestItems = new ArrayList<>();
+
+            for (BarterGuestItem item : barterRequest.getBarterGuestItemList()) {
+                GifticonResponse gifticon = GifticonResponse.builder()
+                        .gifticonIdx(item.getGifticon().getGifticonIdx())
+                        .gifticonBarcode(item.getGifticon().getGifticonBarcode())
+                        .gifticonName(item.getGifticon().getGifticonName())
+                        .gifticonStatus(item.getGifticon().getGifticonStatus())
+                        .gifticonAllImageUrl(item.getGifticon().getGifticonAllImageUrl())
+                        .gifticonDataImageUrl(item.getGifticon().getGifticonDataImageUrl())
+                        .gifticonStartDate(dateTimeConverter.convertString(item.getGifticon().getGifticonStartDate()))
+                        .gifticonEndDate(dateTimeConverter.convertString(item.getGifticon().getGifticonEndDate()))
+                        .userIdx(item.getGifticon().getUser().getUserIdx())
+                        .mainCategoryIdx(item.getGifticon().getMainCategory().getMainCategoryIdx())
+                        .subCategoryIdx(item.getGifticon().getSubCategory().getSubCategoryIdx())
+                        .build();
+
+                barterGuestItems.add(gifticon);
+            }
+
+            MyBarterRequestResponseDto myBarterRequest = MyBarterRequestResponseDto.builder()
+                    .barterRequestIdx(barterRequest.getBarterRequestIdx())
+                    .barterIdx(barterRequest.getBarter().getBarterIdx())
+                    .barterRequestStatus(barterRequest.getBarterRequestStatus().getStatus())
+                    .barterGuestItems(barterGuestItems)
+                    .build();
+
+            myBarterRequests.add(myBarterRequest);
+        }
+
+        return myBarterRequests;
     }
 
     @Override

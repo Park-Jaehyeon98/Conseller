@@ -16,6 +16,7 @@ import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class AuctionServiceImpl implements AuctionService{
@@ -45,9 +47,13 @@ public class AuctionServiceImpl implements AuctionService{
 
         List<AuctionItemData> auctionItemDataList = AuctionMapper.INSTANCE.auctionsToItemDatas(auctions.getContent());
 
+        log.info("auctionItemDataList : " + auctionItemDataList.toString());
+
         AuctionListResponse response = new AuctionListResponse(auctionItemDataList,
                 auctions.getTotalElements(),
                 auctions.getTotalPages());
+
+        log.info("response : " + response);
 
         return response;
     }

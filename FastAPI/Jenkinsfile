@@ -1,47 +1,19 @@
 pipeline {
     agent any
-
-    environment {
-        PATH = "/usr/bin/pip:/usr/bin/python3:/usr/bin/pip3"
-    }
-
     stages {
-        stage('Checkout FastAPI Code') {
+        stage('github clone') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'fastapi']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207']]])
+                git branch: 'release-ai', credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207.git'
             }
         }
-        
-        stage('FastAPI Build and Docker Image') {
+        stage('Deployment') {
             steps {
-                dir('FastAPI') {
+                sshagent(credentials: ['ssh_key']) {
                     sh '''
-                    echo 'Building FastAPI application'
+                        ssh -o StrictHostKeyChecking=no ubuntu@43.202.44.111
+                        scp -r /var/jenkins_home/workspace/conseller-OCR/FastAPI/ ubuntu@43.202.44.111:/home/ubuntu/conseller-OCR/
+                        ssh -t ubuntu@43.202.44.111 ./deploy_ai.sh
                     '''
-
-                    sh 'pip3 install -r requirements.txt'
-                    sh 'python3 scr/main.py'  // main.py 실행
-
-                    echo 'Building Docker image'
-                    script {
-                        docker.withRegistry('', 'docker-hub-credentials') {
-                            def customImage = docker.build('fastapi-app:latest', '.')
-                            customImage.push()
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Deploy FastAPI') {
-            steps {
-                script {
-                    def containerExists = sh(script: 'docker ps -a --format "{{.Names}}" | grep -q "fastapi"', returnStatus: true)
-                    if (containerExists == 0) {
-                        sh 'docker stop fastapi'
-                        sh 'docker rm fastapi'
-                    }
-                    sh 'docker run -d -p 8000:8000 --name fastapi fastapi-app:latest'
                 }
             }
         }

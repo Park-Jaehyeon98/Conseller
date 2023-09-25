@@ -1,6 +1,6 @@
 package com.conseller.conseller.barter.barterRequest.barterRequestDto;
 
-import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.User;
 import lombok.Builder;

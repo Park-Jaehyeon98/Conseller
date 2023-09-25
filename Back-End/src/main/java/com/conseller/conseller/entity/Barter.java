@@ -1,8 +1,8 @@
 package com.conseller.conseller.entity;
 
-import com.conseller.conseller.barter.barter.barterDto.BarterCreateDto;
-import com.conseller.conseller.barter.barter.barterDto.BarterModifyRequestDto;
-import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
+import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
+import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,8 +43,8 @@ public class Barter {
     @Column(name = "barter_completed_date")
     private LocalDateTime barterCompletedDate;
 
-    @Enumerated(EnumType.STRING) // Enum의 문자열 값을 데이터베이스에 저장
-    private BarterStatus barterStatus = BarterStatus.EXCHANGEABLE;
+ // Enum의 문자열 값을 데이터베이스에 저장
+    private String barterStatus = BarterStatus.EXCHANGEABLE.getStatus();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_idx")
@@ -77,24 +77,32 @@ public class Barter {
     }
 
     public static BarterResponseDto toBarterResponseDto(Barter barter){
+        List<BarterHostItemDto> barterHostItemDtoList= new ArrayList<>();
+        for(BarterHostItem bhi : barter.getBarterHostItemList()) {
+            BarterHostItemDto bhiDto = bhi.toBarterHostItemDto(bhi);
+            barterHostItemDtoList.add(bhiDto);
+        }
         return BarterResponseDto.builder()
-                .barterIdx(barter.barterIdx)
+                .barterIdx(barter.getBarterIdx())
                 .barterName(barter.getBarterName())
                 .barterText(barter.getBarterText())
                 .barterCreatedDate(barter.getBarterCreatedDate())
                 .barterEndDate(barter.getBarterEndDate())
-                .subCategory(barter.getSubCategory())
-                .preferSubCategory(barter.getPreferSubCategory())
+                .subCategory(barter.getSubCategory().getSubCategoryContent())
+                .preferSubCategory(barter.getPreferSubCategory().getSubCategoryContent())
                 .barterHost(barter.getBarterHost())
                 .barterCompleteGuest(barter.getBarterCompleteGuest())
+                .barterHostItemDtoList(barterHostItemDtoList)
                 .build();
     }
 
-    public void modifyBarter(BarterModifyRequestDto barterModifyRequestDto) {
-        barterName = barterModifyRequestDto.getBarterName();
-        barterText = barterModifyRequestDto.getBarterText();
-        barterEndDate = barterModifyRequestDto.getBarterEndDate();
-        preferSubCategory = barterModifyRequestDto.getPreferSubCategory();
+    public void modifyBarter(BarterModifyRequestDto barterModifyRequestDto, SubCategory subCategory, SubCategory preferSubCategory) {
+        this.barterName = barterModifyRequestDto.getBarterName();
+        this.barterText = barterModifyRequestDto.getBarterText();
+        this.barterEndDate = barterModifyRequestDto.getBarterEndDate();
+        this.subCategory = subCategory;
+        this.preferSubCategory = preferSubCategory;
+
     }
 }
 

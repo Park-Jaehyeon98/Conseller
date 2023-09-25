@@ -15,7 +15,7 @@ public interface BarterRequestService {
 
     List<BarterRequestResponseDto> getBarterRequestListByRequester(Long userIdx);
 
-    void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto);
+    void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx);
 
     void deleteBarterRequest(Long barterRequestIdx);
 }

@@ -2,7 +2,7 @@ package com.conseller.conseller.barter.barterRequest.barterRequestService;
 
 import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
-import com.conseller.conseller.barter.barter.barterDto.BarterResponseDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
@@ -82,15 +82,21 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     }
 
     @Override
-    public void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto) {
-        Barter barter = barterRepository.findByBarterIdx(barterRequestRegistDto.getBarterIdx())
+    public void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx) {
+        Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException());
         User user = userRepository.findByUserId(barterRequestRegistDto.getUserId())
                 .orElseThrow(() -> new RuntimeException());
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);
 
-        barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);
+        try{
+            barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);
+        } catch(Exception e) {
+            barterRequestRepository.deleteById(barterRequest.getBarterRequestIdx());
+            throw new RuntimeException();
+        }
+
     }
 
     @Override

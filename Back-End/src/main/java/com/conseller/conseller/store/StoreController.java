@@ -5,6 +5,7 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.RegistStoreResponse;
 import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +35,13 @@ public class StoreController {
 
     // 스토어 글 등록
     @PostMapping("/regist")
-    public ResponseEntity<Object> registStore(@RequestBody RegistStoreRequest request) {
-        storeService.registStore(request);
+    public ResponseEntity<RegistStoreResponse> registStore(@RequestBody RegistStoreRequest request) {
+        Long storeIdx = storeService.registStore(request);
+
+        RegistStoreResponse response = new RegistStoreResponse(storeIdx);
 
         return ResponseEntity.ok()
-                .build();
+                .body(response);
     }
 
     // 스토어 글 상세보기

@@ -1,6 +1,7 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 
@@ -50,6 +51,9 @@ public interface UserService {
 
     //보증금 입금
     public void deposit(long userIdx, int deposit);
+
+    //내 기프티콘 불러오기
+    public List<GifticonResponse> getGifticons(long userIdx);
 
     //내 판매목록 불러오기
     public List<Store> getUserStores(long userIdx);

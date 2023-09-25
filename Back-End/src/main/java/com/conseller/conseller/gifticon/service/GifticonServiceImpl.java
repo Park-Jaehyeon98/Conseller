@@ -5,11 +5,14 @@ import com.conseller.conseller.category.subCategory.SubCategoryRepository;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.MainCategory;
 import com.conseller.conseller.entity.SubCategory;
+import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.gifticon.dto.request.GifticonRegisterRequest;
 import com.conseller.conseller.gifticon.dto.response.ImageUrlsResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
+import com.conseller.conseller.user.UserRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,8 @@ public class GifticonServiceImpl implements GifticonService {
     private final GifticonRepository gifticonRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
+    private final UserRepository userRepository;
+    private final DateTimeConverter dateTimeConverter;
 
     public GifticonResponse getGifticonResponse(long gifticonIdx) {
         Gifticon gifticon = gifticonRepository.findByGifticonIdx(gifticonIdx)
@@ -35,8 +40,8 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonIdx(gifticon.getGifticonIdx())
                 .gifticonBarcode(gifticon.getGifticonBarcode())
                 .gifticonName(gifticon.getGifticonName())
-                .gifticonStartDate(gifticon.getGifticonStartDate().toString())
-                .gifticonEndDate(gifticon.getGifticonStartDate().toString())
+                .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
+                .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
                 .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
                 .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
                 .gifticonStatus(gifticon.getGifticonStatus())
@@ -47,13 +52,16 @@ public class GifticonServiceImpl implements GifticonService {
     }
 
     @Override
-    public void registGifticon(GifticonRegisterRequest gifticonRegisterRequest, String allImageUrl, String dataImageUrl) {
+    public void registGifticon(long userIdx, GifticonRegisterRequest gifticonRegisterRequest, String allImageUrl, String dataImageUrl) {
 
         //카테고리 엔티티를 가져온다.
         SubCategory subCategory = subCategoryRepository.findBySubCategoryIdx(gifticonRegisterRequest.getSubCategory())
                 .orElseThrow(() -> new RuntimeException("유효하지 않은 서브 카테고리 입니다."));
         MainCategory mainCategory = mainCategoryRepository.findByMainCategoryIdx(gifticonRegisterRequest.getMainCategory())
                 .orElseThrow(() -> new RuntimeException("유효하지 않은 메인 카테고리 입니다."));
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("유효하지 않은 유저 idx 값 입니다."));
+
 
         Gifticon gifticon = Gifticon.builder()
                 .gifticonBarcode(gifticonRegisterRequest.getGifticonBarcode())
@@ -63,10 +71,13 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonDataImageUrl(dataImageUrl)
                 .subCategory(subCategory)
                 .mainCategory(mainCategory)
-                .gifticonEndDate(convertDateTime(gifticonRegisterRequest.getGifticonEndDate()))
+                .gifticonEndDate(dateTimeConverter.convertDateTime(gifticonRegisterRequest.getGifticonEndDate()))
+                .user(user)
                 .build();
 
         gifticonRepository.save(gifticon);
+
+        log.info("기프티콘 등록 완료");
     }
 
     @Override
@@ -83,15 +94,5 @@ public class GifticonServiceImpl implements GifticonService {
                 .gifticonAllImageUrl(gifticonAllImageUrl)
                 .gifticonDataImageUrl(gifticonDataImageUrl)
                 .build();
-    }
-
-    private LocalDateTime convertDateTime(String date) {
-
-        // 문자열을 LocalDate로 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        LocalDate localDate = LocalDate.parse(date, formatter);
-
-        // LocalDate를 LocalDateTime으로 변환 (시간을 23:59:59로 설정)
-        return localDate.atTime(23, 59, 59);
     }
 }

@@ -30,7 +30,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AuctionService auctionService;
 
     //회원가입
     @PostMapping

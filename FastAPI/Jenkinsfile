@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout FastAPI Code') {
             steps {
                 // FastAPI 코드가 있는 브랜치로 체크아웃
-                checkout([$class: 'GitSCM', branches: [[name: 'fastapi']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'fsddcx8624@gmail.com', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207']]])
+                checkout([$class: 'GitSCM', branches: [[name: 'fastapi']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'fsddcx8624', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207']]])
             }
         }
         

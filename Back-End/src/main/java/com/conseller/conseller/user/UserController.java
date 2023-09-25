@@ -2,8 +2,12 @@ package com.conseller.conseller.user;
 
 import com.conseller.conseller.auction.auction.AuctionService;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.LoginResponse;
@@ -26,7 +30,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AuctionService auctionService;
 
     //회원가입
     @PostMapping
@@ -147,7 +150,7 @@ public class UserController {
 
     //내 판매 보기
     @GetMapping("/{userIdx}/store")
-    public ResponseEntity<List<Store>> getUserStores(@PathVariable long userIdx) {
+    public ResponseEntity<List<StoreResponse>> getUserStores(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserStores(userIdx));
     }
@@ -161,21 +164,21 @@ public class UserController {
 
     //내 입찰 보기
     @GetMapping("/{userIdx}/auction-bid")
-    public ResponseEntity<List<AuctionBid>> getUserAuctionBids(@PathVariable long userIdx) {
+    public ResponseEntity<List<AuctionBidResponse>> getUserAuctionBids(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserAuctionBids(userIdx));
     }
 
     //내 물물교환 보기
     @GetMapping("/{userIdx}/batrer")
-    public ResponseEntity<List<Barter>> getUserBarters(@PathVariable long userIdx) {
+    public ResponseEntity<List<BarterResponseDto>> getUserBarters(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserBarters(userIdx));
     }
 
     //내 물물교환 요청 보기
     @GetMapping("/{userIdx}/barter-request")
-    public ResponseEntity<List<BarterRequest>> getUserBarterRequests(@PathVariable long userIdx) {
+    public ResponseEntity<List<MyBarterRequestResponseDto>> getUserBarterRequests(@PathVariable long userIdx) {
         return ResponseEntity.ok()
                 .body(userService.getUserBarterRequests(userIdx));
     }

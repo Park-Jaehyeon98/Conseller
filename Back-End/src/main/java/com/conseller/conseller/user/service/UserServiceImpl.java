@@ -3,8 +3,13 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
+import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
@@ -237,10 +242,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Store> getUserStores(long userIdx) {
+    public List<StoreResponse> getUserStores(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getStores();
+
+        List<StoreResponse> storeResponses = new ArrayList<>();
+
+        for (Store store : user.getStores()) {
+            StoreResponse response = StoreResponse.builder()
+                    .storeIdx(store.getStoreIdx())
+                    .gifticonIdx(store.getGifticon().getGifticonIdx())
+                    .storePrice(store.getStorePrice())
+                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
+                    .storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()))
+                    .storeText(store.getStoreText())
+                    .storeStatus(store.getStoreStatus())
+                    .consumeridx(store.getConsumer().getUserIdx())
+                    .build();
+
+            storeResponses.add(response);
+        }
+
+        return storeResponses;
     }
 
     @Override
@@ -260,24 +283,82 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuctionBid> getUserAuctionBids(long userIdx) {
+    public List<AuctionBidResponse> getUserAuctionBids(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getAuctionBids();
+
+        List<AuctionBidResponse> auctionBidResponses = new ArrayList<>();
+
+        for (AuctionBid bid : user.getAuctionBids()) {
+            AuctionBidResponse bidResponse = AuctionBidResponse.builder()
+                    .auctionBidIdx(bid.getAuctionBidIdx())
+                    .auctionBidPrice(bid.getAuctionBidPrice())
+                    .auctionBidStatus(bid.getAuctionBidStatus())
+                    .auctionRegistedDate(dateTimeConverter.convertString(bid.getAuctionRegistedDate()))
+                    .auctionIdx(bid.getAuction().getAuctionIdx())
+                    .build();
+
+            auctionBidResponses.add(bidResponse);
+        }
+
+        return auctionBidResponses;
     }
 
     @Override
-    public List<Barter> getUserBarters(long userIdx) {
+    public List<BarterResponseDto> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getBarters();
+
+        List<BarterResponseDto> barterResponseDtos = new ArrayList<>();
+
+        for (Barter barter : user.getBarters()) {
+            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+            barterResponseDtos.add(barterResponseDto);
+        }
+
+        return barterResponseDtos;
     }
 
     @Override
-    public List<BarterRequest> getUserBarterRequests(long userIdx) {
+    public List<MyBarterRequestResponseDto> getUserBarterRequests(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-        return user.getBarterRequests();
+
+        List<MyBarterRequestResponseDto> myBarterRequests = new ArrayList<>();
+
+        for (BarterRequest barterRequest : user.getBarterRequests()) {
+
+            List<GifticonResponse> barterGuestItems = new ArrayList<>();
+
+            for (BarterGuestItem item : barterRequest.getBarterGuestItemList()) {
+                GifticonResponse gifticon = GifticonResponse.builder()
+                        .gifticonIdx(item.getGifticon().getGifticonIdx())
+                        .gifticonBarcode(item.getGifticon().getGifticonBarcode())
+                        .gifticonName(item.getGifticon().getGifticonName())
+                        .gifticonStatus(item.getGifticon().getGifticonStatus())
+                        .gifticonAllImageUrl(item.getGifticon().getGifticonAllImageUrl())
+                        .gifticonDataImageUrl(item.getGifticon().getGifticonDataImageUrl())
+                        .gifticonStartDate(dateTimeConverter.convertString(item.getGifticon().getGifticonStartDate()))
+                        .gifticonEndDate(dateTimeConverter.convertString(item.getGifticon().getGifticonEndDate()))
+                        .userIdx(item.getGifticon().getUser().getUserIdx())
+                        .mainCategoryIdx(item.getGifticon().getMainCategory().getMainCategoryIdx())
+                        .subCategoryIdx(item.getGifticon().getSubCategory().getSubCategoryIdx())
+                        .build();
+
+                barterGuestItems.add(gifticon);
+            }
+
+            MyBarterRequestResponseDto myBarterRequest = MyBarterRequestResponseDto.builder()
+                    .barterRequestIdx(barterRequest.getBarterRequestIdx())
+                    .barterIdx(barterRequest.getBarter().getBarterIdx())
+                    .barterRequestStatus(barterRequest.getBarterRequestStatus().getStatus())
+                    .barterGuestItems(barterGuestItems)
+                    .build();
+
+            myBarterRequests.add(myBarterRequest);
+        }
+
+        return myBarterRequests;
     }
 
     @Override

@@ -12,10 +12,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "notificationIdx")
-public class Notification {
+public class NotificationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long notificationIdx;
+
+    @Column(name = "notification_title", nullable = false)
+    private String notificationTitle;
 
     @Column(name = "notification_content", nullable = false)
     private String notificationContent;
@@ -23,8 +26,8 @@ public class Notification {
     @CreatedDate
     private LocalDateTime notificationCreatedDate;
 
-//    @Enumerated
-//    private Enum notificationStatus;
+    @Column(name = "notification_status")
+    private String notificationStatus;
 
     @Column(name = "seller", nullable = false)
     private Boolean seller;

@@ -1,5 +1,6 @@
 package com.conseller.conseller.store;
 
+import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     private final StoreService storeService;
+    private final NotificationService notificationService;
 
     private final String SUCCESS = "success";
 
@@ -70,6 +72,9 @@ public class StoreController {
                                                          @PathVariable("consumer_idx") Long consumerIdx) {
         StoreTradeResponse response = storeService.tradeStore(storeIdx, consumerIdx);
 
+        //판매자에게 알림
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "거래 진행 중입니다.", 2);
+
         return ResponseEntity.ok()
                 .body(response);
     }
@@ -79,6 +84,10 @@ public class StoreController {
     public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
         storeService.cancelStore(storeIdx);
 
+        // 판매자 구매자 알림
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 1);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 2);
+
         return ResponseEntity.ok()
                 .build();
     }
@@ -86,7 +95,8 @@ public class StoreController {
     // 스토어 입금 완료
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
-        storeService.completeStore(storeIdx);
+        // 판매자에게 알림
+        notificationService.sendStoreNotification(storeIdx, "스토어 입금 완료", "입금 완료입니다.", 2);
 
         return ResponseEntity.ok()
                 .build();
@@ -96,6 +106,9 @@ public class StoreController {
     @PatchMapping("/confirm/{store_idx}")
     public ResponseEntity<Object> confirmStore(@PathVariable("store_idx") Long storeIdx) {
         storeService.confirmStore(storeIdx);
+
+        // 구매자에게 알림
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 완료", "거래가 완료되었습니다.", 1);
 
         return ResponseEntity.ok()
                 .build();

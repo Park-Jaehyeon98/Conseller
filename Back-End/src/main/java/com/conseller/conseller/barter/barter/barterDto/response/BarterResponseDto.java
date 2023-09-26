@@ -4,7 +4,12 @@ import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHos
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.entity.SubCategory;
 import com.conseller.conseller.entity.User;
+<<<<<<< HEAD
+import com.conseller.conseller.user.dto.response.UserInfoResponse;
+import lombok.Builder;
+=======
 import lombok.*;
+>>>>>>> 66eee4bb82991fa0ede288533a6d2fa8998b2581
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,17 +20,17 @@ public class BarterResponseDto {
     private Long barterIdx;
     private String barterName;
     private String barterText;
-    private LocalDateTime barterCreatedDate;
-    private LocalDateTime barterEndDate;
+    private String barterCreatedDate;
+    private String barterEndDate;
     private String barterStatus;
     private String subCategory;
     private String preferSubCategory;
-    private User barterHost;
-    private User barterCompleteGuest;
+    private UserInfoResponse barterHost;
+    private UserInfoResponse barterCompleteGuest;
     private List<BarterHostItemDto> barterHostItemDtoList;
 
     @Builder
-    public BarterResponseDto(Long barterIdx, String barterName, String barterText, LocalDateTime barterCreatedDate, LocalDateTime barterEndDate, String barterStatus, String subCategory, String preferSubCategory, User barterHost, User barterCompleteGuest, List<BarterHostItemDto> barterHostItemDtoList) {
+    public BarterResponseDto(Long barterIdx, String barterName, String barterText, String barterCreatedDate, String barterEndDate, String barterStatus, String subCategory, String preferSubCategory, UserInfoResponse barterHost, UserInfoResponse barterCompleteGuest, List<BarterHostItemDto> barterHostItemDtoList) {
         this.barterIdx = barterIdx;
         this.barterName = barterName;
         this.barterText = barterText;

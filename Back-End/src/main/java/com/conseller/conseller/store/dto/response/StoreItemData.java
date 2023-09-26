@@ -11,10 +11,17 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StoreItemData {
     private Long storeIdx;
+
     private String gifticonDataImageName;
+
     private String gifticonName;
+
     private String gifticonEndDate;
+
     private String storeEndDate;
+
     private Boolean deposit;
+
     private Integer storePrice;
+
 }

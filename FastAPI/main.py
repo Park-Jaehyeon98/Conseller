@@ -184,8 +184,8 @@ def perform_ocr():
 
 
 # 이미지 업로드 및 OCR 수행
-@app.post("/gifticon/{category}")
-async def ocr_request(category: int, image: UploadFile = Form(...)):
+@app.post("/gifticon")
+async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
     logging.warn("post, def진입 ")
     try:
         logging.warn("try 진입")

@@ -53,8 +53,8 @@ class MyPageViewModel @Inject constructor(
     val getMyinfoResponse: StateFlow<userInfoResponse> get() = _GetMyInfoResponse
 
     // 내 비밀번호 확인
-    private val _ValidUserReponse = MutableStateFlow(uploadImageResponse(-1, ""))
-    val validUserResponse: StateFlow<uploadImageResponse> get() = _ValidUserReponse
+    private val _ValidUserReponse = MutableStateFlow(false)
+    val validUserResponse: StateFlow<Boolean> get() = _ValidUserReponse
 
     // 내 수정 확인
     private val _ModifyUserResponse = MutableStateFlow(userModifyResponse("", ""))
@@ -78,8 +78,40 @@ class MyPageViewModel @Inject constructor(
     private val _GetMyStore = MutableStateFlow<List<myStoreData>>(emptyList())
     val getMyStoreResponse: StateFlow<List<myStoreData>> get() = _GetMyStore
 
+    private val _DeleteUserReponse = MutableStateFlow(false)
+    val deleteUserResponse: StateFlow<Boolean> get() = _DeleteUserReponse
 
+    companion object {
+        const val TAG = "UserViewModel"
+    }
+    fun userDelete() {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        Log.d(TAG, "userDelete started for userIdx: $userIdx")
+        _isLoading.value = true
 
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "Sending request to deleteUser service")
+                val response = service.deleteUser(userIdx)
+
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    Log.d(TAG, "User deletion successful")
+                    _DeleteUserReponse.value=true
+                } else {
+                    val errorMessage = response.errorBody()?.string() ?: "서버 error"
+                    Log.e(TAG, "User deletion failed: $errorMessage")
+                    _error.value = errorMessage
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception occurred: ${e.message}", e)
+                _error.value = e.message
+            } finally {
+                Log.d(TAG, "userDelete completed")
+                _isLoading.value = false
+            }
+        }
+    }
 
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
@@ -338,18 +370,26 @@ class MyPageViewModel @Inject constructor(
 
     fun userValid(request: userValidRequest) {
         _isLoading.value = true
+        Log.d("userValid", "Function userValid is called with request: $request")
+
         viewModelScope.launch {
             try {
+                Log.d("userValid", "Trying to call service.checkUserValid")
                 val response = service.checkUserValid(request)
+
                 if (response.isSuccessful) {
-                    _ValidUserReponse.value =
-                        response.body() ?: uploadImageResponse(-1, "") // 같은 DTO 형태여서 이미지 사용
+                    Log.d("userValid", "Response is successful: ${response.body()}")
+                    _ValidUserReponse.value = true
                 } else {
-                    _error.value = response.errorBody()?.string() ?: "서버 error"
+                    val errorMessage = response.errorBody()?.string() ?: "서버 error"
+                    Log.e("userValid", "Error in response: $errorMessage")
+                    _error.value = errorMessage
                 }
             } catch (e: Exception) {
+                Log.e("userValid", "Exception occurred: ${e.message}")
                 _error.value = e.message
             } finally {
+                Log.d("userValid", "Setting _isLoading to false")
                 _isLoading.value = false
             }
         }
@@ -358,10 +398,10 @@ class MyPageViewModel @Inject constructor(
     fun userModify(request: userModifyRequest) {
         val userIdx = sharedPreferencesUtil.getUserId()
         _isLoading.value = true
-        _isLoading.value = false
         viewModelScope.launch {
             try {
                 val response = service.modifyUserInfo(userIdx, request)
+                _isLoading.value = false
                 if (response.isSuccessful) {
                     _ModifyUserResponse.value = response.body() ?: userModifyResponse("", "")
                 } else {

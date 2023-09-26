@@ -68,4 +68,15 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     fun getUserToken(): String? {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
+
+    // 토큰 에러시 전부 다 날리는 메서드
+    fun resetPreferences() {
+        with(sharedPreferences.edit()) {
+            remove(IS_LOGGED_IN)
+            remove(USER_IDX)
+            remove(USER_NICKNAME)
+            remove(USER_TOKEN)
+            apply()
+        }
+    }
 }

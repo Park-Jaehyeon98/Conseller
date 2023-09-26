@@ -8,6 +8,9 @@ import com.example.project.api.CheckuserIdRequest
 import com.example.project.api.HttpResponse
 import com.example.project.api.RegistRequest
 import com.example.project.api.SignupService
+import com.example.project.api.findIdRequest
+import com.example.project.api.findIdResponse
+import com.example.project.api.findPwRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +50,68 @@ class SignupViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    // 로그인 로직
+    private val _FindId = MutableStateFlow(findIdResponse( ""))
+    val findId: StateFlow<findIdResponse> get() = _FindId
+
+    private val _FindPw = MutableStateFlow(false)
+    val findPw: StateFlow<Boolean> get() = _FindPw
+
+
+
+
+    fun findUserId(request: findIdRequest) {
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = service.findMyId(request)
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        if (body != null) {
+                            _FindId.value = body
+                            Log.d("FindUserId", "Success: ${response.code()}, Body: $body")
+                        } else {
+                            _error.value = "Response body is null"
+                            Log.d("FindUserId", "Error: Response body is null, Code: ${response.code()}")
+                        }
+                    } else {
+                        _error.value = response.message()
+                        Log.d("FindUserId", "Error: ${response.message()}, Code: ${response.code()}")
+                    }
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+                Log.d("FindUserId", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun findUserPw(request: findPwRequest) {
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = service.findMyPwd(request)
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        _FindPw.value = true
+                        Log.d("FindUserPw", "Success: ${response.code()}")
+                    } else {
+                        _error.value = response.message()
+                        Log.d("FindUserPw", "Error: ${response.message()}, Code: ${response.code()}")
+                    }
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+                Log.d("FindUserPw", "Exception: ${e.message}")
+            }
+        }
+    }
+
+
+
+    // 회원가입 로직
     fun registerUser(request: RegistRequest) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {

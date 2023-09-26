@@ -4,6 +4,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -32,6 +33,13 @@ interface SignupService {
     suspend fun checkDuplicatePhoneNumber(
         @Body userPhoneNumber: String
     ): Response<BasicResponse>
+
+    @PATCH("api/user/encode/pw")
+    suspend fun findMyPwd(@Body request:findPwRequest):Response<Void>
+
+    @POST("api/user/encode/id")
+    suspend fun findMyId(@Body request:findIdRequest):Response<findIdResponse>
+
 
 
 
@@ -65,18 +73,21 @@ data class HttpResponse(
     val message:String
 )
 
-data class CheckuserNicknameRequest(
-    val userNickname:String
-)
-
-data class CheckuserEmailRequest(
-    val userEmail:String
-)
-
+// 전부 다 리펙토링 해야됨
 data class CheckuserIdRequest(
     val userId:String
 )
 
-data class CheckuserPhoneNumberRequest(
-    val userPhoneNumber:String
+data class findIdRequest(
+    val userEmail:String,
+    val userName:String,
+)
+
+data class findPwRequest(
+    val userEmail:String,
+    val userId:String,
+)
+
+data class findIdResponse(
+    val userEncodeId:String
 )

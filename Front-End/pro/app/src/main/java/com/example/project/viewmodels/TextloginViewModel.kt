@@ -38,6 +38,9 @@ class TextloginViewModel @Inject constructor(
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
     }
+    fun reSetPreference(){
+        return sharedPreferencesUtil.resetPreferences()
+    }
     suspend fun getAccessToken(): Boolean {
         val userIdx = getUserIdFromPreference()
         return try {

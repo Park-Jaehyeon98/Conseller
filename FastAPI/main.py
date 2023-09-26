@@ -78,6 +78,7 @@ def crop_kakao(image_file):
         return ocr_result
 
     except Exception as e:
+
         raise HTTPException(status_code=502, detail=str(e))
     
 def crop_ssafy(image_file):
@@ -106,6 +107,7 @@ def crop_ssafy(image_file):
         return ocr_result
 
     except Exception as e:
+        logging.warn("try 진입")
         raise HTTPException(status_code=500, detail=str(e))
     
 def crop_giftishow(image_file):
@@ -175,9 +177,9 @@ def perform_ocr():
 # 이미지 업로드 및 OCR 수행
 @app.post("/gifticon")
 def ocr_image(category: int = Form(...), image: UploadFile = File(...)):
-    logging.info("post, def진입 ")
+    logging.warn("post, def진입 ")
     try:
-        logging.info("try 진입")
+        logging.warn("try 진입")
         result = ""
         barcode_idx = 0
         name_idx = 0

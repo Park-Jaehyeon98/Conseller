@@ -9,6 +9,7 @@ import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDt
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.StoreRepository;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
     private final UserValidator userValidator;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -94,7 +96,7 @@ public class UserServiceImpl implements UserService {
         }
 
         //입력한 유저가 사용 제한된 유저인지 확인
-        if (UserStatus.RESTRICTED.equals(user.getUserStatus())) {
+        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
             throw new RuntimeException("서비스 이용 제한된 유저입니다.");
         }
 
@@ -246,8 +248,36 @@ public class UserServiceImpl implements UserService {
                     }
 
                     if (store.getConsumer() != null) {
-                        response.consumeridx(store.getConsumer().getUserIdx());
+                        response.consumerIdx(store.getConsumer().getUserIdx());
                     }
+
+            storeResponses.add(response.build());
+        }
+
+        return storeResponses;
+    }
+
+    @Override
+    public List<StoreResponse> getUserPurchaseStores(long userIdx) {
+        List<Store> userPurchaseStores = storeRepository.findStoresByConsumerIdx(userIdx);
+        List<StoreResponse> storeResponses = new ArrayList<>();
+
+        for (Store store : userPurchaseStores) {
+            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
+                    .storeIdx(store.getStoreIdx())
+                    .gifticonIdx(store.getGifticon().getGifticonIdx())
+                    .storePrice(store.getStorePrice())
+                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
+                    .storeText(store.getStoreText())
+                    .storeStatus(store.getStoreStatus());
+
+            if (store.getStoreEndDate() != null) {
+                response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
+            }
+
+            if (store.getConsumer() != null) {
+                response.consumerIdx(store.getConsumer().getUserIdx());
+            }
 
             storeResponses.add(response.build());
         }
@@ -339,9 +369,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(long userIdx) {
+    public void deleteUser(long userIdx, String token) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        //액세스 토큰과 리프레쉬 토큰을 모두 삭제해야함.
+        user.setRefreshToken(null);
         user.setUserDeletedDate(LocalDateTime.now());
     }
 

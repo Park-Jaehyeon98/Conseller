@@ -14,6 +14,7 @@ import com.conseller.conseller.user.dto.response.LoginResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.user.service.UserService;
 import com.conseller.conseller.utils.CommonResponse;
+import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     //회원가입
     @PostMapping
@@ -155,6 +157,13 @@ public class UserController {
                 .body(userService.getUserStores(userIdx));
     }
 
+    //내 구매 보기
+    @GetMapping("/{userIdx}/store/purchase")
+    public ResponseEntity<List<StoreResponse>> getUserPurchaseStores(@PathVariable long userIdx) {
+        return ResponseEntity.ok()
+                .body(userService.getUserPurchaseStores(userIdx));
+    }
+
     //내 경매 보기
     @GetMapping("/{userIdx}/auction")
     public ResponseEntity<List<DetailAuctionResponse>> getUserAuctions(@PathVariable long userIdx) {
@@ -185,8 +194,10 @@ public class UserController {
 
     //회원 탈퇴
     @DeleteMapping("/{userIdx}")
-    public ResponseEntity<Object> deleteUser(@PathVariable long userIdx) {
-        userService.deleteUser(userIdx);
+    public ResponseEntity<Object> deleteUser(@PathVariable long userIdx, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+
+        userService.deleteUser(userIdx, token);
         return ResponseEntity.ok().build();
     }
 

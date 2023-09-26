@@ -313,7 +313,6 @@ async def ocr_request(category: int, image: UploadFile = Form(...)):
             image_data = base64.b64encode(image_file.read()).decode()
 
         data = {
-            "result": result,
             "gifticonBarcode": gifticon_barcode,
             "gifticonName": gifticon_name,
             "gifticonEndDate": gifticon_end_date,

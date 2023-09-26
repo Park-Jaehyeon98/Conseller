@@ -42,7 +42,6 @@ fun FindIdPage(navController: NavHostController) {
     fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
-
     val findIdResponse by viewModel.findId.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     LaunchedEffect(findIdResponse) {
@@ -51,13 +50,11 @@ fun FindIdPage(navController: NavHostController) {
         }
     }
     val request = findIdRequest(
-        userName = userName.text,
-        userEmail = userEmail
+        userName = userName.text, userEmail = userEmail
     )
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(0.8f),
@@ -90,17 +87,15 @@ fun FindIdPage(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            NormalButton(
-                label = "아이디 찾기",
+            NormalButton(label = "아이디 찾기",
                 buttonSize = 50,
                 textSize = 24,
                 onClick = { viewModel.findUserId(request) })
             if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = {
-                        // 다이얼로그 외부를 클릭하여 닫기를 원할 때의 동작
-                        showDialog = false
-                    },
+                AlertDialog(onDismissRequest = {
+                    // 다이얼로그 외부를 클릭하여 닫기를 원할 때의 동작
+                    showDialog = false
+                },
                     title = { Text("아이디 찾기 결과") },
                     text = { Text("귀하의 아이디는 ${findIdResponse.userEncodeId}입니다.") },
                     confirmButton = {
@@ -111,8 +106,7 @@ fun FindIdPage(navController: NavHostController) {
                         }) {
                             Text("확인")
                         }
-                    }
-                )
+                    })
             }
         }
     }

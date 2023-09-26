@@ -24,15 +24,6 @@ interface MyPageService {
     ): Response<myStoreItems>
 
 
-    @GET("/api/user/{userIdx}/auction-bid")
-    suspend fun getUserAuctionBid(
-        @Path("userIdx") useridx: Long,
-    ): Response<myAuctionBidItems>
-
-    @GET("/api/user/{userIdx}/auction")
-    suspend fun getUserAuction(
-        @Path("userIdx") useridx: Long,
-    ): Response<myAuctionItems>
 
     @GET("/api/user/{userIdx}/barter")
     suspend fun getUserBarter(
@@ -43,8 +34,6 @@ interface MyPageService {
     suspend fun getUserBarterRequest(
         @Path("userIdx") useridx: Long,
     ): Response<myBarterRequestItems>
-
-
 
 
     // 이미지 업로드
@@ -94,6 +83,7 @@ data class userUploadGifticonResponse(
     val subCategory: Int,
     val mainCategory: Int
 )
+
 
 data class userModifyRequest(
     val userNickname: String,
@@ -170,7 +160,15 @@ data class myAuctionBidData(
     val auctionRegistedDate: String,
     val auctionBidStatus: String,
     val userIdx: Long,
-    val auctionIdx: Long
+    val auctionIdx: Long,
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+    val auctionEndDate: String,
+    val deposit: Boolean,
+    val upperPrice: Int,
+    val lowerPrice: Int,
+    val auctionHighestBid: Int
 )
 
 data class myBarterItems(

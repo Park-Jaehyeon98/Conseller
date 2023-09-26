@@ -9,7 +9,7 @@ import base64
 from starlette.datastructures import UploadFile as StarletteUploadFile
 import sys
 import re
-import uvicorn
+import logging
 
 def isHangul(text):
     #Check the Python Version
@@ -154,7 +154,9 @@ def perform_ocr():
 # 이미지 업로드 및 OCR 수행
 @app.post("/gifticon")
 def ocr_image(category: int = Form(...), image: UploadFile = File(...)):
+    logging.info("post, def진입 ")
     try:
+        logging.info("try 진입")
         result = ""
         barcode_idx = 0
         name_idx = 0

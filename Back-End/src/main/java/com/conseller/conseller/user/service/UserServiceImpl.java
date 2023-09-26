@@ -4,7 +4,6 @@ import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
-import com.conseller.conseller.barter.barter.barterDto.BarterRegistDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
@@ -106,10 +105,7 @@ public class UserServiceImpl implements UserService {
         //4. refresh token db 저장
         user.setRefreshToken(jwtToken.getRefreshToken());
 
-        // 5. fcm token db 저장
-        user.setFcm(loginRequest.getFcm());
-
-        // 6. 토큰 정보로 response 생성 후 리턴
+        // 5. 토큰 정보로 response 생성 후 리턴
         return LoginResponse.builder()
                 .userIdx(user.getUserIdx())
                 .userNickname(user.getUserNickname())
@@ -371,6 +367,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         user.setUserDeletedDate(LocalDateTime.now());
+    }
+
+    @Override
+    public void getFirebaseToken(Long userIdx, FirebaseRequest request) {
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        user.setFcm(request.getFirebaseToken());
     }
 
     @Override

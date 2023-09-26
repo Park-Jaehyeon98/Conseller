@@ -27,7 +27,7 @@ public class InquiryServiceImpl implements InquiryService{
     @Override
     public void registInquiry(RegistInquiryRequest request) {
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         Inquiry inquiry = InquiryMapper.INSTANCE.registInquiryToInquiry(request, user);
 
@@ -48,10 +48,10 @@ public class InquiryServiceImpl implements InquiryService{
     @Override
     public DetailInquiryResponse detailInquiry(Long inquiryIdx) {
         Inquiry inquiry = inquiryRepository.findById(inquiryIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 문의 입니다."));
 
         User user = userRepository.findById(inquiry.getUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         DetailInquiryResponse response = InquiryMapper.INSTANCE.entityToDetailInquiryResponse(user, inquiry);
 
@@ -61,7 +61,7 @@ public class InquiryServiceImpl implements InquiryService{
     @Override
     public void answerInquiry(Long inquiryIdx, AnswerInquiryRequest request) {
         Inquiry inquiry = inquiryRepository.findById(inquiryIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 문의 입니다."));
 
         inquiry.setInquiryAnswer(request.getInquiryAnswer());
         inquiry.setInquiryAnswerDate(LocalDateTime.now());

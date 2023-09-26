@@ -25,8 +25,6 @@ public class StoreResponse {
 
     private String storeStatus;
 
-    private
-
     private long gifticonIdx;
 
     private long consumerIdx;

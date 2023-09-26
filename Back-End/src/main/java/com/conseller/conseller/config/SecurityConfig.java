@@ -1,6 +1,7 @@
 package com.conseller.conseller.config;
 
 import com.conseller.conseller.security.JwtAuthenticationFilter;
+import com.conseller.conseller.utils.jwt.BlackListRepository;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final BlackListRepository blackListRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -40,7 +42,7 @@ public class SecurityConfig {
                 .antMatchers("/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, blackListRepository), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

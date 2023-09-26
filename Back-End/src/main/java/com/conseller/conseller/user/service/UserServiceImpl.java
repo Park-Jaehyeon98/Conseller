@@ -34,6 +34,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -218,27 +219,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<Gifticon> userGifticons = user.getGifticons();
-
-        List<GifticonResponse> userGifticonsResponse = new ArrayList<>();
-
-        for (Gifticon gifticon : userGifticons) {
-            userGifticonsResponse.add(GifticonResponse.builder()
-                    .gifticonIdx(gifticon.getGifticonIdx())
-                    .gifticonBarcode(gifticon.getGifticonBarcode())
-                    .gifticonName(gifticon.getGifticonName())
-                    .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
-                    .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
-                    .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
-                    .gifticonStatus(gifticon.getGifticonStatus())
-                    .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
-                    .userIdx(gifticon.getUser().getUserIdx())
-                    .subCategoryIdx(gifticon.getSubCategory().getSubCategoryIdx())
-                    .mainCategoryIdx(gifticon.getMainCategory().getMainCategoryIdx())
-                    .build()
-            );
-        }
-        return userGifticonsResponse;
+        return user.getGifticons()
+                .stream()
+                .map(Gifticon::toResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -335,21 +319,9 @@ public class UserServiceImpl implements UserService {
 
             List<GifticonResponse> barterGuestItems = new ArrayList<>();
 
+            //물물 교환 요청 기프티콘들을 dto로 변환
             for (BarterGuestItem item : barterRequest.getBarterGuestItemList()) {
-                GifticonResponse gifticon = GifticonResponse.builder()
-                        .gifticonIdx(item.getGifticon().getGifticonIdx())
-                        .gifticonBarcode(item.getGifticon().getGifticonBarcode())
-                        .gifticonName(item.getGifticon().getGifticonName())
-                        .gifticonStatus(item.getGifticon().getGifticonStatus())
-                        .gifticonAllImageUrl(item.getGifticon().getGifticonAllImageUrl())
-                        .gifticonDataImageUrl(item.getGifticon().getGifticonDataImageUrl())
-                        .gifticonStartDate(dateTimeConverter.convertString(item.getGifticon().getGifticonStartDate()))
-                        .gifticonEndDate(dateTimeConverter.convertString(item.getGifticon().getGifticonEndDate()))
-                        .userIdx(item.getGifticon().getUser().getUserIdx())
-                        .mainCategoryIdx(item.getGifticon().getMainCategory().getMainCategoryIdx())
-                        .subCategoryIdx(item.getGifticon().getSubCategory().getSubCategoryIdx())
-                        .build();
-
+                GifticonResponse gifticon = item.getGifticon().toResponseDto();
                 barterGuestItems.add(gifticon);
             }
 

@@ -9,6 +9,7 @@ import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
 import com.conseller.conseller.store.StoreRepository;
+import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.utils.DateTimeConverter;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
@@ -30,6 +31,7 @@ public class NotificationServiceImpl implements NotificationService{
     private final StoreRepository storeRepository;
     private final NotificationRepository notificationRepository;
     private final DateTimeConverter dateTimeConverter;
+    private final UserRepository userRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
@@ -37,23 +39,30 @@ public class NotificationServiceImpl implements NotificationService{
                 .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         User user = null;
+        String contents = null;
 
         if(index == 1) { // 구매자
             if(auction.getHighestBidUser().getFcm() == null)
                 return;
 
             user = auction.getHighestBidUser();
+
+            contents = user.getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(auction.getUser().getFcm() == null)
                 return;
 
             user = auction.getUser();
+
+            contents = user.getUserNickname() + " " + body;
+        } else {
+            throw new RuntimeException("적합하지 않은 타입입니다.");
         }
 
 
         Notification notification = Notification.builder()
                 .setTitle(title)
-                .setBody(body)
+                .setBody(contents)
                 .build();
 
         Message message = Message.builder()
@@ -70,7 +79,7 @@ public class NotificationServiceImpl implements NotificationService{
             //데이터베이스 저장
             NotificationEntity notificationEntity = new NotificationEntity();
             notificationEntity.setNotificationTitle(title);
-            notificationEntity.setNotificationContent(body);
+            notificationEntity.setNotificationContent(contents);
             notificationEntity.setNotificationType(type);
             if(index == 1) {
                 notificationEntity.setSeller(false);
@@ -93,19 +102,70 @@ public class NotificationServiceImpl implements NotificationService{
                 .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
         User user = null;
+        String contents = null;
 
         if(index == 1) { // 구매자
             if(store.getConsumer().getFcm() == null)
                 return;
 
             user = store.getConsumer();
+
+            contents = user.getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(store.getUser().getFcm() == null)
                 return;
 
             user = store.getUser();
+
+            contents = user.getUserNickname() + " " + body;
         }
 
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(contents)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            log.info(response);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(contents);
+            notificationEntity.setNotificationType(type);
+            if(index == 1) {
+                notificationEntity.setSeller(false);
+                notificationEntity.setUser(store.getConsumer());
+            }else {
+                notificationEntity.setSeller(true);
+                notificationEntity.setUser(store.getUser());
+            }
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(store.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
+    }
+
+    @Override
+    public void sendBarterNotification(Long barterIdx, String title, String body, Integer index, Integer type) {
+
+    }
+
+    @Override
+    public void sendNotification(Long userIdx, String title, String body) {
+        User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException());
 
         Notification notification = Notification.builder()
                 .setTitle(title)
@@ -127,26 +187,17 @@ public class NotificationServiceImpl implements NotificationService{
             NotificationEntity notificationEntity = new NotificationEntity();
             notificationEntity.setNotificationTitle(title);
             notificationEntity.setNotificationContent(body);
-            notificationEntity.setNotificationType(type);
-            if(index == 1) {
-                notificationEntity.setSeller(false);
-                notificationEntity.setUser(store.getConsumer());
-            }else {
-                notificationEntity.setSeller(true);
-                notificationEntity.setUser(store.getUser());
-            }
+            notificationEntity.setNotificationType(1);
+            notificationEntity.setSeller(true);
+            notificationEntity.setUser(user);
+
 
             notificationRepository.save(notificationEntity);
 
 
         }catch (Exception e){
-            log.warn(store.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
+            log.warn(user.getUserId() + ": 알림 전송에 실패하였습니다.");
         }
-    }
-
-    @Override
-    public void sendBarterNotification(Long barterIdx, String title, String body, Integer index, Integer type) {
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.conseller.conseller.user.service;
 
+import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
@@ -67,7 +68,7 @@ public interface UserService {
     public List<StoreResponse> getUserPurchaseStores(long userIdx);
 
     //내 경매목록 불러오기
-    public List<DetailAuctionResponse> getUserAuctions(long userIdx);
+    public List<AuctionItemData> getUserAuctions(long userIdx);
 
     //내 입찰내역 불러오기
     public List<AuctionBidResponse> getUserAuctionBids(long userIdx);

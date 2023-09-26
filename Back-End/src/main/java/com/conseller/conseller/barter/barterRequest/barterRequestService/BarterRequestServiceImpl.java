@@ -33,9 +33,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         List<BarterRequestResponseDto> barterRequestResponseDtoList = new ArrayList<>();
 
         for(BarterRequest barterRequest : barterRequestList) {
-            Barter barter = barterRequest.getBarter();
-            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
-            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest, barterResponseDto);
+            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest);
             barterRequestResponseDtoList.add(barterRequestResponseDto);
         }
 
@@ -46,9 +44,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     public BarterRequestResponseDto getBarterRequest(Long barterRequestIdx) {
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
-        Barter barter = barterRequest.getBarter();
-        BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
-        BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest, barterResponseDto);
+        BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest);
 
         return barterRequestResponseDto;
     }
@@ -59,9 +55,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         barterRequestResponseDtoList = new ArrayList<>();
 
         for(BarterRequest barterRequest : barterRequestList) {
-            Barter barter = barterRequest.getBarter();
-            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
-            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest, barterResponseDto);
+            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest);
             barterRequestResponseDtoList.add(barterRequestResponseDto);
         }
 
@@ -74,9 +68,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         barterRequestResponseDtoList = new ArrayList<>();
 
         for(BarterRequest barterRequest : barterRequestList) {
-            Barter barter = barterRequest.getBarter();
-            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
-            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest, barterResponseDto);
+            BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest);
             barterRequestResponseDtoList.add(barterRequestResponseDto);
         }
 

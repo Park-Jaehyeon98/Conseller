@@ -11,20 +11,22 @@ import sys
 import re
 import logging
 
-def isHangul(text):
-    #Check the Python Version
-    pyVer3 =  sys.version_info >= (3, 0)
 
-    if pyVer3 : # for Ver 3 or later
+def isHangul(text):
+    # Check the Python Version
+    pyVer3 = sys.version_info >= (3, 0)
+
+    if pyVer3:  # for Ver 3 or later
         encText = text
-    else: # for Ver 2.x
+    else:  # for Ver 2.x
         if type(text) is not unicodedata:
-            encText = text.decode('utf-8')
+            encText = text.decode("utf-8")
         else:
             encText = text
 
-    hanCount = len(re.findall(u'[\u3130-\u318F\uAC00-\uD7A3]+', encText))
+    hanCount = len(re.findall("[\u3130-\u318F\uAC00-\uD7A3]+", encText))
     return hanCount > 0
+
 
 app = FastAPI()
 
@@ -50,7 +52,8 @@ app.add_middleware(
 
 
 class Item(BaseModel):
-    category : int
+    category: int
+
 
 def crop_kakao(image_file):
     try:
@@ -61,7 +64,7 @@ def crop_kakao(image_file):
         top_bottom = int(height * 0.44)
         bottom = height
 
-        left = int(width*0.08)
+        left = int(width * 0.08)
         right = width - left
 
         # 이미지 자르기
@@ -73,14 +76,15 @@ def crop_kakao(image_file):
         bottom_cropped_image.save("./bottom_crop/cropped_image.jpg")
 
         ocr_result = perform_ocr()
-                                 
+
         # 성공적으로 저장되면 경로 반환
         return ocr_result
 
     except Exception as e:
         logging.warn(e)
         raise HTTPException(status_code=502, detail=str(e))
-    
+
+
 def crop_ssafy(image_file):
     try:
         image = Image.open(image_file)
@@ -90,8 +94,8 @@ def crop_ssafy(image_file):
         top_bottom = int(height * 0.42)
         bottom = height
 
-        left = int(width//2)
-        right = int(width*0.95)
+        left = int(width // 2)
+        right = int(width * 0.95)
 
         # 이미지 자르기
         top_cropped_image = image.crop((left, top, right, top_bottom))
@@ -102,14 +106,15 @@ def crop_ssafy(image_file):
         bottom_cropped_image.save("./bottom_crop/cropped_image.jpg")
 
         ocr_result = perform_ocr()
-                                 
+
         # 성공적으로 저장되면 경로 반환
         return ocr_result
 
     except Exception as e:
         logging.warn("try 진입")
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 def crop_giftishow(image_file):
     try:
         image = Image.open(image_file)
@@ -120,7 +125,7 @@ def crop_giftishow(image_file):
         bottom = height
 
         left = int(width * 0.05)
-        right = int(width*0.48)
+        right = int(width * 0.48)
 
         # 이미지 자르기
         top_cropped_image = image.crop((left, top, right, top_bottom))
@@ -133,35 +138,37 @@ def crop_giftishow(image_file):
         ocr_result = perform_ocr()
 
         return ocr_result
-                                 
+
         # 성공적으로 저장되면 경로 반환
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # OCR 함수 정의
 def perform_ocr():
     try:
         # 이미지를 PIL Image로 열기
         image = Image.open("./bottom_crop/cropped_image.jpg")
-        
+
         # OCR 수행
-        config = ('-l kor+eng --oem 3 --psm 11')
+        config = "-l kor+eng --oem 3 --psm 11"
         ocr_result = pytesseract.image_to_string(image, config=config)
         ocr_result = ocr_result.replace("\n", " ")
 
         result = ocr_result.split()
-        
-        
+
         for i in range(0, len(result)):
             if len(result[i]) == 4:
                 if result[i] == "0525" or result[i] == "Gs25" or result[i] == "6525":
                     result[i] = "GS25"
-            elif len(result[i]) == 7 and result[i] == "ㄷ4[금액권]":    
+            elif len(result[i]) == 7 and result[i] == "ㄷ4[금액권]":
                 result[i] = "CU[금액권]"
             elif len(result[i]) == 9 and result[i] == "0525[금액권]":
                 result[i] = "GS25[금액권]"
-            elif len(result[i]) == 1 and (result[i] == "「" or result[i] == "7" or result[i] == "1"):
+            elif len(result[i]) == 1 and (
+                result[i] == "「" or result[i] == "7" or result[i] == "1"
+            ):
                 result[i] = "T"
             elif len(result[i]) == 3 and result[i] == "타벅스":
                 result[i] = "스타벅스"
@@ -175,9 +182,10 @@ def perform_ocr():
         logging.warn(e)
         raise HTTPException(status_code=504, detail=str(e))
 
+
 # 이미지 업로드 및 OCR 수행
-@app.post("/gifticon")
-async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
+@app.post("/gifticon/{category}")
+async def ocr_request(category: int, image: UploadFile = Form(...)):
     logging.warn("post, def진입 ")
     try:
         logging.warn("try 진입")
@@ -198,21 +206,29 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                 if text == "교환처" or text == "환처":
                     barcode_idx = idx
                 elif text == "유효기간" or text == "효기간" or text == "기간":
-                    end_date_idx = idx+1
+                    end_date_idx = idx + 1
 
-            if len(result[barcode_idx-4]) == 4 and result[barcode_idx-4].isdigit():
-                if(result[barcode_idx-4] != "1111" and result[barcode_idx-4] != "1110" and result[barcode_idx-4] != "1100" and result[barcode_idx-4] != "1000"):
-                    gifticon_barcode += result[barcode_idx-4]
-            
+            if len(result[barcode_idx - 4]) == 4 and result[barcode_idx - 4].isdigit():
+                if (
+                    result[barcode_idx - 4] != "1111"
+                    and result[barcode_idx - 4] != "1110"
+                    and result[barcode_idx - 4] != "1100"
+                    and result[barcode_idx - 4] != "1000"
+                ):
+                    gifticon_barcode += result[barcode_idx - 4]
+
             if barcode_idx == 0:
                 barcode_idx = end_date_idx - 2
                 for i in range(3, -1, -1):
-                    if len(result[barcode_idx-i]) < 5 and result[barcode_idx-i].isdigit():
-                        gifticon_barcode += result[barcode_idx-i]
+                    if (
+                        len(result[barcode_idx - i]) < 5
+                        and result[barcode_idx - i].isdigit()
+                    ):
+                        gifticon_barcode += result[barcode_idx - i]
             else:
                 for i in range(3, 0, -1):
-                    if result[barcode_idx-i].isdigit():
-                        gifticon_barcode += result[barcode_idx-i]
+                    if result[barcode_idx - i].isdigit():
+                        gifticon_barcode += result[barcode_idx - i]
 
             for i in range(2):
                 gifticon_end_date += result[end_date_idx + i][:-1] + "."
@@ -235,9 +251,9 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                 if text == "사용처" or text == "용처" or text == "교환처" or text == "환처":
                     name_end_idx = idx
                 elif text == "~":
-                    end_date_idx = idx+1
+                    end_date_idx = idx + 1
                 elif text == "유효기간" or text == "효기간" or text == "기간":
-                    end_date_idx = idx+1
+                    end_date_idx = idx + 1
                 elif text == "상품명":
                     barcode_idx = idx - 1
                     name_idx = idx
@@ -248,8 +264,11 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             # gifticon_name = gifticon_name[:-1]
 
             for i in range(4, 0, -1):
-                if(len(result[barcode_idx-i]) == 4 and result[barcode_idx-i].isdigit()):
-                    gifticon_barcode += result[barcode_idx-i]
+                if (
+                    len(result[barcode_idx - i]) == 4
+                    and result[barcode_idx - i].isdigit()
+                ):
+                    gifticon_barcode += result[barcode_idx - i]
 
             gifticon_end_date = result[end_date_idx]
 
@@ -260,7 +279,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                 if text == "교환처" or text == "환처":
                     barcode_idx = idx
                 elif text == "~":
-                    end_date_idx = idx+1
+                    end_date_idx = idx + 1
                 elif text == "유효기간" or text == "효기간" or text == "기간":
                     end_date_idx = idx
                 elif text == "상품명":
@@ -268,11 +287,11 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                 elif text == "수량":
                     name_end_idx = idx
 
-            if barcode_idx+1 != name_idx:
-                for i in range(barcode_idx+1, name_idx):
+            if barcode_idx + 1 != name_idx:
+                for i in range(barcode_idx + 1, name_idx):
                     gifticon_name += result[i] + " "
             else:
-                for i in range(name_idx+1, name_end_idx):
+                for i in range(name_idx + 1, name_end_idx):
                     gifticon_name += result[i] + " "
 
             if len(result[-1]) >= 12 and result[-1].isdigit():
@@ -283,7 +302,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             if len(result[end_date_idx]) == 8:
                 gifticon_end_date = "20" + result[end_date_idx]
             else:
-                gifticon_end_date = "20" + result[end_date_idx-1]
+                gifticon_end_date = "20" + result[end_date_idx - 1]
 
         else:
             raise HTTPException(status_code=400, detail="카테고리 값이 유효하지 않습니다.")
@@ -298,7 +317,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             "gifticonBarcode": gifticon_barcode,
             "gifticonName": gifticon_name,
             "gifticonEndDate": gifticon_end_date,
-            "gifticonCropImage": image_data  # Base64로 인코딩된 이미지 데이터
+            "gifticonCropImage": image_data,  # Base64로 인코딩된 이미지 데이터
         }
 
         return data  # JSON 데이터와 이미지 데이터를 함께 반환

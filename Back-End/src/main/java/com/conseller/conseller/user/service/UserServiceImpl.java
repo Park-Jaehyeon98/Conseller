@@ -127,6 +127,9 @@ public class UserServiceImpl implements UserService {
         user.setUserEmail(userInfoRequest.getUserEmail());
         user.setUserAccount(userInfoRequest.getUserAccount());
         user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+
+        //비밀번호 암호화
+        user.encryptPassword(new BCryptPasswordEncoder());
     }
 
     @Override

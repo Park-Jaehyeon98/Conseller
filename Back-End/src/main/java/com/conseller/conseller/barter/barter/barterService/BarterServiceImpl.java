@@ -17,9 +17,6 @@ import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,7 +118,7 @@ public class BarterServiceImpl implements BarterService{
         }
 
         for(BarterRequest br : barterRequestList) {
-            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED)) continue;
+            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
 
@@ -145,13 +142,15 @@ public class BarterServiceImpl implements BarterService{
         //물물교환 교환신청 리스트
         List<BarterRequest> barterRequestList = barterRequestRepository.findByBarterIdx(barterIdx);
 
+        barterRequest.setBarterRequestStatus(RequestStatus.ACCEPTED.getStatus());
+
         for(BarterRequest br : barterRequestList) {
 
             if(br.getBarterRequestIdx() == barterRequestIdx) continue;
-            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED)) continue;
+            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
-            br.setBarterRequestStatus(RequestStatus.REJECTED);
+            br.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
             barterRequestRepository.save(br);
 
             for(BarterGuestItem bg : barterGuestItemList) {

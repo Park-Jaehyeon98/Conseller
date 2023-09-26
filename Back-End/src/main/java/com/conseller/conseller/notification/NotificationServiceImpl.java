@@ -1,10 +1,10 @@
 package com.conseller.conseller.notification;
 
 import com.conseller.conseller.auction.auction.AuctionRepository;
-import com.conseller.conseller.entity.Auction;
-import com.conseller.conseller.entity.NotificationEntity;
-import com.conseller.conseller.entity.Store;
-import com.conseller.conseller.entity.User;
+import com.conseller.conseller.barter.barter.BarterRepository;
+import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
+import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
+import com.conseller.conseller.entity.*;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
@@ -32,6 +32,8 @@ public class NotificationServiceImpl implements NotificationService{
     private final NotificationRepository notificationRepository;
     private final DateTimeConverter dateTimeConverter;
     private final UserRepository userRepository;
+    private final BarterRepository barterRepository;
+    private final BarterRequestRepository barterRequestRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
@@ -159,9 +161,57 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendBarterNotification(Long barterIdx, String title, String body, Integer index, Integer type) {
+    public void sendBarterNotification(Long barterIdx, String title, Integer type) {
+        List<BarterRequest> requestList = barterRequestRepository.findByBarterIdx(barterIdx);
+
+        for(BarterRequest br : requestList) {
+            if(br.getUser().getFcm() == null)
+                return;
+
+            String contents = null;
+
+            if(br.getBarterRequestStatus().equals(RequestStatus.ACCEPTED.getStatus())){
+                contents = br.getUser().getUserNickname() + " 님의 요청이 수락되었습니다.";
+            }else {
+                contents = br.getUser().getUserNickname() + " 님의 요청이 거절되었습니다.";
+            }
+
+            Notification notification = Notification.builder()
+                    .setTitle(title)
+                    .setBody(contents)
+                    .build();
+
+            Message message = Message.builder()
+                    .setNotification(notification)
+                    .setToken(br.getUser().getFcm())
+                    .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                    .build();
+
+            try{
+                String response = FirebaseMessaging.getInstance().send(message);
+
+                //데이터베이스 저장
+                NotificationEntity notificationEntity = new NotificationEntity();
+                notificationEntity.setNotificationTitle(title);
+                notificationEntity.setNotificationContent(contents);
+                notificationEntity.setNotificationType(type);
+                notificationEntity.setSeller(false);
+                notificationEntity.setUser(br.getUser());
+
+                notificationRepository.save(notificationEntity);
+
+
+            }catch (Exception e){
+                log.warn(br.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
+            }
+        }
+    }
+
+    @Override
+    public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type) {
 
     }
+
 
     @Override
     public void sendNotification(Long userIdx, String title, String body) {

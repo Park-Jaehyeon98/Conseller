@@ -5,6 +5,7 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.RegistStoreResponse;
 import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +35,13 @@ public class StoreController {
 
     // 스토어 글 등록
     @PostMapping("/regist")
-    public ResponseEntity<Object> registStore(@RequestBody RegistStoreRequest request) {
-        storeService.registStore(request);
+    public ResponseEntity<RegistStoreResponse> registStore(@RequestBody RegistStoreRequest request) {
+        Long storeIdx = storeService.registStore(request);
+
+        RegistStoreResponse response = new RegistStoreResponse(storeIdx);
 
         return ResponseEntity.ok()
-                .build();
+                .body(response);
     }
 
     // 스토어 글 상세보기
@@ -73,7 +76,7 @@ public class StoreController {
         StoreTradeResponse response = storeService.tradeStore(storeIdx, consumerIdx);
 
         //판매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "거래 진행 중입니다.", 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "거래 진행 중입니다.", 2, 2);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -85,8 +88,8 @@ public class StoreController {
         storeService.cancelStore(storeIdx);
 
         // 판매자 구매자 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 1);
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 1, 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "스토어 거래 취소입니다.", 2, 2);
 
         return ResponseEntity.ok()
                 .build();
@@ -96,7 +99,7 @@ public class StoreController {
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 입금 완료", "입금 완료입니다.", 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 입금 완료", "입금 완료입니다.", 2, 2);
 
         return ResponseEntity.ok()
                 .build();
@@ -108,7 +111,7 @@ public class StoreController {
         storeService.confirmStore(storeIdx);
 
         // 구매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 완료", "거래가 완료되었습니다.", 1);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 완료", "거래가 완료되었습니다.", 1, 2);
 
         return ResponseEntity.ok()
                 .build();

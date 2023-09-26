@@ -15,6 +15,7 @@ import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 import com.conseller.conseller.store.enums.StoreStatus;
 import com.conseller.conseller.user.UserRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
     // 스토어 목록
     @Transactional(readOnly = true)
     public StoreListResponse getStoreList(StoreListRequest request) { //queryDSL 사용
-        Pageable pageable = PageRequest.of(request.getPage(), 10);
+        Pageable pageable = PageRequest.of(request.getPage() - 1, 10);
 
         Page<Store> stores = storeRepositoryImpl.findStoreList(request, pageable);
 
@@ -51,7 +51,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     // 스토어 글 등록
-    public void registStore(RegistStoreRequest request) {
+    public Long registStore(RegistStoreRequest request) {
 
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
@@ -59,13 +59,17 @@ public class StoreServiceImpl implements StoreService {
                 .orElseThrow(() -> new RuntimeException());
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
-
+            return null;
         }else {
             Store store = StoreMapper.INSTANCE.registStoreRequestToStore(request, user, gifticon);
 
+            store.setStoreEndDate(gifticon.getGifticonEndDate());
+
             gifticon.setGifticonStatus(GifticonStatus.STORE.getStatus());
 
-            storeRepository.save(store);
+            Store saveStore = storeRepository.save(store);
+
+            return saveStore.getStoreIdx();
         }
     }
 
@@ -88,7 +92,7 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        store.setStoreEndDate(storeRequest.getStoreEndDate());
+        store.setStoreEndDate(DateTimeConverter.getInstance().convertLocalDateTime(storeRequest.getStoreEndDate()));
         store.setStoreText(storeRequest.getStoreText());
     }
 
@@ -151,7 +155,6 @@ public class StoreServiceImpl implements StoreService {
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-        store.setStoreEndDate(LocalDateTime.now());
     }
 
 }

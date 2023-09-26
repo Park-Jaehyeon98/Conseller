@@ -15,7 +15,9 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class AuctionServiceImpl implements AuctionService{
@@ -39,22 +42,26 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     @Transactional(readOnly = true)
     public AuctionListResponse getAuctionList(AuctionListRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), 10);
+        Pageable pageable = PageRequest.of(request.getPage() - 1, 10);
 
         Page<Auction> auctions = auctionImplRepository.findAuctionList(request, pageable);
 
         List<AuctionItemData> auctionItemDataList = AuctionMapper.INSTANCE.auctionsToItemDatas(auctions.getContent());
 
+        log.info("auctionItemDataList : " + auctionItemDataList.toString());
+
         AuctionListResponse response = new AuctionListResponse(auctionItemDataList,
                 auctions.getTotalElements(),
                 auctions.getTotalPages());
+
+        log.info("response : " + response);
 
         return response;
     }
 
     // 경매 글 등록
     @Override
-    public void registAuction(RegistAuctionRequest request) {
+    public Long registAuction(RegistAuctionRequest request) {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new RuntimeException());
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
@@ -62,12 +69,17 @@ public class AuctionServiceImpl implements AuctionService{
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
             //등록 x 예외처리
+            return null;
         }else {
             Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
+            auction.setAuctionEndDate(gifticon.getGifticonEndDate());
+
             gifticon.setGifticonStatus(GifticonStatus.AUCTION.getStatus());
 
-            auctionRepository.save(auction);
+            Auction saveAuction = auctionRepository.save(auction);
+
+            return saveAuction.getAuctionIdx();
         }
     }
 
@@ -93,7 +105,7 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
-        auction.setAuctionEndDate(auctionRequest.getAuctionEndDate());
+        auction.setAuctionEndDate(DateTimeConverter.getInstance().convertLocalDateTime(auctionRequest.getAuctionEndDate()));
         auction.setAuctionText(auctionRequest.getAuctionText());
     }
 
@@ -180,7 +192,6 @@ public class AuctionServiceImpl implements AuctionService{
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-        auction.setAuctionEndDate(LocalDateTime.now());
         auction.setAuctionCompletedDate(LocalDateTime.now());
     }
 }

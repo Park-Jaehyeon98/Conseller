@@ -8,6 +8,7 @@ import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
+import com.conseller.conseller.utils.DateTimeConverter;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -41,9 +42,9 @@ public interface AuctionMapper {
         itemData.setAuctionIdx(auction.getAuctionIdx());
         itemData.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
         itemData.setGifticonName(auction.getGifticon().getGifticonName());
-        itemData.setGifticonEndDate(auction.getGifticon().getGifticonEndDate());
-        itemData.setAuctionEndDate(auction.getAuctionEndDate());
-        itemData.setPopular("0");
+        itemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(auction.getGifticon().getGifticonEndDate()));
+        itemData.setAuctionEndDate(DateTimeConverter.getInstance().convertString(auction.getAuctionEndDate()));
+        itemData.setDeposit(false);
         itemData.setUpperPrice(auction.getUpperPrice());
         itemData.setLowerPrice(auction.getLowerPrice());
         itemData.setAuctionHighestBid(auction.getAuctionHighestBid());
@@ -61,7 +62,7 @@ public interface AuctionMapper {
 
         itemData.setAuctionBidIdx(auctionBid.getAuctionBidIdx());
         itemData.setAuctionBidPrice(auctionBid.getAuctionBidPrice());
-        itemData.setAuctionRegistedDate(auctionBid.getAuctionRegistedDate());
+        itemData.setAuctionRegistedDate(DateTimeConverter.getInstance().convertString(auctionBid.getAuctionRegistedDate()));
         itemData.setAuctionBidStatus(auctionBid.getAuctionBidStatus());
         itemData.setUserIdx(auctionBid.getUser().getUserIdx());
         itemData.setAuctionIdx(auctionBid.getAuction().getAuctionIdx());

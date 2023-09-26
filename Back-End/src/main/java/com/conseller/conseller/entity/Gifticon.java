@@ -1,9 +1,7 @@
 package com.conseller.conseller.entity;
 
-import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -13,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter @Setter @ToString
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "gifticonIdx")
 public class Gifticon {

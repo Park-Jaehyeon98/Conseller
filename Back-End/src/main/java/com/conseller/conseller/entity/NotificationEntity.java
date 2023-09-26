@@ -1,9 +1,9 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "notificationIdx")
 public class NotificationEntity {
     @Id
@@ -26,8 +30,8 @@ public class NotificationEntity {
     @CreatedDate
     private LocalDateTime notificationCreatedDate;
 
-    @Column(name = "notification_status")
-    private String notificationStatus;
+    @Column(name = "notification_type")
+    private Integer notificationType;
 
     @Column(name = "seller", nullable = false)
     private Boolean seller;

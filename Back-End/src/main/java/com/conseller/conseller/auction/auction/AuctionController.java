@@ -6,6 +6,7 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
 import com.conseller.conseller.auction.auction.dto.response.AuctionTradeResponse;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.auction.dto.response.RegistAuctionResponse;
 import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,16 +26,23 @@ public class AuctionController {
     public ResponseEntity<AuctionListResponse> getAuctionList(@RequestBody AuctionListRequest request) {
         AuctionListResponse response = auctionService.getAuctionList(request);
 
+        log.info(response.toString());
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        log.info(response.getItems().toString());
+
         return ResponseEntity.ok()
                 .body(response);
     }
 
     // 경매 글 등록
     @PostMapping("/regist")
-    public ResponseEntity<Object> registAuction(@RequestBody RegistAuctionRequest request) {
-        auctionService.registAuction(request);
+    public ResponseEntity<RegistAuctionResponse> registAuction(@RequestBody RegistAuctionRequest request) {
+        Long auctionIdx = auctionService.registAuction(request);
+
+        RegistAuctionResponse response = new RegistAuctionResponse(auctionIdx);
+
         return ResponseEntity.ok()
-                .build();
+                .body(response);
     }
 
     // 경매 글 상세 보기
@@ -69,7 +77,7 @@ public class AuctionController {
     public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestParam(name = "im") Integer index ) {
         AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, index);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "거래 진행 중입니다.", index);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@거래 진행 중입니다.", index, 1);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -81,8 +89,8 @@ public class AuctionController {
         auctionService.cancelAuction(auctionIdx);
 
         // 거래 취소 알림
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 1);
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 2);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 1, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "거래가 취소되었습니다", 2, 1);
 
         return ResponseEntity.ok()
                 .build();
@@ -92,7 +100,7 @@ public class AuctionController {
     @PatchMapping("/complete/{auction_idx}")
     public ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
         // 판매자에게 알림
-        notificationService.sendAuctionNotification(auctionIdx, "경매 입금 완료", "구매자가 입금을 완료하였습니다.", 2);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 입금 완료", "구매자가 입금을 완료하였습니다.", 2, 1);
 
         return ResponseEntity.ok()
                 .build();
@@ -103,7 +111,7 @@ public class AuctionController {
     public  ResponseEntity<Object> confirmAuction(@PathVariable("auction_idx") Long auctionIdx) {
         auctionService.confirmAuction(auctionIdx);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 완료", "거래가 완료가 되었습니다.", 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 완료", "거래가 완료가 되었습니다.", 1, 1);
 
         return ResponseEntity.ok()
                 .build();

@@ -8,8 +8,8 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
-import com.conseller.conseller.notification.enums.NotificationStatus;
 import com.conseller.conseller.store.StoreRepository;
+import com.conseller.conseller.utils.DateTimeConverter;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,9 +29,10 @@ public class NotificationServiceImpl implements NotificationService{
     private final AuctionRepository auctionRepository;
     private final StoreRepository storeRepository;
     private final NotificationRepository notificationRepository;
+    private final DateTimeConverter dateTimeConverter;
 
     @Override
-    public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index) {
+    public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException());
 
@@ -57,16 +59,19 @@ public class NotificationServiceImpl implements NotificationService{
         Message message = Message.builder()
                 .setNotification(notification)
                 .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
                 .build();
 
         try{
             String response = FirebaseMessaging.getInstance().send(message);
 
+            log.info(response);
+
             //데이터베이스 저장
             NotificationEntity notificationEntity = new NotificationEntity();
             notificationEntity.setNotificationTitle(title);
             notificationEntity.setNotificationContent(body);
-            notificationEntity.setNotificationStatus(NotificationStatus.AUCTION.getStatus());
+            notificationEntity.setNotificationType(type);
             if(index == 1) {
                 notificationEntity.setSeller(false);
                 notificationEntity.setUser(auction.getHighestBidUser());
@@ -83,7 +88,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendStoreNotification(Long storeIdx, String title, String body, Integer index) {
+    public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type) {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new RuntimeException());
 
@@ -110,16 +115,19 @@ public class NotificationServiceImpl implements NotificationService{
         Message message = Message.builder()
                 .setNotification(notification)
                 .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
                 .build();
 
         try{
             String response = FirebaseMessaging.getInstance().send(message);
 
+            log.info(response);
+
             //데이터베이스 저장
             NotificationEntity notificationEntity = new NotificationEntity();
             notificationEntity.setNotificationTitle(title);
             notificationEntity.setNotificationContent(body);
-            notificationEntity.setNotificationStatus(NotificationStatus.STORE.getStatus());
+            notificationEntity.setNotificationType(type);
             if(index == 1) {
                 notificationEntity.setSeller(false);
                 notificationEntity.setUser(store.getConsumer());
@@ -137,7 +145,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendBarterNotification(Long barterIdx, String title, String body, Integer index) {
+    public void sendBarterNotification(Long barterIdx, String title, String body, Integer index, Integer type) {
 
     }
 

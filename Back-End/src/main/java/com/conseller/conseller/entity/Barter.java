@@ -4,12 +4,15 @@ import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHos
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
+import com.conseller.conseller.user.dto.response.UserInfoResponse;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,16 +85,37 @@ public class Barter {
             BarterHostItemDto bhiDto = bhi.toBarterHostItemDto(bhi);
             barterHostItemDtoList.add(bhiDto);
         }
+        User host = barter.getBarterHost();
+        User guest = barter.getBarterCompleteGuest();
+
+        UserInfoResponse hostUserInfoResponse = UserInfoResponse.builder()
+                .userId(host.getUserId())
+                .userEmail(host.getUserEmail())
+                .userNickname(host.getUserNickname())
+                .userProfileUrl(host.getUserProfileUrl())
+                .build();
+
+        UserInfoResponse guestUserInfoResponse = null;
+
+        if(barter.getBarterCompleteGuest() != null) {
+            guestUserInfoResponse = UserInfoResponse.builder()
+                    .userId(guest.getUserId())
+                    .userEmail(guest.getUserEmail())
+                    .userNickname(guest.getUserNickname())
+                    .userProfileUrl(guest.getUserProfileUrl())
+                    .build();
+        }
+
         return BarterResponseDto.builder()
                 .barterIdx(barter.getBarterIdx())
                 .barterName(barter.getBarterName())
                 .barterText(barter.getBarterText())
-                .barterCreatedDate(barter.getBarterCreatedDate())
-                .barterEndDate(barter.getBarterEndDate())
+                .barterCreatedDate(DateTimeConverter.convertString(barter.getBarterCreatedDate()))
+                .barterEndDate(DateTimeConverter.convertString(barter.getBarterEndDate()))
                 .subCategory(barter.getSubCategory().getSubCategoryContent())
                 .preferSubCategory(barter.getPreferSubCategory().getSubCategoryContent())
-                .barterHost(barter.getBarterHost())
-                .barterCompleteGuest(barter.getBarterCompleteGuest())
+                .barterHost(hostUserInfoResponse)
+                .barterCompleteGuest(guestUserInfoResponse)
                 .barterHostItemDtoList(barterHostItemDtoList)
                 .build();
     }

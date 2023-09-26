@@ -19,7 +19,7 @@ public class DateTimeConverter {
         return localDate.atTime(23, 59, 59);
     }
 
-    public String convertString(LocalDateTime dateTime) {
+    public static String convertString(LocalDateTime dateTime) {
 
         //LocaldateTime 포맷터 설정
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");

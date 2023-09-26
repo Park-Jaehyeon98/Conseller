@@ -27,13 +27,27 @@ public interface AuctionMapper {
     Auction registAuctionRequestToAuction(RegistAuctionRequest registAuctionRequest, User user, Gifticon gifticon);
 
     //User, Auction, AuctionBidList -> DetailAuctionResponse 매핑
-    @Mapping(source = "auctionBidList", target = "auctionBidList")
-    @Mapping(source = "user.userIdx", target = "auctionUserIdx")
-    @Mapping(source = "user.userNickname", target = "auctionUserNickname")
-    @Mapping(source = "user.userProfileUrl", target = "auctionUserProfileUrl")
-    @Mapping(source = "user.userDeposit", target = "auctionUserDeposit")
-    @Mapping(source = "auction.auctionText", target = "postContent")
-    DetailAuctionResponse entityToDetailAuctionResponse(User user, Auction auction, List<AuctionBidItemData> auctionBidList);
+    default DetailAuctionResponse entityToDetailAuctionResponse(Auction auction, List<AuctionBidItemData> auctionBidList) {
+        DetailAuctionResponse response = new DetailAuctionResponse();
+
+        response.setAuctionBidList(auctionBidList);
+        response.setAuctionIdx(auction.getAuctionIdx());
+        response.setAuctionUserIdx(auction.getUser().getUserIdx());
+        response.setAuctionUserDeposit(auction.getUser().getUserDeposit());
+        response.setAuctionUserNickname(auction.getUser().getUserNickname());
+        response.setDeposit(false);
+        response.setAuctionEndDate(DateTimeConverter.getInstance().convertString(auction.getAuctionEndDate()));
+        response.setAuctionHighestBid(auction.getAuctionHighestBid());
+        response.setAuctionUserProfileUrl(auction.getUser().getUserProfileUrl());
+        response.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
+        response.setGifticonName(auction.getGifticon().getGifticonName());
+        response.setGifticonEndDate(DateTimeConverter.getInstance().convertString(auction.getGifticon().getGifticonEndDate()));
+        response.setPostContent(auction.getAuctionText());
+        response.setLowerPrice(auction.getLowerPrice());
+        response.setUpperPrice(auction.getUpperPrice());
+
+        return response;
+    }
 
     //AuctionList -> AuctionItemDataList 매핑
     @Named("A2A")

@@ -18,7 +18,20 @@ public class DetailStoreResponse {
 
     private String storeUserProfileUrl;
 
-    private Long storeUserDeposit;
+    private Integer storeUserDeposit;
 
+    private Long storeIdx;
+
+    private String gifticonDataImageName;
+
+    private String gifticonName;
+
+    private String gifticonEndDate;
+
+    private String storeEndDate;
+
+    private Boolean deposit;
+
+    private Integer storePrice;
 
 }

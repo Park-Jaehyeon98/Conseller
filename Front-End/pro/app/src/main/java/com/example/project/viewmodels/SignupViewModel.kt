@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.BasicResponse
-import com.example.project.api.CheckuserIdRequest
-import com.example.project.api.HttpResponse
 import com.example.project.api.RegistRequest
 import com.example.project.api.SignupService
 import com.example.project.api.findIdRequest
 import com.example.project.api.findIdResponse
 import com.example.project.api.findPwRequest
+import com.example.project.di.CustomException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +23,8 @@ class SignupViewModel @Inject constructor(
     private val service: SignupService,
 ) : ViewModel() {
 
-    private val _SignupResponse = MutableStateFlow(HttpResponse(0,""))
-    val signupresponse: StateFlow<HttpResponse> get() = _SignupResponse
+    private val _SignupResponse = MutableStateFlow(false)
+    val signupresponse: StateFlow<Boolean> get() = _SignupResponse
 
 
     private val _CheckEmailResponse = MutableStateFlow(BasicResponse(-1, ""))
@@ -36,12 +35,12 @@ class SignupViewModel @Inject constructor(
     val checkNickname: StateFlow<BasicResponse> get() = _CheckNickNameResponse
 
 
-    private val _CheckPhoneNumber = MutableStateFlow(BasicResponse(-1, ""))
-    val checkPhoneNumber: StateFlow<BasicResponse> get() = _CheckPhoneNumber
+    private val _CheckPhoneNumberResponse = MutableStateFlow(BasicResponse(-1, ""))
+    val checkPhoneNumber: StateFlow<BasicResponse> get() = _CheckPhoneNumberResponse
 
 
-    private val _CheckId = MutableStateFlow(BasicResponse(-1, ""))
-    val checkId: StateFlow<BasicResponse> get() = _CheckId
+    private val _CheckIdResponse = MutableStateFlow(BasicResponse(-1, ""))
+    val checkId: StateFlow<BasicResponse> get() = _CheckIdResponse
 
 
     private val _isLoading = MutableStateFlow(false)
@@ -113,113 +112,102 @@ class SignupViewModel @Inject constructor(
 
     // 회원가입 로직
     fun registerUser(request: RegistRequest) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.regist(request)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _SignupResponse.value = HttpResponse(code = response.code(), message = response.message())
-                        Log.d("RegisterUser", "Registration Successful: ${_SignupResponse.value}")
-                    } else {
-                        _error.value = response.message()
-                        _SignupResponse.value = HttpResponse(code = response.code(), message = response.message())
-                        Log.d("RegisterUser", "Registration Failed: Response Code = ${response.code()}, Error Message = ${response.errorBody()?.string() ?: "Unknown Error"}")
-                    }
+
+                if (response.isSuccessful && response.body() != null) {
+                    _SignupResponse.value=true
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _error.value = e.message
-                }
-                Log.d("RegisterUser", "Exception Occurred: ${e.message}")
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun checkDuplicateNickname(nickname: String) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.checkDuplicateNickName(nickname)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _CheckNickNameResponse.value = response.body() ?: BasicResponse(-1, "")
-                    } else {
-                        _error.value = response.message()
-                    }
+
+                if (response.isSuccessful && response.body() != null) {
+                    _CheckNickNameResponse.value=response.body()!!
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun checkDuplicateEmail(email: String) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.checkDuplicateEmail(email)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _CheckEmailResponse.value = response.body() ?: BasicResponse(-1, "")
-                        Log.d("CheckDuplicateEmail", "Email check successful: ${response.body()}")
-                    } else {
-                        _error.value = response.message()
-                        Log.e("CheckDuplicateEmail", "Email check failed: ${response.message()}")
-                    }
+
+                if (response.isSuccessful && response.body() != null) {
+                    _CheckEmailResponse.value=response.body()!!
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
-                Log.e("CheckDuplicateEmail", "Error during email check", e)
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
-    fun checkDuplicateId(request: CheckuserIdRequest) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+    fun checkDuplicateId(userId:String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
-                val response = service.checkDuplicateId(request)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    Log.d("CheckDuplicateId", "HTTP Status Code: ${response.code()}")
+                val response = service.checkDuplicateId(userId)
 
-                    if (response.isSuccessful) {
-                        _CheckId.value = response.body() ?: BasicResponse(-1, "")
-                        Log.d("CheckDuplicateId", "Id check 성공함: ${response.body()}")
-                    } else {
-                        _error.value = response.message()
-                        Log.e("CheckDuplicateId", "Id check 문제났음: ${response.message()}, HTTP Status Code: ${response.code()}, Response Body: ${response.errorBody()?.string()}")
-                    }
+                if (response.isSuccessful && response.body() != null) {
+                    _CheckIdResponse.value=response.body()!!
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _error.value = e.message
-                    Log.e("CheckDuplicateId", "에러남:", e)
-                }
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
 
     fun checkDuplicatePhoneNumber(phoneNumber: String) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.checkDuplicatePhoneNumber(phoneNumber)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _CheckPhoneNumber.value = response.body() ?: BasicResponse(-1, "")
-                    } else {
-                        _error.value = response.message()
-                    }
+
+                if (response.isSuccessful && response.body() != null) {
+                    _CheckPhoneNumberResponse.value=response.body()!!
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }

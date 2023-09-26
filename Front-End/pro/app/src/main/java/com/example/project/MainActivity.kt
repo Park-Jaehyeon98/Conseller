@@ -43,6 +43,8 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
     // 로그인 여부에 따른 시작 화면 설정
     val startDestination = if (sharedPreferencesUtil.isLoggedIn()) "Login" else "TextLoginPage"
 
+
+
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route

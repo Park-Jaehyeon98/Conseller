@@ -1,6 +1,5 @@
 package com.example.project
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.project.api.CheckuserIdRequest
 import com.example.project.api.RegistRequest
 import com.example.project.reuse_component.CustomDropdown
 import com.example.project.reuse_component.CustomTextField
@@ -51,6 +49,7 @@ import com.example.project.viewmodels.SignupViewModel
 @Composable
 fun SignUpPage(navController: NavHostController) {
     val viewModel: SignupViewModel = hiltViewModel()
+    // 모델 결과
     val signUpResult by viewModel.signupresponse.collectAsState()
 
     // 유효성 검사
@@ -66,52 +65,48 @@ fun SignUpPage(navController: NavHostController) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var nickname by remember { mutableStateOf(TextFieldValue("")) }
     var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
-    var checkPhoneNumber by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var checkPassword by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf("") }
     var account by remember { mutableStateOf("은행명을 선택하세요") }
     var accountBank by remember { mutableStateOf(TextFieldValue("")) }
+
     // 알림
     var showDialog by remember { mutableStateOf(false) }
     var dialogMessage by remember { mutableStateOf("") }
-        val request = RegistRequest(
-            userId = userId.text,
-            userGender=gender,
-            userName=name.text,
-            userAge=if (age.text.isNotBlank()) {
-                Integer.parseInt(age.text)
-            } else {
-                // 기본값 또는 오류 처리
-                0 // 예를 들어, 기본 나이를 0으로 설정하거나 오류 메시지를 표시
-            },
-            userAccount = accountBank.text,
-            userEmail = email,
-            userPassword = password.text,
-            userAccountBank = account,
-            userNickname = nickname.text,
-            userPhoneNumber = phoneNumber.text
-        )
 
-
-    val Checkrequest=CheckuserIdRequest(
-        userId=userId.text
+    // 회원가입 request
+    val request = RegistRequest(
+        userId = userId.text,
+        userGender = gender,
+        userName = name.text,
+        userAge = if (age.text.isNotBlank()) {
+            Integer.parseInt(age.text)
+        } else {
+            // 기본값 또는 오류 처리
+            0 // 예를 들어, 기본 나이를 0으로 설정하거나 오류 메시지를 표시
+        },
+        userAccount = accountBank.text,
+        userEmail = email,
+        userPassword = password.text,
+        userAccountBank = account,
+        userNickname = nickname.text,
+        userPhoneNumber = phoneNumber.text
     )
-    // 이메일 명
+
+
+    // 이메일 명 +  도메인
     var emailPart by remember { mutableStateOf("") }
-    // 이메일 도메인
     var Domain by remember { mutableStateOf("gmail.com") }
 
     // 스크롤
     val scrollState = rememberScrollState()
 
+    // 유효성결과
     val checkMarkId = remember { mutableStateOf(false) }
     val checkMarkNickname = remember { mutableStateOf(false) }
     val checkMarkPhone = remember { mutableStateOf(false) }
     val checkMarkEmail = remember { mutableStateOf(false) }
-
-    // 인증번호 TextField의 표시 여부를 관리하는 상태
-    val showCheckPhoneNumber = remember { mutableStateOf(false) }
 
     // 이메일 검증
     fun isValidEmail(email: String): Boolean {
@@ -137,48 +132,67 @@ fun SignUpPage(navController: NavHostController) {
         return 1 <= name.length && name.length <= 45
     }
 
-
     //유효성 검사 상태들
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var checkPasswordError by remember { mutableStateOf<String?>(null) }
+    var idError by remember { mutableStateOf<String?>(null) }
     var nameError by remember { mutableStateOf<String?>(null) }
     var nickNameError by remember { mutableStateOf<String?>(null) }
-
+    var phoneError by remember { mutableStateOf<String?>(null) }
 
     // signupmodal 용
     var Signstatus by remember { mutableStateOf(0) }
+
     // 로그인 결과에 따른 값 변화
     LaunchedEffect(Signstatus) {
-        if (signUpResult.code==200) {
-            navController.navigate("Home") {
+        if (signUpResult) {
+            navController.navigate("TextLoginPage") {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true
             }
-            // 성공 모달 표시
             dialogMessage = "회원가입 성공"
             showDialog = true
         }
-        if(signUpResult.code>=400){
-            // 실패 모달 표시
+        if (!signUpResult) {
             dialogMessage = "회원가입이 실패했습니다."
             showDialog = true
         }
     }
-    //인증마크
 
+    //인증마크 관리 로직
     LaunchedEffect(checkIdResult, checkEmailResult, checkPhoneNumberResult, checkNickNameResult) {
         if (checkIdResult.status == 1) {
             checkMarkId.value = true
+            idError=null
+        } else if (checkIdResult.status == 0) {
+            checkMarkId.value = false
+            idError = "중복된 아이디입니다"
+
         }
         if (checkEmailResult.status == 1) {
             checkMarkEmail.value = true
+            emailError=null
+        }else if (checkEmailResult.status == 0) {
+            checkMarkEmail.value = false
+            emailError = "중복된 이메일입니다"
+
         }
         if (checkPhoneNumberResult.status == 1) {
             checkMarkPhone.value = true
+            phoneError=null
+        }else if (checkPhoneNumberResult.status == 0) {
+            checkMarkPhone.value = false
+            phoneError="중복된 번호입니다"
+
         }
         if (checkNickNameResult.status == 1) {
             checkMarkNickname.value = true
+            nickNameError=null
+        }else if (checkNickNameResult.status == 0) {
+            checkMarkNickname.value = false
+            nickNameError="중복된 닉네임입니다"
+
         }
     }
 
@@ -188,7 +202,6 @@ fun SignUpPage(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .size(350.dp, 700.dp)
-//                .border(BorderStroke(0.dp, BrandColor1), shape = RoundedCornerShape(16.dp))
                 .padding(20.dp)
         ) {
             Column(
@@ -208,28 +221,44 @@ fun SignUpPage(navController: NavHostController) {
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.verticalScroll(scrollState)
                 ) {
+
+                    // 이름
                     CustomTextField(label = "이름", value = name, onValueChange = {
                         name = it
                         nameError = if (isValidName(it.text)) null else "이름은 1글자 이상 45글자 이하여야 합니다."
                     }, error = nameError, showIcon = isValidName(name.text))
-                    GenderSelection(label="성별",gender = gender, onGenderSelected = { selectedGender ->
-                        gender = selectedGender
-                    })
-                    CustomTextField(label = "나이", value = age, onValueChange = {
-                            newValue ->
+
+                    //성별
+                    GenderSelection(
+                        label = "성별",
+                        gender = gender,
+                        onGenderSelected = { selectedGender ->
+                            gender = selectedGender
+                        })
+
+                    //나이
+                    CustomTextField(label = "나이", value = age, onValueChange = { newValue ->
                         if (newValue.text.all { it.isDigit() }) {
                             age = newValue
                         }
                     })
 
+                    //아이디
                     CustomTextFieldWithButton(
                         label = "아이디",
                         buttonLabel = "중복확인",
                         value = userId,
-                        onValueChange = { userId = it },
-                        onButtonClick = { viewModel.checkDuplicateId(Checkrequest) },
-                        showIcon = checkMarkId.value
+                        onValueChange = {
+                            userId = it
+                        },
+                        onButtonClick = {
+                            viewModel.checkDuplicateId(userId.text)
+                        },
+                        showIcon = checkMarkId.value,
+                        error = idError
                     )
+
+                    //비밀번호
                     CustomTextField(
                         label = "비밀번호", value = password,
                         onValueChange = {
@@ -243,6 +272,7 @@ fun SignUpPage(navController: NavHostController) {
                         showIcon = isValidPassword(password.text) && checkPassword.text == password.text,
                     )
 
+                    //비밀번호 체크
                     CustomTextField(
                         label = "비밀번호 확인", value = checkPassword, onValueChange = {
                             checkPassword = it
@@ -252,8 +282,9 @@ fun SignUpPage(navController: NavHostController) {
                         // 비밀번호 확인 필드 아래에 오류 메시지 표시
                         error = checkPasswordError
                     )
-                    CustomTextFieldWithButton(
-                        label = "닉네임",
+
+                    //닉네임
+                    CustomTextFieldWithButton(label = "닉네임",
                         buttonLabel = "중복확인",
                         value = nickname,
                         onValueChange = {
@@ -265,6 +296,8 @@ fun SignUpPage(navController: NavHostController) {
                         showIcon = checkMarkNickname.value,
                         error = nickNameError
                     )
+
+                    //전화번호
                     CustomTextFieldWithButton(
                         label = "전화번호",
                         buttonLabel = "중복확인",
@@ -275,9 +308,11 @@ fun SignUpPage(navController: NavHostController) {
                             }
                         },
                         onButtonClick = { viewModel.checkDuplicatePhoneNumber(phoneNumber.text) },
-                        showIcon = checkMarkPhone.value
+                        showIcon = checkMarkPhone.value,
+                        error=phoneError
                     )
 
+                    // 이메일
                     EmailTextFieldWithDomain(
                         label = "이메일",
                         emailValue = emailPart,
@@ -294,11 +329,13 @@ fun SignUpPage(navController: NavHostController) {
                             emailError = if (isValidEmail(email)) null else "이메일 형식이 틀립니다."
                         },
                         showIcon = checkMarkEmail.value,
-                        )
+                    )
 
+                    //이메일 중복확인
                     Button(
-                        onClick = { viewModel.checkDuplicateEmail(email)
-                           },
+                        onClick = {
+                            viewModel.checkDuplicateEmail(email)
+                        },
                         Modifier
                             .size(120.dp, 40.dp)
                             .fillMaxHeight()
@@ -310,10 +347,13 @@ fun SignUpPage(navController: NavHostController) {
                         )
                     }
 
+                    // 은행 확인
                     CustomDropdown(selectedBank = account, onBankSelected = { bank ->
                         account = bank
 
                     })
+
+                    // 계좌번호
                     CustomTextField(
                         label = "계좌번호",
                         value = accountBank,
@@ -323,27 +363,27 @@ fun SignUpPage(navController: NavHostController) {
                             }
                         },
                     )
+
+                    // 알림
                     if (showDialog) {
-                        AlertDialog(
-                            onDismissRequest = {
-                                showDialog = false
-                            },
-                            title = {
-                                Text("알림")
-                            },
-                            text = {
-                                Text(dialogMessage)
-                            },
-                            confirmButton = {
-                                Button(onClick = { showDialog = false }) {
-                                    Text("확인")
-                                }
+                        AlertDialog(onDismissRequest = {
+                            showDialog = false
+                        }, title = {
+                            Text("알림")
+                        }, text = {
+                            Text(dialogMessage)
+                        }, confirmButton = {
+                            Button(onClick = { showDialog = false }) {
+                                Text("확인")
                             }
-                        )
+                        })
                     }
+
                     Button(
-                        onClick = { viewModel.registerUser(request)
-                            Signstatus++ },
+                        onClick = {
+                            viewModel.registerUser(request)
+                            Signstatus++
+                        },
                         Modifier.size(120.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(BrandColor1)
                     ) {
@@ -356,10 +396,10 @@ fun SignUpPage(navController: NavHostController) {
 }
 
 
-
+// 성별 선택
 @Composable
-fun GenderSelection(label:String,gender: String, onGenderSelected: (String) -> Unit) {
-    Column(modifier=Modifier.fillMaxWidth()) {
+fun GenderSelection(label: String, gender: String, onGenderSelected: (String) -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = label, fontSize = 19.sp, fontWeight = FontWeight.Bold)
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)
@@ -369,8 +409,7 @@ fun GenderSelection(label:String,gender: String, onGenderSelected: (String) -> U
                     onGenderSelected("M")
                 }, colors = ButtonDefaults.buttonColors(
                     if (gender == "M") BlueChecker else BrandColor1
-                ),
-                modifier = Modifier.weight(5f)
+                ), modifier = Modifier.weight(5f)
             ) {
                 Text("남성", fontSize = 22.sp)
             }
@@ -379,9 +418,8 @@ fun GenderSelection(label:String,gender: String, onGenderSelected: (String) -> U
                 onClick = {
                     onGenderSelected("F")
                 }, colors = ButtonDefaults.buttonColors(
-                    if (gender == "F")  Color(0xFFEC9393) else BrandColor1
-                ),
-                modifier = Modifier.weight(5f)
+                    if (gender == "F") Color(0xFFEC9393) else BrandColor1
+                ), modifier = Modifier.weight(5f)
             ) {
                 Text("여성", fontSize = 22.sp)
             }

@@ -11,9 +11,6 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <!--usesCleartextTraffic networkSecurityConfig 지워야함 -->
-    <!-- android:usesCleartextTraffic="true"-->
-    <!--android:networkSecurityConfig="@xml/network_security_config"-->
 
     <application
         android:name=".Application"

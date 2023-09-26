@@ -1,10 +1,6 @@
 package com.example.project.api
 
-import android.net.Uri
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -13,10 +9,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.PartMap
 import retrofit2.http.Path
-import java.net.URL
-import java.time.LocalDateTime
 
 interface MyPageService {
 
@@ -31,15 +24,6 @@ interface MyPageService {
     ): Response<myStoreItems>
 
 
-    @GET("/api/user/{userIdx}/auction-bid")
-    suspend fun getUserAuctionBid(
-        @Path("userIdx") useridx: Long,
-    ): Response<myAuctionBidItems>
-
-    @GET("/api/user/{userIdx}/auction")
-    suspend fun getUserAuction(
-        @Path("userIdx") useridx: Long,
-    ): Response<myAuctionItems>
 
     @GET("/api/user/{userIdx}/barter")
     suspend fun getUserBarter(
@@ -50,8 +34,6 @@ interface MyPageService {
     suspend fun getUserBarterRequest(
         @Path("userIdx") useridx: Long,
     ): Response<myBarterRequestItems>
-
-
 
 
     // 이미지 업로드
@@ -101,6 +83,7 @@ data class userUploadGifticonResponse(
     val subCategory: Int,
     val mainCategory: Int
 )
+
 
 data class userModifyRequest(
     val userNickname: String,
@@ -177,7 +160,15 @@ data class myAuctionBidData(
     val auctionRegistedDate: String,
     val auctionBidStatus: String,
     val userIdx: Long,
-    val auctionIdx: Long
+    val auctionIdx: Long,
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+    val auctionEndDate: String,
+    val deposit: Boolean,
+    val upperPrice: Int,
+    val lowerPrice: Int,
+    val auctionHighestBid: Int
 )
 
 data class myBarterItems(

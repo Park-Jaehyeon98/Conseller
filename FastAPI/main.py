@@ -78,7 +78,7 @@ def crop_kakao(image_file):
         return ocr_result
 
     except Exception as e:
-
+        logging.warn(e)
         raise HTTPException(status_code=502, detail=str(e))
     
 def crop_ssafy(image_file):
@@ -172,6 +172,7 @@ def perform_ocr():
 
         return result
     except Exception as e:
+        logging.warn(e)
         raise HTTPException(status_code=504, detail=str(e))
 
 # 이미지 업로드 및 OCR 수행
@@ -303,4 +304,5 @@ def ocr_image(category: int = Form(...), image: UploadFile = File(...)):
         return data  # JSON 데이터와 이미지 데이터를 함께 반환
 
     except HTTPException as e:
+        logging.warn(e)
         raise HTTPException(status_code=e.status_code, detail=e.detail)

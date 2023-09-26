@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface BlackListRepository extends JpaRepository<BlackList, Long> {
     boolean existsByAccessToken(String token);
-    boolean existsByRefreshToken(String token);
+    boolean existsByUser_RefreshToken(String token);
 }

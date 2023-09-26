@@ -20,8 +20,8 @@ public class BarterRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long barterRequestIdx;
 
-    @Enumerated(EnumType.STRING)
-    private RequestStatus barterRequestStatus;
+    @Column(name = "barter_request_status")
+    private String barterRequestStatus = RequestStatus.WAIT.getStatus();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barter_idx", nullable = false)
@@ -36,7 +36,7 @@ public class BarterRequest {
 
     @Builder
     public BarterRequest(Barter barter, User user){
-        this.barterRequestStatus = RequestStatus.WAIT;
+        this.barterRequestStatus = RequestStatus.WAIT.getStatus();
         this.barter = barter;
         this.user = user;
     }

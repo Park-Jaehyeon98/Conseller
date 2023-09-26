@@ -25,12 +25,24 @@ public interface StoreMapper {
     Store registStoreRequestToStore(RegistStoreRequest request, User user, Gifticon gifticon);
 
     //User, Store -> DetailStoreResponse 매핑
-    @Mapping(source = "user.userIdx", target = "storeUserIdx")
-    @Mapping(source = "user.userNickname", target = "storeUserNickname")
-    @Mapping(source = "user.userProfileUrl", target = "storeUserProfileUrl")
-    @Mapping(source = "user.userDeposit", target = "storeUserDeposit")
-    @Mapping(source = "store.storeText", target = "postContent")
-    DetailStoreResponse entityToDetailStoreResponse(User user, Store store);
+    default DetailStoreResponse entityToDetailStoreResponse(Store store) {
+        DetailStoreResponse response = new DetailStoreResponse();
+
+        response.setPostContent(store.getStoreText());
+        response.setStoreUserIdx(store.getUser().getUserIdx());
+        response.setStoreUserNickname(store.getUser().getUserNickname());
+        response.setStoreUserProfileUrl(store.getUser().getUserProfileUrl());
+        response.setStoreUserDeposit(store.getUser().getUserDeposit());
+        response.setStoreIdx(store.getStoreIdx());
+        response.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
+        response.setGifticonName(store.getGifticon().getGifticonName());
+        response.setGifticonEndDate(DateTimeConverter.getInstance().convertString(store.getGifticon().getGifticonEndDate()));
+        response.setStoreEndDate(DateTimeConverter.getInstance().convertString(store.getStoreEndDate()));
+        response.setDeposit(false);
+        response.setStorePrice(store.getStorePrice());
+
+        return response;
+    }
 
     //StoreList -> StoreItemDataList 매핑
     @Named("S2S")

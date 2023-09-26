@@ -1,11 +1,12 @@
 package com.conseller.conseller.notification;
 
 import com.conseller.conseller.auction.auction.AuctionRepository;
-import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
+import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
 import com.conseller.conseller.store.StoreRepository;
@@ -32,8 +33,8 @@ public class NotificationServiceImpl implements NotificationService{
     private final NotificationRepository notificationRepository;
     private final DateTimeConverter dateTimeConverter;
     private final UserRepository userRepository;
-    private final BarterRepository barterRepository;
     private final BarterRequestRepository barterRequestRepository;
+    private final GifticonRepository gifticonRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
@@ -209,6 +210,10 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type) {
+        Gifticon gifticon = gifticonRepository.findById(gifticonIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
+
+        
 
     }
 
@@ -259,6 +264,17 @@ public class NotificationServiceImpl implements NotificationService{
         NotificationListResponse response = new NotificationListResponse(notificationItemDataList);
 
         return response;
+    }
+
+    @Override
+    public void getAnswer(Long userIdx, NotificationAnswerRequest request) {
+        NotificationEntity notification = notificationRepository.findById(request.getNotificationIdx())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 알림입니다."));
+
+        notification.setNotificationType(6);
+        
+        //알림 로직
+
     }
 
 

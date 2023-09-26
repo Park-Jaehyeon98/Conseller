@@ -1,5 +1,6 @@
 package com.conseller.conseller.notification;
 
+import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
 
 public interface NotificationService {
@@ -15,4 +16,5 @@ public interface NotificationService {
 
     public NotificationListResponse getNotificationList(Long userIdx);
 
+    public void getAnswer(Long userIdx, NotificationAnswerRequest request);
 }

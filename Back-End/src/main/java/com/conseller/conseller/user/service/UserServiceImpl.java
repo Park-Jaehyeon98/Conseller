@@ -2,12 +2,14 @@ package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
+import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.StoreRepository;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
@@ -18,6 +20,7 @@ import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
+import com.conseller.conseller.utils.jwt.BlackListRepository;
 import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,6 +45,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+    private final BlackListRepository blackListRepository;
     private final UserValidator userValidator;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -92,7 +98,7 @@ public class UserServiceImpl implements UserService {
         }
 
         //입력한 유저가 사용 제한된 유저인지 확인
-        if (UserStatus.RESTRICTED.equals(user.getUserStatus())) {
+        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
             throw new RuntimeException("서비스 이용 제한된 유저입니다.");
         }
 
@@ -124,6 +130,9 @@ public class UserServiceImpl implements UserService {
         user.setUserEmail(userInfoRequest.getUserEmail());
         user.setUserAccount(userInfoRequest.getUserAccount());
         user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+
+        //비밀번호 암호화
+        user.encryptPassword(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -214,27 +223,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<Gifticon> userGifticons = user.getGifticons();
-
-        List<GifticonResponse> userGifticonsResponse = new ArrayList<>();
-
-        for (Gifticon gifticon : userGifticons) {
-            userGifticonsResponse.add(GifticonResponse.builder()
-                    .gifticonIdx(gifticon.getGifticonIdx())
-                    .gifticonBarcode(gifticon.getGifticonBarcode())
-                    .gifticonName(gifticon.getGifticonName())
-                    .gifticonStartDate(dateTimeConverter.convertString(gifticon.getGifticonStartDate()))
-                    .gifticonEndDate(dateTimeConverter.convertString(gifticon.getGifticonEndDate()))
-                    .gifticonAllImageUrl(gifticon.getGifticonAllImageUrl())
-                    .gifticonStatus(gifticon.getGifticonStatus())
-                    .gifticonDataImageUrl(gifticon.getGifticonDataImageUrl())
-                    .userIdx(gifticon.getUser().getUserIdx())
-                    .subCategoryIdx(gifticon.getSubCategory().getSubCategoryIdx())
-                    .mainCategoryIdx(gifticon.getMainCategory().getMainCategoryIdx())
-                    .build()
-            );
-        }
-        return userGifticonsResponse;
+        return user.getGifticons()
+                .stream()
+                .map(Gifticon::toResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -258,7 +250,7 @@ public class UserServiceImpl implements UserService {
                     }
 
                     if (store.getConsumer() != null) {
-                        response.consumeridx(store.getConsumer().getUserIdx());
+                        response.consumerIdx(store.getConsumer().getUserIdx());
                     }
 
             storeResponses.add(response.build());
@@ -268,19 +260,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<DetailAuctionResponse> getUserAuctions(long userIdx) {
+    public List<StoreResponse> getUserPurchaseStores(long userIdx) {
+        List<Store> userPurchaseStores = storeRepository.findStoresByConsumerIdx(userIdx);
+        List<StoreResponse> storeResponses = new ArrayList<>();
+
+        for (Store store : userPurchaseStores) {
+            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
+                    .storeIdx(store.getStoreIdx())
+                    .gifticonIdx(store.getGifticon().getGifticonIdx())
+                    .storePrice(store.getStorePrice())
+                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
+                    .storeText(store.getStoreText())
+                    .storeStatus(store.getStoreStatus());
+
+            if (store.getStoreEndDate() != null) {
+                response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
+            }
+
+            if (store.getConsumer() != null) {
+                response.consumerIdx(store.getConsumer().getUserIdx());
+            }
+
+            storeResponses.add(response.build());
+        }
+
+        return storeResponses;
+    }
+
+    @Override
+    public List<AuctionItemData> getUserAuctions(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<DetailAuctionResponse> detailAuctionResponses = new ArrayList<>();
-
-        for (Auction auction : user.getAuctions()) {
-            List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
-            DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidItemDataList);
-            detailAuctionResponses.add(detailAuctionResponse);
-        }
-
-        return detailAuctionResponses;
+        return AuctionMapper.INSTANCE.auctionsToItemDatas(user.getAuctions());
     }
 
     @Override
@@ -331,21 +343,9 @@ public class UserServiceImpl implements UserService {
 
             List<GifticonResponse> barterGuestItems = new ArrayList<>();
 
+            //물물 교환 요청 기프티콘들을 dto로 변환
             for (BarterGuestItem item : barterRequest.getBarterGuestItemList()) {
-                GifticonResponse gifticon = GifticonResponse.builder()
-                        .gifticonIdx(item.getGifticon().getGifticonIdx())
-                        .gifticonBarcode(item.getGifticon().getGifticonBarcode())
-                        .gifticonName(item.getGifticon().getGifticonName())
-                        .gifticonStatus(item.getGifticon().getGifticonStatus())
-                        .gifticonAllImageUrl(item.getGifticon().getGifticonAllImageUrl())
-                        .gifticonDataImageUrl(item.getGifticon().getGifticonDataImageUrl())
-                        .gifticonStartDate(dateTimeConverter.convertString(item.getGifticon().getGifticonStartDate()))
-                        .gifticonEndDate(dateTimeConverter.convertString(item.getGifticon().getGifticonEndDate()))
-                        .userIdx(item.getGifticon().getUser().getUserIdx())
-                        .mainCategoryIdx(item.getGifticon().getMainCategory().getMainCategoryIdx())
-                        .subCategoryIdx(item.getGifticon().getSubCategory().getSubCategoryIdx())
-                        .build();
-
+                GifticonResponse gifticon = item.getGifticon().toResponseDto();
                 barterGuestItems.add(gifticon);
             }
 
@@ -363,9 +363,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(long userIdx) {
+    public void deleteUser(long userIdx, String token) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        //블랙리스트에 토큰 저장
+        BlackList blackList = BlackList.builder()
+                .accessToken(token)
+                .user(user)
+                .build();
+        blackListRepository.save(blackList);
+
+        //액세스 토큰과 리프레쉬 토큰을 모두 삭제해야함.
+        user.setRefreshToken(null);
         user.setUserDeletedDate(LocalDateTime.now());
     }
 

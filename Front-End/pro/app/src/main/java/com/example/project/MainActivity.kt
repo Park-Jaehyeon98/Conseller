@@ -63,12 +63,15 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("Home") { HomePage(navController = navController) }
                     composable("MyPage") { MyPage(navController = navController) }
                     composable("MyPageModify") { MyPageModifyPage(navController = navController) }
-                    composable("MyPageValid") { MyPageValidPage(navController = navController) }
+                    composable("MyModifyPageValidPage") { MyModifyPageValidPage(navController = navController) }
+                    composable("MyDeletePageValidPage") { MyDeletePageValidPage(navController = navController) }
+
                     composable("MypageCoupon") { MypageCoupon(navController = navController) }
                     composable("MypageBarter") { MypageBarter(navController = navController) }
                     composable("MypageStore") { MypageStore(navController = navController) }
                     composable("MypageAuction") { MypageAuction(navController = navController) }
                     composable("MyGifticonAdd") { GifticonAddPage(navController = navController) }
+                    composable("MypageDelete") { MypageDelete(navController = navController) }
                     composable("MyGifticonAddDetail") { GifticonAddDetailPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
 

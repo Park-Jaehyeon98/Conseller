@@ -7,6 +7,7 @@ import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -86,6 +87,11 @@ interface MyPageService {
         @Path("userIdx") userIdx:Long,
         @Body request: userModifyRequest
     ) :Response<userModifyResponse>
+
+    @DELETE("api/user/{userIdx}")
+    suspend fun deleteUser(
+        @Path("userIdx") userIdx:Long,
+    ) :Response<Void>
 }
 
 data class userUploadGifticonResponse(
@@ -121,7 +127,7 @@ data class uploadImageResponse(
 )
 
 data class userInfoResponse(
-    val userProfileUrl: Uri?=null,
+    val userProfileUrl: String?,
     val userPassword: String,
     val userNickname: String,
     val userEmail: String,
@@ -214,5 +220,4 @@ data class myStoreData(
     val gifticonIdx: Long,
     val consumerIdx: Long
 )
-
 

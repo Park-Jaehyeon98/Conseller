@@ -14,7 +14,4 @@ public class LoginRequest {
 
     @NotBlank(message = "비밀번호를 입력해야 합니다.")
     private String userPassword;
-
-    //fcm token
-    private String fcm;
 }

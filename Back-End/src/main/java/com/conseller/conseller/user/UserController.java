@@ -1,11 +1,9 @@
 package com.conseller.conseller.user;
 
-import com.conseller.conseller.auction.auction.AuctionService;
 import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
-import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
@@ -188,6 +186,15 @@ public class UserController {
     public ResponseEntity<Object> deleteUser(@PathVariable long userIdx) {
         userService.deleteUser(userIdx);
         return ResponseEntity.ok().build();
+    }
+
+    //fcm 토큰 발급
+    @PostMapping("/firebaseToken/{userIdx}")
+    public ResponseEntity<Object> getFirebaseToken(@PathVariable Long userIdx, @RequestBody FirebaseRequest request) {
+        userService.getFirebaseToken(userIdx, request);
+
+        return ResponseEntity.ok()
+                .build();
     }
 
 }

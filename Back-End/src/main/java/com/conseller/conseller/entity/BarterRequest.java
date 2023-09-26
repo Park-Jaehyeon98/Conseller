@@ -3,6 +3,7 @@ package com.conseller.conseller.entity;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
+import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,11 +42,23 @@ public class BarterRequest {
         this.user = user;
     }
 
-    public BarterRequestResponseDto toBarterRequestResponseDto(BarterRequest barterRequest, BarterResponseDto barterResponseDto) {
+    public BarterRequestResponseDto toBarterRequestResponseDto(BarterRequest barterRequest) {
+        User user = barterRequest.getUser();
+        UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                .userId(user.getUserId())
+                .userNickname(user.getUserNickname())
+                .userEmail(user.getUserEmail())
+                .userProfileUrl(user.getUserProfileUrl())
+                .userAccount(user.getUserAccount())
+                .userAccountBank(user.getUserAccountBank())
+                .userPhoneNumber(user.getUserPhoneNumber())
+                .build();
+
         return BarterRequestResponseDto.builder()
+                .barterIdx(barterRequest.getBarterRequestIdx())
                 .barterRequestStatus(barterRequest.getBarterRequestStatus())
-                .barterResponse(barterResponseDto)
-                .user(barterRequest.getUser())
+                .barterIdx(barterRequest.getBarter().getBarterIdx())
+                .user(userInfoResponse)
                 .build();
     }
 }

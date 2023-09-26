@@ -3,19 +3,17 @@ package com.example.project.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.GifticonRequestDTO
-import com.example.project.api.MyService
 import com.example.project.api.OcrService
 import com.example.project.api.UploadGifticonResponse
-import com.example.project.api.uploadImageResponse
+import com.example.project.api.ocrCategoryRequest
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,28 +43,22 @@ class OcrViewModel @Inject constructor(
     fun getUserNickName(): String? {
         return sharedPreferencesUtil.getUserNickname()
     }
+
     //기프티콘 업로드(OCR)
-    fun uploadGifticon(category:Int, image: MultipartBody.Part) {
-        _isLoading.value = true
+    fun uploadGifticon(category: Int, image: MultipartBody.Part) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
-                val response = OcrService.uploadOcrGifticon(category, image)
-                if (response.isSuccessful) {
-                    _uploadGifticonResponse.value = response.body() ?: UploadGifticonResponse(
-                        "",
-                        "",
-                        "",
-                        ""
-                    )
-                    Log.d("OcrViewModel", "Upload successful: ${_uploadGifticonResponse.value}")
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "서버 error"
-                    _error.value = errorMessage
-                    Log.e("OcrViewModel", "Error uploading gifticon: $errorMessage")
+                val response = OcrService.uploadOcrGifticon(category,image)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _uploadGifticonResponse.value=response.body()!!
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
-                Log.e("OcrViewModel", "Exception while uploading gifticon", e)
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }

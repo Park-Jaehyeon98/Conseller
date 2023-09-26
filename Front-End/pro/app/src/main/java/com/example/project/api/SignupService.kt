@@ -12,7 +12,7 @@ interface SignupService {
 
     //회원가입 API
     @POST("api/user")
-    suspend fun regist(@Body request:RegistRequest ): Response<HttpResponse>
+    suspend fun regist(@Body request:RegistRequest ): Response<Void>
 
     @POST("api/user/nickname")
     suspend fun checkDuplicateNickName(
@@ -26,7 +26,7 @@ interface SignupService {
 
     @POST("api/user/id")
     suspend fun checkDuplicateId(
-        @Body request: CheckuserIdRequest
+        @Body userId: String
     ): Response<BasicResponse>
 
     @POST("api/user/phone-number")
@@ -68,15 +68,6 @@ data class  BasicResponse( // 일반적인 결론일 경우
     val message :String,
 )
 
-data class HttpResponse(
-    val code:Int,
-    val message:String
-)
-
-// 전부 다 리펙토링 해야됨
-data class CheckuserIdRequest(
-    val userId:String
-)
 
 data class findIdRequest(
     val userEmail:String,

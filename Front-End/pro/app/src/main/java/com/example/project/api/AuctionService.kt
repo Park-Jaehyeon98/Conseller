@@ -77,6 +77,17 @@ interface AuctionService {
     ): Response<Void>
 
 
+    // 내 경매 내역 불러오기 API
+    @GET("/api/user/{userIdx}/auction")
+    suspend fun getUserAuction(
+        @Path("userIdx") useridx: Long,
+    ): Response<MyAuctionResponse>
+
+    // 내 입찰 내역 불러오기 API
+    @GET("/api/user/{userIdx}/auction-bid")
+    suspend fun getUserAuctionBid(
+        @Path("userIdx") useridx: Long,
+    ): Response<myAuctionBidItems>
 }
 
 // 목록, 검색 요청 DTO
@@ -93,6 +104,10 @@ data class AuctionResponse(
     val totalElements: Long,
     val totalPages: Int,
     val items: List<AuctionItemData>
+)
+
+data class MyAuctionResponse(
+    val items:List<AuctionItemData>
 )
 
 // 경매 등록 요청 DTO

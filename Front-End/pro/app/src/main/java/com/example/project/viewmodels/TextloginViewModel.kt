@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.BasicResponse
-import com.example.project.api.HttpResponse
 import com.example.project.api.LoginService
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.api.IdPwLoginResponse

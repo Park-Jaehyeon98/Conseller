@@ -65,63 +65,6 @@ object NetworkModule {
             .build()
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil, refreshTokenService: MyService): OkHttpClient {
-//        return OkHttpClient.Builder()
-//            .addInterceptor { chain ->
-//                val token = sharedPreferencesUtil.getUserToken()
-//                val request = chain.request().newBuilder()
-//                    .addHeader("Authorization", "Bearer $token")
-//                    .build()
-//                chain.proceed(request)
-//            }
-//            .authenticator(object : Authenticator {
-//                override fun authenticate(route: Route?, response: okhttp3.Response): Request? {
-//                    if (response.code == 403) {
-//                        val userIdx = sharedPreferencesUtil.getUserId()
-//                        try {
-//                            val refreshTokenResponse = refreshTokenService.refreshToken(userIdx).execute()
-//                            if (refreshTokenResponse.isSuccessful) {
-//                                val newAccessToken = refreshTokenResponse.body()?.accessToken
-//                                if(newAccessToken != null) {
-//                                    sharedPreferencesUtil.setUserToken(newAccessToken)
-//                                    return response.request.newBuilder()
-//                                        .header("Authorization", "Bearer $newAccessToken")
-//                                        .build()
-//                                }
-//                            }
-//                        } catch (e: Exception) {
-//                        }
-//                    }else if(
-//                        response.code==403
-//                    ){
-//                        sharedPreferencesUtil.setLoggedInStatus(false)
-//                    }
-//                    return null
-//                }
-//            })
-//            .build()
-//    }
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-//        return Retrofit.Builder()
-//            .baseUrl("https://j9b207.p.ssafy.io")
-//            .client(okHttpClient)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(): Retrofit {
-//        return Retrofit.Builder()
-//            .baseUrl("https://j9b207.p.ssafy.io/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
-
     @Provides
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginService {

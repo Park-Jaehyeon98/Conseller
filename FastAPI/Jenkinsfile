@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    
+    environment {
+        // AWS EC2 인스턴스에 연결할 수 있는 SSH 키 정보 설정
+        SSH_KEY = credentials('fsddcx8624')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Git 저장소에서 FastAPI 애플리케이션 코드를 가져옵니다.
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: 'fastapi']], // 사용할 브랜치 이름을 여기에 설정
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'CheckoutOption', timeout: 60], [$class: 'GitLFSPull'], [$class: 'WipeWorkspace']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: 'your-git-credentials-id', url: 'https://lab.ssafy.com/s09-fintech-finance-sub2/S09P22B207.git']]])
+            }
+        }
+        
+        stage('Build and Package') {
+            steps {
+                sh 'pip install -r requirements.txt'
+                // Docker 이미지 빌드를 위해 FastAPI 애플리케이션을 패키징합니다.
+                sh 'docker build -t fastapi-app .'
+            }
+        }
+        
+        stage('Deploy to AWS EC2') {
+            steps {
+                // AWS EC2 인스턴스로 Docker 이미지를 배포합니다.
+                sh "echo '$authorized_keys' > ssh_key.pem"
+                sh 'chmod 400 ssh_key.pem'
+                sh 'docker save fastapi | ssh -o "StrictHostKeyChecking=no" -i ssh_key.pem ec2-fsddcx8624@gmail.com-ec2-instance "docker load"'
+            }
+        }
+    }
+    
+    post {
+        success {
+            // 배포가 성공하면 여기에 추가 작업을 수행할 수 있습니다.
+        }
+        failure {
+            // 배포가 실패하면 여기에 추가 작업을 수행할 수 있습니다.
+        }
+    }
+}

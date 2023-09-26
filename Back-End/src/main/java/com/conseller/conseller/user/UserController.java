@@ -5,6 +5,7 @@ import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
@@ -28,6 +29,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     //회원가입
     @PostMapping
@@ -192,6 +194,8 @@ public class UserController {
     @PostMapping("/firebaseToken/{userIdx}")
     public ResponseEntity<Object> getFirebaseToken(@PathVariable Long userIdx, @RequestBody FirebaseRequest request) {
         userService.getFirebaseToken(userIdx, request);
+
+//        notificationService.sendNotification(userIdx,"테스트", "테스트22");
 
         return ResponseEntity.ok()
                 .build();

@@ -9,5 +9,8 @@ public interface NotificationService {
 
     public void sendBarterNotification(Long barterIdx, String title, String body, Integer index, Integer type);
 
+    public void sendNotification(Long userIdx, String title, String body);
+
     public NotificationListResponse getNotificationList(Long userIdx);
+
 }

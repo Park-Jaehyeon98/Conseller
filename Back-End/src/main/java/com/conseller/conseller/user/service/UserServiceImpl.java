@@ -19,6 +19,7 @@ import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
+import com.conseller.conseller.utils.jwt.BlackListRepository;
 import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final BlackListRepository blackListRepository;
     private final UserValidator userValidator;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -371,6 +373,13 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long userIdx, String token) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+
+        //블랙리스트에 토큰 저장
+        BlackList blackList = BlackList.builder()
+                .accessToken(token)
+                .user(user)
+                .build();
+        blackListRepository.save(blackList);
 
         //액세스 토큰과 리프레쉬 토큰을 모두 삭제해야함.
         user.setRefreshToken(null);

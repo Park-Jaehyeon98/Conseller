@@ -8,6 +8,7 @@ import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
+import com.conseller.conseller.user.dto.response.Item;
 import com.conseller.conseller.user.dto.response.LoginResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.user.service.UserService;
@@ -34,6 +35,7 @@ public class UserController {
     //회원가입
     @PostMapping
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+
         log.info("유저 회원가입 호출");
         userService.register(signUpRequest);
         
@@ -58,7 +60,9 @@ public class UserController {
     //액세스 토큰 재발급 요청
     @GetMapping("/refresh/{userIdx}")
     public ResponseEntity<Object> reCreateAccessToken(HttpServletRequest request,@PathVariable long userIdx) {
+
         log.info("액세스 토큰 재발급 요청");
+
         return ResponseEntity.ok()
                 .body(userService.reCreateAccessToken(request, userIdx));
     }
@@ -76,6 +80,7 @@ public class UserController {
     //id 중복체크
     @PostMapping("/id")
     public ResponseEntity<Object> checkId(@RequestBody IdRequest idRequest) {
+
         InfoValidationRequest infoValidationRequest = userService.checkId(idRequest.getUserId());
         return ResponseEntity.ok()
                 .body(infoValidationRequest);
@@ -84,6 +89,7 @@ public class UserController {
     //이메일 중복체크
     @PostMapping("/email")
     public ResponseEntity<Object> checkEmail(@RequestBody EmailRequest emailRequest) {
+
         InfoValidationRequest infoValidationRequest = userService.checkEmail(emailRequest.getUserEmail());
 
         return ResponseEntity.ok()
@@ -93,6 +99,7 @@ public class UserController {
     //전화번호 중복체크
     @PostMapping("/phone-number")
     public ResponseEntity<Object> checkPhoneNumber(@RequestBody PhoneNumberRequest phoneNumberRequest) {
+
         InfoValidationRequest infoValidationRequest = userService.checkPhoneNumber(phoneNumberRequest.getUserPhoneNumber());
 
         return ResponseEntity.ok()
@@ -116,7 +123,9 @@ public class UserController {
     //유저 정보 변경
     @PutMapping("/{userIdx}")
     public ResponseEntity<Void> updateUserInfo(@PathVariable long userIdx, @Valid @RequestBody UserInfoRequest userInfoRequest) {
+
         userService.updateUserInfo(userIdx, userInfoRequest);
+
         return ResponseEntity.ok().build();
     }
 
@@ -130,64 +139,88 @@ public class UserController {
     //내 정보 변경용 비밀번호 확인
     @PostMapping("/valid")
     public ResponseEntity<CommonResponse> checkUserPassword(@RequestBody UserCheckPasswordRequest userCheckPasswordRequest) {
+
         userService.checkUserPassword(userCheckPasswordRequest);
+
         return ResponseEntity.ok().build();
     }
 
     //보증금 넣기
     @PatchMapping("/{userIdx}/deposit")
     public ResponseEntity<Void> deposit(@PathVariable long userIdx, @RequestBody int deposit) {
+
         userService.deposit(userIdx, deposit);
+
         return ResponseEntity.ok().build();
     }
 
     //내 기프티콘 보기
     @GetMapping("{userIdx}/gifticons")
-    public ResponseEntity<List<GifticonResponse>> getUserGifticons(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<GifticonResponse>>> getUserGifticons(@PathVariable long userIdx) {
+
+        Item<List<GifticonResponse>> response = new Item<>(userService.getGifticons(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getGifticons(userIdx));
+                .body(response);
     }
 
     //내 판매 보기
     @GetMapping("/{userIdx}/store")
-    public ResponseEntity<List<StoreResponse>> getUserStores(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<StoreResponse>>> getUserStores(@PathVariable long userIdx) {
+
+        Item<List<StoreResponse>> response = new Item<>(userService.getUserStores(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getUserStores(userIdx));
+                .body(response);
     }
 
     //내 구매 보기
     @GetMapping("/{userIdx}/store/purchase")
-    public ResponseEntity<List<StoreResponse>> getUserPurchaseStores(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<StoreResponse>>> getUserPurchaseStores(@PathVariable long userIdx) {
+        List<StoreResponse> userStores = userService.getUserPurchaseStores(userIdx);
+        Item<List<StoreResponse>> response = new Item<>(userStores);
         return ResponseEntity.ok()
-                .body(userService.getUserPurchaseStores(userIdx));
+                .body(response);
     }
 
     //내 경매 보기
     @GetMapping("/{userIdx}/auction")
-    public ResponseEntity<List<DetailAuctionResponse>> getUserAuctions(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<DetailAuctionResponse>>> getUserAuctions(@PathVariable long userIdx) {
+
+        Item<List<DetailAuctionResponse>> response = new Item<>(userService.getUserAuctions(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getUserAuctions(userIdx));
+                .body(response);
     }
 
     //내 입찰 보기
     @GetMapping("/{userIdx}/auction-bid")
-    public ResponseEntity<List<AuctionBidResponse>> getUserAuctionBids(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<AuctionBidResponse>>> getUserAuctionBids(@PathVariable long userIdx) {
+
+        Item<List<AuctionBidResponse>> response = new Item<>(userService.getUserAuctionBids(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getUserAuctionBids(userIdx));
+                .body(response);
     }
 
     //내 물물교환 보기
     @GetMapping("/{userIdx}/barter")
-    public ResponseEntity<List<BarterResponseDto>> getUserBarters(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<BarterResponseDto>>> getUserBarters(@PathVariable long userIdx) {
+
+        Item<List<BarterResponseDto>> response = new Item<>(userService.getUserBarters(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getUserBarters(userIdx));
+                .body(response);
     }
 
     //내 물물교환 요청 보기
     @GetMapping("/{userIdx}/barter-request")
-    public ResponseEntity<List<MyBarterRequestResponseDto>> getUserBarterRequests(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<MyBarterRequestResponseDto>>> getUserBarterRequests(@PathVariable long userIdx) {
+
+        Item<List<MyBarterRequestResponseDto>> response = new Item<>(userService.getUserBarterRequests(userIdx));
+
         return ResponseEntity.ok()
-                .body(userService.getUserBarterRequests(userIdx));
+                .body(response);
     }
 
     //회원 탈퇴

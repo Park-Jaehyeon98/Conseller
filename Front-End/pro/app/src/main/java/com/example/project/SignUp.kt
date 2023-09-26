@@ -151,7 +151,7 @@ fun SignUpPage(navController: NavHostController) {
     // 로그인 결과에 따른 값 변화
     LaunchedEffect(Signstatus) {
         if (signUpResult.code==200) {
-            navController.navigate("Home") {
+            navController.navigate("TextLoginPage") {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true
             }

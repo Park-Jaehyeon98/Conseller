@@ -122,7 +122,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserGifticon(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyGifticon", "Response: ${response.body()}")
                     _GetMyGifticon.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -130,14 +130,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyGifticon", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyGifticon", errorMessage, e)
             } finally {
             }
         }
@@ -149,7 +149,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserAuction(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyAuction", "Response: ${response.body()}")
                     _GetMyAuction.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -157,14 +157,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyAuction", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyAuction", errorMessage, e)
             } finally {
             }
         }
@@ -176,7 +176,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserAuctionBid(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
                     _GetMyAuctionBid.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -184,14 +184,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyAuctionBid", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyAuctionBid", errorMessage, e)
             } finally {
             }
         }
@@ -203,7 +203,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserBarter(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyBarter", "Response: ${response.body()}")
                     _GetMyBarter.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -211,14 +211,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyBarter", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyBarter", errorMessage, e)
             } finally {
             }
         }
@@ -230,7 +230,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserBarterRequest(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyBarterRequest", "Response: ${response.body()}")
                     _GetMyBarterRequest.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -238,14 +238,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyBarterRequest", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyBarterRequest", errorMessage, e)
             } finally {
             }
         }
@@ -257,7 +257,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserStore(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
+                    Log.d("getMyStore", "Response: ${response.body()}")
                     _GetMyStore.value = response.body()?.items ?: listOf()
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
@@ -265,14 +265,14 @@ class MyPageViewModel @Inject constructor(
                         response.errorBody()?.string() ?: "Unknown"
                     }"
                     _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    Log.e("getMyStore", errorString)
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
                 val errorMessage =
                     "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
                 _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                Log.e("getMyStore", errorMessage, e)
             } finally {
             }
         }

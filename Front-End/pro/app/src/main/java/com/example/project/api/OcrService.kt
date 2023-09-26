@@ -11,7 +11,7 @@ interface OcrService {
 
     // 이미지 전송(OCR)
     @Multipart
-    @POST("gifticon") //OCR URL 변경되어야함
+    @POST("ocr/gifticon") //OCR URL 변경되어야함
     suspend fun uploadOcrGifticon(
         @Part("category") category: Int,
         @Part image : MultipartBody.Part

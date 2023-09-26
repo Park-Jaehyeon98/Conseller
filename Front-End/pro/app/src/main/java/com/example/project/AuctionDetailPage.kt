@@ -41,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -60,7 +62,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     val auctionDetail by auctionViewModel.auctionDetail.collectAsState()   // 글 상세보기했을때 들고온 정보
     val scrollState = rememberScrollState()
     val myAuctions by myAuctionViewModel.myAuctions.collectAsState()
-    val currentBidResponse by auctionViewModel._bidResponseState.collectAsState(null) // 에러메시지
+    val currentBidResponse by auctionViewModel.error.collectAsState() // 에러메시지
     val userIdFromPreference = auctionViewModel.getUserIdFromPreference()
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
@@ -71,6 +73,8 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var showAlertBidDialog by remember { mutableStateOf(false) } // 경고 다이얼로그
     var showConfirmDropDialog by remember { mutableStateOf(false) } // 낙찰하기
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
+    val error by auctionViewModel.error.collectAsState()
+    val myerror by myAuctionViewModel.error.collectAsState()
 
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
@@ -86,14 +90,33 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
     val top3Bids = sortedBids?.take(3)
 
-    LaunchedEffect(key1 = index) {
+    LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
             auctionViewModel.fetchAuctionDetail(it)
         }
     }
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         myAuctionViewModel.fetchMyAuctions()
     }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(myerror) {
+        if (myerror != null) {
+            showSnackbar = true
+            snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -106,28 +129,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            if (showSnackbar) {
-                Snackbar(dismissAction = { showSnackbar = false }) {
-                    Text(text = snackbarText)
-                }
-                LaunchedEffect(key1 = showSnackbar) {
-                    if (showSnackbar && currentBidResponse?.success == true) {
-                        kotlinx.coroutines.delay(3000)
-                        showSnackbar = false
-                    }
-                }
-            }
 
-            if (currentBidResponse?.success == true) {
-                snackbarText = "입찰이 성공적으로 완료되었습니다!"
-                showSnackbar = true
-            } else if (currentBidResponse != null) {
-                snackbarText = currentBidResponse!!.message ?: "입찰에 문제가 발생했습니다."
-                showSnackbar = true
-            } else if (currentBidResponse?.success != true) {
-                snackbarText = "인터넷 연결을 확인해주세요."
-                showSnackbar = true
-            }
 
             currentItem?.let {
                 Box(
@@ -136,6 +138,21 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
                         .padding(8.dp)
                 ) {
+                    if (showSnackbar) {
+                        Snackbar(
+                            modifier = Modifier.align(Alignment.TopCenter)
+                        ) {
+                            Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            )
+                        }
+                    }
+                    if (currentBidResponse == null) {
+                        snackbarText = "입찰이 성공적으로 완료되었습니다!"
+                        showSnackbar = true
+                    } else if (currentBidResponse != null) {
+                        snackbarText = "입찰에 문제가 발생했습니다."
+                        showSnackbar = true
+                    }
                     Column {
 
                         Spacer(modifier = Modifier.height(8.dp))

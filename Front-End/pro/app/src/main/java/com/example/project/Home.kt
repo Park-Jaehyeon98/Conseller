@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -148,10 +149,14 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
 @Composable
 fun HomeLayout4(navController: NavController) {
     val viewModel: AuctionViewModel = hiltViewModel()
-    val MyviewModel: MyAuctionViewModel = hiltViewModel()
+    val myviewModel: MyAuctionViewModel = hiltViewModel()
     val auctionItems by viewModel.auctionItems.collectAsState()
-    val myAuctions by MyviewModel.myAuctions.collectAsState()
+    val myAuctions by myviewModel.myAuctions.collectAsState()
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
+
+    LaunchedEffect(Unit) {
+        myviewModel.fetchMyAuctions()
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth().height(330.dp),

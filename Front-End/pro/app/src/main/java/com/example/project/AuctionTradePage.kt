@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,40 +23,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import com.example.project.api.AuctionTradeCompleteResponseDTO
 import com.example.project.viewmodels.AuctionViewModel
 
 @Composable
 fun AuctionTradePage(index: String?, navController: NavHostController) {
-    val viewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by viewModel.auctionItems.collectAsState()
-    val tradeItems by viewModel.auctionTrades.collectAsState()
-    val cancelTradeResult by viewModel.cancelTradeSuccessful.collectAsState()
-    val paymentCompleted by viewModel.paymentCompleted.collectAsState()
+    val auctionViewModel: AuctionViewModel = hiltViewModel()
+    val auctionItems by auctionViewModel.auctionItems.collectAsState()
+    val tradeItems by auctionViewModel.auctionTrades.collectAsState()
+    val cancelTradeResult by auctionViewModel.cancelTradeSuccessful.collectAsState()
+    val error by auctionViewModel.error.collectAsState() // 에러메시지 확인
 
     val currentItem = auctionItems.find { it.auctionIdx.toString() == index }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showDepositConfirmDialog by remember { mutableStateOf(false) }
     var triggerEffect by remember { mutableStateOf(false) }
+
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = index) {
+    LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
-            viewModel.fetchAccountDetails(it)
+            auctionViewModel.fetchAccountDetails(it)
         }
     }
 
-    LaunchedEffect(key1 = triggerEffect) {
+    LaunchedEffect(triggerEffect) {
         if (triggerEffect) {
             when (cancelTradeResult) {
                 true -> {
@@ -77,6 +75,18 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
             }
         }
     }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -86,6 +96,14 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                if (showSnackbar) {
+                    Snackbar(
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    ) {
+                        Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
                 val imagePainter = rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
@@ -138,15 +156,15 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     SelectButton(
                         text = "예",
                         onClick = {
-                            viewModel.completeAuctionPayment(index!!.toLong())
-                            when (paymentCompleted) {
-                                is AuctionTradeCompleteResponseDTO -> {
-                                    navController.navigate("DesiredDestination") // 원하는 경로로 변경하세요.
+                            auctionViewModel.completeAuctionPayment(index!!.toLong())
+                            when (error) {
+                                null -> {
+                                    navController.navigate("WaitingPage")
                                     showDepositConfirmDialog = false
                                 }
                                 else -> {
                                     showSnackbar = true
-                                    snackbarText = "입금 처리에 실패했습니다. 다시 시도해주세요."
+                                    snackbarText = "응답실패. 완료를 다시 눌러주세요!"
                                     showDepositConfirmDialog = false
                                 }
                             }
@@ -171,7 +189,7 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     SelectButton(
                         text = "네",
                         onClick = {
-                            viewModel.cancelAuctionTrade(index!!.toLong())
+                            auctionViewModel.cancelAuctionTrade(index!!.toLong())
                             triggerEffect = true
                         }
                     )
@@ -183,18 +201,6 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     )
                 }
             )
-        }
-
-        if (showSnackbar) {
-            Snackbar(dismissAction = { showSnackbar = true }) {
-                Text(text = snackbarText)
-            }
-            LaunchedEffect(key1 = showSnackbar) {
-                if (showSnackbar) {
-                    kotlinx.coroutines.delay(3000)
-                    showSnackbar = false
-                }
-            }
         }
     }
 }

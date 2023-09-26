@@ -4,15 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionBidRequestDTO
-import com.example.project.api.AuctionBidResponseDTO
 import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
-import com.example.project.api.AuctionTradeCompleteResponseDTO
 import com.example.project.api.AuctionTradeResponseDTO
-import com.example.project.api.DeleteAuctionResponse
 import com.example.project.api.RegisterAuctionDTO
 import com.example.project.api.UpdateAuctionDTO
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,10 +51,6 @@ class AuctionViewModel @Inject constructor(
     private val _auctionDetail = MutableStateFlow<AuctionDetailResponseDTO?>(null)
     val auctionDetail: StateFlow<AuctionDetailResponseDTO?> = _auctionDetail
 
-    // 경매 입찰 응답
-    private val bidResponseState = MutableStateFlow<AuctionBidResponseDTO?>(null)
-    val _bidResponseState: StateFlow<AuctionBidResponseDTO?> = bidResponseState
-
 
     // 내 경매글 목록
     private val _myAuctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
@@ -74,18 +68,10 @@ class AuctionViewModel @Inject constructor(
     private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
     val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
 
-    // 경매 거래 입금완료
-    private val _paymentCompleted = MutableStateFlow<AuctionTradeCompleteResponseDTO?>(null)
-    val paymentCompleted: StateFlow<AuctionTradeCompleteResponseDTO?> get() = _paymentCompleted
-
 
     // 경매 등록후 네비게이션 리셋
     fun resetNavigation() {
         _navigateToAuctionDetail.value = null
-    }
-
-    init {
-        fetchAuctionItems()
     }
 
     fun changePage(page: Int) {
@@ -117,21 +103,12 @@ class AuctionViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     _auctionItems.value = response.body()!!.items
                     _totalItems.value = response.body()!!.totalElements
-                    Log.d("!!!!!!!!!!","${response}")
-                    Log.d("@@@@@","222222222222222222222")
-                    Log.d("#####","${response.body()}")
-                    Log.d("$$$$$","${response.body()!!.items}")
-                    Log.d("%%%%%","${response.body()!!.totalElements}")
-                } else {
-                    _error.value = "Failed to load data: ${response.message()}"
-                    _auctionItems.value = getSampleData()
-                    Log.d("@@@@@","1111111111111111111")
                 }
-            } catch (e: IOException) {
-                _error.value = "Internet connection failed. Please check your network."
+            } catch (e: CustomException) {
+                _error.value = e.message
+                _auctionItems.value = getSampleData()
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
-                _auctionItems.value = getSampleData()
             } finally {
                 _isLoading.value = false
             }
@@ -150,9 +127,9 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _navigateToAuctionDetail.value = response.body()?.auctionIdx
-                } else {
-                    _error.value = "Failed to register item: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -169,19 +146,13 @@ class AuctionViewModel @Inject constructor(
             try {
                 val updateData = UpdateAuctionDTO(endDate, postContent)
                 val response = service.updateAuctionItem(auctionIdx, updateData)
-                Log.d("!!!!!!!!!!!!!1","${auctionIdx}")
-                Log.d("!!!!!!!!!!!!!1","${updateData}")
 
                 if (response.isSuccessful) {
-                    fetchAuctionDetail(auctionIdx)
                     _error.value = null
-                    Log.d("!!!!!!!!!!!!!1","${response.body()}")
-                    Log.d("!!!!!!!!!!!!!2","${response}")
-                } else {
-                    _error.value = "Failed to update item: ${response.message()}"
-                    Log.d("!!!!!!!!!!!!!3","${response.body()}")
-                    Log.d("!!!!!!!!!!!!!4","${response}")
+                    fetchAuctionDetail(auctionIdx)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -198,18 +169,12 @@ class AuctionViewModel @Inject constructor(
 
             try {
                 val response = service.deleteAuctionItem(auctionIdx)
-
                 if (response.isSuccessful) {
-                    val deleteResponse: DeleteAuctionResponse? = response.body()
-
-                    if (deleteResponse?.success == true) {
-                        fetchAuctionItems()
-                    } else {
-                        _error.value = deleteResponse?.message ?: "Unknown error occurred"
-                    }
-                } else {
-                    _error.value = "Failed to delete item: ${response.message()}"
+                    _error.value = null
+                    fetchAuctionItems()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -229,9 +194,9 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _auctionDetail.value = response.body()
-                } else {
-                    _error.value = "Failed to load auction detail: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -250,11 +215,11 @@ class AuctionViewModel @Inject constructor(
             _error.value = null
             try {
                 val response = service.bidOnAuction(auctionIdx, bidRequest)
-                if (response.isSuccessful && response.body() != null) {
-                    bidResponseState.value = response.body()
-                } else {
-                    _error.value = "Failed to bid on auction: ${response.message()}"
+                if (response.isSuccessful) {
+                    _error.value = null
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -262,6 +227,7 @@ class AuctionViewModel @Inject constructor(
             }
         }
     }
+
 
     // 경매 내 글 목록 불러오기
     fun fetchMyAuctionItems(userIdx: Long) {
@@ -272,9 +238,9 @@ class AuctionViewModel @Inject constructor(
                 val response = service.getMyAuctionItems(userIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _myAuctionItems.value = response.body()!!.items
-                } else {
-                    _error.value = "Failed to load my Auction items: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -292,9 +258,9 @@ class AuctionViewModel @Inject constructor(
                 val response = service.getAuctionTrade(auctionIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _auctionTrade.value = response.body()
-                } else {
-                    _error.value = "Failed to load account details: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -312,10 +278,10 @@ class AuctionViewModel @Inject constructor(
                 val response = service.cancelAuctionTrade(auctionIdx)
                 if (response.isSuccessful) {
                     _cancelTradeSuccessful.value = true
-                } else {
-                    _error.value = "Failed to cancel auction trade: ${response.message()}"
-                    _cancelTradeSuccessful.value = false
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
+                _cancelTradeSuccessful.value = false
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _cancelTradeSuccessful.value = false
@@ -331,11 +297,11 @@ class AuctionViewModel @Inject constructor(
             _error.value = null
             try {
                 val response = service.completeAuctionPayment(auctionIdx)
-                if (response.isSuccessful && response.body() != null) {
-                    _paymentCompleted.value = response.body()
-                } else {
-                    _error.value = "Failed to complete auction payment: ${response.message()}"
+                if (response.isSuccessful) {
+                    _error.value = null
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {

@@ -32,7 +32,10 @@ from starlette.middleware.cors import CORSMiddleware
 
 origins = [
     "j9b207.p.ssafy.io",
-    "http://localhost"
+    "http://localhost:8000",
+    "http://localhost",
+    "http://localhost:443",
+    "http://localhost:80",
 ]
 
 app.add_middleware(

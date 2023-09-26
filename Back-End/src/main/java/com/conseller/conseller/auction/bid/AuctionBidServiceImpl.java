@@ -28,14 +28,14 @@ public class AuctionBidServiceImpl implements AuctionBidService{
     @Override
     public void registAuctionBid(Long auctionIdx, AuctionBidRequest request) {
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         if(auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS.getStatus())) {
 
             if (request.getAuctionBidPrice() < auction.getLowerPrice() || request.getAuctionBidPrice() > auction.getUpperPrice()) {
-                // 입찰금 범위 이상 예외처리
+                throw new RuntimeException("입찰금의 범위가 잘못되었습니다.");
             }
 
             // 현재 최대 입찰금보다 지금 입찰한 금액이 더 크다면 최대 입찰금, 최대 금액 입찰한 유저 갱신
@@ -57,7 +57,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
 
             if (isExist) {
                 AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new RuntimeException("없는 입찰 입니다."));
 
                 // 입찰 정보 수정
                 auctionBid.setAuctionBidPrice(request.getAuctionBidPrice());
@@ -70,7 +70,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             }
         }
         else {
-            // 이미 거래중 예외처리
+            throw new RuntimeException("이미 거래 중인 경매입니다.");
         }
 
     }
@@ -78,12 +78,12 @@ public class AuctionBidServiceImpl implements AuctionBidService{
     @Override
     public void deleteAuctionBid(Long auctionBidIdx) {
         AuctionBid auctionBid = auctionBidRepository.findById(auctionBidIdx)
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new RuntimeException("없는 입찰 입니다."));
 
         // 삭제하려고 하는 입찰자가 최대 금액 입찰자라면 
         if(auctionBid.getAuction().getAuctionHighestBid().equals(auctionBid.getAuctionBidPrice())) {
             Auction auction = auctionRepository.findById(auctionBid.getAuction().getAuctionIdx())
-                    .orElseThrow(() -> new RuntimeException());
+                    .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
             // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴-
             List<AuctionBid> auctionBidList = auctionBidRepository

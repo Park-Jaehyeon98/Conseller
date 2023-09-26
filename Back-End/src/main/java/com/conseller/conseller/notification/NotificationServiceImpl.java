@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         User user = null;
 
@@ -90,7 +90,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
         User user = null;
 

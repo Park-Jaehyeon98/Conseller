@@ -54,9 +54,9 @@ public class StoreServiceImpl implements StoreService {
     public Long registStore(RegistStoreRequest request) {
 
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
             return null;
@@ -77,10 +77,10 @@ public class StoreServiceImpl implements StoreService {
     @Transactional(readOnly = true)
     public DetailStoreResponse detailStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
         User user = userRepository.findById(store.getUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         DetailStoreResponse response = StoreMapper.INSTANCE.entityToDetailStoreResponse(user, store);
 
@@ -90,7 +90,7 @@ public class StoreServiceImpl implements StoreService {
     //스토어 글 수정
     public void modifyStore(Long storeIdx , ModifyStoreRequest storeRequest) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
         store.setStoreEndDate(DateTimeConverter.getInstance().convertLocalDateTime(storeRequest.getStoreEndDate()));
         store.setStoreText(storeRequest.getStoreText());
@@ -99,9 +99,9 @@ public class StoreServiceImpl implements StoreService {
     // 스토어 글 삭제
     public void deleteStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
         Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
 
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
 
@@ -112,9 +112,9 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreTradeResponse tradeStore(Long storeIdx, Long consumerIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
         User consumer = userRepository.findById(consumerIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         // 구매자의 인덱스를 저장
         store.setConsumer(consumer);
@@ -132,7 +132,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void cancelStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
         // 거래 상태를 진행중으로 변경
         store.setStoreStatus(StoreStatus.IN_PROGRESS.getStatus());
@@ -145,11 +145,11 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void confirmStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
         Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
         User user = userRepository.findById(store.getConsumer().getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         store.setStoreStatus(StoreStatus.AWARDED.getStatus());
 

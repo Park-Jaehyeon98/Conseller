@@ -88,12 +88,10 @@ public class AuctionServiceImpl implements AuctionService{
     public DetailAuctionResponse detailAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
-        User user = userRepository.findById(auction.getUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
 
-        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(user, auction, auctionBidItemDataList);
+        DetailAuctionResponse detailAuctionResponse = AuctionMapper.INSTANCE.entityToDetailAuctionResponse(auction, auctionBidItemDataList);
 
         return detailAuctionResponse;
     }

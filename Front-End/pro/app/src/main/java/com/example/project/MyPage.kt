@@ -82,12 +82,12 @@ fun MyPage(navController: NavHostController) {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(
                     onClick = {
-                        navController.navigate("MyPageValid")
+                        navController.navigate("MyModifyPageValidPage")
                     },
                     modifier = Modifier.padding(end = 8.dp),
                     colors = ButtonDefaults.buttonColors(BrandColor1)
                 ) {
-                    Text("개인정보 변경")
+                    Text("회원정보 변경")
                 }
                 Button(
                     onClick = {
@@ -106,6 +106,16 @@ fun MyPage(navController: NavHostController) {
                 onClick2 = { navController.navigate("MypageAuction") },
                 onClick3 = { navController.navigate("MypageStore") },
                 onClick4 = { navController.navigate("MypageBarter") })
+            Spacer(modifier = Modifier.height(14.dp))
+            Button(
+                onClick = {
+                    navController.navigate("MyDeletePageValidPage")
+                },
+                modifier = Modifier.padding(end = 8.dp),
+                colors = ButtonDefaults.buttonColors(BrandColor1)
+            ) {
+                Text("회원 탈퇴")
+            }
 
         }
     }
@@ -115,7 +125,7 @@ fun MyPage(navController: NavHostController) {
 
 @Composable
 fun UserProfile(
-    profileImage: Uri? = null, userNickName: String, userEmail: String, userPhoneNumber: String
+    profileImage: String? = null, userNickName: String, userEmail: String, userPhoneNumber: String
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
 

@@ -3,7 +3,6 @@ package com.example.project
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,39 +22,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.project.api.IdPwLoginRequest
 import com.example.project.api.userValidRequest
 import com.example.project.reuse_component.CustomTextField
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
-import com.example.project.viewmodels.ResponseState
 
 @Composable
-fun MyPageValidPage(navController: NavHostController) {
+fun MyModifyPageValidPage(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
 
-    val useridx=viewModel.getUserIdFromPreference()
+    val useridx = viewModel.getUserIdFromPreference()
 
     val checkUserValidState by viewModel.validUserResponse.collectAsState()
 
     var password by remember { mutableStateOf(TextFieldValue("")) }
-    val checkUserValid = {
-        val request = userValidRequest(
-            userIdx = useridx,
-            userPassword = password.text
-        )
-        viewModel.userValid(request)
-    }
+    val request = userValidRequest(
+        userIdx = useridx, userPassword = password.text
+    )
+
 
     LaunchedEffect(checkUserValidState) {
-        if (checkUserValidState.status == 1) {
+        if (checkUserValidState) {
             navController.navigate("MyPageModify")
         } else {
-            println(checkUserValidState.message)
+            // 비밀번호가 틀렸다라는 알림 띄우기
         }
     }
 
@@ -82,9 +77,10 @@ fun MyPageValidPage(navController: NavHostController) {
                         label = "비밀번호 확인",
                         value = password,
                         onValueChange = { password = it },
+                        visualTransformation = PasswordVisualTransformation()
                     )
                     Button(
-                        onClick = {checkUserValid },
+                        onClick = { viewModel.userValid(request) },
                         modifier = Modifier
                             .height(50.dp)
                             .clip(shape),

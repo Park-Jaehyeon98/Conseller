@@ -106,7 +106,7 @@ fun MyPageModifyPage(navController: NavHostController) {
 
 @Composable
 fun ProfileModifyImage(
-    profileImage: Uri? = null
+    profileImage: String? = null
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
     var selectImage by remember { mutableStateOf<Uri?>(null) }
@@ -224,7 +224,6 @@ fun ModifyUserProfile(
     var checkPasswordError by remember { mutableStateOf<String?>(null) }
     var nickNameError by remember { mutableStateOf<String?>(null) }
 
-    val modifyClick = {
         val request = userModifyRequest(
             userAccount = modifyAccount,
             userEmail = modifyEmail,
@@ -232,8 +231,8 @@ fun ModifyUserProfile(
             userAccountBank = modifyAccountBank.text,
             userNickname = modifyNickname.text,
         )
-        mypageModel.userModify(request)
-    }
+
+
     Box(
         modifier = Modifier
             .size(350.dp, 700.dp)
@@ -310,7 +309,7 @@ fun ModifyUserProfile(
                 }
             })
             Button(
-                onClick = { },
+                onClick = {       mypageModel.userModify(request) },
                 Modifier.size(120.dp, 40.dp),
                 colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {

@@ -39,7 +39,6 @@ interface MyService {
 
 
 
-
 }
 
 // 기프티콘 목록 요청 DTO

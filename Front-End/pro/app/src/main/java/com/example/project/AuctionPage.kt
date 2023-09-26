@@ -28,6 +28,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -61,15 +65,31 @@ import convertNameToNum
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AuctionPage(navController: NavHostController) {
-    val viewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by viewModel.auctionItems.collectAsState()
+    val auctionViewModel: AuctionViewModel = hiltViewModel()
+    val auctionItems by auctionViewModel.auctionItems.collectAsState()
+    val error by auctionViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
 
     var currentPage by remember { mutableIntStateOf(1) } // 현재 페이지 초기값
     val itemsPerPage = 10 // 페이지 당 표시할 항목 수
 
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
-        viewModel.fetchAuctionItems()
+        auctionViewModel.fetchAuctionItems()
+    }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -83,6 +103,14 @@ fun AuctionPage(navController: NavHostController) {
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
+                if (showSnackbar) {
+                    Snackbar(
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    ) {
+                        Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
@@ -97,7 +125,7 @@ fun AuctionPage(navController: NavHostController) {
                                 Icons.Default.Search,
                                 contentDescription = null,
                                 modifier = Modifier.clickable {
-                                    viewModel.searchItems(searchText)
+                                    auctionViewModel.searchItems(searchText)
                                     keyboardController?.hide() // 키보드 숨기기
                                 }
                                     .padding(16.dp)
@@ -107,7 +135,7 @@ fun AuctionPage(navController: NavHostController) {
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(onSearch = {
-                            viewModel.searchItems(searchText)
+                            auctionViewModel.searchItems(searchText)
                             keyboardController?.hide() // 키보드 숨기기
                         })
                     )
@@ -142,7 +170,7 @@ fun AuctionPage(navController: NavHostController) {
                                     filter2Selected,
                                     filter3Selected
                                 )
-                                viewModel.applyFilter(
+                                auctionViewModel.applyFilter(
                                     AuctionFilterDTO(
                                         filter1Id,
                                         filter2Id,
@@ -172,7 +200,7 @@ fun AuctionPage(navController: NavHostController) {
                                     filter2Selected,
                                     filter3Selected
                                 )
-                                viewModel.applyFilter(
+                                auctionViewModel.applyFilter(
                                     AuctionFilterDTO(
                                         filter1Id,
                                         filter2Id,
@@ -194,7 +222,7 @@ fun AuctionPage(navController: NavHostController) {
                                     filter2Selected,
                                     filter3Selected
                                 )
-                                viewModel.applyFilter(
+                                auctionViewModel.applyFilter(
                                     AuctionFilterDTO(
                                         filter1Id,
                                         filter2Id,
@@ -244,7 +272,7 @@ fun AuctionPage(navController: NavHostController) {
                 itemsPerPage = itemsPerPage
             ) { newPage ->
                 currentPage = newPage
-                viewModel.changePage(newPage)  // 페이지 변경 시 데이터 받기
+                auctionViewModel.changePage(newPage)  // 페이지 변경 시 데이터 받기
             }
         }
         // 등록하기

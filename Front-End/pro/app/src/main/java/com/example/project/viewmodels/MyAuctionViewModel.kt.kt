@@ -6,6 +6,7 @@ import com.example.project.api.MyAuctionListResponseDTO
 import com.example.project.api.MyNotificationAnswerRequestDTO
 import com.example.project.api.MyNotificationResponseDTO
 import com.example.project.api.MyService
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,23 +34,20 @@ class MyAuctionViewModel @Inject constructor(
     private val _myNotifications = MutableStateFlow<List<MyNotificationResponseDTO>>(emptyList())
     val myNotifications: StateFlow<List<MyNotificationResponseDTO>> = _myNotifications
 
-    init {
-        fetchMyAuctions()
-        fetchMyNotifications() // 알람 목록도 초기화 시점에 불러옵니다.
-    }
 
     // 내가 입찰한 경매목록 불러오기
     fun fetchMyAuctions() {
         viewModelScope.launch {
             _loading.value = true
-            val userIdx = sharedPreferencesUtil.getUserId() // Note: Assuming this function retrieves the required userIdx
+            _error.value = null
+            val userIdx = sharedPreferencesUtil.getUserId()
             try {
                 val response = service.getMyAuctions(userIdx)
                 if (response.isSuccessful) {
                     _myAuctions.value = response.body() ?: emptyList()
-                } else {
-                    _error.value = response.message()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -62,15 +60,16 @@ class MyAuctionViewModel @Inject constructor(
     fun fetchMyNotifications() {
         viewModelScope.launch {
             _loading.value = true
+            _error.value = null
             val userIdx = sharedPreferencesUtil.getUserId()
             try {
                 val response = service.getMyNotifications(userIdx)
                 if (response.isSuccessful) {
                     _myNotifications.value = response.body() ?: emptyList()
-                } else {
-                    _error.value = response.message()
-                    _myNotifications.value = getSampleData()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
+                _myNotifications.value = getSampleData()
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -83,20 +82,15 @@ class MyAuctionViewModel @Inject constructor(
     fun sendNotificationAnswer(notificationIdx: Long, notificationType: String, answer: Boolean) {
         viewModelScope.launch {
             _loading.value = true
+            _error.value = null
             val requestDTO = MyNotificationAnswerRequestDTO(notificationIdx, notificationType, answer)
             try {
                 val response = service.submitNotificationAnswer(requestDTO)
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.success == true) {
-                        // 응답이 성공적이면 다시 갱신
-                        fetchMyNotifications()
-                    } else {
-                        _error.value = responseBody?.message ?: "Unknown error"
-                    }
-                } else {
-                    _error.value = response.message()
+                    fetchMyNotifications()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {

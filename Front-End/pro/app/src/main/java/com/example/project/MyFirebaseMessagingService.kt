@@ -63,11 +63,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val channelId = "Conseller" // 채널 아이디
                 val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) // 소리
                 val notificationBuilder = NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_notification) // 아이콘
                         .setContentTitle(title) // 제목
                         .setContentText(body) // 내용
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)
+                Log.d("aaaaaaaaaaaaaaaaaa", "${title}")
+                Log.d("bbbbbbbbbbbbbbbbb", "${body}")
 
                 val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

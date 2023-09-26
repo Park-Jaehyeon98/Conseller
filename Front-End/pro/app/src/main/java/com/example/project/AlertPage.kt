@@ -8,12 +8,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,13 +29,40 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.project.api.MyNotificationResponseDTO
 import com.example.project.viewmodels.MyAuctionViewModel
 import formatAlertDate
+import kotlinx.coroutines.delay
 
 @Composable
-fun AlertPage(viewModel: MyAuctionViewModel = hiltViewModel()) {
-    val notifications = viewModel.myNotifications.collectAsState().value
+fun AlertPage(myAuctionViewModel: MyAuctionViewModel = hiltViewModel()) {
+    val error by myAuctionViewModel.error.collectAsState()
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            delay(5000)
+            showSnackbar = false
+        }
+    }
+
+    val notifications = myAuctionViewModel.myNotifications.collectAsState().value
         .sortedWith(compareBy({ it.notificationType == "5" || it.notificationType == "6" }, { it.notificationIdx })) // 여기에서 정렬합니다.
 
     Box(modifier = Modifier.fillMaxSize()) {
+        if (showSnackbar) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         if (notifications.isEmpty()) {
             Text(
                 text = "알림이 없습니다.",
@@ -44,7 +78,7 @@ fun AlertPage(viewModel: MyAuctionViewModel = hiltViewModel()) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(notifications) { index, notification ->
-                    NotificationItem(index + 1, notification, viewModel) // 알림 ID를 인덱스 + 1로
+                    NotificationItem(index + 1, notification, myAuctionViewModel) // 알림 ID를 인덱스 + 1로
                 }
             }
         }

@@ -24,7 +24,7 @@ import com.mrhwsn.composelock.Dot
 
 @Composable
 fun LoginPage(navController: NavHostController) {
-    val viewModel: BiometricViewModel = hiltViewModel() // 이 시발년 viewModel() -> hiltViewModel()
+    val viewModel: BiometricViewModel = hiltViewModel()
     val authState by viewModel.authenticationState.collectAsState()
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity

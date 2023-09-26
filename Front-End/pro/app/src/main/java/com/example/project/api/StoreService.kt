@@ -30,17 +30,17 @@ interface StoreService {
     ): Response<RegisterStoreResponse>
 
     // 스토어글 수정 API
-    @PATCH("api/store/update/{storeIdx}")
+    @PATCH("api/store/{storeIdx}")
     suspend fun updateStoreItem(
         @Path("storeIdx") storeIdx: Long,
         @Body updateData: UpdateStoreDTO
-    ): Response<UpdateStoreResponse>
+    ): Response<Void>
 
     // 스토어글 삭제 API
-    @DELETE("api/store/delete/{storeIdx}")
+    @DELETE("api/store/{storeIdx}")
     suspend fun deleteStoreItem(
         @Path("storeIdx") storeIdx: Long
-    ): Response<DeleteStoreResponse>
+    ): Response<Void>
 
     // 스토어글 상세보기 API
     @GET("api/store/detail/{storeIdx}")
@@ -64,7 +64,7 @@ interface StoreService {
     @PATCH("api/store/complete/{storeIdx}")
     suspend fun completeStorePayment(
         @Path("storeIdx") storeIdx: Long
-    ): Response<StoreTradeCompleteResponseDTO>
+    ): Response<Void>
 
 }
 
@@ -93,29 +93,19 @@ data class RegisterStoreDTO(
 
 // 상점 등록 응답 DTO
 data class RegisterStoreResponse(
-    val success: Boolean,
-    val message: String,
     val storeIdx: Long,
 )
 
 // 상점 수정 요청 DTO
+// 상점 수정 응답 DTO = http형식
 data class UpdateStoreDTO(
     val storeEndDate: String,
     val storeText: String,
 )
 
-// 상점 수정 응답 DTO
-data class UpdateStoreResponse(
-    val success: Boolean,
-    val message: String,
-)
-
 // 상점 삭제 요청 DTO = Path형식
-// 상점 삭제 응답 DTO
-data class DeleteStoreResponse(
-    val success: Boolean,
-    val message: String,
-)
+// 상점 삭제 응답 DTO = http형식
+
 
 // 상점글 상세보기 요청 DTO = Path형식
 // 상점글 상세보기 응답 DTO
@@ -130,16 +120,9 @@ data class StoreDetailResponseDTO(
 // 스토어 최고가 구매 계좌번호 요청 DTO = Path형식
 // 스토어 최고가 구매 계좌번호 응답 DTO
 data class StoreTradeResponseDTO(
-    val success: Boolean,
-    val message: String,
     val userAccount: String,
     val userAccountBank: String,
 )
 
 // 스토어 완료 요청 DTO = Path형식
-// 스토어 완료 요청 DTO
-
-data class StoreTradeCompleteResponseDTO(
-    val success: Boolean,
-    val message: String,
-)
+// 스토어 완료 요청 DTO = http형식

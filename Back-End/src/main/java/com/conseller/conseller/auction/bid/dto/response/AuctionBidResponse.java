@@ -1,5 +1,6 @@
 package com.conseller.conseller.auction.bid.dto.response;
 
+import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import lombok.*;
 
 @Builder
@@ -16,5 +17,5 @@ public class AuctionBidResponse {
 
     private String auctionBidStatus;
 
-    private long auctionIdx;
+    private AuctionItemData auctionItemData;
 }

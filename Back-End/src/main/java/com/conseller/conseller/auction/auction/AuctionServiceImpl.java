@@ -63,13 +63,12 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public Long registAuction(RegistAuctionRequest request) {
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
-            //등록 x 예외처리
-            return null;
+            throw new RuntimeException("기프티콘이 보관 중이 아닙니다.");
         }else {
             Auction auction = AuctionMapper.INSTANCE.registAuctionRequestToAuction(request, user, gifticon);
 
@@ -88,9 +87,9 @@ public class AuctionServiceImpl implements AuctionService{
     @Transactional(readOnly = true)
     public DetailAuctionResponse detailAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
         User user = userRepository.findById(auction.getUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         List<AuctionBidItemData> auctionBidItemDataList = AuctionMapper.INSTANCE.bidsToItemDatas(auction.getAuctionBidList());
 
@@ -103,7 +102,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public void modifyAuction(Long auctionIdx, ModifyAuctionRequest auctionRequest) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         auction.setAuctionEndDate(DateTimeConverter.getInstance().convertLocalDateTime(auctionRequest.getAuctionEndDate()));
         auction.setAuctionText(auctionRequest.getAuctionText());
@@ -113,9 +112,9 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public void deleteAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
         Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
-                        .orElseThrow(() -> new RuntimeException());
+                        .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
 
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
 
@@ -128,7 +127,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         // 경매 상태 거래중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
@@ -145,7 +144,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public void cancelAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
 
         // 경매 상태 진행 중으로 변경
         auction.setAuctionStatus(AuctionStatus.IN_PROGRESS.getStatus());
@@ -173,11 +172,11 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public void confirmAuction(Long auctionIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
         Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
         User user = userRepository.findById(auction.getHighestBidUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         auction.setAuctionStatus(AuctionStatus.AWARDED.getStatus());
 

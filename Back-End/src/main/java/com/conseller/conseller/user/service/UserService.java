@@ -4,7 +4,7 @@ import com.conseller.conseller.auction.auction.dto.response.DetailAuctionRespons
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
-import com.conseller.conseller.entity.*;
+import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
@@ -77,4 +77,7 @@ public interface UserService {
 
     //회원탈퇴
     public void deleteUser(long userIdx);
+
+    //fcm 토큰 발급
+    public void getFirebaseToken(Long userIdx, FirebaseRequest request);
 }

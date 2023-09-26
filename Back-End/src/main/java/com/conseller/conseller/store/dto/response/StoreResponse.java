@@ -27,5 +27,5 @@ public class StoreResponse {
 
     private long gifticonIdx;
 
-    private long consumeridx;
+    private long consumerIdx;
 }

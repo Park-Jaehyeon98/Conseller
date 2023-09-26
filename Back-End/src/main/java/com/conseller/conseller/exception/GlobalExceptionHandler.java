@@ -1,6 +1,6 @@
 package com.conseller.conseller.exception;
 
-import com.conseller.conseller.utils.CommonResponse;
+import com.conseller.conseller.utils.dto.CommonResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

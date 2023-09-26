@@ -170,7 +170,7 @@ def perform_ocr():
 
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=504, detail=str(e))
 
 # 이미지 업로드 및 OCR 수행
 @app.post("/gifticon")

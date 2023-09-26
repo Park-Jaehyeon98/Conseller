@@ -79,10 +79,7 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
 
-        User user = userRepository.findById(store.getUser().getUserIdx())
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-
-        DetailStoreResponse response = StoreMapper.INSTANCE.entityToDetailStoreResponse(user, store);
+        DetailStoreResponse response = StoreMapper.INSTANCE.entityToDetailStoreResponse(store);
 
         return response;
     }

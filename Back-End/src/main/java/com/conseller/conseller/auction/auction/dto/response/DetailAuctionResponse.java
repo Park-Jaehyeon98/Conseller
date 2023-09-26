@@ -20,7 +20,26 @@ public class DetailAuctionResponse {
 
     private String auctionUserProfileUrl;
 
-    private Long auctionUserDeposit;
+    private Integer auctionUserDeposit;
 
     private List<AuctionBidItemData> auctionBidList;
+
+    private Long auctionIdx;
+
+    private String gifticonDataImageName;
+
+    private String gifticonName;
+
+    private String gifticonEndDate;
+
+    private String auctionEndDate;
+
+    private Boolean deposit;
+
+    private Integer lowerPrice;
+
+    private Integer upperPrice;
+
+    private Integer auctionHighestBid;
+
 }

@@ -5,6 +5,7 @@ import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
+import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import java.util.List;
 public class BarterController {
 
     private final BarterService barterService;
+    private final NotificationService notificationService;
 
     //구매자 입장
     //1. 전체 물물교환 리스트 확인 - 필터 넣기 가능
@@ -65,6 +67,9 @@ public class BarterController {
     @PatchMapping("/{barterIdx}/{barterRequestIdx}")
     public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @PathVariable Long barterRequestIdx) {
         barterService.exchangeGifticon(barterIdx, barterRequestIdx);
+
+        notificationService.sendBarterNotification(barterIdx, "물물교환 알림", 3);
+
         return ResponseEntity.ok()
                 .build();
     }

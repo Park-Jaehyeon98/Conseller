@@ -80,4 +80,7 @@ public interface UserService {
 
     //회원탈퇴
     public void deleteUser(long userIdx, String token);
+
+    //fcm 토큰 발급
+    public void getFirebaseToken(Long userIdx, FirebaseRequest request);
 }

@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (blackListRepository.existsByRefreshToken(token)) {
+        if (blackListRepository.existsByUser_RefreshToken(token)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("refresh Token is blacklisted");
             return;

@@ -78,7 +78,7 @@ def crop_kakao(image_file):
         return ocr_result
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=502, detail=str(e))
     
 def crop_ssafy(image_file):
     try:

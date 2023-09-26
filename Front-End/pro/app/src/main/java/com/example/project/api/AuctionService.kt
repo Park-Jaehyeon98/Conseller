@@ -36,13 +36,13 @@ interface AuctionService {
     suspend fun updateAuctionItem(
         @Path("auctionIdx") auctionIdx: Long,
         @Body updateData: UpdateAuctionDTO
-    ): Response<UpdateAuctionResponse>
+    ): Response<Void>
 
     // 경매글 삭제 API
     @DELETE("api/auction/{auctionIdx}")
     suspend fun deleteAuctionItem(
         @Path("auctionIdx") auctionIdx: Long
-    ): Response<DeleteAuctionResponse>
+    ): Response<Void>
 
     // 경매글 상세보기 API
     @GET("api/auction/{auctionIdx}")
@@ -55,7 +55,7 @@ interface AuctionService {
     suspend fun bidOnAuction(
         @Path("auctionIdx") auctionIdx: Long,
         @Body bidRequest: AuctionBidRequestDTO
-    ): Response<AuctionBidResponseDTO>
+    ): Response<Void>
 
 
     // 경매진행 계좌번호 불러오기 API
@@ -74,7 +74,7 @@ interface AuctionService {
     @PATCH("api/auction/complete/{auctionIdx}")
     suspend fun completeAuctionPayment(
         @Path("auctionIdx") auctionIdx: Long
-    ): Response<AuctionTradeCompleteResponseDTO>
+    ): Response<Void>
 
 
 }
@@ -106,29 +106,19 @@ data class RegisterAuctionDTO(
 
 // 경매 등록 응답 DTO
 data class RegisterAuctionResponse(
-    val success: Boolean,
-    val message: String,
     val auctionIdx: Long,
 )
 
 // 경매 수정 요청 DTO
+// 경매 수정 응답 DTO = http형식
 data class UpdateAuctionDTO(
     val auctionEndDate: String,
     val auctionText: String,
 )
 
-// 경매 수정 응답 DTO
-data class UpdateAuctionResponse(
-    val success: Boolean,
-    val message: String,
-)
-
 // 경매 삭제 요청 DTO = Path형식
-// 경매 삭제 응답 DTO
-data class DeleteAuctionResponse(
-    val success: Boolean,
-    val message: String,
-)
+// 경매 삭제 응답 DTO = http형식
+
 
 // 경매글 상세보기 요청 DTO = Path형식
 // 경매글 상세보기 응답 DTO
@@ -142,15 +132,10 @@ data class AuctionDetailResponseDTO(
 )
 
 // 경매 입찰하기 요청 DTO
+// 경매 입찰하기 응답 DTO = http형식
 data class AuctionBidRequestDTO(
     val userIdx: Long,
     val auctionBidPrice: Int,
-)
-
-// 경매 입찰하기 응답 DTO
-data class AuctionBidResponseDTO(
-    val success: Boolean,
-    val message: String,
 )
 
 // 경매 최고가 구매 계좌번호 요청 DTO = Path형식
@@ -163,9 +148,4 @@ data class AuctionTradeResponseDTO(
 )
 
 // 입금 완료 요청 DTO = Path형식
-// 입금 완료 요청 DTO
-
-data class AuctionTradeCompleteResponseDTO(
-    val success: Boolean,
-    val message: String,
-)
+// 입금 완료 요청 DTO = Path형식

@@ -25,9 +25,11 @@ import com.example.project.viewmodels.BarterViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,16 +41,39 @@ import com.example.project.viewmodels.MygifticonViewModel
 fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>) {
     val barterviewModel: BarterViewModel = hiltViewModel()
     val mygifticonViewModel : MygifticonViewModel = hiltViewModel()
+    val error by barterviewModel.error.collectAsState()
+    val myerror by mygifticonViewModel.error.collectAsState()
     val selectedItems = mygifticonViewModel.getSelectedItems(selectedItemIndices)
     val navigateToIdx by barterviewModel.navigateToBarterDetail.collectAsState() // 등록시 idx받기
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
     // 게시글 제목 및 내용을 위한 상태값
     var postTitle by remember { mutableStateOf("") }
     var postContent by remember { mutableStateOf("") }
     var showRegisterConfirmDialog by remember { mutableStateOf(false) }
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(myerror) {
+        if (myerror != null) {
+            showSnackbar = true
+            snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -56,6 +81,14 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
+        if (showSnackbar) {
+            Snackbar(
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
+
         Text(
             text = "2. 원하는 기프티콘의 분류군과",
             fontWeight = FontWeight.Bold,

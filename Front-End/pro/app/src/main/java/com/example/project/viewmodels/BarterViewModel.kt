@@ -6,11 +6,9 @@ import com.example.project.api.BarterCreateDTO
 import com.example.project.api.BarterDetailResponseDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
-import com.example.project.api.DeleteBarterResponse
 import com.example.project.api.TradeBarterRequestDTO
-import com.example.project.api.TradeBarterResponseDTO
 import com.example.project.api.UpdateBarterDTO
-import com.example.project.api.UpdateBarterResponse
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,13 +61,6 @@ class BarterViewModel @Inject constructor(
         _navigateToBarterDetail.value = null
     }
 
-    // 물물교환 제안하기
-    private val _tradeProposalResponse = MutableStateFlow<TradeBarterResponseDTO?>(null)
-    val tradeProposalResponse: StateFlow<TradeBarterResponseDTO?> = _tradeProposalResponse
-
-    init {
-        fetchBarterItems()
-    }
 
     fun changePage(page: Int) {
         currentPage = page
@@ -105,13 +96,12 @@ class BarterViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     _barterItems.value = response.body()!!.items
                     _totalItems.value = response.body()!!.totalNum
-                } else {
-                    _error.value = "Failed to load data: ${response.message()}"
-                    _barterItems.value = getSampleData()
                 }
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
+            } catch (e: CustomException) {
+                _error.value = e.message
                 _barterItems.value = getSampleData()
+            }catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }
@@ -132,9 +122,9 @@ class BarterViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _navigateToBarterDetail.value = response.body()?.barterIdx
-                } else {
-                    _error.value = "Failed to create barter item: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -152,21 +142,15 @@ class BarterViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-
             try {
                 val response = service.updateBarterItem(barterIdx, UpdateBarterDTO(kindBigStatus,kindSmallStatus,barterName,barterText,barterEndDate))
 
                 if (response.isSuccessful) {
-                    val updateResponse: UpdateBarterResponse? = response.body()
-
-                    if (updateResponse?.success == true) {
-                        fetchBarterItems()
-                    } else {
-                        _error.value = updateResponse?.message ?: "Unknown error occurred"
+                    _error.value = null
+                    fetchBarterItems()
                     }
-                } else {
-                    _error.value = "Failed to update item: ${response.message()}"
-                }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -180,22 +164,15 @@ class BarterViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-
             try {
                 val response = service.deleteBarterItem(barterIdx)
 
                 if (response.isSuccessful) {
-                    val deleteResponse: DeleteBarterResponse? = response.body()
-
-                    if (deleteResponse?.success == true) {
-                        // 성공적으로 삭제되면, 물물교환 목록을 다시 불러옵니다.
-                        fetchBarterItems()
-                    } else {
-                        _error.value = deleteResponse?.message ?: "Unknown error occurred"
-                    }
-                } else {
-                    _error.value = "Failed to delete item: ${response.message()}"
+                    _error.value = null
+                    fetchBarterItems()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -214,9 +191,9 @@ class BarterViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _barterDetail.value = response.body()
-                } else {
-                    _error.value = "Failed to load barter detail: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -234,9 +211,9 @@ class BarterViewModel @Inject constructor(
                 val response = service.getMyBarterItems(userIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _myBarterItems.value = response.body()!!.items
-                } else {
-                    _error.value = "Failed to load my barter items: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -255,11 +232,11 @@ class BarterViewModel @Inject constructor(
                     TradeBarterRequestDTO(selectedItemIndices)
                 )
 
-                if (response.isSuccessful && response.body() != null) {
-                    _tradeProposalResponse.value = response.body()
-                } else {
-                    _error.value = "Failed to propose barter trade: ${response.message()}"
+                if (response.isSuccessful) {
+                    _error.value = null
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {

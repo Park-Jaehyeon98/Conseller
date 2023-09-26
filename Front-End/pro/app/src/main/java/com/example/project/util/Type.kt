@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import java.text.DecimalFormat
 
 @Composable
 fun FormattedDateText(dateString: String, modifier: Modifier = Modifier, fontSize: TextUnit = 14.sp, fontWeight: FontWeight = FontWeight.Normal) {
@@ -45,4 +46,16 @@ private fun formatToYearMonthDay(dateString: String): String {
         val day = dateString.substring(4, 6)
 
         return "${year}년 ${month}월 ${day}일"
+}
+
+// 1000단위 , 찍기용
+val numberFormat = DecimalFormat("#,###")
+
+fun formattedNumber(input: String): String {
+        return try {
+                val parsedNumber = input.replace(",", "").toLong()
+                numberFormat.format(parsedNumber)
+        } catch (e: Exception) {
+                input
+        }
 }

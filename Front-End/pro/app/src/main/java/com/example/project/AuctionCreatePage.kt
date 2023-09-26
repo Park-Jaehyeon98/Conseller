@@ -10,10 +10,12 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,15 +25,40 @@ import com.example.project.viewmodels.MygifticonViewModel
 
 @Composable
 fun AuctionCreatePage(navController: NavHostController) {
-    val viewModel: MygifticonViewModel = hiltViewModel()
-    val gifticonItems by viewModel.gifticonItems.collectAsState()
+    val mygifticonViewModel: MygifticonViewModel = hiltViewModel()
+    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
+    val error by mygifticonViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
     var selectedItemIndex by remember { mutableStateOf<Long?>(null) }
 
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
+        if (showSnackbar) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,7 +91,7 @@ fun AuctionCreatePage(navController: NavHostController) {
                 itemsPerPage = itemsPerPage
             ) { newPage ->
                 currentPage = newPage
-                viewModel.changePage(newPage)
+                mygifticonViewModel.changePage(newPage)
             }
         }
 

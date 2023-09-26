@@ -25,8 +25,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,19 +49,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AuctionUpdatePage(navController: NavHostController, index: String?) {
-    val viewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by viewModel.auctionItems.collectAsState()   // 대분류 내용 들고오기
-    val auctionDetail by viewModel.auctionDetail.collectAsState()   // text 내용 들고오기
+    val auctionViewModel: AuctionViewModel = hiltViewModel()
+    val auctionItems by auctionViewModel.auctionItems.collectAsState()   // 대분류 내용 들고오기
+    val auctionDetail by auctionViewModel.auctionDetail.collectAsState()   // text 내용 들고오기
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val error by auctionViewModel.error.collectAsState()
 
     // 상태값을 저장할 변수 추가
     var auctionText by remember { mutableStateOf(auctionDetail?.postContent ?: "") }
     var showEditConfirmDialog by remember { mutableStateOf(false) }
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
 
     // 입력값 업데이트 처리
     fun updateContent(newText: String) {
@@ -66,6 +75,20 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
 
     // 선택된 경매 상품 데이터 가져오기
     val selectedAuctionItem = auctionItems?.find { it.auctionIdx == index?.toLong() }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            delay(5000)
+            showSnackbar = false
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -80,6 +103,14 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                if (showSnackbar) {
+                    Snackbar(
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    ) {
+                        Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
                 val imagePainter =
                     rememberAsyncImagePainter(model = selectedAuctionItem?.gifticonDataImageName)
                 Image(
@@ -165,7 +196,7 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
                     SelectButton(
                         text = "네",
                         onClick = {
-                            viewModel.updateAuctionItem(index!!.toLong(), "123", auctionText)
+                            auctionViewModel.updateAuctionItem(index!!.toLong(), "2023.09.25.11.39.39", auctionText)
                             navController.navigate("AuctionDetailPage/${index}")
                             showEditConfirmDialog = false
                         }

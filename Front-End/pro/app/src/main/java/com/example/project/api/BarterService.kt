@@ -31,17 +31,17 @@ interface BarterService {
     ): Response<CreateBarterResponse>
 
     // 물물교환 수정 API
-    @PATCH("api/barter/update/{barterIdx}")
+    @PATCH("api/barter/{barterIdx}")
     suspend fun updateBarterItem(
         @Path("barterIdx") auctionIdx: Long,
         @Body updateData: UpdateBarterDTO
-    ): Response<UpdateBarterResponse>
+    ): Response<Void>
 
     // 물물교환 삭제 API
-    @DELETE("api/barter/delete/{barterIdx}")
+    @DELETE("api/barter/{barterIdx}")
     suspend fun deleteBarterItem(
         @Path("barterIdx") barterIdx: Long
-    ): Response<DeleteBarterResponse>
+    ): Response<Void>
 
     // 물물교환 상세보기 API
     @GET("api/barter/detail/{barterIdx}")
@@ -54,7 +54,7 @@ interface BarterService {
     suspend fun proposeBarterTrade(
         @Path("barterIdx") barterIdx: Long,
         @Body tradeRequest: TradeBarterRequestDTO
-    ): Response<TradeBarterResponseDTO>
+    ): Response<Void>
 
 }
 
@@ -86,12 +86,11 @@ data class BarterCreateDTO(
 
 // 물물교환 등록 응답 DTO
 data class CreateBarterResponse(
-    val success: Boolean,
-    val message: String,
     val barterIdx: Long, // 생성된 물물교환 게시글의 idx주세요
 )
 
 // 물물교환 수정 요청 DTO
+// 물물교환 수정 응답 DTO = http 형식
 data class UpdateBarterDTO(
     val mainCategory: Int,
     val subCategory: Int,
@@ -100,18 +99,10 @@ data class UpdateBarterDTO(
     val barterEndDate: String,
 )
 
-// 물물교환 수정 응답 DTO
-data class UpdateBarterResponse(
-    val success: Boolean,
-    val message: String,
-)
 
 // 물물교환 삭제 요청 DTO = Path형식
-// 물물교환 삭제 응답 DTO
-data class DeleteBarterResponse(
-    val success: Boolean,
-    val message: String,
-)
+// 물물교환 삭제 응답 DTO = http 형식
+
 
 // 물물교환 상세보기 요청 DTO = Path형식
 // 물물교환 상세보기 응답 DTO
@@ -125,12 +116,7 @@ data class BarterDetailResponseDTO(
 )
 
 // 물물교환 거래제안 요청 DTO
+// 물물교환 거래제안 응답 DTO = http형식
 data class TradeBarterRequestDTO(
     val selectedItemIndices: List<Long>
-)
-
-// 물물교환 거래제안 응답 DTO
-data class TradeBarterResponseDTO(
-    val success: Boolean,
-    val message: String,
 )

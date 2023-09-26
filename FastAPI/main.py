@@ -173,7 +173,7 @@ def perform_ocr():
         raise HTTPException(status_code=504, detail=str(e))
 
 # 이미지 업로드 및 OCR 수행
-@app.post("/gifticon")
+@app.post("gifticon")
 def ocr_image(category: int = Form(...), image: UploadFile = File(...)):
     logging.info("post, def진입 ")
     try:

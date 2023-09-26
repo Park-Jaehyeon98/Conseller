@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,14 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.project.api.StoreTradeCompleteResponseDTO
 import com.example.project.viewmodels.StoreViewModel
 
 @Composable
@@ -41,7 +37,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
     val storeItems by viewModel.storeItems.collectAsState()
     val tradeItems by viewModel.storeTrades.collectAsState()
     val cancelTradeResult by viewModel.cancelTradeSuccessful.collectAsState()
-    val paymentCompleted by viewModel.paymentCompleted.collectAsState()
+    val paymentCompleted by viewModel.error.collectAsState()
 
     val currentItem = storeItems.find { it.storeIdx.toString() == index }
 
@@ -152,14 +148,13 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                             onClick = {
                                 viewModel.completeStorePayment(index!!.toLong())
                                 when (paymentCompleted) {
-                                    is StoreTradeCompleteResponseDTO -> {
+                                    null -> {
                                         navController.navigate("DesiredDestination") // 원하는 경로로 변경하세요.
                                         showDepositConfirmDialog = false
                                     }
-
                                     else -> {
                                         showSnackbar = true
-                                        snackbarText = "입금 처리에 실패했습니다. 다시 시도해주세요."
+                                        snackbarText = "응답실패. 다시 시도해주세요."
                                         showDepositConfirmDialog = false
                                     }
                                 }

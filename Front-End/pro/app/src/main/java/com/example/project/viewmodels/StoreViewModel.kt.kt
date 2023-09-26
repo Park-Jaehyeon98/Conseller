@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.*
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,17 +54,8 @@ class StoreViewModel @Inject constructor(
     private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
     val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
 
-    // 스토어 거래 입금완료
-    private val _paymentCompleted = MutableStateFlow<StoreTradeCompleteResponseDTO?>(null)
-    val paymentCompleted: StateFlow<StoreTradeCompleteResponseDTO?> get() = _paymentCompleted
-
-
     fun resetNavigation() {
         _navigateToStoreDetail.value = null
-    }
-
-    init {
-        fetchStoreItems()
     }
 
     fun changePage(page: Int) {
@@ -89,21 +81,15 @@ class StoreViewModel @Inject constructor(
             _isLoading.value = true
             _error.value = null
             try {
-                Log.d("@@@@@","$")
                 val response = service.getAllStoreItems(currentFilter)
 
                 if (response.isSuccessful && response.body() != null) {
                     _storeItems.value = response.body()!!.items
                     _totalItems.value = response.body()!!.totalElements
-                    Log.d("@@@@@","222222222222222222222")
-                    Log.d("#####","${response.body()}")
-                    Log.d("$$$$$","${response.body()!!.items}")
-                    Log.d("%%%%%","${response.body()!!.totalElements}")
-                } else {
-                    _error.value = "Failed to load data: ${response.message()}"
-                    Log.d("@@@@@","1111111111111111111")
-                    _storeItems.value = getSampleData()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
+                _storeItems.value = getSampleData()
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _storeItems.value = getSampleData()
@@ -122,11 +108,11 @@ class StoreViewModel @Inject constructor(
             try {
                 val response = service.registerStoreItem(RegisterStoreDTO(storePrice, storeText, gifticonIdx, userIdx))
 
-                if (response.isSuccessful && response.body() != null) {
+                if (response.isSuccessful) {
                     _navigateToStoreDetail.value = response.body()?.storeIdx
-                } else {
-                    _error.value = "Failed to register item: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -146,9 +132,9 @@ class StoreViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     fetchStoreDetail(storeIdx)
                     _error.value = null
-                } else {
-                    _error.value = "Failed to update item: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -166,16 +152,11 @@ class StoreViewModel @Inject constructor(
                 val response = service.deleteStoreItem(storeIdx)
 
                 if (response.isSuccessful) {
-                    val deleteResponse: DeleteStoreResponse? = response.body()
-
-                    if (deleteResponse?.success == true) {
-                        fetchStoreItems()
-                    } else {
-                        _error.value = deleteResponse?.message ?: "Unknown error occurred"
-                    }
-                } else {
-                    _error.value = "Failed to delete item: ${response.message()}"
+                    _error.value = null
+                    fetchStoreItems()
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -193,9 +174,9 @@ class StoreViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _storeDetail.value = response.body()
-                } else {
-                    _error.value = "Failed to load store detail: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -212,9 +193,9 @@ class StoreViewModel @Inject constructor(
                 val response = service.getMyStoreItems(userIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _myStoreItems.value = response.body()!!.items
-                } else {
-                    _error.value = "Failed to load my store items: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -229,11 +210,11 @@ class StoreViewModel @Inject constructor(
             _error.value = null
             try {
                 val response = service.getStoreTrade(storeIdx)
-                if (response.isSuccessful && response.body() != null) {
+                if (response.isSuccessful) {
                     _storeTrade.value = response.body()
-                } else {
-                    _error.value = "Failed to load account details: ${response.message()}"
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -251,10 +232,9 @@ class StoreViewModel @Inject constructor(
                 val response = service.cancelStoreTrade(storeIdx)
                 if (response.isSuccessful) {
                     _cancelTradeSuccessful.value = true
-                } else {
-                    _error.value = "Failed to cancel store trade: ${response.message()}"
-                    _cancelTradeSuccessful.value = false
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _cancelTradeSuccessful.value = false
@@ -270,11 +250,11 @@ class StoreViewModel @Inject constructor(
             _error.value = null
             try {
                 val response = service.completeStorePayment(storeIdx)
-                if (response.isSuccessful && response.body() != null) {
-                    _paymentCompleted.value = response.body()
-                } else {
-                    _error.value = "Failed to complete store payment: ${response.message()}"
+                if (response.isSuccessful) {
+                    _error.value = null
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {

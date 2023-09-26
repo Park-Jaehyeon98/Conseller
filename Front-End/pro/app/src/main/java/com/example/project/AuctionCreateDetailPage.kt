@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,6 +28,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.MygifticonViewModel
+import formattedNumber
 import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -36,10 +38,16 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     val auctionViewModel: AuctionViewModel = hiltViewModel()
     val gifticonItems by myGifticonViewModel.gifticonItems.collectAsState()
     val navigateToIdx by auctionViewModel.navigateToAuctionDetail.collectAsState() // 등록시 idx받기
+    val error by auctionViewModel.error.collectAsState()
+    val myerror by myGifticonViewModel.error.collectAsState()
+
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex!!.toLong() }
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
 
     // 상한가, 하한가, 게시글 내용을 위한 상태값
     var upperPrice by remember { mutableStateOf(0) }
@@ -47,15 +55,22 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
     var postContent by remember { mutableStateOf("") }
     var showRegisterConfirmDialog by remember { mutableStateOf(false) }
 
-    // 1000단위 , 찍기용
-    val numberFormat = DecimalFormat("#,###")
-
-    fun formattedNumber(input: String): String {
-        return try {
-            val parsedNumber = input.replace(",", "").toLong()
-            numberFormat.format(parsedNumber)
-        } catch (e: Exception) {
-            input
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(myerror) {
+        if (myerror != null) {
+            showSnackbar = true
+            snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
         }
     }
 
@@ -67,6 +82,13 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        if (showSnackbar) {
+            Snackbar(
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         // 내용 입력 부분
         Column(
             horizontalAlignment = Alignment.CenterHorizontally

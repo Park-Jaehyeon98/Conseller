@@ -38,6 +38,9 @@ class OcrViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _OcrSuccess = MutableStateFlow(false)
+    val ocrSuccess: StateFlow<Boolean> = _OcrSuccess
+
     private var currentPage = 1
 
     fun getUserNickName(): String? {
@@ -54,6 +57,7 @@ class OcrViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _uploadGifticonResponse.value=response.body()!!
+                    _OcrSuccess.value=true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -61,6 +65,7 @@ class OcrViewModel @Inject constructor(
                 _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
+                _OcrSuccess.value=false
             }
         }
     }

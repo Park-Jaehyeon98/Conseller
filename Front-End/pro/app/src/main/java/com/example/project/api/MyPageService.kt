@@ -1,6 +1,7 @@
 package com.example.project.api
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -13,27 +14,41 @@ import retrofit2.http.Path
 
 interface MyPageService {
 
-    @GET("/api/user/{userIdx}/gifticons")
+    @GET("api/gifticon/{gifticonIdx}")
+    suspend fun getUserGifticoninfo(
+        @Path("gifticonIdx") gifticonIdx: Long,
+    ): Response<myGifticon>
+
+    @GET("api/user/{userIdx}/gifticons")
     suspend fun getUserGifticon(
         @Path("userIdx") useridx: Long,
     ): Response<myGifticonResponse>
 
-    @GET("/api/user/{userIdx}/store")
+    @GET("api/user/{userIdx}/store")
     suspend fun getUserStore(
         @Path("userIdx") useridx: Long,
     ): Response<myStoreItems>
 
+    @GET("api/user/{userIdx}/auction")
+    suspend fun getUserAuction(
+        @Path("userIdx") useridx: Long,
+    ): Response<myAuctionItems>
 
+    @GET("api/user/{userIdx}/auction-bid")
+    suspend fun getUserAuctionBid(
+        @Path("userIdx") useridx: Long,
+    ): Response<myAuctionBidItems>
 
-    @GET("/api/user/{userIdx}/barter")
+    @GET("api/user/{userIdx}/barter")
     suspend fun getUserBarter(
         @Path("userIdx") useridx: Long,
     ): Response<myBarterItems>
 
-    @GET("/api/user/{userIdx}/barter-request")
+    @GET("api/user/{userIdx}/barter-request")
     suspend fun getUserBarterRequest(
         @Path("userIdx") useridx: Long,
     ): Response<myBarterRequestItems>
+
 
 
     // 이미지 업로드
@@ -48,7 +63,7 @@ interface MyPageService {
     @POST("api/gifticon/{userIdx}")
     suspend fun uploadgifiticon(
         @Path("userIdx") userIdx:Long,
-        @Part request:  MultipartBody.Part,
+        @Part("gifticonPostRequest") gifticonPostRequest:RequestBody ,
         @Part originalFile : MultipartBody.Part,
         @Part cropFile : MultipartBody.Part
     ):Response<Void>
@@ -127,7 +142,7 @@ data class myGifticon(
     val gifticonEndDate: String,
     val gifticonAllImageUrl: String,
     val gifticonDataImageUrl: String,
-    val gifticonStatus: String, // 보관 // 경매//물물교환
+    val gifticonStatus: String, // 보관 // 경매//판매//물물교환
     val userIdx: Long,
     val subCategoryIdx: Int,
     val mainCategoryIdx: Int
@@ -142,12 +157,15 @@ data class myAuctionItems(
     val items : List<myAuctionData>
 )
 data class myAuctionData(
-    val postContent: String,
-    val auctionUserIdx: Long,
-    val auctionUserNickname: String,
-    val auctionUserProfileUrl: String,
-    val auctionUserDeposit: Long,
-    val auctionBidList: List<myAuctionBidData>
+    val auctionIdx: Long,
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+    val auctionEndDate: String,
+    val deposit: Boolean,
+    val upperPrice: Int,
+    val lowerPrice: Int,
+    val auctionHighestBid: Int
 )
 
 data class myAuctionBidItems(
@@ -182,7 +200,7 @@ data class myBarterData(
     val barterEndDate: String,
     val barterStatus: String,
     val subCategory: String,
-    val preferSubCategory: String,
+    val preferSubCategory: String, // 판매자가 원하는 거
     val barterHostIdx: Long,
     val barterCompleteGuest: Long,
     val barterHostItems: List<myGifticon>
@@ -203,12 +221,11 @@ data  class myStoreItems(
 )
 data class myStoreData(
     val storeIdx: Long,
-    val storePrice: Int,
-    val storeCreatedDate: String,
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
     val storeEndDate: String,
-    val storeText: String,
-    val storeStatus: String,
-    val gifticonIdx: Long,
-    val consumerIdx: Long
+    val isDeposit: Boolean,
+    val storePrice: Int,
 )
 

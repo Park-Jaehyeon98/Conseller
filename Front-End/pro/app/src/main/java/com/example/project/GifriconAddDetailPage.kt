@@ -1,13 +1,15 @@
 package com.example.project
 
 import android.net.Uri
-import android.util.Log
+import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +24,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,10 +43,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -51,14 +57,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.project.api.ocrCategoryRequest
+import com.example.project.api.UploadGifticonResponse
 import com.example.project.api.userUploadGifticonResponse
-import com.example.project.reuse_component.CustomGiftTextField
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 import com.example.project.viewmodels.OcrViewModel
 import com.google.gson.Gson
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -70,21 +74,36 @@ fun GifticonAddDetailPage(navController: NavHostController) {
     // OCR 모델
     val OcrViewModel: OcrViewModel = hiltViewModel()
     // 기프티콘 등록 모델
-    val MyPageViewMOdel: MyPageViewModel = hiltViewModel()
-
+    val MyPageViewModel: MyPageViewModel = hiltViewModel()
+    val ocrResult by OcrViewModel.ocrSuccess.collectAsState(initial = false)
     var selectImage by remember { mutableStateOf<Uri?>(null) }
     var selectedCategoryIndex by remember { mutableStateOf(-1) }
     var SendState by remember { mutableStateOf(false) }
 
     val getOcrResult by OcrViewModel.uploadGifticonResponse.collectAsState()
 
-    // OCR이 자동으로 채워주는 값
-    var gifticonBarcode by remember { mutableStateOf(TextFieldValue(getOcrResult.gifticonBarcode)) }
-    var gifticonName by remember { mutableStateOf(TextFieldValue(getOcrResult.gifticonName)) }
-    var gifticonEndDate by remember { mutableStateOf(TextFieldValue(getOcrResult.gifticonEndData)) }
-    // Crop된 이미지
-    var gifticonCropImage by remember { mutableStateOf(getOcrResult.gifticonCropImage) }
+    var gifticonBarcode by remember {
+        mutableStateOf(TextFieldValue(getOcrResult?.gifticonBarcode ?: ""))
+    }
+    var gifticonName by remember {
+        mutableStateOf(TextFieldValue(getOcrResult?.gifticonEndDate ?: ""))
+    }
+    var gifticonEndDate by remember {
+        mutableStateOf(TextFieldValue(getOcrResult?.gifticonName ?: ""))
+    }
+// Crop된 이미지
+    var gifticonCropImage by remember {
+        mutableStateOf(getOcrResult?.gifticonCropImage)
+    }
 
+    LaunchedEffect(getOcrResult) {
+        gifticonBarcode = TextFieldValue(getOcrResult?.gifticonBarcode ?: "")
+        gifticonName = TextFieldValue(getOcrResult?.gifticonName ?: "")
+        gifticonEndDate = TextFieldValue(getOcrResult?.gifticonEndDate ?: "")
+        gifticonCropImage = getOcrResult.gifticonCropImage
+    }
+
+    val UploadState by MyPageViewModel.uploadGifticonResponse.collectAsState()
 
     // 사용자가 채워야하는 값
     var subCategoryIdx by remember { mutableStateOf(-1) }
@@ -104,6 +123,11 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         }
     }
 
+    LaunchedEffect(UploadState) {
+        if (UploadState) {
+            currentPage++
+        }
+    }
 
 
 
@@ -121,17 +145,16 @@ fun GifticonAddDetailPage(navController: NavHostController) {
             val multipartImage: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "image", "profile2.jpg", requestFile
             )
-//            val mediaType = "application/json".toMediaType()
-//            val categoryJson = Gson().toJson(ocrCategoryRequest(category = selectedCategoryIndex))
-//            val categoryRequestBody = categoryJson.toRequestBody(mediaType)
 
             OcrViewModel.uploadGifticon(categorychice, multipartImage)
             SendState = false
         }
     }
 
+
+
     // 기프티콘 업로드를 위한 값
-    fun makeRequest(): MultipartBody.Part {
+    fun makeRequest(): RequestBody {
         val request = userUploadGifticonResponse(
             gifticonBarcode = gifticonBarcode.text,
             gifticonName = gifticonName.text,
@@ -143,9 +166,9 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         val jsonRequest = gson.toJson(request)
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val requestBody = jsonRequest.toRequestBody(mediaType)
-        val requestPart = MultipartBody.Part.createFormData("request", null, requestBody)
+        val requestPart = MultipartBody.Part.createFormData("gifticonPostRequest", null, requestBody)
 
-        return requestPart
+        return requestBody
     }
 
     fun makeOriginalFile(): MultipartBody.Part {
@@ -163,30 +186,29 @@ fun GifticonAddDetailPage(navController: NavHostController) {
             "originalFile", "${myname}.jpg", requestFile // jpg이름은 추가해주세요.
         )
 
-        Log.d("UserProfile", "Multipart data length: ${byteArray.size}")
         return multipartImage
     }
 
     fun makeCropFile(): MultipartBody.Part {
         val myname: String? = OcrViewModel.getUserNickName()
-        val currentImage = selectImage ?: throw IllegalArgumentException("Image URI is null")
 
-        val inputStream = getInputStreamFromUri(context, currentImage)
-        val byteArray = getBytesFromInputStream(inputStream!!)
+        // Base64로 인코딩된 문자열을 가져옵니다.
+        val base64String = getOcrResult?.gifticonCropImage ?: throw IllegalArgumentException("Base64 string is null")
+
+        // Base64 문자열을 디코딩하여 바이트 배열로 변환합니다.
+        val byteArray = Base64.decode(base64String, Base64.DEFAULT)
 
         // RequestBody 생성
         val requestFile: RequestBody = byteArray.toRequestBody("image/*".toMediaTypeOrNull())
 
         // MultipartBody.Part 생성
         val multipartImage: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "cropFile", "${myname}.jpg", requestFile // jpg이름은 추가해주세요.
+            "cropFile", "${myname}.jpg", requestFile
         )
 
-        Log.d("UserProfile", "Multipart data length: ${byteArray.size}")
         return multipartImage
     }
 
-    val UploadState by MyPageViewMOdel.uploadGifticonResponse.collectAsState()
 
 
 
@@ -230,14 +252,6 @@ fun GifticonAddDetailPage(navController: NavHostController) {
                     onSetPage = { newPage -> currentPage = newPage })
             }
         } else if (currentUpdatedPage.value == 3) {
-            Log.d("DEBUG", "Barcode: ${getOcrResult.gifticonBarcode}")
-            Log.d("DEBUG", "Barcode: ${getOcrResult.gifticonEndData}")
-            Log.d("DEBUG", "Barcode: ${getOcrResult.gifticonName}")
-            LaunchedEffect(UploadState) {
-                if (UploadState) {
-                    currentPage++
-                }
-            }
             GifticonCheck(imageView = selectImage)
             Spacer(modifier = Modifier.height(10.dp))
             CustomGiftTextField(
@@ -264,7 +278,7 @@ fun GifticonAddDetailPage(navController: NavHostController) {
                 buttonSize = 50,
                 textSize = 18,
                 onClick = {
-                    MyPageViewMOdel.gifticonUpload(
+                    MyPageViewModel.gifticonUpload(
                         makeRequest(),
                         makeOriginalFile(),
                         makeCropFile()
@@ -281,6 +295,42 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         } else if (currentUpdatedPage.value == 5) {
             Text(text = "다음5")
             pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
+        }
+    }
+}
+
+@Composable
+fun CustomGiftTextField(
+    label:String,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+) {
+    val scrollState = rememberScrollState()
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+        }
+        Text(text=label, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Surface(
+            modifier = Modifier
+                .shadow(4.dp, RoundedCornerShape(8.dp))
+                .background(BrandColor1)
+                .fillMaxWidth(0.8f)
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange =
+                onValueChange,
+                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Left, color = Color.White),
+                modifier = Modifier
+                    .height(40.dp)
+                    .weight(0.8f)
+                    .padding(start=8.dp)
+                    .horizontalScroll(scrollState)
+                    .background(BrandColor1)
+            )
         }
     }
 }
@@ -980,7 +1030,7 @@ fun pagechanger(
 fun GifticonRegistrationCompleteMessage(gifticonName: String) {
     val OcrViewModel: OcrViewModel = hiltViewModel()
     val myname: String? = OcrViewModel.getUserNickName()
-
+    val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -989,7 +1039,9 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
         Card(
             modifier = Modifier
                 .padding(16.dp)
-                .size(300.dp),
+                .size(300.dp)
+                .verticalScroll(scrollState),
+
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(2.dp, Color.White),
             colors = CardDefaults.cardColors(BrandColor1)
@@ -1017,3 +1069,4 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
         }
     }
 }
+

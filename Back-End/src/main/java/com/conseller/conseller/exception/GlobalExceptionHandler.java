@@ -17,11 +17,9 @@ public class GlobalExceptionHandler {
     private static final String USER_NOT_FOUND_CODE = "0003";
 
     @ExceptionHandler(RuntimeException.class)
-    public HttpServletResponse handleIllegalException(RuntimeException exception, HttpServletResponse response) throws IOException {
+    public void handleIllegalException(RuntimeException exception, HttpServletResponse response) throws IOException {
         
-        response.sendError(1000, "테스트 입니다.");
-
-        return response;
+        response.sendError(400, "테스트 입니다.");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

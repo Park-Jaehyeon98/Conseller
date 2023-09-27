@@ -5,9 +5,14 @@ import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDt
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
-
+@Getter
+@Setter
+@ToString
 public class BarterRequestResponseDto {
 
     private Long barterRequestIdx;

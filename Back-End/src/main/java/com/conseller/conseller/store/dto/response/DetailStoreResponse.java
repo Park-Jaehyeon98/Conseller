@@ -18,7 +18,7 @@ public class DetailStoreResponse {
 
     private String storeUserProfileUrl;
 
-    private Integer storeUserDeposit;
+    private Long storeUserDeposit;
 
     private Long storeIdx;
 

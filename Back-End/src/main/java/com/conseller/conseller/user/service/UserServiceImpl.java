@@ -2,10 +2,8 @@ package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
-import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
                 .userId(signUpRequest.getUserId())
                 .userPassword(signUpRequest.getUserPassword())
                 .userEmail(signUpRequest.getUserEmail())
-                .userDeposit(0)
+                .userDeposit((long) 0)
                 .userNickname(signUpRequest.getUserNickname())
                 .userPhoneNumber(signUpRequest.getUserPhoneNumber())
                 .userGender(signUpRequest.getUserGender())
@@ -212,7 +210,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deposit(long userIdx, int deposit) {
+    public void deposit(long userIdx, Long deposit) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
         user.setUserDeposit(deposit);
@@ -318,14 +316,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BarterResponseDto> getUserBarters(long userIdx) {
+    public List<BarterResponseDTO> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<BarterResponseDto> barterResponseDtos = new ArrayList<>();
+        List<BarterResponseDTO> barterResponseDtos = new ArrayList<>();
 
         for (Barter barter : user.getBarters()) {
-            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
+            BarterResponseDTO barterResponseDto = barter.toBarterResponseDto(barter);
             barterResponseDtos.add(barterResponseDto);
         }
 

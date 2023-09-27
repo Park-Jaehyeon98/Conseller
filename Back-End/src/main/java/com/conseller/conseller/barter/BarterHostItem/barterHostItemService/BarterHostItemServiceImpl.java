@@ -9,7 +9,10 @@ import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,7 @@ public class BarterHostItemServiceImpl implements BarterHostItemService{
     private final BarterHostItemRepository barterHostItemRepository;
     private final GifticonRepository gifticonRepository;
     @Override
-    public Void addBarterHostItem(List<Long> gifticons, Barter barter) {
+    public LocalDateTime addBarterHostItem(List<Long> gifticons, Barter barter) {
         for(Long gifticonIdx : gifticons) {
             Gifticon gifticon = gifticonRepository.findById(gifticonIdx)
                     .orElseThrow(()-> new RuntimeException("존재하지 않는 기프티콘입니다."));
@@ -27,13 +30,21 @@ public class BarterHostItemServiceImpl implements BarterHostItemService{
             }
         }
 
+        LocalDateTime recentExpireDate = null;
+
+
         for(Long gifticonIdx : gifticons) {
             Gifticon gifticon = gifticonRepository.findById(gifticonIdx)
                     .orElseThrow(()-> new RuntimeException("존재하지 않는 기프티콘입니다."));
+            if(recentExpireDate == null || gifticon.getGifticonEndDate().isBefore(recentExpireDate)) {
+                recentExpireDate = gifticon.getGifticonEndDate();
+            }
+
             BarterHostItem barterHostItem = new BarterHostItem(barter, gifticon);
             gifticon.setGifticonStatus(GifticonStatus.BARTER.getStatus());
             barterHostItemRepository.save(barterHostItem);
         }
-        return null;
+
+        return recentExpireDate;
     }
 }

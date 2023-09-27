@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,16 +39,20 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.BarterViewModel
 
 @Composable
-fun BarterdetailPage(index: String?, navController: NavHostController) {
-    val viewModel: BarterViewModel = hiltViewModel()
-    val barterItems by viewModel.barterItems.collectAsState()     // 이전에 들고왔던 리스트
-    val barterDetail by viewModel.barterDetail.collectAsState()   // 상세보기로 들고온 리스트
+fun BarterDetailPage(index: String?, navController: NavHostController) {
+    val barterViewModel: BarterViewModel = hiltViewModel()
+    val barterItems by barterViewModel.barterItems.collectAsState()     // 이전에 들고왔던 리스트
+    val barterDetail by barterViewModel.barterDetail.collectAsState()   // 상세보기로 들고온 리스트
     val scrollState = rememberScrollState()
-    val userIdFromPreference = viewModel.getUserIdFromPreference()
+    val error by barterViewModel.error.collectAsState()
+    val userIdFromPreference = barterViewModel.getUserIdFromPreference()
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
 
     // barterItems의 index값이 들고온 값이랑 같은것들을 세팅
     val currentItem = barterItems.find { it.barterIdx.toString() == index }
@@ -53,7 +60,19 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
     // 페이지가 호출될 때 fetchBarterDetail 함수를 호출 (MVVM에 쬐끔 어긋나지만 훨씬 효율적)
     LaunchedEffect(key1 = index) {
         index?.toLongOrNull()?.let {
-            viewModel.fetchBarterDetail(it)
+            barterViewModel.fetchBarterDetail(it)
+        }
+    }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
         }
     }
 
@@ -63,6 +82,14 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
             .background(Color.White)
             .padding(8.dp)
     ) {
+        if (showSnackbar) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -173,9 +200,11 @@ fun BarterdetailPage(index: String?, navController: NavHostController) {
                             SelectButton(
                                 text = "네",
                                 onClick = {
-                                    viewModel.deleteBarterItem(index!!.toLong())
-                                    navController.navigate("BarterPage")
-                                    showDeleteDialog = false
+                                    barterViewModel.deleteBarterItem(index!!.toLong())
+                                    if(error == null) {
+                                        navController.navigate("BarterPage")
+                                        showDeleteDialog = false
+                                    }
                                 }
                             )
                         },

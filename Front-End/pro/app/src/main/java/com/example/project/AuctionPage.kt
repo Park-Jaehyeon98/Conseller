@@ -73,7 +73,11 @@ fun AuctionPage(navController: NavHostController) {
     var currentPage by remember { mutableIntStateOf(1) } // 현재 페이지 초기값
     val itemsPerPage = 10 // 페이지 당 표시할 항목 수
 
-    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    // 검색창
+    var searchText by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    // 에러 스낵바
+    var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
@@ -114,9 +118,7 @@ fun AuctionPage(navController: NavHostController) {
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    // 검색창
-                    var searchText by remember { mutableStateOf("") }
-                    val keyboardController = LocalSoftwareKeyboardController.current
+
                     OutlinedTextField(
                         value = searchText,
                         onValueChange = { searchText = it },

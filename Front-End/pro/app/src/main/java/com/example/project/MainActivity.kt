@@ -1,5 +1,6 @@
 package com.example.project
 
+import InquiryPage
 import MypageAuction
 import MypageStore
 import android.os.Bundle
@@ -17,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -76,11 +78,16 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MypageDelete") { MypageDelete(navController = navController) }
                     composable("MyGifticonAddDetail") { GifticonAddDetailPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
+                    // 신고하기
+                    composable("Inquiry/{opponentIdx}") { backStackEntry ->
+                        val opponentIdx = backStackEntry.arguments?.getString("opponentIdx")
+                        InquiryPage(navController,opponentIdx)
+                    }
 
                     // 스토어
                     composable("StorePage") { StorePage(navController = navController) }
-                    composable("StoreDetailPage/{index}") { backStackEntry ->
-                        val storeIdx = backStackEntry.arguments?.getString("index")
+                    composable("StoreDetailPage/{storeIdx}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("storeIdx")
                         StoreDetailPage(navController, storeIdx)
                     }
                     composable("StoreCreatePage") { StoreCreatePage(navController) }
@@ -123,7 +130,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("BarterPage") { BarterPage(navController) }
                     composable("BarterDetailPage/{barterIdx}") { backStackEntry ->
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
-                        BarterdetailPage(barterIdx, navController)
+                        BarterDetailPage(barterIdx, navController)
                     }
                     composable("BarterCreatePage") { BarterCreatePage(navController) }
                     composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
@@ -146,7 +153,6 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         BarterTradePage(navController, selectedItemIndicesList, barterIdx)
                     }
 
-                    
                     // 거래 완료
                     composable("WaitingPage") { WaitingPage(navController) }
                     // 이벤트

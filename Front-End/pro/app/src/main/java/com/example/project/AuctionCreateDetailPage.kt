@@ -265,6 +265,9 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                                 postContent,
                                 selectedIndex
                             )
+                            if(error == null){
+                                navController.navigate("AuctionPage")
+                            }
                             showRegisterConfirmDialog = false
                         }
                     )

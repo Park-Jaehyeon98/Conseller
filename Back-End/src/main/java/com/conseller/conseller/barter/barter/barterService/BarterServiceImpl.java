@@ -183,6 +183,7 @@ public class BarterServiceImpl implements BarterService{
         }
         for(BarterGuestItem guestItem : barterRequest.getBarterGuestItemList()){
             Gifticon gift = guestItem.getGifticon();
+            gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
             gift.setUser(barterHost);
         }
 

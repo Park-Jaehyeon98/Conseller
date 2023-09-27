@@ -96,7 +96,7 @@ public class BarterServiceImpl implements BarterService{
         LocalDateTime endDate = LocalDateTime.parse(date, formatter);
 
         Barter barter = BarterMapper.INSTANCE.registBarterCreateToBarter(barterCreateDto, user, endDate, subCategory, preferSubCategory);
-        barterRepository.save(barter);
+
         try {
             barterHostItemService.addBarterHostItem(barterCreateDto.getSelectedItemIndices(), barter);
         } catch(Exception e) {
@@ -140,7 +140,6 @@ public class BarterServiceImpl implements BarterService{
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-                gifticonRepository.save(gifticon);
             }
         }
 
@@ -165,13 +164,11 @@ public class BarterServiceImpl implements BarterService{
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
             br.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
-            barterRequestRepository.save(br);
 
             for(BarterGuestItem bg : barterGuestItemList) {
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-                gifticonRepository.save(gifticon);
             }
         }
         User barterHost = barter.getBarterHost();
@@ -182,13 +179,12 @@ public class BarterServiceImpl implements BarterService{
             Gifticon gift = hostItem.getGifticon();
             gift.setUser(barterRequester);
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-            gifticonRepository.save(gift);
+
         }
         for(BarterGuestItem guestItem : barterRequest.getBarterGuestItemList()){
             Gifticon gift = guestItem.getGifticon();
-            gift.setUser(barterHost);
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-            gifticonRepository.save(gift);
+            gift.setUser(barterHost);
         }
 
         barter.setBarterStatus(BarterStatus.EXCHANGED.getStatus());

@@ -1,6 +1,5 @@
 package com.example.project
 
-import FormattedDateText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -35,22 +33,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.api.myGifticon
 import com.example.project.ui.theme.BrandColor1
-import com.example.project.viewmodels.GifticonData
 import com.example.project.viewmodels.MyPageViewModel
-import com.example.project.viewmodels.OcrViewModel
 
 @Composable
 fun MypageCoupon(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
-    val scrollstate = rememberScrollState()
     LaunchedEffect(Unit) {
         viewModel.getMyGifticon()
     }
     val getMyGift by viewModel.getMyGifticonResponse.collectAsState()
+
+    val scrollstate = rememberScrollState()
     Column(
         modifier = Modifier.verticalScroll(scrollstate),
         horizontalAlignment = Alignment.Start,
@@ -58,14 +54,17 @@ fun MypageCoupon(navController: NavHostController) {
     ) {
         SelectBar()
         Divider(color = Color.Gray, thickness = 1.dp)
+
         getMyGift?.forEach { gifticonData ->
-            ShowMyGifticon(gifticonData = gifticonData, isSelected = false) {
-            }
+            ShowMyGifticon(gifticonData = gifticonData, isSelected = false, onClick = {
+                navController.navigate("MyPageCouponDetail/${gifticonData.gifticonIdx}")
+
+            })
         }
     }
 }
 
-// 클릭 시 수행할 함수
+// 클릭 시 수행할 함수d
 @Composable
 fun SelectBar(){
     Row(

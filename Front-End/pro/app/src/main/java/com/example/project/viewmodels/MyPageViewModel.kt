@@ -3,6 +3,7 @@ package com.example.project.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.AuctionBidRequestDTO
 import com.example.project.api.MyPageService
 import com.example.project.api.myAuctionBidData
 import com.example.project.api.myAuctionData
@@ -17,6 +18,7 @@ import com.example.project.api.userModifyRequest
 import com.example.project.api.userModifyResponse
 import com.example.project.api.userUploadGifticonResponse
 import com.example.project.api.userValidRequest
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +86,8 @@ class MyPageViewModel @Inject constructor(
     private val _DeleteUserReponse = MutableStateFlow(false)
     val deleteUserResponse: StateFlow<Boolean> get() = _DeleteUserReponse
 
+    private val _GetMyGifticonInfo = MutableStateFlow(myGifticon(0, "","","","","","","",0,0,0))
+    val getMyGifticonInfoResponse: StateFlow<myGifticon> get() = _GetMyGifticonInfo
     companion object {
         const val TAG = "UserViewModel"
     }
@@ -116,6 +120,27 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun getUserGifticonInfo(gifticonIdx:Long){
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getUserGifticoninfo(gifticonIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _GetMyGifticonInfo.value=response.body()!!
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
     }
@@ -147,32 +172,59 @@ class MyPageViewModel @Inject constructor(
     }
 
 
-//    fun getMyAuctionBid() {
-//        val userIdx = sharedPreferencesUtil.getUserId()
-//        viewModelScope.launch {
-//            try {
-//                val response = service.getUserAuctionBid(userIdx)
-//                if (response.isSuccessful) {
-//                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
-//                    _GetMyAuctionBid.value = response.body()?.items ?: listOf()
-//                } else {
-//                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-//                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-//                        response.errorBody()?.string() ?: "Unknown"
-//                    }"
-//                    _error.value = errorString
-//                    Log.e("getMyAuctionBid", errorString)
-//                }
-//            } catch (e: Exception) {
-//                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-//                val errorMessage =
-//                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-//                _error.value = errorMessage
-//                Log.e("getMyAuctionBid", errorMessage, e)
-//            } finally {
-//            }
-//        }
-//    }
+    fun getMyAuction() {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        viewModelScope.launch {
+            try {
+                val response = service.getUserAuction(userIdx)
+                if (response.isSuccessful) {
+                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
+                    _GetMyAuction.value = response.body()?.items ?: listOf()
+                } else {
+                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
+                    val errorString = "Error Code: ${response.code()}, Error Body: ${
+                        response.errorBody()?.string() ?: "Unknown"
+                    }"
+                    _error.value = errorString
+                    Log.e("getMyAuctionBid", errorString)
+                }
+            } catch (e: Exception) {
+                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
+                val errorMessage =
+                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
+                _error.value = errorMessage
+                Log.e("getMyAuctionBid", errorMessage, e)
+            } finally {
+            }
+        }
+    }
+
+    fun getMyAuctionBid() {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        viewModelScope.launch {
+            try {
+                val response = service.getUserAuctionBid(userIdx)
+                if (response.isSuccessful) {
+                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
+                    _GetMyAuctionBid.value = response.body()?.items ?: listOf()
+                } else {
+                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
+                    val errorString = "Error Code: ${response.code()}, Error Body: ${
+                        response.errorBody()?.string() ?: "Unknown"
+                    }"
+                    _error.value = errorString
+                    Log.e("getMyAuctionBid", errorString)
+                }
+            } catch (e: Exception) {
+                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
+                val errorMessage =
+                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
+                _error.value = errorMessage
+                Log.e("getMyAuctionBid", errorMessage, e)
+            } finally {
+            }
+        }
+    }
 
     fun getMyBarter() {
         val userIdx = sharedPreferencesUtil.getUserId()

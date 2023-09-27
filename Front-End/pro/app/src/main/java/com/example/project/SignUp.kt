@@ -147,11 +147,11 @@ fun SignUpPage(navController: NavHostController) {
     // 로그인 결과에 따른 값 변화
     LaunchedEffect(Signstatus) {
         if (signUpResult) {
-            navController.navigate("TextLoginPage") {
+            navController.navigate("MakePatternPage") {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true
             }
-            dialogMessage = "회원가입 성공"
+            dialogMessage = "회원가입 성공\n 패턴로그인을 추가하겠습니까?"
             showDialog = true
         }
         if (!signUpResult) {
@@ -374,9 +374,19 @@ fun SignUpPage(navController: NavHostController) {
                             Text(dialogMessage)
                         }, confirmButton = {
                             Button(onClick = { showDialog = false }) {
-                                Text("확인")
+                                Text("예")
                             }
-                        })
+
+                        },
+                            dismissButton = {
+                                Button(onClick = {
+                                    showDialog = false
+                                    navController.navigate("TextLoginPage")
+                                }) {
+                                    Text("아니요")
+                                }
+                            }
+                        )
                     }
 
                     Button(

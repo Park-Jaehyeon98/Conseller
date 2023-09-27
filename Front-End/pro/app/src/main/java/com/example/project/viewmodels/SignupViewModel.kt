@@ -23,8 +23,8 @@ class SignupViewModel @Inject constructor(
     private val service: SignupService,
 ) : ViewModel() {
 
-    private val _SignupResponse = MutableStateFlow(false)
-    val signupresponse: StateFlow<Boolean> get() = _SignupResponse
+    private val _SignupResponse = MutableStateFlow(0)
+    val signupresponse: StateFlow<Int> get() = _SignupResponse
 
 
     private val _CheckEmailResponse = MutableStateFlow(BasicResponse(-1, ""))
@@ -109,7 +109,9 @@ class SignupViewModel @Inject constructor(
     }
 
 
-
+    fun initSignUpResult(){
+        _SignupResponse.value=0
+    }
     // 회원가입 로직
     fun registerUser(request: RegistRequest) {
         viewModelScope.launch {
@@ -118,13 +120,17 @@ class SignupViewModel @Inject constructor(
             try {
                 val response = service.regist(request)
 
-                if (response.isSuccessful && response.body() != null) {
-                    _SignupResponse.value=true
+                if (response.isSuccessful) {
+                    _SignupResponse.value=1
+                }else{
+                    _SignupResponse.value=2
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
+                _SignupResponse.value=2
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
+                _SignupResponse.value=2
             } finally {
                 _isLoading.value = false
             }

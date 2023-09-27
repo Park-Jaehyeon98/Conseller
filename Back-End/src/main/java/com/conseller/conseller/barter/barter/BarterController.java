@@ -3,6 +3,7 @@ package com.conseller.conseller.barter.barter;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterListResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
 import com.conseller.conseller.notification.NotificationService;
@@ -24,7 +25,7 @@ public class BarterController {
     //구매자 입장
     //1. 전체 물물교환 리스트 확인 - 필터 넣기 가능
     @PostMapping({"", "/"})
-    public ResponseEntity<List<BarterResponseDto>> getBarterList(@RequestBody BarterFilterDto barterFilterDto) {
+    public ResponseEntity<BarterListResponse> getBarterList(@RequestBody BarterFilterDto barterFilterDto) {
         return ResponseEntity.ok()
                 .body(barterService.getBarterList(barterFilterDto));
     }

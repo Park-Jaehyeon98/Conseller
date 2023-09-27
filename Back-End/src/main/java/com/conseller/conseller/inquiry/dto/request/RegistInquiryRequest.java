@@ -4,19 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistInquiryRequest {
     private Long userIdx;
 
-    private String inquiryName;
+    private String inquiryTitle;
 
-    private String inquiryText;
-
-    private LocalDateTime inquiryCreatedDate;
+    private String inquiryContent;
 
     private String inquiryType;
+
+    private Long reportedUserIdx;
 }

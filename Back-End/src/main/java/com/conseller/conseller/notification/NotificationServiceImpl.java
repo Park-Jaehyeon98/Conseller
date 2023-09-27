@@ -209,12 +209,50 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type) {
-        Gifticon gifticon = gifticonRepository.findById(gifticonIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
-        
+        if(user.getFcm() == null)
+            return;
 
+        String title = "기프티콘 알림";
+        String body = " ";
+
+        if(gifticonCount == 1){
+            body = gifticionName + " 기프티콘 유효기간이 " + remainDay + "일 남았습니다.";
+        }else {
+            body = gifticionName + " 외 " + (gifticonCount - 1) + "개의 기프티콘 유효기간이 " + remainDay + "일 남았습니다.";
+        }
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(body);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(false);
+            notificationEntity.setUser(user);
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(user.getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
     }
 
 

@@ -10,7 +10,7 @@ public interface NotificationService {
 
     public void sendBarterNotification(Long barterIdx, String title, Integer type);
 
-    public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type);
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type);
 
     public void sendNotification(Long userIdx, String title, String body);
 

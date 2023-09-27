@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,6 +53,7 @@ fun SignUpPage(navController: NavHostController) {
     // 모델 결과
     val signUpResult by viewModel.signupresponse.collectAsState()
 
+    val errorMessage by viewModel.error.collectAsState()
     // 유효성 검사
     val checkIdResult by viewModel.checkId.collectAsState()
     val checkEmailResult by viewModel.checkEmail.collectAsState()
@@ -73,6 +75,7 @@ fun SignUpPage(navController: NavHostController) {
 
     // 알림
     var showDialog by remember { mutableStateOf(false) }
+    var showDialog2 by remember { mutableStateOf(false) }
     var dialogMessage by remember { mutableStateOf("") }
 
     // 회원가입 request
@@ -142,24 +145,23 @@ fun SignUpPage(navController: NavHostController) {
     var phoneError by remember { mutableStateOf<String?>(null) }
 
     // signupmodal 용
-    var Signstatus by remember { mutableStateOf(0) }
+    var Signstatus by remember { mutableStateOf(false) }
 
     // 로그인 결과에 따른 값 변화
-    LaunchedEffect(Signstatus) {
-        if (signUpResult) {
-            navController.navigate("MakePatternPage") {
-                popUpTo(navController.graph.startDestinationId)
-                launchSingleTop = true
-            }
+    LaunchedEffect(signUpResult) {
+        val checker=signUpResult
+        Log.d("why","Sibal${checker}")
+        Log.d("why","Sibal22${Signstatus}")
+        if (checker==1&&Signstatus) {
             dialogMessage = "회원가입 성공\n 패턴로그인을 추가하겠습니까?"
             showDialog = true
         }
-        if (!signUpResult) {
-            dialogMessage = "회원가입이 실패했습니다."
-            showDialog = true
+        if (checker==2&&Signstatus) {
+            dialogMessage = "회원가입이 실패했습니다.\n 원인: ${errorMessage}"
+            showDialog2 = true
+            viewModel.initSignUpResult()
         }
     }
-
     //인증마크 관리 로직
     LaunchedEffect(checkIdResult, checkEmailResult, checkPhoneNumberResult, checkNickNameResult) {
         if (checkIdResult.status == 1) {
@@ -199,6 +201,50 @@ fun SignUpPage(navController: NavHostController) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         val shape = RoundedCornerShape(8.dp)
+        // 알림
+        if (showDialog) {
+            AlertDialog(onDismissRequest = {
+                showDialog = false
+            }, title = {
+                Text("알림")
+            }, text = {
+                Text(dialogMessage)
+            }, confirmButton = {
+                Button(onClick = { showDialog = false
+                    navController.navigate("MakePatternPage") {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                } }) {
+                    Text("예")
+                }
+
+            },
+                dismissButton = {
+                    Button(onClick = {
+                        showDialog = false
+                        navController.navigate("TextLoginPage")
+                    }) {
+                        Text("아니요")
+                    }
+                }
+            )
+        }
+        if (showDialog2) {
+            AlertDialog(onDismissRequest = {
+                showDialog2 = false
+            }, title = {
+                Text("알림")
+            }, text = {
+                Text(dialogMessage)
+            }, confirmButton = {
+                Button(onClick = { showDialog2 = false
+                Signstatus=false}) {
+                    Text("확인")
+                }
+
+            }
+            )
+        }
         Box(
             modifier = Modifier
                 .size(350.dp, 700.dp)
@@ -364,35 +410,17 @@ fun SignUpPage(navController: NavHostController) {
                         },
                     )
 
-                    // 알림
-                    if (showDialog) {
-                        AlertDialog(onDismissRequest = {
-                            showDialog = false
-                        }, title = {
-                            Text("알림")
-                        }, text = {
-                            Text(dialogMessage)
-                        }, confirmButton = {
-                            Button(onClick = { showDialog = false }) {
-                                Text("예")
-                            }
-
-                        },
-                            dismissButton = {
-                                Button(onClick = {
-                                    showDialog = false
-                                    navController.navigate("TextLoginPage")
-                                }) {
-                                    Text("아니요")
-                                }
-                            }
-                        )
-                    }
 
                     Button(
                         onClick = {
-                            viewModel.registerUser(request)
-                            Signstatus++
+                            if(checkIdResult.status+checkEmailResult.status+checkPhoneNumberResult.status+checkNickNameResult.status==4){
+                                viewModel.registerUser(request)
+                                Signstatus=true
+                            }else{
+                                dialogMessage = "중복확인해주세요."
+                                showDialog2 = true
+                            }
+
                         },
                         Modifier.size(120.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(BrandColor1)

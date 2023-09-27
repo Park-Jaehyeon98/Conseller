@@ -14,14 +14,11 @@ public class GlobalExceptionHandler {
     private static final String USER_NOT_FOUND_CODE = "0003";
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleIllegalException(RuntimeException exception) {
-        CommonResponse commonResponse = CommonResponse.builder()
-                .code(COMMON_CODE)
-                .message(exception.getMessage())
-                .build();
+    public HttpServletResponse handleIllegalException(RuntimeException exception, HttpServletResponse response) throws IOException {
+        
+        response.sendError(1000, "테스트 입니다.");
 
-        return ResponseEntity.badRequest()
-                .body(exception.getMessage());
+        return response;
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

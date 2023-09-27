@@ -71,6 +71,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("MyDeletePageValidPage") { MyDeletePageValidPage(navController = navController) }
 
                     composable("MypageCoupon") { MypageCoupon(navController = navController) }
+                    composable("MyPageCouponDetail/{index}") { backStackEntry ->
+                        val gifticonIdx = backStackEntry.arguments?.getString("index")
+                        MyPageCouponDetail(navController, gifticonIdx)
+                    }
                     composable("MypageBarter") { MypageBarter(navController = navController) }
                     composable("MypageStore") { MypageStore(navController = navController) }
                     composable("MypageAuction") { MypageAuction(navController = navController) }

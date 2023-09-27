@@ -62,8 +62,11 @@ fun MyPage(navController: NavHostController) {
     LaunchedEffect(Unit) {
         viewModel.getMyInfo()
         viewModel.getMyGifticon()
-        viewModel.getMyBarterRequest()
+        viewModel.getMyBarter()
         viewModel.getMyStore()
+        viewModel.getMyAuction()
+        viewModel.getMyAuctionBid()
+        viewModel.getMyBarterRequest()
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {

@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

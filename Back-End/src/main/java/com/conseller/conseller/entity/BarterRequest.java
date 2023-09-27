@@ -65,7 +65,7 @@ public class BarterRequest {
 
 
         return BarterRequestResponseDto.builder()
-                .barterIdx(barterRequest.getBarterRequestIdx())
+                .barterRequestIdx(barterRequest.getBarterRequestIdx())
                 .barterRequestStatus(barterRequest.getBarterRequestStatus())
                 .barterIdx(barterRequest.getBarter().getBarterIdx())
                 .barterGuestItemDtoList(barterGuestItemDtoList)

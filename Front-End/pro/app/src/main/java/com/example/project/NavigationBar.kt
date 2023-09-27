@@ -21,9 +21,15 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -88,6 +94,22 @@ fun TopBar(navController: NavHostController) {
 
 @Composable
 fun BottomBar(navController: NavHostController) {
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("알림") },
+            text = { Text("개발중인 기능입니다") },
+            confirmButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("확인")
+                }
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +132,7 @@ fun BottomBar(navController: NavHostController) {
                 navController.navigate("Home")
             }
             BottomBarButton("검색") {
-                navController.navigate("SearchPage")
+                showDialog = true
             }
             BottomBarButton("내정보") {
                 navController.navigate("MyPage")

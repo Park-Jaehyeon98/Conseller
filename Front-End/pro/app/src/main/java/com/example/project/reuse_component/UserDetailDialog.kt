@@ -44,7 +44,7 @@ fun UserDetailDialog(
             SelectButton(text = "신고하기", onClick = onReportClick)
         },
         confirmButton = {
-            SelectButton(text = "메세지 보내기", onClick = onMessageClick)
+            SelectButton(text = "메세지 보내기(개발중)", onClick = onMessageClick)
         }
     )
 }

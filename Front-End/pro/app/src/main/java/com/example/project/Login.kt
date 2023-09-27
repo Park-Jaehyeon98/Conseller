@@ -25,16 +25,16 @@ import com.mrhwsn.composelock.Dot
 @Composable
 fun LoginPage(navController: NavHostController) {
     val viewModel: BiometricViewModel = hiltViewModel()
-    val authState by viewModel.authenticationState.collectAsState()
+    val authenticationState by viewModel.authenticationState.collectAsState()
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
 
-    when (authState) {
+    when (authenticationState) {
         is AuthenticationState.SUCCESS -> {
             navController.navigate("Home")
         }
         is AuthenticationState.ERROR -> {
-            val errorMessage = (authState as AuthenticationState.ERROR).message
+            val errorMessage = (authenticationState as AuthenticationState.ERROR).message
             ShowAlertDialog(message = errorMessage)
         }
         is AuthenticationState.FAILURE -> {

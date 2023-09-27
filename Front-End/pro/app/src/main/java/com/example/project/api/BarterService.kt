@@ -13,19 +13,13 @@ import retrofit2.http.Path
 interface BarterService {
 
     // 전체 목록 API
-    @POST("api/barterItems/all")
+    @POST("api/barter/all")
     suspend fun getAllBarterItems(
         @Body filter: BarterFilterDTO,
     ): Response<BarterResponse>
 
-    // 내가 등록한 물물 목록 API
-    @GET("api/barter/{userIdx}")
-    suspend fun getMyBarterItems(
-        @Path("userIdx") userIdx: Long,
-    ): Response<BarterResponse>
-
     // 물물교환 등록 API
-    @POST("api/barterItems/regist")
+    @POST("api/barter/new")
     suspend fun createBarterItem(
         @Body filter: BarterCreateDTO
     ): Response<CreateBarterResponse>
@@ -33,7 +27,7 @@ interface BarterService {
     // 물물교환 수정 API
     @PATCH("api/barter/{barterIdx}")
     suspend fun updateBarterItem(
-        @Path("barterIdx") auctionIdx: Long,
+        @Path("barterIdx") barterIdx: Long,
         @Body updateData: UpdateBarterDTO
     ): Response<Void>
 
@@ -44,17 +38,38 @@ interface BarterService {
     ): Response<Void>
 
     // 물물교환 상세보기 API
-    @GET("api/barter/detail/{barterIdx}")
+    @GET("api/barter/{barterIdx}")
     suspend fun getBarterDetail(
         @Path("barterIdx") barterIdx: Long
     ): Response<BarterDetailResponseDTO>
 
     // 물물교환 거래제안 API
-    @POST("api/barter/trade/{barterIdx}")
+    @POST("api/barterRequest/{barterIdx}")
     suspend fun proposeBarterTrade(
         @Path("barterIdx") barterIdx: Long,
         @Body tradeRequest: TradeBarterRequestDTO
     ): Response<Void>
+
+    // 물물교환 거래제안 취소 API
+    @DELETE("api/barter/{barterRequestIdx}")
+    suspend fun proposeCancleBarterTrade(
+        @Path("barterIdx") barterRequestIdx: Long,
+    ): Response<Void>
+
+
+
+    // 물물교환 판매자 확정 페이지 요청
+    @GET("api/barter/Confirm/{barterIdx}")
+    suspend fun getBarterConfirm(
+        @Path("barterIdx") barterIdx: Long,
+    ): Response<BarterConfirmPageResponseDTO>
+
+    // 물물교환 판매자 확정 요청
+    @PATCH("api/barter/Confirm")
+    suspend fun barterConfirm(
+        @Body confirmData: BarterConfirmRequestDTO
+    ): Response<Void>
+
 
 }
 
@@ -107,6 +122,9 @@ data class UpdateBarterDTO(
 // 물물교환 상세보기 요청 DTO = Path형식
 // 물물교환 상세보기 응답 DTO
 data class BarterDetailResponseDTO(
+    val barterImageList: List<BarterConfirmList>,   // 기프티콘 내용들
+    val preper: String,                     // 게시글이 선호하는 품목
+    val barterRequestIdx: Long,             // 입찰했는지? 없으면 0
     val barterName: String,                // 게시글 제목
     val barterText: String,              // 게시글 내용
     val barterUserIdx: Long,           // 게시글 유저 idx
@@ -118,5 +136,42 @@ data class BarterDetailResponseDTO(
 // 물물교환 거래제안 요청 DTO
 // 물물교환 거래제안 응답 DTO = http형식
 data class TradeBarterRequestDTO(
+    val userIdx: Long,
     val selectedItemIndices: List<Long>
+)
+
+
+
+
+// 물물교환 판매자 거래 확정 페이지 요청 DTO = path 형식
+// 물물교환 판매자 거래 확정 페이지 응답 DTO
+data class BarterConfirmPageResponseDTO(
+    val barterName: String,
+    val barterText: String,
+    val barterConfirmList: List<BarterConfirmList>,
+    val barterTradeAllList: List<BarterConfirmListOfList>,
+)
+
+// 물물교환 판매자 거래 확정 페이지 응답 DTO의 리스트의 리스트(전체)
+data class BarterConfirmListOfList(
+    val buyUserImageUrl: String,
+    val buyUserNickname: String,
+    val buyUserIdx: Long,
+    val barterTradeList: List<BarterConfirmList>,
+)
+
+// 물물교환 판매자 거래 확정 페이지 응답 DTO의 리스트(세부)
+data class BarterConfirmList(
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+)
+
+
+// 물물교환 판매자 입금 확정 페이지 확정 요청 DTO
+// 물물교환 판매자 입금 확정 페이지 확정 요청 DTO = http 형식
+data class BarterConfirmRequestDTO(
+    val barterIdx: Long,
+    val userIdx: Long,
+    val confirm: Boolean,
 )

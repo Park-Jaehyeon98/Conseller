@@ -147,7 +147,16 @@ object SharedPreferencesModule {
 class CustomException(message: String) : IOException(message)
 class ResponseInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
         val response = chain.proceed(chain.request())
+
+        if (request.url.encodedPath.endsWith("api/user")) {
+            return response
+        }
+        if (request.url.encodedPath.endsWith("api/user/verifypattern")) {
+            return response
+        }
+
         Log.d("@@@@@@@@@@@@@@@@1","$response")
         Log.d("@@@@@@@@@@@@@@@@2","${response.body}")
         Log.d("@@@@@@@@@@@@@@@@3","${response.code}")

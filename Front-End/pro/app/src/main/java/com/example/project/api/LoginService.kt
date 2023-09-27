@@ -43,6 +43,7 @@ data class PatternVerificationRequest(
 // 패턴 검증 응답에 대한 DTO
 data class PatternVerificationResponse(
     val success: Boolean,
+    val message: String,
 )
 
 // 패턴 저장 요청 DTO

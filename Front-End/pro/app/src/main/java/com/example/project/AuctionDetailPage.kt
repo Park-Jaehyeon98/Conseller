@@ -86,7 +86,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     // 입찰가 상위 3개
     val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
     val top3Bids = sortedBids?.take(3)
-    val topBids = auctionDetail?.auctionBidList!![0]
+    val topBids = auctionDetail?.auctionBidList?.getOrNull(0) ?: "Default Value or Fallback Object"
 
     LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
@@ -464,7 +464,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                     userDeposit = auctionDetail?.auctionUserDeposit,
                     onDismiss = { showUserDetailDialog = false },
                     onReportClick = {
-                        // Handle report logic here
+                        navController.navigate("Inquiry/${auctionDetail?.auctionUserIdx}")
                     },
                     onMessageClick = {
                         // Handle message sending logic here

@@ -10,6 +10,7 @@ import com.example.project.api.findIdRequest
 import com.example.project.api.findIdResponse
 import com.example.project.api.findPwRequest
 import com.example.project.di.CustomException
+import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val service: SignupService,
+    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
     private val _SignupResponse = MutableStateFlow(0)

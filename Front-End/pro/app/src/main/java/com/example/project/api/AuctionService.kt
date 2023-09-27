@@ -78,16 +78,38 @@ interface AuctionService {
 
 
     // 내 경매 내역 불러오기 API
-    @GET("/api/user/{userIdx}/auction")
+    @GET("api/user/{userIdx}/auction")
     suspend fun getUserAuction(
         @Path("userIdx") useridx: Long,
     ): Response<MyAuctionResponse>
 
     // 내 입찰 내역 불러오기 API
-    @GET("/api/user/{userIdx}/auction-bid")
+    @GET("api/user/{userIdx}/auction-bid")
     suspend fun getUserAuctionBid(
         @Path("userIdx") useridx: Long,
     ): Response<myAuctionBidItems>
+
+
+
+    // 경매 판매자 입금 확정 페이지 요청
+    @GET("api/auction/Confirm/{auctionIdx}")
+    suspend fun getAuctionConfirm(
+        @Path("auctionIdx") auctionIdx: Long,
+    ): Response<AuctionConfirmPageResponseDTO>
+
+    // 경매 판매자 입금 확정 요청
+    @PATCH("api/auction/Confirm")
+    suspend fun auctionConfirm(
+        @Body confirmData: AuctionConfirmRequestDTO
+    ): Response<Void>
+
+    // 경매 입찰자 낙찰 페이지 요청
+    @GET("api/auction/ConfirmBuy/{auctionIdx}")
+    suspend fun getAuctionConfirmBuy(
+        @Path("auctionIdx") auctionIdx: Long,
+    ): Response<AuctionConfirmBuyPageResponseDTO>
+
+
 }
 
 // 목록, 검색 요청 DTO
@@ -173,3 +195,48 @@ data class AuctionTradeResponseDTO(
 
 // 입금 완료 요청 DTO = Path형식
 // 입금 완료 요청 DTO = Path형식
+
+
+
+
+// 경매 판매자 입금 확정 페이지 요청 DTO = path 형식
+// 경매 판매자 입금 확정 페이지 응답 DTO
+data class AuctionConfirmPageResponseDTO(
+    val gifticonDataImageName: String,
+    val notificationCreatedDate: String,
+    val giftconName: String,
+    val auctionPrice: Int,
+    val postContent: String,
+    val buyUserImageUrl: String,
+    val buyUserNickname: String,
+    val buyUserIdx: Long
+)
+
+// 경매 판매자 입금 확정 페이지 확정 요청 DTO
+// 경매 판매자 입금 확정 페이지 확정 응답 DTO = http 형식
+data class AuctionConfirmRequestDTO(
+    val auctionIdx: Long,
+    val confirm: Boolean,
+)
+
+
+
+// 경매 입찰자 낙찰 페이지 요청 DTO = path 형식
+// 경매 입찰자 낙찰 페이지 응답 DTO
+data class AuctionConfirmBuyPageResponseDTO(
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val auctionPrice: Int,
+    val postContent: String,
+    val userAccount: String,
+    val userAccountBank: String,
+    val buyUserImageUrl: String,
+    val buyUserNickname: String,
+    val buyUserIdx: Long
+)
+
+
+
+
+
+

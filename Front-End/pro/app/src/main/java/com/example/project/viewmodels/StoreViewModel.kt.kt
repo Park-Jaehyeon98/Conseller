@@ -33,6 +33,7 @@ class StoreViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
     }
@@ -53,6 +54,14 @@ class StoreViewModel @Inject constructor(
     // 스토어 거래 취소
     private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
     val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+
+    // 스토어 확정 페이지 데이터
+    private val _storeConfirm = MutableStateFlow<StoreConfirmPageResponseDTO?>(null)
+    val storeConfirm: StateFlow<StoreConfirmPageResponseDTO?> = _storeConfirm
+
+    // 스토어 확정 페이지 네비게이터
+    private val _storeConfirmNavi = MutableStateFlow<Boolean?>(null)
+    val storeConfirmNavi: StateFlow<Boolean?> = _storeConfirmNavi
 
     fun resetNavigation() {
         _navigateToStoreDetail.value = null
@@ -76,6 +85,7 @@ class StoreViewModel @Inject constructor(
         fetchStoreItems()
     }
 
+    // 스토어 전체보기 리스트
     fun fetchStoreItems() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -165,6 +175,7 @@ class StoreViewModel @Inject constructor(
         }
     }
 
+    // 스토어 상세보기
     fun fetchStoreDetail(storeIdx: Long) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -252,6 +263,49 @@ class StoreViewModel @Inject constructor(
                 val response = service.completeStorePayment(storeIdx)
                 if (response.isSuccessful) {
                     _error.value = null
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 스토어 확정 페이지 불러오기
+    fun fetchStoreConfirmItems(storeIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getStoreConfirm(storeIdx)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _storeConfirm.value = response.body()
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 스토어 확정 페이지 확정하기
+    fun storeConfirm(storeIdx: Long, confirm: Boolean) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.storeConfirm(StoreConfirmRequestDTO(storeIdx,confirm))
+
+                if (response.isSuccessful) {
+                    _storeConfirm.value = null
+                    _storeConfirmNavi.value = true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

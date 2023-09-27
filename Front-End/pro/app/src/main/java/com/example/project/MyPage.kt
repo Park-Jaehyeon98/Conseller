@@ -65,6 +65,7 @@ fun MyPage(navController: NavHostController) {
         viewModel.getMyStore()
     }
 
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

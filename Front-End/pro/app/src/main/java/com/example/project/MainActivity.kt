@@ -4,8 +4,8 @@ import InquiryPage
 import MypageAuction
 import MypageStore
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.project.sharedpreferences.SharedPreferencesUtil
+import com.example.project.viewmodels.AuctionViewModel
+import com.example.project.viewmodels.MygifticonViewModel
+import com.example.project.viewmodels.StoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 val customBackgroundColor = Color(245, 245, 245)
@@ -28,6 +30,11 @@ val customBackgroundColor = Color(245, 245, 245)
 class MainActivity : AppCompatActivity() {
 
     private val sharedPreferencesUtil by lazy { SharedPreferencesUtil(this) }
+
+    private val auctionViewModel: AuctionViewModel by viewModels()
+    private val storeViewModel: StoreViewModel by viewModels()
+    private val barterViewModel: StoreViewModel by viewModels()
+    private val myGifticonViewModel: MygifticonViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +110,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val storeIdx = backStackEntry.arguments?.getString("storeIdx")
                         StoreTradePage(storeIdx, navController)
                     }
+                    composable("storeConfirmPage/{storeIdx}") { backStackEntry ->
+                        val storeIdx = backStackEntry.arguments?.getString("storeIdx")
+                        StoreConfirmPage(navController, storeIdx)
+                    }
 
 
                     // 경매
@@ -123,6 +134,14 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                     composable("AuctionTradePage/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         AuctionTradePage(auctionIdx, navController)
+                    }
+                    composable("AuctionConfirmPage/{auctionIdx}") { backStackEntry ->
+                        val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
+                        AuctionConfirmPage(navController, auctionIdx)
+                    }
+                    composable("auctionConfirmBuyPage/{auctionIdx}") { backStackEntry ->
+                        val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
+                        auctionConfirmBuyPage(navController, auctionIdx)
                     }
 
 
@@ -151,6 +170,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
                         BarterTradePage(navController, selectedItemIndicesList, barterIdx)
+                    }
+                    composable("barterConfirmPage/{barterIdx}") { backStackEntry ->
+                        val barterIdx = backStackEntry.arguments?.getString("barterIdx")
+                        BarterConfirmPage(navController, barterIdx)
                     }
 
                     // 거래 완료

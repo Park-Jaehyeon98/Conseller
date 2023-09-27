@@ -4,11 +4,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.AuctionBidRequestDTO
+import com.example.project.api.AuctionConfirmBuyPageResponseDTO
+import com.example.project.api.AuctionConfirmPageResponseDTO
+import com.example.project.api.AuctionConfirmRequestDTO
 import com.example.project.api.AuctionDetailResponseDTO
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.AuctionService
 import com.example.project.api.AuctionTradeResponseDTO
 import com.example.project.api.RegisterAuctionDTO
+import com.example.project.api.StoreConfirmPageResponseDTO
+import com.example.project.api.StoreConfirmRequestDTO
 import com.example.project.api.UpdateAuctionDTO
 import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
@@ -67,6 +72,23 @@ class AuctionViewModel @Inject constructor(
     // 경매 거래 취소
     private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
     val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+
+
+    // 경매 확정 페이지 데이터
+    private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO?>(null)
+    val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO?> = _auctionConfirm
+
+    // 경매 확정 페이지 네비게이터
+    private val _auctionConfirmNavi = MutableStateFlow<Boolean?>(null)
+    val auctionConfirmNavi: StateFlow<Boolean?> = _auctionConfirmNavi
+
+    // 경매 낙찰 페이지 데이터
+    private val _auctionConfirmBuy = MutableStateFlow<AuctionConfirmBuyPageResponseDTO?>(null)
+    val auctionConfirmBuy: StateFlow<AuctionConfirmBuyPageResponseDTO?> = _auctionConfirmBuy
+
+    // 경매 낙찰 페이지 네비게이터
+    private val _auctionConfirmBuyNavi = MutableStateFlow<Boolean?>(false)
+    val auctionConfirmBuyNavi: StateFlow<Boolean?> = _auctionConfirmBuyNavi
 
 
     // 경매 등록후 네비게이션 리셋
@@ -295,10 +317,78 @@ class AuctionViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
+            _auctionConfirmBuyNavi.value = false
             try {
                 val response = service.completeAuctionPayment(auctionIdx)
                 if (response.isSuccessful) {
                     _error.value = null
+                    _auctionConfirmBuyNavi.value = true
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 경매 확정 페이지 불러오기
+    fun fetchAuctionConfirmItems(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getAuctionConfirm(auctionIdx)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionConfirm.value = response.body()
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
+
+    // 경매 확정 페이지 확정하기
+    fun auctionConfirm(auctionIdx: Long, confirm: Boolean) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.auctionConfirm(AuctionConfirmRequestDTO(auctionIdx,confirm))
+
+                if (response.isSuccessful) {
+                    _auctionConfirm.value = null
+                    _auctionConfirmNavi.value = true
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 경매 낙찰 페이지 불러오기
+    fun fetchAuctionConfirmBuyItems(auctionIdx: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getAuctionConfirmBuy(auctionIdx)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionConfirmBuy.value = response.body()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

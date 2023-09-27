@@ -39,8 +39,14 @@ interface MyService {
     
     // 신고하기 요청
     @POST("api/inquiry")
-    suspend fun RegistInquiry(
+    suspend fun registInquiry(
         @Body request: RegistInquiryRequestDTO
+    ): Response<Void>
+
+    // 이벤트 요청
+    @POST("api/event/{userIdx}")
+    suspend fun firstEvent(
+        @Path("userIdx") userIdx: Long,
     ): Response<Void>
 
 
@@ -94,6 +100,9 @@ data class RegistInquiryRequestDTO(
     val inquiryType: Int,
     val reportedUserIdx: Long,
 )
+
+// 이벤트 요청 DTO = Path 방식
+// 이벤트 응답 DTO = http 방식
 
 
 data class RefreshResponse(

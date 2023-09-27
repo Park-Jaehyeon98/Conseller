@@ -2,10 +2,14 @@ package com.example.project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.BarterConfirmPageResponseDTO
+import com.example.project.api.BarterConfirmRequestDTO
 import com.example.project.api.BarterCreateDTO
 import com.example.project.api.BarterDetailResponseDTO
 import com.example.project.api.BarterFilterDTO
 import com.example.project.api.BarterService
+import com.example.project.api.StoreConfirmPageResponseDTO
+import com.example.project.api.StoreConfirmRequestDTO
 import com.example.project.api.TradeBarterRequestDTO
 import com.example.project.api.UpdateBarterDTO
 import com.example.project.di.CustomException
@@ -55,6 +59,21 @@ class BarterViewModel @Inject constructor(
     // 물물교환 등록후 barterIdx 받기
     private val _navigateToBarterDetail = MutableStateFlow<Long?>(null)
     val navigateToBarterDetail: StateFlow<Long?> = _navigateToBarterDetail
+
+    // 물물교환 확정 페이지 데이터
+    private val _barterConfirm = MutableStateFlow<BarterConfirmPageResponseDTO?>(null)
+    val barterConfirm: StateFlow<BarterConfirmPageResponseDTO?> = _barterConfirm
+
+    // 물물교환 확정 페이지 네비게이터
+    private val _barterConfirmNavi = MutableStateFlow<Boolean?>(null)
+    val barterConfirmNavi: StateFlow<Boolean?> = _barterConfirmNavi
+
+    // 물물교환 제안취소 페이지 네비게이터
+    private val _barterCancelNavi = MutableStateFlow<Boolean?>(null)
+    val barterCancelNavi: StateFlow<Boolean?> = _barterCancelNavi
+
+
+
 
     // 물물교환 등록후 네비게이션 리셋
     fun resetNavigation() {
@@ -202,15 +221,19 @@ class BarterViewModel @Inject constructor(
         }
     }
 
-    // 물물교환 내 글 목록 불러오기
-    fun fetchMyBarterItems(userIdx: Long) {
+    // 물물교환 거래 제안
+    fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
         viewModelScope.launch {
+            val userIdx = sharedPreferencesUtil.getUserId()
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.getMyBarterItems(userIdx)
-                if (response.isSuccessful && response.body() != null) {
-                    _myBarterItems.value = response.body()!!.items
+                val response = service.proposeBarterTrade(barterIdx,
+                    TradeBarterRequestDTO(userIdx,selectedItemIndices)
+                )
+
+                if (response.isSuccessful) {
+                    _error.value = null
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -222,18 +245,61 @@ class BarterViewModel @Inject constructor(
         }
     }
 
-    // 물물교환 거래 제안
-    fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
+    // 물물교환 거래 제안 취소
+    fun proposeCancleBarterTrade(barterRequestIdx: Long?) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            _barterCancelNavi.value = null
+            try {
+                val response = service.proposeCancleBarterTrade(barterRequestIdx!!)
+
+                if (response.isSuccessful) {
+                    _error.value = null
+                    _barterCancelNavi.value = true
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 물물교환 확정 페이지 불러오기
+    fun fetchBarterConfirmItems(barterIdx: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.proposeBarterTrade(barterIdx,
-                    TradeBarterRequestDTO(selectedItemIndices)
-                )
+                val response = service.getBarterConfirm(barterIdx)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _barterConfirm.value = response.body()
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 물물교환 확정 페이지 확정하기
+    fun barterConfirm(barterIdx: Long, userIdx:Long, confirm: Boolean) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.barterConfirm(BarterConfirmRequestDTO(barterIdx,userIdx,confirm))
 
                 if (response.isSuccessful) {
-                    _error.value = null
+                    _barterConfirm.value = null
+                    _barterConfirmNavi.value = true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

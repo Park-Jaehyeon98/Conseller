@@ -1,4 +1,4 @@
-package com.conseller.conseller.gifticon;
+package com.conseller.conseller.gifticon.repository;
 
 import com.conseller.conseller.entity.Gifticon;
 import org.springframework.data.jpa.repository.JpaRepository;

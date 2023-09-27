@@ -8,6 +8,7 @@ import com.example.project.PatternState
 import com.example.project.api.LoginService
 import com.example.project.api.PatternSaveRequest
 import com.example.project.api.PatternVerificationRequest
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,18 +42,14 @@ class BiometricViewModel @Inject constructor(
                 return@launch
             }
             val request = PatternVerificationRequest(userId, pattern)
+
             try {
                 val response = loginService.verifyPattern(request)
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.success == true) {
-                        _authenticationState.value = AuthenticationState.SUCCESS
-                    } else {
-                        _authenticationState.value = AuthenticationState.ERROR(responseBody?.message ?: "Unknown error")
-                    }
-                } else {
-                    _authenticationState.value = AuthenticationState.ERROR("Network Error: ${response.code()}")
+                    _authenticationState.value = AuthenticationState.SUCCESS
                 }
+            } catch (e: CustomException) {
+                _authenticationState.value = AuthenticationState.ERROR("Exception:${e.message}")
             } catch (e: Exception) {
                 _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.localizedMessage}")
             }
@@ -70,15 +67,8 @@ class BiometricViewModel @Inject constructor(
             try {
                 val response = loginService.savePattern(request)
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.success == true) {
-                        _authenticationState.value = AuthenticationState.SUCCESS
-                    } else {
-                        _authenticationState.value = AuthenticationState.ERROR(responseBody?.message ?: "Unknown error")
+                    _authenticationState.value = AuthenticationState.SUCCESS
                     }
-                } else {
-                    _authenticationState.value = AuthenticationState.ERROR("Network Error: ${response.code()}")
-                }
             } catch (e: Exception) {
                 _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.localizedMessage}")
             }

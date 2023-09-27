@@ -99,7 +99,7 @@ fun TemporaryNavigationButtons(navController: NavHostController) {
     }
     Spacer(modifier = Modifier.height(16.dp))
     Button(onClick = { navController.navigate("TextloginPage") }) {
-        Text("텍스트로그인임시")
+        Text("아이디로 로그인 하기")
     }
 }
 

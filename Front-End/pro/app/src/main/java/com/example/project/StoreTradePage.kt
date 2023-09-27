@@ -33,27 +33,28 @@ import com.example.project.viewmodels.StoreViewModel
 
 @Composable
 fun StoreTradePage(index: String?, navController: NavHostController) {
-    val viewModel: StoreViewModel = hiltViewModel()
-    val storeItems by viewModel.storeItems.collectAsState()
-    val tradeItems by viewModel.storeTrades.collectAsState()
-    val cancelTradeResult by viewModel.cancelTradeSuccessful.collectAsState()
-    val paymentCompleted by viewModel.error.collectAsState()
+    val storeViewModel: StoreViewModel = hiltViewModel()
+    val storeItems by storeViewModel.storeItems.collectAsState()
+    val tradeItems by storeViewModel.storeTrades.collectAsState()
+    val cancelTradeResult by storeViewModel.cancelTradeSuccessful.collectAsState()
+    val paymentCompleted by storeViewModel.error.collectAsState()
 
     val currentItem = storeItems.find { it.storeIdx.toString() == index }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showDepositConfirmDialog by remember { mutableStateOf(false) }
     var triggerEffect by remember { mutableStateOf(false) }
+
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = index) {
+    LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
-            viewModel.fetchAccountDetails(it)
+            storeViewModel.fetchAccountDetails(it)
         }
     }
 
-    LaunchedEffect(key1 = triggerEffect) {
+    LaunchedEffect(triggerEffect) {
         if (triggerEffect) {
             when (cancelTradeResult) {
                 true -> {
@@ -146,7 +147,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                         SelectButton(
                             text = "예",
                             onClick = {
-                                viewModel.completeStorePayment(index!!.toLong())
+                                storeViewModel.completeStorePayment(index!!.toLong())
                                 when (paymentCompleted) {
                                     null -> {
                                         navController.navigate("DesiredDestination") // 원하는 경로로 변경하세요.
@@ -179,7 +180,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                         SelectButton(
                             text = "네",
                             onClick = {
-                                viewModel.cancelStoreTrade(index!!.toLong())
+                                storeViewModel.cancelStoreTrade(index!!.toLong())
                                 triggerEffect = true
                             }
                         )

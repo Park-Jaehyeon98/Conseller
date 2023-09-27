@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -47,12 +49,29 @@ import convertNameToNum
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BarterPage(navController: NavHostController) {
-    val viewModel: BarterViewModel = hiltViewModel()
-    val barterItems by viewModel.barterItems.collectAsState()
+    val barterViewModel: BarterViewModel = hiltViewModel()
+    val barterItems by barterViewModel.barterItems.collectAsState()
+    val error by barterViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
 
     var currentPage by remember { mutableIntStateOf(1) } // 현재 페이지 초기값
     val itemsPerPage = 10 // 페이지 당 표시할 항목 수
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -65,6 +84,14 @@ fun BarterPage(navController: NavHostController) {
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
+                if (showSnackbar) {
+                    Snackbar(
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    ) {
+                        Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
@@ -79,7 +106,7 @@ fun BarterPage(navController: NavHostController) {
                                 Icons.Default.Search,
                                 contentDescription = null,
                                 modifier = Modifier.clickable {
-                                    viewModel.searchItems(searchText)
+                                    barterViewModel.searchItems(searchText)
                                     keyboardController?.hide() // 키보드 숨기기
                                 }
                                     .padding(16.dp)
@@ -89,7 +116,7 @@ fun BarterPage(navController: NavHostController) {
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(onSearch = {
-                            viewModel.searchItems(searchText)
+                            barterViewModel.searchItems(searchText)
                             keyboardController?.hide() // 키보드 숨기기
                         })
                     )
@@ -124,7 +151,7 @@ fun BarterPage(navController: NavHostController) {
                                     filter2Selected,
                                     filter3Selected
                                 )
-                                viewModel.applyFilter(
+                                barterViewModel.applyFilter(
                                     BarterFilterDTO(
                                         filter1Id,
                                         filter2Id,
@@ -154,7 +181,7 @@ fun BarterPage(navController: NavHostController) {
                                     filter2Selected,
                                     filter3Selected
                                 )
-                                viewModel.applyFilter(
+                                barterViewModel.applyFilter(
                                     BarterFilterDTO(
                                         filter1Id,
                                         filter2Id,
@@ -202,7 +229,7 @@ fun BarterPage(navController: NavHostController) {
                 itemsPerPage = itemsPerPage
             ) { newPage ->
                 currentPage = newPage
-                viewModel.changePage(newPage)  // 페이지 변경 시 데이터 받기
+                barterViewModel.changePage(newPage)  // 페이지 변경 시 데이터 받기
             }
         }
         // 등록하기

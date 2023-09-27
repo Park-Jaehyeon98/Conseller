@@ -189,8 +189,10 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     SelectButton(
                         text = "네",
                         onClick = {
-                            auctionViewModel.cancelAuctionTrade(index!!.toLong())
-                            triggerEffect = true
+                            if(error == null) {
+                                auctionViewModel.cancelAuctionTrade(index!!.toLong())
+                                triggerEffect = true
+                            }
                         }
                     )
                 },

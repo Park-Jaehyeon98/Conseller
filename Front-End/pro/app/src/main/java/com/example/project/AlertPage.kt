@@ -34,10 +34,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun AlertPage(myAuctionViewModel: MyAuctionViewModel = hiltViewModel()) {
     val error by myAuctionViewModel.error.collectAsState()
+    val notifications = myAuctionViewModel.myNotifications.collectAsState().value
+    notifications.sortedWith(compareBy({ it.notificationType == 5 || it.notificationType == 6 }, { it.notificationIdx }))
+    // 이부분 타입을 지정해서 정렬
 
-    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리 스낵바
     var snackbarText by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        myAuctionViewModel.fetchMyNotifications()
+    }
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true
@@ -50,9 +56,6 @@ fun AlertPage(myAuctionViewModel: MyAuctionViewModel = hiltViewModel()) {
             showSnackbar = false
         }
     }
-
-    val notifications = myAuctionViewModel.myNotifications.collectAsState().value
-        .sortedWith(compareBy({ it.notificationType == "5" || it.notificationType == "6" }, { it.notificationIdx })) // 여기에서 정렬합니다.
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (showSnackbar) {
@@ -87,8 +90,8 @@ fun AlertPage(myAuctionViewModel: MyAuctionViewModel = hiltViewModel()) {
 
 @Composable
 fun NotificationItem(id: Int, notification: MyNotificationResponseDTO, viewModel: MyAuctionViewModel) {
-    val isType6 = notification.notificationType == "6"
-    val isType5 = notification.notificationType == "5"
+    val isType6 = notification.notificationType == 6
+    val isType5 = notification.notificationType == 5
     val textColor = if (isType6 || isType5) Color.Gray else Color.Black
 
     Box(

@@ -58,7 +58,6 @@ import com.example.project.viewmodels.MyAuctionViewModel
 fun AuctionDetailPage(navController: NavHostController, index: String?) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
     val myAuctionViewModel: MyAuctionViewModel = hiltViewModel()
-    val auctionItems by auctionViewModel.auctionItems.collectAsState()     // 이전에 들고왔던 옥션리스트
     val auctionDetail by auctionViewModel.auctionDetail.collectAsState()   // 글 상세보기했을때 들고온 정보
     val scrollState = rememberScrollState()
     val myAuctions by myAuctionViewModel.myAuctions.collectAsState()
@@ -73,6 +72,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var showAlertBidDialog by remember { mutableStateOf(false) } // 경고 다이얼로그
     var showConfirmDropDialog by remember { mutableStateOf(false) } // 낙찰하기
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
+
     val error by auctionViewModel.error.collectAsState()
     val myerror by myAuctionViewModel.error.collectAsState()
 
@@ -80,15 +80,13 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var snackbarText by remember { mutableStateOf("") }
 
 
-    // auctionItems의 index값이 들고온 값이랑 같은것들을 세팅
-    val currentItem = auctionItems.find { it.auctionIdx.toString() == index }
-
     // myAuctions의 index값이 들고온 값이랑 같은것들을 세팅
     val matchingAuction = myAuctions.find { it.auctionIdx == index?.toLongOrNull() }
 
     // 입찰가 상위 3개
     val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
     val top3Bids = sortedBids?.take(3)
+    val topBids = auctionDetail?.auctionBidList!![0]
 
     LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
@@ -131,7 +129,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
         ) {
 
 
-            currentItem?.let {
+            auctionDetail?.let {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -254,7 +252,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                 ) {
                     SelectButton(
                         text = "즉시구매",
-                        onClick = { navController.navigate("AuctionTradePage/${currentItem?.auctionIdx}") }
+                        onClick = { navController.navigate("AuctionTradePage/${auctionDetail?.auctionIdx}") }
                     )
 
                     Spacer(modifier = Modifier.width(24.dp))
@@ -289,7 +287,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                 ) {
                     SelectButton(
                         text = "수정하기",
-                        onClick = { navController.navigate("auctionUpdate/${currentItem?.auctionIdx}") }
+                        onClick = { navController.navigate("auctionUpdate/${auctionDetail?.auctionIdx}") }
                     )
 
                     Spacer(modifier = Modifier.width(24.dp))
@@ -328,7 +326,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                                 val bidValue = bidPrice.toIntOrNull() ?: 0
 
                                 // 상한가보다 입찰가격이 같거나 높은 경우
-                                if (bidValue >= currentItem?.upperPrice ?: Int.MAX_VALUE) {
+                                if (bidValue >= auctionDetail?.upperPrice ?: Int.MAX_VALUE) {
                                     showBidDialog = false
                                     showAlertBidDialog = true
                                 } else {
@@ -413,8 +411,10 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                             text = "네",
                             onClick = {
                                 auctionViewModel.deleteAuctionItem(index!!.toLong())
-                                navController.navigate("AuctionPage")
-                                showDeleteDialog = false
+                                if (error == null) {
+                                    navController.navigate("AuctionPage")
+                                    showDeleteDialog = false
+                                }
                             }
                         )
                     },
@@ -437,8 +437,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         Text(text = "낙찰 확인")
                     },
                     text = {
-                        Text("${currentItem?.upperPrice}원에 낙찰하시겠습니까?", fontSize = 18.sp)
-                        // TODO 나중에 최고입찰가 가지고와야함 상한가말고
+                        Text("${topBids}원에 낙찰하시겠습니까?", fontSize = 18.sp)
                     },
                     dismissButton = {
                         SelectButton(

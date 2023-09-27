@@ -197,8 +197,10 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
                         text = "네",
                         onClick = {
                             auctionViewModel.updateAuctionItem(index!!.toLong(), "2023.09.25.11.39.39", auctionText)
-                            navController.navigate("AuctionDetailPage/${index}")
-                            showEditConfirmDialog = false
+                            if(error == null) {
+                                navController.navigate("AuctionDetailPage/${index}")
+                                showEditConfirmDialog = false
+                            }
                         }
                     )
                 },

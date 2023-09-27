@@ -70,9 +70,9 @@ fun EventLayout2(navController: NavHostController) {
         contentAlignment = Alignment.Center
     ){
         Text("준비중입니다", fontSize = 20.sp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(onClick = { firebaseService.getFirebaseToken() }) {
-            Text("토큰임시")
+        Spacer(modifier = Modifier.height(50.dp))
+        Button(onClick = {navController.navigate("Inquiry/0")}) {
+            Text("신고임시")
         }
     }
 }

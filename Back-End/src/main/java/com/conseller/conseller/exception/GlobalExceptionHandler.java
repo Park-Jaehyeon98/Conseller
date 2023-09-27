@@ -14,18 +14,18 @@ public class GlobalExceptionHandler {
     private static final String USER_NOT_FOUND_CODE = "0003";
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleIllegalException(RuntimeException exception) {
+    public ResponseEntity<CommonResponse> handleRuntimeException(RuntimeException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
                 .code(COMMON_CODE)
                 .message(exception.getMessage())
                 .build();
 
         return ResponseEntity.badRequest()
-                .body(exception.getMessage());
+                .body(commonResponse);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<CommonResponse> handleRuntimeException(IllegalArgumentException exception) {
+    public ResponseEntity<CommonResponse> handleIlligalException(IllegalArgumentException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
                 .code(IllEGAL_CODE)
                 .message(exception.getMessage())

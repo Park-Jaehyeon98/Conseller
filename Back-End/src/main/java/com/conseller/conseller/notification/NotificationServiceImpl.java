@@ -4,7 +4,6 @@ import com.conseller.conseller.auction.auction.AuctionRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
-import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
 import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
@@ -34,7 +33,6 @@ public class NotificationServiceImpl implements NotificationService{
     private final DateTimeConverter dateTimeConverter;
     private final UserRepository userRepository;
     private final BarterRequestRepository barterRequestRepository;
-    private final GifticonRepository gifticonRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
@@ -294,6 +292,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public NotificationListResponse getNotificationList(Long userIdx) {
         List<NotificationEntity> notificationEntityList = notificationRepository.findByUser_UserIdx(userIdx);
 

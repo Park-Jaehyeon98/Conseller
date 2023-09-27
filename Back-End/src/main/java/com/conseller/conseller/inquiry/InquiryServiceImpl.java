@@ -35,6 +35,7 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InquiryListResponse getInquiryList() {
         List<Inquiry> inquiryList = inquiryRepository.findAll(Sort.by(Sort.Order.desc("inquiryCreatedDate")));
 
@@ -46,6 +47,7 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DetailInquiryResponse detailInquiry(Long inquiryIdx) {
         Inquiry inquiry = inquiryRepository.findById(inquiryIdx)
                 .orElseThrow(() -> new RuntimeException("없는 문의 입니다."));

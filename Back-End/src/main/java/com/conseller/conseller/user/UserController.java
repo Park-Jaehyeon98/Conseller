@@ -1,7 +1,6 @@
 package com.conseller.conseller.user;
 
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
@@ -13,7 +12,9 @@ import com.conseller.conseller.user.dto.response.Item;
 import com.conseller.conseller.user.dto.response.LoginResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.user.service.UserService;
-import com.conseller.conseller.utils.CommonResponse;
+import com.conseller.conseller.utils.EmailService;
+import com.conseller.conseller.utils.dto.CommonResponse;
+import com.conseller.conseller.utils.dto.EmailResponse;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //회원가입
@@ -116,9 +118,20 @@ public class UserController {
 
     // 임시 비밀번호 발급
     @PatchMapping("/encode/pw")
-    public ResponseEntity<Object> changeTempPassword(@RequestBody EmailAndIdRequest emailAndIdRequest) {
+    public ResponseEntity<Object> changeTempPassword(@RequestBody EmailAndIdRequest emailAndIdRequest) throws Exception {
+
+        String tempPassword = userService.generateTemporaryPassword(emailAndIdRequest).getTemporaryPassword();
+
+        EmailResponse emailResponse = EmailResponse.builder()
+                .userEmail(emailAndIdRequest.getUserEmail())
+                .userPassword(tempPassword)
+                .userName(emailAndIdRequest.getUserId())
+                .build();
+
+       emailService.sendEmail(emailResponse);
+
         return ResponseEntity.ok()
-                .body(userService.generateTemporaryPassword(emailAndIdRequest));
+                .build();
     }
 
     //유저 정보 변경

@@ -4,6 +4,7 @@ import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHos
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
+import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.*;
@@ -66,6 +67,9 @@ public class Barter {
     private SubCategory preferSubCategory;
 
     @OneToMany(mappedBy = "barter")
+    List<BarterRequest> barterRequestList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "barter")
     List<BarterHostItem> barterHostItemList = new ArrayList<>();
 
     @Builder
@@ -85,6 +89,13 @@ public class Barter {
             BarterHostItemDto bhiDto = bhi.toBarterHostItemDto(bhi);
             barterHostItemDtoList.add(bhiDto);
         }
+
+        List<BarterRequestResponseDto> barterRequestResponseDtoList = new ArrayList<>();
+        for(BarterRequest bri : barter.getBarterRequestList()) {
+            BarterRequestResponseDto briDto = bri.toBarterRequestResponseDto(bri);
+            barterRequestResponseDtoList.add(briDto);
+        }
+
         User host = barter.getBarterHost();
         User guest = barter.getBarterCompleteGuest();
 
@@ -116,6 +127,7 @@ public class Barter {
                 .preferSubCategory(barter.getPreferSubCategory().getSubCategoryContent())
                 .barterHost(hostUserInfoResponse)
                 .barterCompleteGuest(guestUserInfoResponse)
+                .barterRequestResponseDtoList(barterRequestResponseDtoList)
                 .barterHostItemDtoList(barterHostItemDtoList)
                 .build();
     }

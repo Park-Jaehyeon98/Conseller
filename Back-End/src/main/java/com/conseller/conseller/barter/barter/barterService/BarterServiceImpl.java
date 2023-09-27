@@ -2,10 +2,12 @@ package com.conseller.conseller.barter.barter.barterService;
 
 import com.conseller.conseller.barter.BarterHostItem.barterHostItemService.BarterHostItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
+import com.conseller.conseller.barter.barter.BarterRepositoryImpl;
 import com.conseller.conseller.barter.barter.barterDto.mapper.BarterMapper;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterListResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
@@ -17,6 +19,9 @@ import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +36,7 @@ import java.util.List;
 public class BarterServiceImpl implements BarterService{
 
     private final BarterRepository barterRepository;
+    private final BarterRepositoryImpl barterRepositoryImpl;
     private final UserRepository userRepository;
     private final GifticonRepository gifticonRepository;
     private final SubCategoryRepository subCategoryRepository;
@@ -40,15 +46,23 @@ public class BarterServiceImpl implements BarterService{
 
     //구매자 입장
     @Override
-    public List<BarterResponseDto> getBarterList(BarterFilterDto barterFilterDto) {
-        List<Barter> barterList = barterRepository.findAll();
+    public BarterListResponse getBarterList(BarterFilterDto barterFilterDto) {
+        Pageable pageable = PageRequest.of(barterFilterDto.getPage() - 1, 10);
+
+        Page<Barter> barterPage = barterRepositoryImpl.findBarterList(barterFilterDto, pageable);
+
         List<BarterResponseDto> barterResponseDtoList= new ArrayList<>();
 
-        for(Barter barter : barterList) {
+        for(Barter barter : barterPage) {
             BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
             barterResponseDtoList.add(barterResponseDto);
         }
-        return barterResponseDtoList;
+
+        BarterListResponse response = new BarterListResponse(barterResponseDtoList,
+                barterPage.getTotalElements(),
+                barterPage.getTotalPages());
+
+        return response;
     }
 
     //판맨자 입장

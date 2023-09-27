@@ -13,7 +13,7 @@ public interface BarterRepository extends JpaRepository<Barter, Long> {
     // 물물교환
     Optional<Barter> findByBarterIdx(Long barterIdx);
 
-    @Query("SELECT b FROM Barter b WHERE b.barterCompletedDate IS NULL AND b.barterHost = ?1")
+    @Query("SELECT b FROM Barter b WHERE b.barterCompletedDate IS NULL AND b.barterHost.userIdx = ?1")
     List<Barter> findByHostIdx(Long userIdx);
 
 //    @Query("SELECT * FROM BARTER WHERE BARTER.subCategory =:subCategoryIdx")

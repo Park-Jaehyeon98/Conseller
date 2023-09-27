@@ -306,8 +306,6 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
 
         elif category == 3:
             gifticon_barcode = "준비중인 서비스입니다."
-            gifticon_name = "준비중인 서비스입니다."
-            gifticon_end_date = "준비중인 서비스입니다."
 
         else:
             raise HTTPException(status_code=400, detail="카테고리 값이 유효하지 않습니다.")

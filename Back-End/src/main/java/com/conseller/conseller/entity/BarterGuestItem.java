@@ -49,7 +49,7 @@ public class BarterGuestItem {
                 .build();
 
         return BarterGuestItemDto.builder()
-                .barterReuestIdx(barterGuestItem.getBarterRequest().getBarterRequestIdx())
+                .barterRequestIdx(barterGuestItem.getBarterRequest().getBarterRequestIdx())
                 .gifticon(gifticonResponse)
                 .build();
     }

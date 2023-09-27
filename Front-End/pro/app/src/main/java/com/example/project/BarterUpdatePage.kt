@@ -26,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +40,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -51,16 +53,33 @@ import com.example.project.viewmodels.BarterViewModel
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BarterUpdatePage(index: String?, navController: NavHostController) {
-    val viewModel: BarterViewModel = hiltViewModel()
+    val barterViewModel: BarterViewModel = hiltViewModel()
+    val error by barterViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val barterItems by viewModel.barterItems.collectAsState() // 게시글 사진
+    val barterItems by barterViewModel.barterItems.collectAsState() // 게시글 사진
 
     val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 일치
 
     // 게시글 제목 및 내용을 위한 상태값
     var postTitle by remember { mutableStateOf("") }
     var postContent by remember { mutableStateOf("") }
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -69,6 +88,14 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
             .verticalScroll(scrollState)
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            if (showSnackbar) {
+                Snackbar(
+                    modifier = Modifier.align(Alignment.TopCenter)
+                ) {
+                    Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
             val imagePainter = rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
             Image(
                 painter = imagePainter,
@@ -174,7 +201,7 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
             SelectButton(
                 text = "수정하기",
                 onClick = {
-                    viewModel.updateBarterItem(
+                    barterViewModel.updateBarterItem(
                         index!!.toLong(),
                         filter1Selected,
                         filter2Selected,
@@ -182,7 +209,9 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
                         postContent,
                         "123"
                     )
-                    navController.navigate("BarterDetailPage/${index}")
+                    if(error == null) {
+                        navController.navigate("BarterDetailPage/${index}")
+                    }
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)

@@ -272,7 +272,7 @@ data class StoreItemData(
     val giftconName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
-    val isDeposit: Boolean,
+    val deposit: Boolean,
     val storePrice: Int,
 )
 

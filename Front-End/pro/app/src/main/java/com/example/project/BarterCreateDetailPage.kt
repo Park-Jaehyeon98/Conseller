@@ -214,7 +214,10 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             SelectButton(
                 text = "등록",
                 onClick = {
-                    showRegisterConfirmDialog = true
+                    if(error == null) {
+                        navController.navigate("BarterPage")
+                        showRegisterConfirmDialog = true
+                    }
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
@@ -232,8 +235,8 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             )
 
             LaunchedEffect(navigateToIdx) {
-                navigateToIdx?.let { auctionIdx ->
-                    navController.navigate("AuctionDetailPage/${auctionIdx}")
+                navigateToIdx?.let { barterIdx ->
+                    navController.navigate("AuctionDetailPage/${barterIdx}")
                     barterviewModel.resetNavigation()
                 }
             }

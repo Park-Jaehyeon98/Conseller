@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -148,20 +150,51 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
 
 @Composable
 fun HomeLayout4(navController: NavController) {
-    val viewModel: AuctionViewModel = hiltViewModel()
-    val myviewModel: MyAuctionViewModel = hiltViewModel()
-    val auctionItems by viewModel.auctionItems.collectAsState()
-    val myAuctions by myviewModel.myAuctions.collectAsState()
+    val auctionViewModel: AuctionViewModel = hiltViewModel()
+    val myViewModel: MyAuctionViewModel = hiltViewModel()
+    val error by auctionViewModel.error.collectAsState()
+    val myerror by myViewModel.error.collectAsState()
+    val auctionItems by auctionViewModel.auctionItems.collectAsState()
+    val myAuctions by myViewModel.myAuctions.collectAsState()
+
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
 
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
-        myviewModel.fetchMyAuctions()
+        myViewModel.fetchMyAuctions()
+    }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(myerror) {
+        if (myerror != null) {
+            showSnackbar = true
+            snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
     }
 
     Row(
         modifier = Modifier.fillMaxWidth().height(330.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        if (showSnackbar) {
+            Snackbar(
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         Box(
             modifier = Modifier
                 .weight(1f)

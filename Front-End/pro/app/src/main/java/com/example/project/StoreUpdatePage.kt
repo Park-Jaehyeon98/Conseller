@@ -25,8 +25,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -46,13 +50,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.StoreViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun StoreUpdatePage(navController: NavHostController, index: String?) {
-    val viewModel: StoreViewModel = hiltViewModel()
-    val storeItems by viewModel.storeItems.collectAsState()
-    val storeDetail by viewModel.storeDetail.collectAsState()
+    val storeViewModel: StoreViewModel = hiltViewModel()
+    val storeItems by storeViewModel.storeItems.collectAsState()
+    val storeDetail by storeViewModel.storeDetail.collectAsState()
+    val error by storeViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -63,6 +69,22 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showUpdateConfirmDialog by remember { mutableStateOf(false) }
 
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            delay(5000)
+            showSnackbar = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,6 +93,13 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        if (showSnackbar) {
+            Snackbar(
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -175,9 +204,11 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
                         SelectButton(
                             text = "네",
                             onClick = {
-                                viewModel.updateStoreItem(index!!.toLong(), "123", postContent)
-                                navController.navigate("StoreDetailPage/${index}")
-                                showUpdateConfirmDialog = false
+                                storeViewModel.updateStoreItem(index!!.toLong(), "123", postContent)
+                                if(error == null) {
+                                    navController.navigate("StoreDetailPage/${index}")
+                                    showUpdateConfirmDialog = false
+                                }
                             }
                         )
                     },
@@ -205,9 +236,11 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
                         SelectButton(
                             text = "네",
                             onClick = {
-                                viewModel.deleteStoreItem(index!!.toLong())
-                                navController.navigate("StorePage")
-                                showDeleteDialog = false
+                                storeViewModel.deleteStoreItem(index!!.toLong())
+                                if(error == null) {
+                                    navController.navigate("StorePage")
+                                    showDeleteDialog = false
+                                }
                             }
                         )
                     },

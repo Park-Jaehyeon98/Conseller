@@ -10,8 +10,10 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,22 +21,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.project.viewmodels.MygifticonViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
-    val viewModel: MygifticonViewModel = hiltViewModel()
-    val gifticonItems by viewModel.gifticonItems.collectAsState()
+    val mygifticonViewModel: MygifticonViewModel = hiltViewModel()
+    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
+    val error by mygifticonViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
     var selectedItemIndices by remember { mutableStateOf(listOf<Long>()) }
+
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            delay(5000)
+            showSnackbar = false
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -43,6 +64,13 @@ fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
                 .padding(16.dp)
                 .verticalScroll(scrollState)
         ) {
+            if (showSnackbar) {
+                Snackbar(
+                ) {
+                    Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
             Text(
                 text = "1. 기프티콘을 선택해주세요.(최대 5개)",
                 fontWeight = FontWeight.Bold,
@@ -76,7 +104,7 @@ fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
                 itemsPerPage = itemsPerPage
             ) { newPage ->
                 currentPage = newPage
-                viewModel.changePage(newPage)
+                mygifticonViewModel.changePage(newPage)
             }
         }
 

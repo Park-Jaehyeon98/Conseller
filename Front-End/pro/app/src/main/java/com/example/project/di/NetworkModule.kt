@@ -207,6 +207,8 @@ class ResponseInterceptor : Interceptor {
         val response = chain.proceed(chain.request())
         Log.d("@@@@@@@@@@@@@@@@1","$response")
         Log.d("@@@@@@@@@@@@@@@@2","${response.body}")
+        Log.d("@@@@@@@@@@@@@@@@3","${response.code}")
+        Log.d("@@@@@@@@@@@@@@@@4","${response.headers}")
         if (!response.isSuccessful) {
             when (response.code) {
                 400 -> throw CustomException("잘못된 요청입니다.")

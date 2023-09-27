@@ -129,6 +129,15 @@ data class AuctionDetailResponseDTO(
     val auctionUserProfileUrl: String,  // 게시글 유저 사진
     val auctionUserDeposit: Long,       // 게시글 유저 보증금
     val auctionBidList: List<AuctionBid>,  // 경매입찰정보
+    val auctionIdx: Long,
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
+    val auctionEndDate: String,
+    val deposit: Boolean,
+    val upperPrice: Int,
+    val lowerPrice: Int,
+    val auctionHighestBid: Int
 )
 
 // 경매 입찰하기 요청 DTO

@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,21 +49,35 @@ import com.example.project.viewmodels.StoreViewModel
 
 @Composable
 fun StoreDetailPage(navController: NavHostController, index: String?) {
-    val viewModel: StoreViewModel = hiltViewModel()
-    val storeItems by viewModel.storeItems.collectAsState()
-    val storeDetail by viewModel.storeDetail.collectAsState()
+    val storeViewModel: StoreViewModel = hiltViewModel()
+    val storeDetail by storeViewModel.storeDetail.collectAsState()
+    val error by storeViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
-    val userIdFromPreference = viewModel.getUserIdFromPreference()
+    val userIdFromPreference = storeViewModel.getUserIdFromPreference()
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
 
-    val currentItem = storeItems.find { it.storeIdx.toString() == index }
+    var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
+    var snackbarText by remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = index) {
+
+    LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
-            viewModel.fetchStoreDetail(it)
+            storeViewModel.fetchStoreDetail(it)
+        }
+    }
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
         }
     }
 
@@ -70,12 +87,20 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
             .background(Color.White)
             .padding(8.dp)
     ) {
+        if (showSnackbar) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            currentItem?.let {
+            storeDetail?.let {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -140,12 +165,12 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     if (selectedItemIndex != storeDetail?.storeUserIdx && true/*개발용*/) {
                         SelectButton(
                             text = "구매하기",
-                            onClick = { navController.navigate("StoreTradePage/${currentItem.storeIdx}") }
+                            onClick = { navController.navigate("StoreTradePage/${storeDetail?.storeIdx}") }
                         )
                     } else {
                         SelectButton(
                             text = "수정하기",
-                            onClick = { navController.navigate("storeUpdate/${currentItem.storeIdx}") }
+                            onClick = { navController.navigate("storeUpdate/${storeDetail?.storeIdx}") }
                         )
 
                         Spacer(modifier = Modifier.width(24.dp))
@@ -173,7 +198,7 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                         SelectButton(
                             text = "네",
                             onClick = {
-                                viewModel.deleteStoreItem(index!!.toLong())
+                                storeViewModel.deleteStoreItem(index!!.toLong())
                                 navController.navigate("StorePage")
                                 showDeleteDialog = false
                             }

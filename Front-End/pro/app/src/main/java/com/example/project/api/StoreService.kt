@@ -115,6 +115,13 @@ data class StoreDetailResponseDTO(
     val storeUserNickname: String,
     val storeUserProfileUrl: String,
     val storeUserDeposit: Long,
+    val storeIdx: Long,
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
+    val storeEndDate: String,
+    val deposit: Boolean,
+    val storePrice: Int,
 )
 
 // 스토어 최고가 구매 계좌번호 요청 DTO = Path형식

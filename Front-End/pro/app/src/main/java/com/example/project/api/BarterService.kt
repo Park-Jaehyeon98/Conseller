@@ -13,7 +13,7 @@ import retrofit2.http.Path
 interface BarterService {
 
     // 전체 목록 API
-    @POST("barterItems/all")
+    @POST("api/barterItems/all")
     suspend fun getAllBarterItems(
         @Body filter: BarterFilterDTO,
     ): Response<BarterResponse>
@@ -25,7 +25,7 @@ interface BarterService {
     ): Response<BarterResponse>
 
     // 물물교환 등록 API
-    @POST("barterItems/regist")
+    @POST("api/barterItems/regist")
     suspend fun createBarterItem(
         @Body filter: BarterCreateDTO
     ): Response<CreateBarterResponse>

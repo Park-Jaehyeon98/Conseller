@@ -66,6 +66,20 @@ interface StoreService {
         @Path("storeIdx") storeIdx: Long
     ): Response<Void>
 
+
+    // 스토어 판매자 입금 확정 페이지 요청
+    @GET("api/store/Confirm/{storeIdx}")
+    suspend fun getStoreConfirm(
+        @Path("storeIdx") storeIdx: Long,
+    ): Response<StoreConfirmPageResponseDTO>
+
+    // 스토어 판매자 입금 확정 요청
+    @PATCH("api/store/Confirm")
+    suspend fun storeConfirm(
+        @Body confirmData: StoreConfirmRequestDTO
+    ): Response<Void>
+
+
 }
 
 // 목록, 검색 요청 DTO
@@ -80,6 +94,7 @@ data class StoreFilterDTO(
 // 목록, 검색 응답 DTO
 data class StoreResponse(
     val totalElements: Long,
+    val totalPages: Int,
     val items: List<StoreItemData>
 )
 
@@ -133,3 +148,37 @@ data class StoreTradeResponseDTO(
 
 // 스토어 완료 요청 DTO = Path형식
 // 스토어 완료 요청 DTO = http형식
+
+
+
+
+
+// 스토어 판매자 입금 확정 페이지 요청 DTO = path 형식
+// 스토어 판매자 입금 확정 페이지 응답 DTO
+data class StoreConfirmPageResponseDTO(
+    val gifticonDataImageName: String,
+    val notificationCreatedDate: String,
+    val giftconName: String,
+    val storePrice: Int,
+    val postContent: String,
+    val buyUserImageUrl: String,
+    val buyUserNickname: String,
+    val buyUserIdx: Long
+)
+
+// 스토어 판매자 입금 확정 페이지 확정 요청 DTO
+// 스토어 판매자 입금 확정 페이지 확정 요청 DTO = http 형식
+data class StoreConfirmRequestDTO(
+    val storeIdx: Long,
+    val confirm: Boolean,
+)
+
+
+
+
+
+
+
+
+
+

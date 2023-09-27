@@ -39,6 +39,10 @@ class MyAuctionViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    // 이벤트 확인
+    private val _event = MutableStateFlow<String?>(null)
+    val event: StateFlow<String?> = _event
+
 
     // 내가 입찰한 경매목록 불러오기
     fun fetchMyAuctions() {
@@ -112,7 +116,7 @@ class MyAuctionViewModel @Inject constructor(
             _error.value = null
             val userIdx = sharedPreferencesUtil.getUserId()
             try {
-                val response = service.RegistInquiry(RegistInquiryRequestDTO(userIdx, title, content, inquiryType, reportedUserIdx))
+                val response = service.registInquiry(RegistInquiryRequestDTO(userIdx, title, content, inquiryType, reportedUserIdx))
                 if (response.isSuccessful) {
                     _inquiryNavi.value = "ok"
                 }
@@ -120,6 +124,26 @@ class MyAuctionViewModel @Inject constructor(
                 _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+    // 이벤트하기
+    fun resistEvent(){
+        viewModelScope.launch {
+            _loading.value = true
+            _event.value = null
+            val userIdx = sharedPreferencesUtil.getUserId()
+            try {
+                val response = service.firstEvent(userIdx)
+                if (response.isSuccessful) {
+                    _event.value = "성공"
+                }
+            } catch (e: CustomException) {
+                _event.value = e.message
+            } catch (e: Exception) {
+                _event.value = e.localizedMessage
             } finally {
                 _loading.value = false
             }

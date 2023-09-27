@@ -35,6 +35,7 @@ fun MakePatternPage(navController: NavHostController) {
         }
         is PatternState.Matched -> {
             Text("패턴 등록 완료!")
+            navController.navigate("home")
         }
         else -> {
             Text("패턴을 그려서 등록하세요.")
@@ -45,13 +46,10 @@ fun MakePatternPage(navController: NavHostController) {
         is AuthenticationState.SUCCESS -> {
             Text("패턴 등록 성공!")
         }
-        is AuthenticationState.FAILURE -> {
-            Text("패턴 등록 실패!")
-        }
         is AuthenticationState.ERROR -> {
-            Text("패턴 등록 오류: ${authenticationState.message}")
+            Text("패턴 등록 실패: ${authenticationState.message}")
         }
-        else -> {}
+        else -> {Text("패턴 등록 오류!")}
     }
 
     ComposeLock(

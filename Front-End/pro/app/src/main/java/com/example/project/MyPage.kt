@@ -69,6 +69,7 @@ fun MyPage(navController: NavHostController) {
         viewModel.getMyBarterRequest()
     }
 
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

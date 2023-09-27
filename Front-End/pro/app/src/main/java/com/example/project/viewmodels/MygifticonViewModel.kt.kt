@@ -50,6 +50,7 @@ class MygifticonViewModel @Inject constructor(
         return _gifticonItems.value.filter { it.gifticonIdx in indices }
     }
 
+    // 내 기프티콘 불러오기
     fun getUserGifticons(user_idx: Long, page: Int) {
         viewModelScope.launch {
             try {

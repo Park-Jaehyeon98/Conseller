@@ -35,6 +35,7 @@ class BiometricViewModel @Inject constructor(
     }
 
     fun verifyPattern(pattern: String) {
+        _authenticationState.value = null
         viewModelScope.launch {
             val userId = sharedPreferencesUtil.getUserId()
             if (userId == null) {
@@ -47,16 +48,17 @@ class BiometricViewModel @Inject constructor(
                 val response = loginService.verifyPattern(request)
                 if (response.isSuccessful) {
                     _authenticationState.value = AuthenticationState.SUCCESS
+                } else{
+                    _authenticationState.value = AuthenticationState.ERROR("${response.body()?.message}")
                 }
-            } catch (e: CustomException) {
-                _authenticationState.value = AuthenticationState.ERROR("Exception:${e.message}")
             } catch (e: Exception) {
-                _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.localizedMessage}")
+                _authenticationState.value = AuthenticationState.ERROR("${e.localizedMessage}")
             }
         }
     }
 
     fun savePattern(pattern: String) {
+        _authenticationState.value = null
         viewModelScope.launch {
             val userId = sharedPreferencesUtil.getUserId()
             if (userId == null) {
@@ -67,8 +69,11 @@ class BiometricViewModel @Inject constructor(
             try {
                 val response = loginService.savePattern(request)
                 if (response.isSuccessful) {
+                    sharedPreferencesUtil.setLoggedInStatus(true)
                     _authenticationState.value = AuthenticationState.SUCCESS
                     }
+            } catch (e: CustomException) {
+                _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.message}")
             } catch (e: Exception) {
                 _authenticationState.value = AuthenticationState.ERROR("Exception: ${e.localizedMessage}")
             }

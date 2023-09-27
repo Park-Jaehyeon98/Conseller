@@ -72,12 +72,14 @@ fun AlertPage(myAuctionViewModel: MyAuctionViewModel = hiltViewModel()) {
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
+                    .padding(top = if (showSnackbar) 50.dp else 0.dp)
             )
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(top = if (showSnackbar) 50.dp else 0.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(notifications) { index, notification ->
@@ -118,14 +120,27 @@ fun NotificationItem(id: Int, notification: MyNotificationResponseDTO, viewModel
             )
 
             // 5나 6이면 회색으로
-            if (!isType6&&!isType5) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                if (isType5 || isType6) {
+                    // 타입이 5 또는 6이면 '삭제' 버튼만 표시
                     SelectButton(
-                        text = "Yes",
+                        text = "삭제",
+                        onClick = {
+                            viewModel.sendNotificationAnswer(
+                                notificationIdx = notification.notificationIdx,
+                                notificationType = notification.notificationType,
+                                answer = false
+                            )
+                        }
+                    )
+                } else {
+                    // 그렇지 않은 경우 '확인'과 '삭제' 버튼 둘 다 표시
+                    SelectButton(
+                        text = "확인",
                         onClick = {
                             viewModel.sendNotificationAnswer(
                                 notificationIdx = notification.notificationIdx,
@@ -136,7 +151,7 @@ fun NotificationItem(id: Int, notification: MyNotificationResponseDTO, viewModel
                     )
                     Spacer(modifier = Modifier.width(40.dp))
                     SelectButton(
-                        text = "No",
+                        text = "삭제",
                         onClick = {
                             viewModel.sendNotificationAnswer(
                                 notificationIdx = notification.notificationIdx,

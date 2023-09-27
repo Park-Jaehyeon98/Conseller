@@ -12,7 +12,9 @@ interface SignupService {
 
     //회원가입 API
     @POST("api/user")
-    suspend fun regist(@Body request:RegistRequest ): Response<Void>
+    suspend fun regist(
+        @Body request:RegistRequest
+    ): Response<RegistResponse>
 
     @POST("api/user/nickname")
     suspend fun checkDuplicateNickName(
@@ -61,6 +63,11 @@ data class RegistRequest(
     val userAccount: String,
     val userAccountBank: String
 )
+// 회원가입 응답 DTO
+data class RegistResponse(
+    val userIdx: Long,
+)
+
 
 //회원가입 응답 DTO
 data class  BasicResponse( // 일반적인 결론일 경우

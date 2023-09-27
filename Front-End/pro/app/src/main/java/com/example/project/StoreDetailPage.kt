@@ -220,7 +220,7 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     userDeposit = storeDetail?.storeUserDeposit,
                     onDismiss = { showUserDetailDialog = false },
                     onReportClick = {
-                        // Handle report logic here
+                        navController.navigate("Inquiry/${storeDetail?.storeUserIdx}")
                     },
                     onMessageClick = {
                         // Handle message sending logic here

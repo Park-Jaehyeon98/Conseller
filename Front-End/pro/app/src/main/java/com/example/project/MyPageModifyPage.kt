@@ -224,13 +224,13 @@ fun ModifyUserProfile(
     var checkPasswordError by remember { mutableStateOf<String?>(null) }
     var nickNameError by remember { mutableStateOf<String?>(null) }
 
-        val request = userModifyRequest(
-            userAccount = modifyAccount,
-            userEmail = modifyEmail,
-            userPassword = modifyPassword.text.takeIf { it.isNotBlank() } ?: initPassword,
-            userAccountBank = modifyAccountBank.text,
-            userNickname = modifyNickname.text,
-        )
+    val request = userModifyRequest(
+        userAccount = modifyAccount,
+        userEmail = modifyEmail,
+        userPassword = modifyPassword.text.takeIf { it.isNotBlank() } ?: initPassword,
+        userAccountBank = modifyAccountBank.text,
+        userNickname = modifyNickname.text,
+    )
 
 
     Box(

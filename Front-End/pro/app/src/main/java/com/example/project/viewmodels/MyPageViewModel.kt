@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.json.JSONException
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -283,7 +286,7 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun gifticonUpload(
-        request: MultipartBody.Part, originalFile: MultipartBody.Part, cropFile: MultipartBody.Part
+        request: RequestBody, originalFile: MultipartBody.Part, cropFile: MultipartBody.Part
     ) {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
@@ -295,11 +298,19 @@ class MyPageViewModel @Inject constructor(
                     Log.d("GifticonUpload", "Response: ${response.body()}")
                 } else {
                     // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("GifticonUpload", errorString)
+                    val errorBody = response.errorBody()?.string() ?: "Unknown"
+                    try {
+                        val errorJson = JSONObject(errorBody)
+                        val errorCode = errorJson.optString("errorCode", "Unknown")
+                        val errorMessage = errorJson.optString("errorMessage", "Unknown")
+                        val errorString = "Error Code: ${response.code()}, Error Body: $errorBody, ErrorCode: $errorCode, ErrorMessage: $errorMessage"
+                        _error.value = errorString
+                        Log.e("GifticonUpload", errorString)
+                    } catch (jsonException: JSONException) {
+                        val errorString = "Error Code: ${response.code()}, Error Body: $errorBody"
+                        _error.value = errorString
+                        Log.e("GifticonUpload", errorString, jsonException)
+                    }
                 }
             } catch (e: Exception) {
                 // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
@@ -308,6 +319,7 @@ class MyPageViewModel @Inject constructor(
                 _error.value = errorMessage
                 Log.e("GifticonUpload", errorMessage, e)
             } finally {
+                // 필요한 경우 finally 블록에 코드를 추가합니다.
             }
         }
     }

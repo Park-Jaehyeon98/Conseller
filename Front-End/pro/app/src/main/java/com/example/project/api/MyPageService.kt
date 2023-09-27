@@ -1,6 +1,7 @@
 package com.example.project.api
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -48,7 +49,7 @@ interface MyPageService {
     @POST("api/gifticon/{userIdx}")
     suspend fun uploadgifiticon(
         @Path("userIdx") userIdx:Long,
-        @Part request:  MultipartBody.Part,
+        @Part("gifticonPostRequest") gifticonPostRequest:RequestBody ,
         @Part originalFile : MultipartBody.Part,
         @Part cropFile : MultipartBody.Part
     ):Response<Void>
@@ -127,7 +128,7 @@ data class myGifticon(
     val gifticonEndDate: String,
     val gifticonAllImageUrl: String,
     val gifticonDataImageUrl: String,
-    val gifticonStatus: String, // 보관 // 경매//물물교환
+    val gifticonStatus: String, // 보관 // 경매//판매//물물교환
     val userIdx: Long,
     val subCategoryIdx: Int,
     val mainCategoryIdx: Int

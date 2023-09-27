@@ -32,6 +32,6 @@ data class ocrCategoryRequest(
 data class UploadGifticonResponse(
     val gifticonBarcode:String,
     val gifticonName:String,
-    val gifticonEndData: String,
+    val gifticonEndDate: String,
     val gifticonCropImage: String,
 )

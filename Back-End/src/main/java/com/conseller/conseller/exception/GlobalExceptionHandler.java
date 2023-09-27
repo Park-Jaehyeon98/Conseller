@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                 .message(exception.getMessage())
                 .build();
 
-        return ResponseEntity.ok()
+        return ResponseEntity.badRequest()
                 .body(commonResponse);
     }
 

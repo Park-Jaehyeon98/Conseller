@@ -61,6 +61,7 @@ fun MyPage(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         viewModel.getMyInfo()
+        viewModel.getMyGifticon()
         viewModel.getMyBarterRequest()
         viewModel.getMyStore()
     }

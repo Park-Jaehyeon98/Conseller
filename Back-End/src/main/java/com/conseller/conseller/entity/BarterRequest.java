@@ -1,5 +1,7 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterGuestItemDto;
+import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
@@ -53,6 +55,13 @@ public class BarterRequest {
                 .userAccountBank(user.getUserAccountBank())
                 .userPhoneNumber(user.getUserPhoneNumber())
                 .build();
+
+        List<BarterGuestItemDto> barterGuestItemDtoList  = new ArrayList<>();
+        List<BarterGuestItem> barterGuestItemList = barterRequest.getBarterGuestItemList();
+        for(BarterGuestItem bgi : barterGuestItemList) {
+            BarterGuestItemDto barterGuestItemDto = bgi.toBarterGuestItemDto(bgi);
+        }
+
 
         return BarterRequestResponseDto.builder()
                 .barterIdx(barterRequest.getBarterRequestIdx())

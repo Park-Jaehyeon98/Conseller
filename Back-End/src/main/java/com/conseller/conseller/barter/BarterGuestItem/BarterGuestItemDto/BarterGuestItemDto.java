@@ -4,6 +4,7 @@ import com.conseller.conseller.entity.BarterGuestItem;
 import com.conseller.conseller.entity.BarterRequest;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ public class BarterGuestItemDto {
     private GifticonResponse gifticon;
 
     @Builder
-    public BarterGuestItemDto(long barterRequestIdx, GifticonResponse gifticon) {
-        this.barterRequestIdx = barterRequestIdx;
+    public BarterGuestItemDto(long barterReuestIdx, GifticonResponse gifticon) {
+        this.barterRequestIdx = barterReuestIdx;
         this.gifticon = gifticon;
     }
 }

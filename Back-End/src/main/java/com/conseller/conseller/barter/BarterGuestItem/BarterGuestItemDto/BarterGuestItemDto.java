@@ -18,8 +18,8 @@ public class BarterGuestItemDto {
     private GifticonResponse gifticon;
 
     @Builder
-    public BarterGuestItemDto(long barterReuestIdx, GifticonResponse gifticon) {
-        this.barterRequestIdx = barterReuestIdx;
+    public BarterGuestItemDto(long barterRequestIdx, GifticonResponse gifticon) {
+        this.barterRequestIdx = barterRequestIdx;
         this.gifticon = gifticon;
     }
 }

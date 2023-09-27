@@ -4,7 +4,7 @@ import com.conseller.conseller.barter.BarterHostItem.BarterHostItemRepository;
 import com.conseller.conseller.entity.Barter;
 import com.conseller.conseller.entity.BarterHostItem;
 import com.conseller.conseller.entity.Gifticon;
-import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

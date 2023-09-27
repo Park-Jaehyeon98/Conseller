@@ -8,7 +8,7 @@ import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
-import com.conseller.conseller.gifticon.GifticonRepository;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;

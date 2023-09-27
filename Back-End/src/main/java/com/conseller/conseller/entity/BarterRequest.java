@@ -60,6 +60,7 @@ public class BarterRequest {
         List<BarterGuestItem> barterGuestItemList = barterRequest.getBarterGuestItemList();
         for(BarterGuestItem bgi : barterGuestItemList) {
             BarterGuestItemDto barterGuestItemDto = bgi.toBarterGuestItemDto(bgi);
+            barterGuestItemDtoList.add(barterGuestItemDto);
         }
 
 
@@ -67,6 +68,7 @@ public class BarterRequest {
                 .barterIdx(barterRequest.getBarterRequestIdx())
                 .barterRequestStatus(barterRequest.getBarterRequestStatus())
                 .barterIdx(barterRequest.getBarter().getBarterIdx())
+                .barterGuestItemDtoList(barterGuestItemDtoList)
                 .user(userInfoResponse)
                 .build();
     }

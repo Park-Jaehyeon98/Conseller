@@ -96,7 +96,7 @@ public class BarterServiceImpl implements BarterService{
         LocalDateTime endDate = LocalDateTime.parse(date, formatter);
 
         Barter barter = BarterMapper.INSTANCE.registBarterCreateToBarter(barterCreateDto, user, endDate, subCategory, preferSubCategory);
-        barterRepository.save(barter);
+
         try {
             barterHostItemService.addBarterHostItem(barterCreateDto.getSelectedItemIndices(), barter);
         } catch(Exception e) {
@@ -140,7 +140,6 @@ public class BarterServiceImpl implements BarterService{
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-                gifticonRepository.save(gifticon);
             }
         }
 
@@ -160,35 +159,44 @@ public class BarterServiceImpl implements BarterService{
 
         for(BarterRequest br : barterRequestList) {
 
-            if(br.getBarterRequestIdx() == barterRequestIdx) continue;
-            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
+            try{
+                if(br.getBarterRequestIdx() == barterRequestIdx) continue;
+            } catch (Exception e) {
+                throw new RuntimeException("요청 인덱스 에러입니다.");
+            }
+            try {
+                if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
+            } catch (Exception e) {
+                throw new RuntimeException("거절된 요청 에러입니다.");
+            }
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
             br.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
-            barterRequestRepository.save(br);
+
+            log.debug("거절까지 옵니다.");
 
             for(BarterGuestItem bg : barterGuestItemList) {
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-                gifticonRepository.save(gifticon);
             }
         }
         User barterHost = barter.getBarterHost();
         User barterRequester = barterRequest.getUser();
+
+        log.debug("유저 선정까지 옵니다.");
 
         List<Gifticon> hostItems = new ArrayList<>();
         for(BarterHostItem hostItem : barter.getBarterHostItemList()){
             Gifticon gift = hostItem.getGifticon();
             gift.setUser(barterRequester);
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-            gifticonRepository.save(gift);
+
         }
         for(BarterGuestItem guestItem : barterRequest.getBarterGuestItemList()){
             Gifticon gift = guestItem.getGifticon();
-            gift.setUser(barterHost);
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-            gifticonRepository.save(gift);
+            gift.setUser(barterHost);
         }
 
         barter.setBarterStatus(BarterStatus.EXCHANGED.getStatus());

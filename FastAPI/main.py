@@ -304,13 +304,21 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             else:
                 gifticon_end_date = "20" + result[end_date_idx - 1]
 
+        elif category == 3:
+            gifticon_barcode = "기타는 직접 입력해주세요."
+            gifticon_name = "기타는 직접 입력해주세요."
+            gifticon_end_date = "기타는 직접 입력해주세요."
+
         else:
             raise HTTPException(status_code=400, detail="카테고리 값이 유효하지 않습니다.")
 
         gifticon_name = gifticon_name[:-1]
         # 이미지 파일을 Base64로 인코딩
-        with open("./top_crop/cropped_image.jpg", "rb") as image_file:
-            image_data = base64.b64encode(image_file.read()).decode()
+        if category != 3:
+            with open("./top_crop/cropped_image.jpg", "rb") as image_file:
+                image_data = base64.b64encode(image_file.read()).decode()
+        else:
+            image_data = ""
 
         data = {
             "gifticonBarcode": gifticon_barcode,

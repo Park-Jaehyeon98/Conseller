@@ -1,8 +1,10 @@
 package com.conseller.conseller.barter.barter;
 
+import com.conseller.conseller.barter.barter.barterDto.request.BarterChangeRequest;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterListResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
 import com.conseller.conseller.notification.NotificationService;
@@ -24,7 +26,7 @@ public class BarterController {
     //구매자 입장
     //1. 전체 물물교환 리스트 확인 - 필터 넣기 가능
     @PostMapping({"", "/"})
-    public ResponseEntity<List<BarterResponseDto>> getBarterList(@RequestBody BarterFilterDto barterFilterDto) {
+    public ResponseEntity<BarterListResponse> getBarterList(@RequestBody BarterFilterDto barterFilterDto) {
         return ResponseEntity.ok()
                 .body(barterService.getBarterList(barterFilterDto));
     }
@@ -64,11 +66,11 @@ public class BarterController {
                 .build();
     }
     //4. 자신의 물물교환 신청글에 달린 물물 교환 신청에 대해 선택하기
-    @PatchMapping("/{barterIdx}/{barterRequestIdx}")
-    public ResponseEntity<Void> selectBarterRequest(@PathVariable Long barterIdx, @PathVariable Long barterRequestIdx) {
-        barterService.exchangeGifticon(barterIdx, barterRequestIdx);
+    @PatchMapping({"", "/"})
+    public ResponseEntity<Void> selectBarterRequest(@RequestBody BarterChangeRequest barterChange) {
+        barterService.exchangeGifticon(barterChange.getBarterIdx(), barterChange.getBarterRequestIdx());
 
-        notificationService.sendBarterNotification(barterIdx, "물물교환 알림", 3);
+        notificationService.sendBarterNotification(barterChange.getBarterIdx(), "물물교환 알림", 3);
 
         return ResponseEntity.ok()
                 .build();

@@ -6,9 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -17,26 +14,25 @@ public class GlobalExceptionHandler {
     private static final String USER_NOT_FOUND_CODE = "0003";
 
     @ExceptionHandler(RuntimeException.class)
-    public HttpServletResponse handleIllegalException(RuntimeException exception, HttpServletResponse response) throws IOException {
+    public ResponseEntity<CommonResponse> handleRuntimeException(RuntimeException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
                 .code(COMMON_CODE)
                 .message(exception.getMessage())
                 .build();
 
-        response.sendError(1000, "테스트 입니다.");
-
-        return response;
+        return ResponseEntity.badRequest()
+                .body(commonResponse);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleRuntimeException(IllegalArgumentException exception) {
+    public ResponseEntity<CommonResponse> handleIlligalException(IllegalArgumentException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
                 .code(IllEGAL_CODE)
                 .message(exception.getMessage())
                 .build();
 
         return ResponseEntity.badRequest()
-                .body(exception.getMessage());
+                .body(commonResponse);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)

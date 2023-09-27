@@ -159,11 +159,21 @@ public class BarterServiceImpl implements BarterService{
 
         for(BarterRequest br : barterRequestList) {
 
-            if(br.getBarterRequestIdx() == barterRequestIdx) continue;
-            if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
+            try{
+                if(br.getBarterRequestIdx() == barterRequestIdx) continue;
+            } catch (Exception e) {
+                throw new RuntimeException("요청 인덱스 에러입니다.");
+            }
+            try {
+                if(br.getBarterRequestStatus().equals(RequestStatus.REJECTED.getStatus())) continue;
+            } catch (Exception e) {
+                throw new RuntimeException("거절된 요청 에러입니다.");
+            }
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
             br.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
+
+            log.debug("거절까지 옵니다.");
 
             for(BarterGuestItem bg : barterGuestItemList) {
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
@@ -173,6 +183,8 @@ public class BarterServiceImpl implements BarterService{
         }
         User barterHost = barter.getBarterHost();
         User barterRequester = barterRequest.getUser();
+
+        log.debug("유저 선정까지 옵니다.");
 
         List<Gifticon> hostItems = new ArrayList<>();
         for(BarterHostItem hostItem : barter.getBarterHostItemList()){

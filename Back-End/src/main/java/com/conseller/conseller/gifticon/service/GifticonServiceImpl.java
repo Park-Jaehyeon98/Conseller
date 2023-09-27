@@ -86,6 +86,8 @@ public class GifticonServiceImpl implements GifticonService {
         String gifticonAllImageUrl = gifticon.getGifticonAllImageUrl();
         String gifticonDataImageUrl = gifticon.getGifticonDataImageUrl();
 
+        //여기서 usedGifticon entity 객체 생성해서 값 넣고 save
+
         gifticonRepository.delete(gifticon);
 
         return ImageUrlsResponse.builder()

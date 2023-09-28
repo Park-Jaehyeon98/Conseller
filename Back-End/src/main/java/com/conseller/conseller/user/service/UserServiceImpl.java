@@ -11,6 +11,8 @@ import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.StoreRepository;
+import com.conseller.conseller.store.dto.mapper.StoreMapper;
+import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
@@ -234,33 +236,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<StoreResponse> getUserStores(long userIdx) {
+    public List<StoreItemData> getUserStores(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        List<StoreResponse> storeResponses = new ArrayList<>();
-
-        for (Store store : user.getStores()) {
-            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
-                    .storeIdx(store.getStoreIdx())
-                    .gifticonIdx(store.getGifticon().getGifticonIdx())
-                    .storePrice(store.getStorePrice())
-                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
-                    .storeText(store.getStoreText())
-                    .storeStatus(store.getStoreStatus());
-
-                    if (store.getStoreEndDate() != null) {
-                        response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
-                    }
-
-                    if (store.getConsumer() != null) {
-                        response.consumerIdx(store.getConsumer().getUserIdx());
-                    }
-
-            storeResponses.add(response.build());
-        }
-
-        return storeResponses;
+        return user.getStores().stream()
+                .map(StoreMapper.INSTANCE::storeToItemData)
+                .collect(Collectors.toList());
     }
 
     @Override

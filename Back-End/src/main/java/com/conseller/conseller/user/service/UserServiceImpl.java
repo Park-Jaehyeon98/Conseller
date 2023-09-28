@@ -7,6 +7,8 @@ import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponse
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.StoreRepository;
 import com.conseller.conseller.store.dto.response.StoreResponse;
@@ -122,16 +124,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserInfo(long userIdx, UserInfoRequest userInfoRequest) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("해당 인덱스에 대한 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        user.setUserPassword(userInfoRequest.getUserPassword());
+        //비밀번호는 암호화 하기 때문에 바뀐 경우만 set 해준다.
+        if (!user.checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
+            user.setUserPassword(userInfoRequest.getUserPassword());
+            user.encryptPassword(new BCryptPasswordEncoder());
+
+        }
+
         user.setUserNickname(userInfoRequest.getUserNickname());
         user.setUserEmail(userInfoRequest.getUserEmail());
         user.setUserAccount(userInfoRequest.getUserAccount());
         user.setUserAccountBank(userInfoRequest.getUserAccountBank());
-
-        //비밀번호 암호화
-        user.encryptPassword(new BCryptPasswordEncoder());
     }
 
     @Override

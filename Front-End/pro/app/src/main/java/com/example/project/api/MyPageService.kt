@@ -14,36 +14,44 @@ import retrofit2.http.Path
 
 interface MyPageService {
 
+    // 기프티콘 상세보기
     @GET("api/gifticon/{gifticonIdx}")
     suspend fun getUserGifticoninfo(
         @Path("gifticonIdx") gifticonIdx: Long,
     ): Response<myGifticon>
+    // 기프티콘 전체 보기
 
+    // 기프티콘 삭제(사용완료)
+    @DELETE("api/gifticon/{gifticonIdx}")
+    suspend fun getUserGifticonDelete(
+        @Path("gifticonIdx") gifticonIdx: Long,
+    ): Response<Void>
+    // 기프티콘 전체 보기
     @GET("api/user/{userIdx}/gifticons")
     suspend fun getUserGifticon(
         @Path("userIdx") useridx: Long,
     ): Response<myGifticonResponse>
-
+    // 내 스토어 보기
     @GET("api/user/{userIdx}/store")
     suspend fun getUserStore(
         @Path("userIdx") useridx: Long,
     ): Response<myStoreItems>
-
+    // 내 경매 보기
     @GET("api/user/{userIdx}/auction")
     suspend fun getUserAuction(
         @Path("userIdx") useridx: Long,
     ): Response<myAuctionItems>
-
+    // 내 입찰보기
     @GET("api/user/{userIdx}/auction-bid")
     suspend fun getUserAuctionBid(
         @Path("userIdx") useridx: Long,
     ): Response<myAuctionBidItems>
-
+    // 내 물물교환 보기
     @GET("api/user/{userIdx}/barter")
     suspend fun getUserBarter(
         @Path("userIdx") useridx: Long,
     ): Response<myBarterItems>
-
+    // 내 물물 교환 요청 보기
     @GET("api/user/{userIdx}/barter-request")
     suspend fun getUserBarterRequest(
         @Path("userIdx") useridx: Long,
@@ -194,16 +202,13 @@ data class myBarterItems(
 )
 data class myBarterData(
     val barterIdx: Long,
-    val barterName: String,
-    val barterText: String,
-    val barterCreatedDate: String,
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
     val barterEndDate: String,
-    val barterStatus: String,
-    val subCategory: String,
-    val preferSubCategory: String, // 판매자가 원하는 거
-    val barterHostIdx: Long,
-    val barterCompleteGuest: Long,
-    val barterHostItems: List<myGifticon>
+    val isDeposit: Boolean,
+    val preper: String,
+    val barterName: String,
 )
 
 data class myBarterRequestItems(
@@ -222,7 +227,7 @@ data  class myStoreItems(
 data class myStoreData(
     val storeIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
     val isDeposit: Boolean,

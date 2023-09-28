@@ -149,14 +149,14 @@ fun SignUpPage(navController: NavHostController) {
 
     // 로그인 결과에 따른 값 변화
     LaunchedEffect(signUpResult) {
-        val checker=signUpResult
-        Log.d("why","Sibal${checker}")
-        Log.d("why","Sibal22${Signstatus}")
-        if (checker==1&&Signstatus) {
+        val checker = signUpResult
+        Log.d("why", "Sibal${checker}")
+        Log.d("why", "Sibal22${Signstatus}")
+        if (checker == 1 && Signstatus) {
             dialogMessage = "회원가입 성공\n 패턴로그인을 추가하겠습니까?"
             showDialog = true
         }
-        if (checker==2&&Signstatus) {
+        if (checker == 2 && Signstatus) {
             dialogMessage = "회원가입이 실패했습니다.\n 원인: ${errorMessage}"
             showDialog2 = true
             viewModel.initSignUpResult()
@@ -166,7 +166,7 @@ fun SignUpPage(navController: NavHostController) {
     LaunchedEffect(checkIdResult, checkEmailResult, checkPhoneNumberResult, checkNickNameResult) {
         if (checkIdResult.status == 1) {
             checkMarkId.value = true
-            idError=null
+            idError = null
         } else if (checkIdResult.status == 0) {
             checkMarkId.value = false
             idError = "중복된 아이디입니다"
@@ -174,28 +174,53 @@ fun SignUpPage(navController: NavHostController) {
         }
         if (checkEmailResult.status == 1) {
             checkMarkEmail.value = true
-            emailError=null
-        }else if (checkEmailResult.status == 0) {
+            emailError = null
+        } else if (checkEmailResult.status == 0) {
             checkMarkEmail.value = false
             emailError = "중복된 이메일입니다"
 
         }
         if (checkPhoneNumberResult.status == 1) {
             checkMarkPhone.value = true
-            phoneError=null
-        }else if (checkPhoneNumberResult.status == 0) {
+            phoneError = null
+        } else if (checkPhoneNumberResult.status == 0) {
             checkMarkPhone.value = false
-            phoneError="중복된 번호입니다"
+            phoneError = "중복된 번호입니다"
 
         }
         if (checkNickNameResult.status == 1) {
             checkMarkNickname.value = true
-            nickNameError=null
-        }else if (checkNickNameResult.status == 0) {
+            nickNameError = null
+        } else if (checkNickNameResult.status == 0) {
             checkMarkNickname.value = false
-            nickNameError="중복된 닉네임입니다"
+            nickNameError = "중복된 닉네임입니다"
 
         }
+    }
+
+    fun validateUser(user: RegistRequest): Boolean {
+        val errorMessage = StringBuilder()
+        if (!isValidName(user.userName)) {
+            errorMessage.append("이름 양식이 틀렸습니다.\n")
+        }
+        if (!isValidNickName(user.userNickname)) {
+            errorMessage.append("닉네임 양식이 틀렸습니다.\n")
+        }
+        if (!isValidPassword(user.userPassword)) {
+            errorMessage.append("비밀번호 양식이 틀렸습니다.\n")
+        }
+
+        if (!isValidEmail(user.userEmail)) {
+            errorMessage.append("이메일 양식이 틀렸습니다.\n")
+        }
+
+
+        if (errorMessage.isNotEmpty()) {
+           dialogMessage=errorMessage.toString()
+            return false
+        }
+
+        return true
     }
 
 
@@ -210,24 +235,24 @@ fun SignUpPage(navController: NavHostController) {
             }, text = {
                 Text(dialogMessage)
             }, confirmButton = {
-                Button(onClick = { showDialog = false
+                Button(onClick = {
+                    showDialog = false
                     navController.navigate("MakePatternPage") {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                } }) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                }) {
                     Text("예")
                 }
 
-            },
-                dismissButton = {
-                    Button(onClick = {
-                        showDialog = false
-                        navController.navigate("TextLoginPage")
-                    }) {
-                        Text("아니요")
-                    }
+            }, dismissButton = {
+                Button(onClick = {
+                    showDialog = false
+                    navController.navigate("TextLoginPage")
+                }) {
+                    Text("아니요")
                 }
-            )
+            })
         }
         if (showDialog2) {
             AlertDialog(onDismissRequest = {
@@ -237,13 +262,14 @@ fun SignUpPage(navController: NavHostController) {
             }, text = {
                 Text(dialogMessage)
             }, confirmButton = {
-                Button(onClick = { showDialog2 = false
-                Signstatus=false}) {
+                Button(onClick = {
+                    showDialog2 = false
+                    Signstatus = false
+                }) {
                     Text("확인")
                 }
 
-            }
-            )
+            })
         }
         Box(
             modifier = Modifier
@@ -275,8 +301,7 @@ fun SignUpPage(navController: NavHostController) {
                     }, error = nameError, showIcon = isValidName(name.text))
 
                     //성별
-                    GenderSelection(
-                        label = "성별",
+                    GenderSelection(label = "성별",
                         gender = gender,
                         onGenderSelected = { selectedGender ->
                             gender = selectedGender
@@ -290,8 +315,7 @@ fun SignUpPage(navController: NavHostController) {
                     })
 
                     //아이디
-                    CustomTextFieldWithButton(
-                        label = "아이디",
+                    CustomTextFieldWithButton(label = "아이디",
                         buttonLabel = "중복확인",
                         value = userId,
                         onValueChange = {
@@ -355,7 +379,7 @@ fun SignUpPage(navController: NavHostController) {
                         },
                         onButtonClick = { viewModel.checkDuplicatePhoneNumber(phoneNumber.text) },
                         showIcon = checkMarkPhone.value,
-                        error=phoneError
+                        error = phoneError
                     )
 
                     // 이메일
@@ -413,9 +437,11 @@ fun SignUpPage(navController: NavHostController) {
 
                     Button(
                         onClick = {
-                            if(checkIdResult.status+checkEmailResult.status+checkPhoneNumberResult.status+checkNickNameResult.status==4){
+                            if (checkIdResult.status + checkEmailResult.status + checkPhoneNumberResult.status + checkNickNameResult.status == 4&&validateUser(request)) {
                                 viewModel.registerUser(request)
-                                Signstatus=true
+                                Signstatus = true
+                            } else if(!validateUser(request)) {
+                                showDialog2 = true
                             }else{
                                 dialogMessage = "중복확인해주세요."
                                 showDialog2 = true

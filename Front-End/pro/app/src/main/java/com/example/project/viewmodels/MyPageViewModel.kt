@@ -1,22 +1,17 @@
 package com.example.project.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.project.api.AuctionBidRequestDTO
 import com.example.project.api.MyPageService
 import com.example.project.api.myAuctionBidData
 import com.example.project.api.myAuctionData
 import com.example.project.api.myBarterData
 import com.example.project.api.myBarterRequestData
 import com.example.project.api.myGifticon
-import com.example.project.api.myGifticonResponse
 import com.example.project.api.myStoreData
-import com.example.project.api.uploadImageResponse
 import com.example.project.api.userInfoResponse
 import com.example.project.api.userModifyRequest
 import com.example.project.api.userModifyResponse
-import com.example.project.api.userUploadGifticonResponse
 import com.example.project.api.userValidRequest
 import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
@@ -26,8 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.json.JSONException
-import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,12 +35,16 @@ class MyPageViewModel @Inject constructor(
     val error: StateFlow<String?> = _error
 
     //프로필 사진 업로드
-    private val _UploadProfileResponse = MutableStateFlow(uploadImageResponse(-1, ""))
-    val uploadProfileResponse: StateFlow<uploadImageResponse> get() = _UploadProfileResponse
+    private val _UploadProfileResponse = MutableStateFlow(false)
+    val uploadProfileResponse: StateFlow<Boolean> get() = _UploadProfileResponse
 
     //기프티콘 사진 업로드
     private val _UploadGifticonResponse = MutableStateFlow<Boolean>(false)
     val uploadGifticonResponse: StateFlow<Boolean> get() = _UploadGifticonResponse
+
+    //기프티콘 삭제 상태
+    private val _DeleteGifticonResponse = MutableStateFlow<Boolean>(false)
+    val deleteGifticonResponse: StateFlow<Boolean> get() = _DeleteGifticonResponse
 
     // 내 정보 조회
     private val _GetMyInfoResponse = MutableStateFlow(
@@ -88,47 +85,57 @@ class MyPageViewModel @Inject constructor(
 
     private val _GetMyGifticonInfo = MutableStateFlow(myGifticon(0, "","","","","","","",0,0,0))
     val getMyGifticonInfoResponse: StateFlow<myGifticon> get() = _GetMyGifticonInfo
-    companion object {
-        const val TAG = "UserViewModel"
-    }
     fun userDelete() {
         val userIdx = sharedPreferencesUtil.getUserId()
-        Log.d(TAG, "userDelete started for userIdx: $userIdx")
-        _isLoading.value = true
-
         viewModelScope.launch {
-            try {
-                Log.d(TAG, "Sending request to deleteUser service")
-                val response = service.deleteUser(userIdx)
+            _isLoading.value = true
+            _error.value = null
 
-                _isLoading.value = false
+            try {
+                val response = service.deleteUser(userIdx)
                 if (response.isSuccessful) {
-                    Log.d(TAG, "User deletion successful")
+                    _error.value = null
                     _DeleteUserReponse.value=true
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "서버 error"
-                    Log.e(TAG, "User deletion failed: $errorMessage")
-                    _error.value = errorMessage
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception occurred: ${e.message}", e)
+            } catch (e: CustomException) {
                 _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
-                Log.d(TAG, "userDelete completed")
                 _isLoading.value = false
             }
         }
     }
 
     fun getUserGifticonInfo(gifticonIdx:Long){
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
 
+            try {
+                val response = service.getUserGifticoninfo(gifticonIdx)
+                if (response.isSuccessful) {
+                    _error.value = null
+                    _GetMyGifticonInfo.value=response.body()!!
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun DeleteUserGifticon(gifticonIdx:Long){
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.getUserGifticoninfo(gifticonIdx)
-                if (response.isSuccessful && response.body() != null) {
-                    _GetMyGifticonInfo.value=response.body()!!
+                val response = service.getUserGifticonDelete(gifticonIdx)
+                if (response.isSuccessful) {
+                    _DeleteGifticonResponse.value=true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -147,26 +154,19 @@ class MyPageViewModel @Inject constructor(
     fun getMyGifticon() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserGifticon(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("getMyGifticon", "Response: ${response.body()}")
                     _GetMyGifticon.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyGifticon", errorString)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyGifticon", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -175,26 +175,19 @@ class MyPageViewModel @Inject constructor(
     fun getMyAuction() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserAuction(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
                     _GetMyAuction.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyAuctionBid", errorString)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyAuctionBid", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -224,26 +217,19 @@ class MyPageViewModel @Inject constructor(
     fun getMyBarter() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserBarter(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("getMyBarter", "Response: ${response.body()}")
                     _GetMyBarter.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyBarter", errorString)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyBarter", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -251,26 +237,19 @@ class MyPageViewModel @Inject constructor(
     fun getMyBarterRequest() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserBarterRequest(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("getMyBarterRequest", "Response: ${response.body()}")
                     _GetMyBarterRequest.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyBarterRequest", errorString)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyBarterRequest", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -278,26 +257,19 @@ class MyPageViewModel @Inject constructor(
     fun getMyStore() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserStore(userIdx)
                 if (response.isSuccessful) {
-                    Log.d("getMyStore", "Response: ${response.body()}")
                     _GetMyStore.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyStore", errorString)
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyStore", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -309,25 +281,19 @@ class MyPageViewModel @Inject constructor(
     fun profileSend(file: MultipartBody.Part) {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.profileSend(userIdx, file)
                 if (response.isSuccessful) {
-                    Log.d("ProfileSend", "Response: ${response.body()}")
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("ProfileSend", errorString)
+                    _UploadProfileResponse.value=true
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("ProfileSend", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -337,36 +303,19 @@ class MyPageViewModel @Inject constructor(
     ) {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.uploadgifiticon(userIdx, request, originalFile, cropFile)
-                _UploadGifticonResponse.value = false
                 if (response.isSuccessful) {
                     _UploadGifticonResponse.value = true
-                    Log.d("GifticonUpload", "Response: ${response.body()}")
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorBody = response.errorBody()?.string() ?: "Unknown"
-                    try {
-                        val errorJson = JSONObject(errorBody)
-                        val errorCode = errorJson.optString("errorCode", "Unknown")
-                        val errorMessage = errorJson.optString("errorMessage", "Unknown")
-                        val errorString = "Error Code: ${response.code()}, Error Body: $errorBody, ErrorCode: $errorCode, ErrorMessage: $errorMessage"
-                        _error.value = errorString
-                        Log.e("GifticonUpload", errorString)
-                    } catch (jsonException: JSONException) {
-                        val errorString = "Error Code: ${response.code()}, Error Body: $errorBody"
-                        _error.value = errorString
-                        Log.e("GifticonUpload", errorString, jsonException)
-                    }
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("GifticonUpload", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
-                // 필요한 경우 finally 블록에 코드를 추가합니다.
+                _isLoading.value = false
             }
         }
     }
@@ -374,27 +323,19 @@ class MyPageViewModel @Inject constructor(
 
     fun getMyInfo() {
         val userIdx = sharedPreferencesUtil.getUserId()
-        _isLoading.value = true
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.getUserInfo(userIdx)
-
-                // Log the response data
-                Log.d("GetMyInfoModel", "Response Code: ${response.code()}")
-                Log.d("GetMyInfoModel", "Response Message: ${response.message()}")
-
                 if (response.isSuccessful) {
                     _GetMyInfoResponse.value =
                         response.body() ?: userInfoResponse(null, "", "", "", "", "", "")
-                    Log.d("GetMyInfoModel", "Response Body: ${response.body()}")
-                } else {
-                    val errorBody = response.errorBody()?.string() ?: "서버 error"
-                    _error.value = errorBody
-                    Log.d("GetMyInfoModel", "Error Body: $errorBody")
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
-                Log.e("GetMyInfoModel", "Exception occurred:", e)
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }
@@ -403,26 +344,19 @@ class MyPageViewModel @Inject constructor(
 
     fun userValid(request: userValidRequest) {
         _isLoading.value = true
-        Log.d("userValid", "Function userValid is called with request: $request")
-
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
-                Log.d("userValid", "Trying to call service.checkUserValid")
                 val response = service.checkUserValid(request)
-
                 if (response.isSuccessful) {
-                    Log.d("userValid", "Response is successful: ${response.body()}")
                     _ValidUserReponse.value = true
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "서버 error"
-                    Log.e("userValid", "Error in response: $errorMessage")
-                    _error.value = errorMessage
                 }
-            } catch (e: Exception) {
-                Log.e("userValid", "Exception occurred: ${e.message}")
+            } catch (e: CustomException) {
                 _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
-                Log.d("userValid", "Setting _isLoading to false")
                 _isLoading.value = false
             }
         }
@@ -430,18 +364,18 @@ class MyPageViewModel @Inject constructor(
 
     fun userModify(request: userModifyRequest) {
         val userIdx = sharedPreferencesUtil.getUserId()
-        _isLoading.value = true
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
                 val response = service.modifyUserInfo(userIdx, request)
-                _isLoading.value = false
                 if (response.isSuccessful) {
                     _ModifyUserResponse.value = response.body() ?: userModifyResponse("", "")
-                } else {
-                    _error.value = response.errorBody()?.string() ?: "서버 error"
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }
@@ -450,37 +384,3 @@ class MyPageViewModel @Inject constructor(
 
 }
 
-private fun getSampleData(): List<myGifticon> {
-    return listOf(
-        myGifticon(1L, "123456789012", "커피 기프티콘", "2023-09-26", "2023-12-31",
-            "https://example.com/images/all_image1.png", "https://example.com/images/data_image1.png",
-            "보관", 1, 10, 1),
-        myGifticon(2L, "223456789012", "케이크 기프티콘", "2023-09-27", "2023-12-31",
-            "https://example.com/images/all_image2.png", "https://example.com/images/data_image2.png",
-            "보관", 1, 11, 2),
-        myGifticon(3L, "323456789012", "피자 기프티콘", "2023-09-28", "2023-12-31",
-            "https://example.com/images/all_image3.png", "https://example.com/images/data_image3.png",
-            "보관", 1, 12, 3),
-        myGifticon(4L, "423456789012", "버거 기프티콘", "2023-09-29", "2023-12-31",
-            "https://example.com/images/all_image4.png", "https://example.com/images/data_image4.png",
-            "보관", 1, 13, 4),
-        myGifticon(5L, "523456789012", "아이스크림 기프티콘", "2023-09-30", "2023-12-31",
-            "https://example.com/images/all_image5.png", "https://example.com/images/data_image5.png",
-            "보관", 1, 14, 5),
-        myGifticon(6L, "623456789012", "도넛 기프티콘", "2023-10-01", "2023-12-31",
-            "https://example.com/images/all_image6.png", "https://example.com/images/data_image6.png",
-            "보관", 1, 15, 1),
-        myGifticon(7L, "723456789012", "샐러드 기프티콘", "2023-10-02", "2023-12-31",
-            "https://example.com/images/all_image7.png", "https://example.com/images/data_image7.png",
-            "보관", 1, 16, 2),
-        myGifticon(8L, "823456789012", "스무디 기프티콘", "2023-10-03", "2023-12-31",
-            "https://example.com/images/all_image8.png", "https://example.com/images/data_image8.png",
-            "보관", 1, 17, 3),
-        myGifticon(9L, "923456789012", "샌드위치 기프티콘", "2023-10-04", "2023-12-31",
-            "https://example.com/images/all_image9.png", "https://example.com/images/data_image9.png",
-            "보관", 1, 18, 4),
-        myGifticon(10L, "023456789012", "파스타 기프티콘", "2023-10-05", "2023-12-31",
-            "https://example.com/images/all_image10.png", "https://example.com/images/data_image10.png",
-            "보관", 1, 19, 5)
-    )
-}

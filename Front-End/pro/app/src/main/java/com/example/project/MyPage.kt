@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -111,14 +112,30 @@ fun MyPage(navController: NavHostController) {
                 onClick3 = { navController.navigate("MypageStore") },
                 onClick4 = { navController.navigate("MypageBarter") })
             Spacer(modifier = Modifier.height(14.dp))
-            Button(
-                onClick = {
-                    navController.navigate("MyDeletePageValidPage")
-                },
+            Row(
                 modifier = Modifier.padding(end = 8.dp),
-                colors = ButtonDefaults.buttonColors(BrandColor1)
+                horizontalArrangement = Arrangement.SpaceBetween, // 버튼들 사이에 간격을 주기 위함
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("회원 탈퇴")
+                Button(
+                    onClick = {
+                        navController.navigate("MyDeletePageValidPage")
+                    },
+                    modifier = Modifier.padding(end = 8.dp),
+                    colors = ButtonDefaults.buttonColors(BrandColor1)
+                ) {
+                    Text("회원 탈퇴")
+                }
+
+                Button(
+                    onClick = {
+                        navController.navigate("Inquiry/1")
+                    },
+                    modifier = Modifier.padding(end = 8.dp),
+                    colors = ButtonDefaults.buttonColors(BrandColor1)
+                ) {
+                    Text("1:1 문의")
+                }
             }
 
         }
@@ -179,6 +196,7 @@ fun getMultipartFromByteArray(byteArray: ByteArray, fileName: String): Multipart
     return MultipartBody.Part.createFormData("image", fileName, requestBody)
 }
 
+
 @Composable
 fun MypageCheck(
     onClick1: () -> Unit,
@@ -192,67 +210,94 @@ fun MypageCheck(
     val myBarter by viewModel.getMyBarterResponse.collectAsState()
     val myStore by viewModel.getMyStoreResponse.collectAsState()
 
-    Box(
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White, shape = RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+        // 첫 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            CustomCard(
+                label = "내 쿠폰",
+                imageResId = R.drawable.coupon1,
+                number = myGift.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = onClick1
+            )
+        }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                CustomCard(
-                    label = "내 쿠폰",
-                    imageResId = R.drawable.coupon1,
-                    number = myGift.size,
-                    modifier = Modifier.weight(1f),
-                    onClick = onClick1
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                CustomCard(
-                    label = "경매 관리",
-                    imageResId = R.drawable.coupon,
-                    number = myAuction.size,
-                    modifier = Modifier.weight(1f),
-                    onClick = onClick2
-                )
-            }
+        Spacer(modifier = Modifier.width(20.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+        // 두 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCard(
+                label = "경매 관리",
+                imageResId = R.drawable.coupon,
+                number = myAuction.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = onClick2
+            )
+        }
+    }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                CustomCard(
-                    label = "판매 관리",
-                    imageResId = R.drawable.coupon1,
-                    number = myStore.size,
-                    modifier = Modifier.weight(1f),
-                    onClick = onClick3
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                CustomCard(
-                    label = "물물교환 관리",
-                    imageResId = R.drawable.coupon,
-                    number = myBarter.size,
-                    modifier = Modifier.weight(1f),
-                    onClick = onClick4
-                )
-            }
+    // 여백을 위한 Spacer
+    Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.weight(1f))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // 세 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCard(
+                label = "판매 관리",
+                imageResId = R.drawable.coupon1,
+                number = myStore.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = onClick3
+            )
+        }
+
+        Spacer(modifier = Modifier.width(20.dp))
+
+        // 네 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCard(
+                label = "물물교환 관리",
+                imageResId = R.drawable.coupon,
+                number = myBarter.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = onClick4
+            )
         }
     }
 }
+
 
 @Composable
 fun CustomCard(

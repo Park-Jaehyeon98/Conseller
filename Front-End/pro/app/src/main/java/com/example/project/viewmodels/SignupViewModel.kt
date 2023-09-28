@@ -62,50 +62,42 @@ class SignupViewModel @Inject constructor(
 
     fun findUserId(request: findIdRequest) {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
             try {
                 val response = service.findMyId(request)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        if (body != null) {
-                            _FindId.value = body
-                            Log.d("FindUserId", "Success: ${response.code()}, Body: $body")
-                        } else {
-                            _error.value = "Response body is null"
-                            Log.d("FindUserId", "Error: Response body is null, Code: ${response.code()}")
-                        }
-                    } else {
-                        _error.value = response.message()
-                        Log.d("FindUserId", "Error: ${response.message()}, Code: ${response.code()}")
-                    }
+                if (response.isSuccessful&&response.body()!=null) {
+                    _FindId.value=response.body()!!
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
-                Log.d("FindUserId", "Exception: ${e.message}")
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun findUserPw(request: findPwRequest) {
         _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
             try {
                 val response = service.findMyPwd(request)
-                withContext(Dispatchers.Main) {
-                    _isLoading.value = false
-                    if (response.isSuccessful) {
-                        _FindPw.value = true
-                        Log.d("FindUserPw", "Success: ${response.code()}")
-                    } else {
-                        _error.value = response.message()
-                        Log.d("FindUserPw", "Error: ${response.message()}, Code: ${response.code()}")
-                    }
+                if (response.isSuccessful&&response.body()!=null) {
+                    _FindPw.value=true
                 }
-            } catch (e: Exception) {
+            } catch (e: CustomException) {
                 _error.value = e.message
-                Log.d("FindUserPw", "Exception: ${e.message}")
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
             }
         }
     }

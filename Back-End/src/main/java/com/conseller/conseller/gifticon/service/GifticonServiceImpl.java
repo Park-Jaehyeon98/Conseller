@@ -68,7 +68,7 @@ public class GifticonServiceImpl implements GifticonService {
     public void registGifticon(long userIdx, GifticonRegisterRequest gifticonRegisterRequest, String allImageUrl, String dataImageUrl) {
 
         //예외처리
-        gifticonValidator.isValidGiftion(gifticonRegisterRequest);
+//        gifticonValidator.isValidGiftion(gifticonRegisterRequest);
 
 
         //카테고리 엔티티를 가져온다.

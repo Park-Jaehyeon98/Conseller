@@ -84,4 +84,7 @@ public interface UserService {
 
     //fcm 토큰 발급
     public void getFirebaseToken(Long userIdx, FirebaseRequest request);
+
+    //pattern 저장
+    public void patternRegister()
 }

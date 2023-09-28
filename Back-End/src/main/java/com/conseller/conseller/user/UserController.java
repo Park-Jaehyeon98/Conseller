@@ -255,4 +255,38 @@ public class UserController {
                 .build();
     }
 
+    // pattern 저장
+    @PostMapping("/savepattern")
+    public ResponseEntity<Object> savePattern(@Valid @RequestBody UserPatternRequest userPatternRequest) {
+        log.info("유저 패턴 저장");
+        userService.patternRegister(userPatternRequest.get);
+
+        return ResponseEntity.ok().build();
+    }
+
+//    회원가입
+//    @PostMapping
+//    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+//
+//        log.info("유저 회원가입 호출");
+//        userService.register(signUpRequest);
+//
+//        return ResponseEntity.ok()
+//                .build();
+//    }
+//
+//    일반 로그인
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+//
+//        LoginResponse loginResponse = userService.login(loginRequest);
+//
+//        log.info("user nickname : " + loginResponse.getUserNickname());
+//        log.info("user accessToken : " + loginResponse.getAccessToken());
+//        log.info("user refreshToken : " + loginResponse.getRefreshToken());
+//
+//        return ResponseEntity.ok()
+//                .body(loginResponse);
+//    }
+
 }

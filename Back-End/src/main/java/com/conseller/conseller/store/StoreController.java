@@ -3,6 +3,7 @@ package com.conseller.conseller.store;
 import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
+import com.conseller.conseller.store.dto.request.StoreConfirmRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.*;
 import lombok.RequiredArgsConstructor;
@@ -80,6 +81,7 @@ public class StoreController {
     }
 
     // 스토어 거래 진행 취소
+    // 없어져야할듯
     @PatchMapping("/cancel/{store_idx}")
     public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
         storeService.cancelStore(storeIdx);
@@ -93,6 +95,7 @@ public class StoreController {
     }
 
     // 스토어 입금 완료
+    // 없어야할듯
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자에게 알림
@@ -103,21 +106,31 @@ public class StoreController {
     }
 
     // 스토어 거래 확정
-    @PatchMapping("/confirm/{store_idx}")
-    public ResponseEntity<Object> confirmStore(@PathVariable("store_idx") Long storeIdx) {
-        storeService.confirmStore(storeIdx);
+    @PatchMapping("/Confirm")
+    public ResponseEntity<Object> confirmStore(@RequestBody StoreConfirmRequest request) {
+        if(request.getConfirm()) {
+            storeService.confirmStore(request.getStoreIdx());
 
-        // 구매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 1, 2);
+            // 구매자에게 알림
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 1, 2);
+        }
+        else {
+            storeService.cancelStore(request.getStoreIdx());
+
+            // 판매자 구매자 알림
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 1, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 2, 2);
+        }
+
 
         return ResponseEntity.ok()
                 .build();
     }
 
     // 스토어 판매자 입금확인
-    @GetMapping("/confirm/{store_idx}")
+    @GetMapping("/Confirm/{store_idx}")
     public ResponseEntity<StoreConfirmResponse> getConfirmStore(@PathVariable("store_idx") Long storeIdx) {
-        StoreConfirmResponse response = null;
+        StoreConfirmResponse response = storeService.getConfirmStore(storeIdx);
 
         return ResponseEntity.ok()
                 .body(response);

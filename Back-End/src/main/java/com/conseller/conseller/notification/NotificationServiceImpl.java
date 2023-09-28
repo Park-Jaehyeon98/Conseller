@@ -313,10 +313,13 @@ public class NotificationServiceImpl implements NotificationService{
         NotificationEntity notification = notificationRepository.findById(request.getNotificationIdx())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 알림입니다."));
 
-        notification.setNotificationType(6);
-        
         //알림 로직
-
+        if(request.getNotificationAnswer()){
+            notification.setNotificationType(6);
+        }
+        else {
+            notificationRepository.deleteById(request.getNotificationIdx());
+        }
     }
 
 

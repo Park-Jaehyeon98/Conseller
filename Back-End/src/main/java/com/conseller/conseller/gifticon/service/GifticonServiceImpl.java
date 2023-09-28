@@ -6,11 +6,14 @@ import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.MainCategory;
 import com.conseller.conseller.entity.SubCategory;
 import com.conseller.conseller.entity.User;
+import com.conseller.conseller.gifticon.dto.response.ExpiringGifticonResponse;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.gifticon.dto.request.GifticonRegisterRequest;
 import com.conseller.conseller.gifticon.dto.response.ImageUrlsResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
+import com.conseller.conseller.gifticon.repository.GifticonRepositoryImpl;
+import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +22,23 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GifticonServiceImpl implements GifticonService {
 
     private final GifticonRepository gifticonRepository;
+    private final GifticonRepositoryImpl gifticonRepositoryImpl;
+
     private final SubCategoryRepository subCategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
+
     private final UserRepository userRepository;
+
+    private final NotificationService notificationService;
+
     private final DateTimeConverter dateTimeConverter;
 
     public GifticonResponse getGifticonResponse(long gifticonIdx) {
@@ -100,7 +111,11 @@ public class GifticonServiceImpl implements GifticonService {
     @Scheduled(cron = "0 0 * * * *")
     private void checkGifticonEndDate() {
         //쿼리 dsl로 불러온다.
+        List<ExpiringGifticonResponse> gifticons = gifticonRepositoryImpl.getUserIdxAndExpiringGifticonCount();
 
         //해당 유저에 대해 notification 서비스에 알림 요청을 보낸다.
+        for (ExpiringGifticonResponse item : gifticons) {
+            notificationService.sendGifticonNotification(item.getUserIdx(), item.getExpiryDay(), item.getGifticonName(), item.getGifticonCnt(), 1);
+        }
      }
 }

@@ -6,7 +6,6 @@ import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponse
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreItemData;
-import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.Item;

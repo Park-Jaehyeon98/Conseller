@@ -1,9 +1,6 @@
 package com.conseller.conseller.barter.barter;
 
-import com.conseller.conseller.barter.barter.barterDto.request.BarterChangeRequest;
-import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
-import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
-import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
+import com.conseller.conseller.barter.barter.barterDto.request.*;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.CreateBarterResponse;
@@ -30,10 +27,10 @@ public class BarterController {
                 .body(barterService.getBarterList(barterFilterDto));
     }
     //2. 물물교환글 자세히 보기
-    @GetMapping("/{barterIdx}")
-    public ResponseEntity<BarterDetailResponseDTO> getBarter(@PathVariable Long barterIdx) {
+    @GetMapping("/{barterIdx}/{userIdx}")
+    public ResponseEntity<BarterDetailResponseDTO> getBarter(@PathVariable Long barterIdx, @PathVariable Long userIdx) {
         return ResponseEntity.ok()
-                .body(barterService.getBarter(barterIdx));
+                .body(barterService.getBarter(barterIdx, userIdx));
     }
 
     //판매자 입장
@@ -60,13 +57,23 @@ public class BarterController {
                 .build();
     }
     //4. 자신의 물물교환 신청글에 달린 물물 교환 신청에 대해 선택하기
-    @PatchMapping({"", "/"})
-    public ResponseEntity<Void> selectBarterRequest(@RequestBody BarterChangeRequest barterChange) {
-        barterService.exchangeGifticon(barterChange.getBarterIdx(), barterChange.getBarterRequestIdx());
+    @PatchMapping("/Confirm")
+    public ResponseEntity<Void> selectBarterRequest(@RequestBody BarterConfirmRequestDTO barterConfirm) {
 
-        notificationService.sendBarterNotification(barterChange.getBarterIdx(), "물물교환 알림", 3);
+        if(barterConfirm.getConfirm()){
+            barterService.exchangeGifticon(barterConfirm.getBarterIdx(), barterConfirm.getUserIdx());
+            notificationService.sendBarterNotification(barterConfirm.getBarterIdx(), "물물교환 알림", 3);
+        } else {
+            barterService.rejectRequest(barterConfirm.getBarterIdx(), barterConfirm.getUserIdx());
+        }
 
         return ResponseEntity.ok()
                 .build();
+    }
+
+    @GetMapping("/Confirm/{barterIdx}")
+    public ResponseEntity<BarterConfirmPageResponseDTO> getConfirmPage(@PathVariable Long barterIdx) {
+        return ResponseEntity.ok()
+                .body(barterService.getBarterConfirmPage(barterIdx));
     }
 }

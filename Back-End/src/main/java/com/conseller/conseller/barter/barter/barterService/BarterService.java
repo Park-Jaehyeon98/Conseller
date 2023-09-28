@@ -1,5 +1,6 @@
 package com.conseller.conseller.barter.barter.barterService;
 
+import com.conseller.conseller.barter.barter.barterDto.request.BarterConfirmPageResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
@@ -13,7 +14,7 @@ public interface BarterService {
 
     BarterResponse getBarterList(BarterFilterDto barterFilterDto);
 
-    BarterDetailResponseDTO getBarter(Long barterIdx);
+    BarterDetailResponseDTO getBarter(Long barterIdx, Long userIdx);
 
     Long addBarter(BarterCreateDto barterCreateDto);
 
@@ -22,4 +23,8 @@ public interface BarterService {
     void deleteBarter(Long barterIdx);
 
     void exchangeGifticon(Long barterIdx, Long barterRequestIdx);
+
+    void rejectRequest(Long barterIdx, Long userIdx);
+
+    BarterConfirmPageResponseDTO getBarterConfirmPage(Long barterIdx);
 }

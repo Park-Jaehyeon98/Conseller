@@ -15,8 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class BarterRequestRegistDto {
-    private Long barterIdx;
-    private String userId;
+    private Long userIdx;
     private List<Long> barterGuestItemList;
 
     public BarterRequest toEntity(Barter barter, User user) {

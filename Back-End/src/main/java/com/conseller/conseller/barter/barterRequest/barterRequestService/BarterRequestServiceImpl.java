@@ -3,7 +3,6 @@ package com.conseller.conseller.barter.barterRequest.barterRequestService;
 import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterGuestItemDto;
 import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
@@ -80,7 +79,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
 
-        User user = userRepository.findByUserId(barterRequestRegistDto.getUserId())
+        User user = userRepository.findByUserIdx(barterRequestRegistDto.getUserIdx())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);

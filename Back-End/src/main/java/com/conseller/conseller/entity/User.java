@@ -47,7 +47,7 @@ public class User extends BaseTime implements UserDetails {
     private Integer userAge;
 
     @Column(name = "user_deposit", nullable = false)
-    private Integer userDeposit;
+    private Long userDeposit;
 
     @Column(name = "user_deleted_date")
     private LocalDateTime userDeletedDate;

@@ -1,7 +1,6 @@
 package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
@@ -57,7 +56,8 @@ public interface UserService {
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest);
 
     //보증금 입금
-    public void deposit(long userIdx, int deposit);
+//    public void deposit(long userIdx, int deposit);
+    void deposit(long userIdx, Long deposit);
 
     //내 기프티콘 불러오기
     public List<GifticonResponse> getGifticons(long userIdx);

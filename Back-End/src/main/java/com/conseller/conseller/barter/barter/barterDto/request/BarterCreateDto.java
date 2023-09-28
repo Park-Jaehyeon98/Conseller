@@ -13,12 +13,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class BarterCreateDto {
+    private Integer mainCategory;
+    private Integer subCategory;
     private String barterName;
     private String barterText;
-    private Integer subCategory;
-    private Integer preferSubCategory;
-    private List<Long> selectedItemIndices;
     private String barterEndDate;
+    private List<Long> selectedItemIndices;
     private Long userIdx;
 
     @Builder
@@ -26,7 +26,7 @@ public class BarterCreateDto {
         this.barterName = barterName;
         this.barterText = barterText;
         this.subCategory = barterSubCategory;
-        this.preferSubCategory = barterSubCategory;
+        this.mainCategory = barterSubCategory;
         this.selectedItemIndices = selectedItemIndices;
         this.barterEndDate = barterEndDate;
         this.userIdx = userIdx;

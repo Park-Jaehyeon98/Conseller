@@ -162,7 +162,7 @@ public class UserController {
 
     //보증금 넣기
     @PatchMapping("/{userIdx}/deposit")
-    public ResponseEntity<Void> deposit(@PathVariable long userIdx, @RequestBody int deposit) {
+    public ResponseEntity<Void> deposit(@PathVariable long userIdx, @RequestBody Long deposit) {
 
         userService.deposit(userIdx, deposit);
 

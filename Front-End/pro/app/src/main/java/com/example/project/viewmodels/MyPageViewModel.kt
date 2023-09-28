@@ -49,6 +49,10 @@ class MyPageViewModel @Inject constructor(
     private val _UploadGifticonResponse = MutableStateFlow<Boolean>(false)
     val uploadGifticonResponse: StateFlow<Boolean> get() = _UploadGifticonResponse
 
+    //기프티콘 삭제 상태
+    private val _DeleteGifticonResponse = MutableStateFlow<Boolean>(false)
+    val deleteGifticonResponse: StateFlow<Boolean> get() = _DeleteGifticonResponse
+
     // 내 정보 조회
     private val _GetMyInfoResponse = MutableStateFlow(
         userInfoResponse(
@@ -129,6 +133,26 @@ class MyPageViewModel @Inject constructor(
                 val response = service.getUserGifticoninfo(gifticonIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _GetMyGifticonInfo.value=response.body()!!
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun DeleteUserGifticon(gifticonIdx:Long){
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getUserGifticonDelete(gifticonIdx)
+                if (response.isSuccessful && response.body() != null) {
+                    _DeleteGifticonResponse.value=true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -450,37 +474,3 @@ class MyPageViewModel @Inject constructor(
 
 }
 
-private fun getSampleData(): List<myGifticon> {
-    return listOf(
-        myGifticon(1L, "123456789012", "커피 기프티콘", "2023-09-26", "2023-12-31",
-            "https://example.com/images/all_image1.png", "https://example.com/images/data_image1.png",
-            "보관", 1, 10, 1),
-        myGifticon(2L, "223456789012", "케이크 기프티콘", "2023-09-27", "2023-12-31",
-            "https://example.com/images/all_image2.png", "https://example.com/images/data_image2.png",
-            "보관", 1, 11, 2),
-        myGifticon(3L, "323456789012", "피자 기프티콘", "2023-09-28", "2023-12-31",
-            "https://example.com/images/all_image3.png", "https://example.com/images/data_image3.png",
-            "보관", 1, 12, 3),
-        myGifticon(4L, "423456789012", "버거 기프티콘", "2023-09-29", "2023-12-31",
-            "https://example.com/images/all_image4.png", "https://example.com/images/data_image4.png",
-            "보관", 1, 13, 4),
-        myGifticon(5L, "523456789012", "아이스크림 기프티콘", "2023-09-30", "2023-12-31",
-            "https://example.com/images/all_image5.png", "https://example.com/images/data_image5.png",
-            "보관", 1, 14, 5),
-        myGifticon(6L, "623456789012", "도넛 기프티콘", "2023-10-01", "2023-12-31",
-            "https://example.com/images/all_image6.png", "https://example.com/images/data_image6.png",
-            "보관", 1, 15, 1),
-        myGifticon(7L, "723456789012", "샐러드 기프티콘", "2023-10-02", "2023-12-31",
-            "https://example.com/images/all_image7.png", "https://example.com/images/data_image7.png",
-            "보관", 1, 16, 2),
-        myGifticon(8L, "823456789012", "스무디 기프티콘", "2023-10-03", "2023-12-31",
-            "https://example.com/images/all_image8.png", "https://example.com/images/data_image8.png",
-            "보관", 1, 17, 3),
-        myGifticon(9L, "923456789012", "샌드위치 기프티콘", "2023-10-04", "2023-12-31",
-            "https://example.com/images/all_image9.png", "https://example.com/images/data_image9.png",
-            "보관", 1, 18, 4),
-        myGifticon(10L, "023456789012", "파스타 기프티콘", "2023-10-05", "2023-12-31",
-            "https://example.com/images/all_image10.png", "https://example.com/images/data_image10.png",
-            "보관", 1, 19, 5)
-    )
-}

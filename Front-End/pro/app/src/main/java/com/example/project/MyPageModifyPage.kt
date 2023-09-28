@@ -8,11 +8,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -204,6 +206,7 @@ fun ModifyUserProfile(
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+
     // 비밀번호 검증
     fun isValidPassword(password: String): Boolean {
         val specialCharCount = password.count { it in "!@#$%^&*()-_=+|<>?/" }
@@ -224,6 +227,8 @@ fun ModifyUserProfile(
     var checkPasswordError by remember { mutableStateOf<String?>(null) }
     var nickNameError by remember { mutableStateOf<String?>(null) }
 
+
+
     val request = userModifyRequest(
         userAccount = modifyAccount,
         userEmail = modifyEmail,
@@ -232,6 +237,27 @@ fun ModifyUserProfile(
         userNickname = modifyNickname.text,
     )
 
+    val checkEmailResult by checkModel.checkEmail.collectAsState()
+    val checkNickNameResult by checkModel.checkNickname.collectAsState()
+
+    LaunchedEffect(checkEmailResult, checkNickNameResult) {
+        if (checkEmailResult.status == 1) {
+            checkMarkEmail.value = true
+            emailError=null
+        }else if (checkEmailResult.status == 0) {
+            checkMarkEmail.value = false
+            emailError = "중복된 이메일입니다"
+
+        }
+        if (checkNickNameResult.status == 1) {
+            checkMarkNickname.value = true
+            nickNameError=null
+        }else if (checkNickNameResult.status == 0) {
+            checkMarkNickname.value = false
+            nickNameError="중복된 닉네임입니다"
+
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -280,6 +306,7 @@ fun ModifyUserProfile(
                 error = checkPasswordError
             )
             //이메일 확인
+            // 이메일
             EmailTextFieldWithDomain(
                 label = "이메일",
                 emailValue = emailPart,
@@ -297,6 +324,22 @@ fun ModifyUserProfile(
                 },
                 showIcon = checkMarkEmail.value,
             )
+            val shape = RoundedCornerShape(8.dp)
+            //이메일 중복확인
+            Button(
+                onClick = {
+                    checkModel.checkDuplicateEmail(modifyEmail)
+                },
+                Modifier
+                    .size(120.dp, 40.dp)
+                    .fillMaxHeight()
+                    .clip(shape),
+                colors = ButtonDefaults.buttonColors(BrandColor1)
+            ) {
+                Text(
+                    text = "중복확인", fontWeight = FontWeight.Bold
+                )
+            }
             //계좌은행
             CustomDropdown(selectedBank = modifyAccount, onBankSelected = { bank ->
                 modifyAccount = bank

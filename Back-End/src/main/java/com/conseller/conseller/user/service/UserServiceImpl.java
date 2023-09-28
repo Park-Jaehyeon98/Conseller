@@ -2,10 +2,7 @@ package com.conseller.conseller.user.service;
 
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
-import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;

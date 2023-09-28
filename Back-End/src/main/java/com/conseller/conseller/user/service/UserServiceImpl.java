@@ -3,9 +3,12 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
+import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.StoreRepository;
 import com.conseller.conseller.store.dto.response.StoreResponse;
@@ -121,16 +124,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserInfo(long userIdx, UserInfoRequest userInfoRequest) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("해당 인덱스에 대한 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        user.setUserPassword(userInfoRequest.getUserPassword());
+        //비밀번호는 암호화 하기 때문에 바뀐 경우만 set 해준다.
+        if (!user.checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
+            user.setUserPassword(userInfoRequest.getUserPassword());
+            user.encryptPassword(new BCryptPasswordEncoder());
+
+        }
+
         user.setUserNickname(userInfoRequest.getUserNickname());
         user.setUserEmail(userInfoRequest.getUserEmail());
         user.setUserAccount(userInfoRequest.getUserAccount());
         user.setUserAccountBank(userInfoRequest.getUserAccountBank());
-
-        //비밀번호 암호화
-        user.encryptPassword(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -316,15 +322,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BarterResponseDTO> getUserBarters(long userIdx) {
+    public List<MyBarterResponseDto> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<BarterResponseDTO> barterResponseDtos = new ArrayList<>();
+        List<MyBarterResponseDto> barterResponseDtos = new ArrayList<>();
 
         for (Barter barter : user.getBarters()) {
-            BarterResponseDTO barterResponseDto = barter.toBarterResponseDto(barter);
-            barterResponseDtos.add(barterResponseDto);
+            MyBarterResponseDto.MyBarterResponseDtoBuilder barterResponseDto = MyBarterResponseDto.builder()
+                    .barterIdx(barter.getBarterIdx())
+                    .barterName(barter.getBarterName())
+                    .barterText(barter.getBarterText())
+                    .barterStatus(barter.getBarterStatus())
+                    .barterCreatedDate(DateTimeConverter.getInstance().convertString(barter.getBarterCreatedDate()))
+                    .barterEndDate(DateTimeConverter.getInstance().convertString(barter.getBarterEndDate()))
+                    .barterHostIdx(barter.getBarterHost().getUserIdx())
+                    .subCategory(String.valueOf(barter.getSubCategory().getSubCategoryIdx()));
+
+            List<GifticonResponse> gifticonResponses = barter.getBarterHostItemList().stream()
+                    .map(item -> item.getGifticon().toResponseDto())
+                    .collect(Collectors.toList());
+
+            barterResponseDto.barterHostItems(gifticonResponses);
+
+            if (barter.getBarterCompleteGuest() != null) {
+                barterResponseDto.barterCompleteGuestIdx(barter.getBarterCompleteGuest().getUserIdx());
+            }
+
+            barterResponseDtos.add(barterResponseDto.build());
         }
 
         return barterResponseDtos;

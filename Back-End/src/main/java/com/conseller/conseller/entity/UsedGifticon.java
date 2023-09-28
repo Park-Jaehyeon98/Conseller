@@ -20,6 +20,6 @@ public class UsedGifticon {
     @Column(name = "used_gifticon_barcode")
     private String usedGifticonBarcode;
 
-    @CreatedDate
+    @Column(name = "used_gifticon_date")
     private LocalDateTime usedGifticonDate;
 }

@@ -34,4 +34,7 @@ public class UserValidator {
         }
     }
 
+    public boolean isVaildByUserIdx(long userIdx) {
+        return userRepository.existsByUserIdx(userIdx);
+    }
 }

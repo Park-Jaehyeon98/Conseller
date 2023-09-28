@@ -11,4 +11,5 @@ public interface GifticonService {
 
     //기프티콘을 삭제하고 이미지 url을 넘긴다.
     public ImageUrlsResponse deleteGifticon(long gifticonIdx);
+
 }

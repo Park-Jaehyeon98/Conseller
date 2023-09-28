@@ -279,7 +279,7 @@ fun HomeLayout4(navController: NavController) {
                                             Column(
                                                 modifier = Modifier.align(Alignment.CenterVertically)
                                             ) {
-                                                Text(item.gifticonName, fontSize = 18.sp)
+                                                Text(item.gifticonName?: "defaultText", fontSize = 18.sp)
                                                 Spacer(modifier = Modifier.height(5.dp))
                                                 Text(
                                                     "최고 입찰가: ${item.auctionHighestBid}원 (${if (item.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",

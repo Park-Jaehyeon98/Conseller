@@ -5,11 +5,14 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -117,7 +123,31 @@ fun ProfileModifyImage(
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             selectImage = uri
         }
-    val currentImage = selectImage
+    val profileSendResult by viewModel.uploadProfileResponse.collectAsState()
+    var showSnackbar by remember { mutableStateOf(false) }
+    var snackbarText by remember { mutableStateOf("") }
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(profileSendResult) {
+        if (profileSendResult) {
+            snackbarText = "프로필 변경 완료"
+            showSnackbar = true
+        }
+    }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            showSnackbar = true
+            snackbarText = error!!
+        }
+    }
+
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            kotlinx.coroutines.delay(5000)
+            showSnackbar = false
+        }
+    }
 
     LaunchedEffect(selectImage) { // selectImage의 변화를 감지
         val currentImage = selectImage
@@ -137,39 +167,56 @@ fun ProfileModifyImage(
             viewModel.profileSend(multipartImage) // 이미지 변화 시 viewModel을 통해 업로드
         }
     }
-
-
-    Column(
-        modifier = Modifier.padding(5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
     ) {
-        val imageToShow = selectImage ?: profileImage
-        if (imageToShow != null) {
-            Image(
-                painter = rememberAsyncImagePainter(imageToShow),
-                contentDescription = "유저 프로필 이미지",
-                modifier = Modifier
-                    .size(200.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillHeight
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.defaultimage),
-                contentDescription = "Default User Image",
-                modifier = Modifier
-                    .size(200.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillHeight
-            )
+        if (showSnackbar) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
+            }
         }
-        Button(
-            onClick = { galleryLauncher.launch("image/*") }, colors = ButtonDefaults.buttonColors(
-                BrandColor1
-            )
+        Column(
+            modifier = Modifier.padding(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "사진 수정")
+
+            val imageToShow = selectImage ?: profileImage
+            if (imageToShow != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageToShow),
+                    contentDescription = "유저 프로필 이미지",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillHeight
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.defaultimage),
+                    contentDescription = "Default User Image",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillHeight
+                )
+            }
+            Button(
+                onClick = { galleryLauncher.launch("image/*") },
+                colors = ButtonDefaults.buttonColors(
+                    BrandColor1
+                )
+            ) {
+                Text(text = "사진 수정")
+            }
         }
     }
 }
@@ -228,7 +275,6 @@ fun ModifyUserProfile(
     var nickNameError by remember { mutableStateOf<String?>(null) }
 
 
-
     val request = userModifyRequest(
         userAccount = modifyAccount,
         userEmail = modifyEmail,
@@ -243,18 +289,18 @@ fun ModifyUserProfile(
     LaunchedEffect(checkEmailResult, checkNickNameResult) {
         if (checkEmailResult.status == 1) {
             checkMarkEmail.value = true
-            emailError=null
-        }else if (checkEmailResult.status == 0) {
+            emailError = null
+        } else if (checkEmailResult.status == 0) {
             checkMarkEmail.value = false
             emailError = "중복된 이메일입니다"
 
         }
         if (checkNickNameResult.status == 1) {
             checkMarkNickname.value = true
-            nickNameError=null
-        }else if (checkNickNameResult.status == 0) {
+            nickNameError = null
+        } else if (checkNickNameResult.status == 0) {
             checkMarkNickname.value = false
-            nickNameError="중복된 닉네임입니다"
+            nickNameError = "중복된 닉네임입니다"
 
         }
     }
@@ -352,7 +398,7 @@ fun ModifyUserProfile(
                 }
             })
             Button(
-                onClick = {       mypageModel.userModify(request) },
+                onClick = { mypageModel.userModify(request) },
                 Modifier.size(120.dp, 40.dp),
                 colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {

@@ -242,7 +242,7 @@ fun StorePage(navController: NavHostController) {
             storeItems.forEach { item ->
                 StoreItem(
                     image = item.gifticonDataImageName,
-                    name = item.giftconName,
+                    name = item.gifticonName,
                     gifticonTime = item.gifticonEndDate,
                     storeTime = item.storeEndDate,
                     isDeposit = item.deposit,

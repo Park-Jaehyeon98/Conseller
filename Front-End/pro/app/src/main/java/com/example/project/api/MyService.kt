@@ -11,7 +11,7 @@ import java.util.Base64
 interface MyService {
 
     // 기프티콘 불러오는 API
-    @POST("api/user/getgifticons/")
+    @POST("api/user/getgifticons")
     suspend fun getGifticons(
         @Body request: GifticonRequestDTO
     ): Response<GifticonResponse>

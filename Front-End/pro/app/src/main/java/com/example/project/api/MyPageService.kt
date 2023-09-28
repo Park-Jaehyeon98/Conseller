@@ -202,16 +202,13 @@ data class myBarterItems(
 )
 data class myBarterData(
     val barterIdx: Long,
-    val barterName: String,
-    val barterText: String,
-    val barterCreatedDate: String,
+    val gifticonDataImageName: String,
+    val giftconName: String,
+    val gifticonEndDate: String,
     val barterEndDate: String,
-    val barterStatus: String,
-    val subCategory: String,
-    val preferSubCategory: String, // 판매자가 원하는 거
-    val barterHostIdx: Long,
-    val barterCompleteGuest: Long,
-    val barterHostItems: List<myGifticon>
+    val isDeposit: Boolean,
+    val preper: String,
+    val barterName: String,
 )
 
 data class myBarterRequestItems(
@@ -230,7 +227,7 @@ data  class myStoreItems(
 data class myStoreData(
     val storeIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
     val isDeposit: Boolean,

@@ -199,29 +199,24 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    // 유저가 입찰한 글의 정보 불러오기
     fun getMyAuctionBid() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
             try {
+                _isLoading.value = true
+                _error.value = null
                 val response = service.getUserAuctionBid(userIdx)
+
                 if (response.isSuccessful) {
-                    Log.d("getMyAuctionBid", "Response: ${response.body()}")
                     _GetMyAuctionBid.value = response.body()?.items ?: listOf()
-                } else {
-                    // 실패한 HTTP 응답 코드와 메시지를 로그에 남깁니다.
-                    val errorString = "Error Code: ${response.code()}, Error Body: ${
-                        response.errorBody()?.string() ?: "Unknown"
-                    }"
-                    _error.value = errorString
-                    Log.e("getMyAuctionBid", errorString)
                 }
+            } catch (e: CustomException) {
+                    _error.value = e.message
             } catch (e: Exception) {
-                // 예외의 종류와 메시지, 그리고 스택 트레이스를 로그에 남깁니다.
-                val errorMessage =
-                    "Exception Type: ${e.javaClass.simpleName}, Message: ${e.message ?: "Unknown"}"
-                _error.value = errorMessage
-                Log.e("getMyAuctionBid", errorMessage, e)
+                _error.value = e.localizedMessage
             } finally {
+                _isLoading.value = false
             }
         }
     }

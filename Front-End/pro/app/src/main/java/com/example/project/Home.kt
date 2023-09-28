@@ -34,6 +34,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.MyAuctionViewModel
+import com.example.project.viewmodels.MyPageViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -151,11 +152,11 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
 @Composable
 fun HomeLayout4(navController: NavController) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
-    val myViewModel: MyAuctionViewModel = hiltViewModel()
+    val myPageViewModel: MyPageViewModel = hiltViewModel()
     val error by auctionViewModel.error.collectAsState()
-    val myerror by myViewModel.error.collectAsState()
-    val auctionItems by auctionViewModel.auctionItems.collectAsState()
-    val myAuctions by myViewModel.myAuctions.collectAsState()
+    val myerror by myPageViewModel.error.collectAsState()
+    val myAuctionItems by auctionViewModel.myAuctionItems.collectAsState()
+    val myBids by myPageViewModel.getMyAuctionBidResponse.collectAsState()
 
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
 
@@ -163,7 +164,8 @@ fun HomeLayout4(navController: NavController) {
     var snackbarText by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        myViewModel.fetchMyAuctions()
+        myPageViewModel.getMyAuctionBid()
+        auctionViewModel.fetchMyAuctionItems()
     }
     LaunchedEffect(error) {
         if (error != null) {
@@ -179,7 +181,7 @@ fun HomeLayout4(navController: NavController) {
     }
     LaunchedEffect(showSnackbar) {
         if (showSnackbar) {
-            kotlinx.coroutines.delay(5000)
+            delay(5000)
             showSnackbar = false
         }
     }
@@ -215,10 +217,10 @@ fun HomeLayout4(navController: NavController) {
                         fontSize = 18.sp,
                         color = if (selectedTab == "입찰") Color.Black else Color.Gray)
                     Spacer(modifier = Modifier.weight(0.8f))
-                    Text("판매",
-                        modifier = Modifier.clickable { selectedTab = "판매" },
+                    Text("경매",
+                        modifier = Modifier.clickable { selectedTab = "경매" },
                         fontSize = 18.sp,
-                        color = if (selectedTab == "판매") Color.Black else Color.Gray)
+                        color = if (selectedTab == "경매") Color.Black else Color.Gray)
                     Spacer(modifier = Modifier.weight(1f))
                 }
 
@@ -233,14 +235,14 @@ fun HomeLayout4(navController: NavController) {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (myAuctions.isEmpty()) {
+                        if (myBids.isEmpty()) {
                             Text(text = "등록된 입찰이 없습니다.", fontSize = 24.sp)
                         } else {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(top = 50.dp)
                             ) {
-                                myAuctions.take(3).forEach { item ->
+                                myBids.take(3).forEach { item ->
                                     val itemInteractionState = remember { MutableInteractionSource() }
                                     val itemIsPressed by itemInteractionState.collectIsPressedAsState()
 
@@ -280,7 +282,7 @@ fun HomeLayout4(navController: NavController) {
                                                 Text(item.gifticonName, fontSize = 18.sp)
                                                 Spacer(modifier = Modifier.height(5.dp))
                                                 Text(
-                                                    "최고 입찰가: ${item.auctionHighestBid}원",
+                                                    "최고 입찰가: ${item.auctionHighestBid}원 (${if (item.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",
                                                     fontSize = 18.sp
                                                 )
                                             }
@@ -292,19 +294,19 @@ fun HomeLayout4(navController: NavController) {
                         }
                     }
                 }
-                "판매" -> {
+                "경매" -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (auctionItems.isEmpty()) {
-                            Text(text = "등록된 판매가 없습니다.", fontSize = 24.sp)
+                        if (myAuctionItems.isEmpty()) {
+                            Text(text = "등록된 경매가 없습니다.", fontSize = 24.sp)
                         } else {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(top = 50.dp)
                             ) {
-                                auctionItems.take(3).forEach { item ->
+                                myAuctionItems.take(3).forEach { item ->
                                     val itemInteractionState =
                                         remember { MutableInteractionSource() }
                                     val itemIsPressed by itemInteractionState.collectIsPressedAsState()

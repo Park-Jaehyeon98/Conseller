@@ -27,8 +27,9 @@ import com.example.project.viewmodels.MygifticonViewModel
 fun BarterCreatePage(navController: NavHostController) {
     val mygifticonViewModel: MygifticonViewModel = hiltViewModel()
     val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
-    val scrollState = rememberScrollState()
     val error by mygifticonViewModel.error.collectAsState()
+    val scrollState = rememberScrollState()
+
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
@@ -36,6 +37,10 @@ fun BarterCreatePage(navController: NavHostController) {
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        mygifticonViewModel.getUserGifticons(1)
+    }
 
     LaunchedEffect(error) {
         if (error != null) {

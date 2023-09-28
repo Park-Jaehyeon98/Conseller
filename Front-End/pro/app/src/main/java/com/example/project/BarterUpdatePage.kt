@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -54,12 +56,12 @@ import com.example.project.viewmodels.BarterViewModel
 @Composable
 fun BarterUpdatePage(index: String?, navController: NavHostController) {
     val barterViewModel: BarterViewModel = hiltViewModel()
+    val barterDetail by barterViewModel.barterDetail.collectAsState() // 게시글 사진
     val error by barterViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val barterItems by barterViewModel.barterItems.collectAsState() // 게시글 사진
 
-    val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 일치
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     // 게시글 제목 및 내용을 위한 상태값
     var postTitle by remember { mutableStateOf("") }
@@ -92,17 +94,26 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
                 Snackbar(
                     modifier = Modifier.align(Alignment.TopCenter)
                 ) {
-                    Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = snackbarText,
+                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     )
                 }
             }
-            val imagePainter = rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
-            Image(
-                painter = imagePainter,
-                contentDescription = null,
-                modifier = Modifier.size(200.dp),
-                contentScale = ContentScale.Crop,
-            )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp) // 이미지들 사이의 간격
+            ) {
+                items(barterDetail?.barterImageList.orEmpty()) { item ->
+                    val imagePainter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
         }
 
         Text(

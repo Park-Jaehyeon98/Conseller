@@ -35,12 +35,11 @@ import com.example.project.viewmodels.AuctionViewModel
 @Composable
 fun AuctionTradePage(index: String?, navController: NavHostController) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by auctionViewModel.auctionItems.collectAsState()
-    val tradeItems by auctionViewModel.auctionTrades.collectAsState()
+    val auctionDetail by auctionViewModel.auctionDetail.collectAsState()    // 판매정보
+    val tradeItems by auctionViewModel.auctionTrades.collectAsState()   // 계좌번호불러오기
     val cancelTradeResult by auctionViewModel.cancelTradeSuccessful.collectAsState()
     val error by auctionViewModel.error.collectAsState() // 에러메시지 확인
 
-    val currentItem = auctionItems.find { it.auctionIdx.toString() == index }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showDepositConfirmDialog by remember { mutableStateOf(false) }
@@ -49,9 +48,12 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
-    LaunchedEffect(index) {
+    LaunchedEffect(Unit) {
         index?.toLongOrNull()?.let {
             auctionViewModel.fetchAccountDetails(it)
+        }
+        if(index != null) {
+            auctionViewModel.fetchAuctionDetail(index.toLong())
         }
     }
 
@@ -104,7 +106,7 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                         )
                     }
                 }
-                val imagePainter = rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
+                val imagePainter = rememberAsyncImagePainter(model = auctionDetail?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
                     contentDescription = null,
@@ -115,7 +117,7 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
 
             Text(text = "계좌번호 : ${tradeItems?.userAccount ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Text(text = "거래은행 : ${tradeItems?.userAccountBank ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(text = "거래가격 : ${currentItem?.upperPrice ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = "거래가격 : ${auctionDetail?.upperPrice ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

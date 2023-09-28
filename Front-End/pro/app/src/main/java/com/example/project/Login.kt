@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.util.Log
 import androidx.biometric.BiometricPrompt
 import com.example.project.viewmodels.BiometricViewModel
 import com.example.project.viewmodels.AuthenticationState

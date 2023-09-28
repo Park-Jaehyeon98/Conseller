@@ -72,5 +72,6 @@ public interface StoreMapper {
         response.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
         response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(LocalDateTime.now()));
 
+        return null;
     }
 }

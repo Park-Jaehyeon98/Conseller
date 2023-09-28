@@ -1,10 +1,10 @@
 package com.conseller.conseller.entity;
 
 import com.conseller.conseller.inquiry.enums.InquiryStatus;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "inquiryIdx")
 public class Inquiry {
 
@@ -24,10 +28,10 @@ public class Inquiry {
     private User user;
 
     @Column(nullable = false)
-    private String inquiryName;
+    private String inquiryTitle;
 
     @Column(nullable = false)
-    private String inquiryText;
+    private String inquiryContent;
 
     @Column
     private String inquiryAnswer;
@@ -42,6 +46,10 @@ public class Inquiry {
     private String inquiryStatus = InquiryStatus.CHECKING.getStatus();
 
     @Column(nullable = false)
-    private String inquiryType;
+    private Integer inquiryType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_user")
+    private User reportedUser;
 
 }

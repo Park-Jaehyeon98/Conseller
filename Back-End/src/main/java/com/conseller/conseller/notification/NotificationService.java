@@ -1,5 +1,6 @@
 package com.conseller.conseller.notification;
 
+import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
 
 public interface NotificationService {
@@ -9,10 +10,11 @@ public interface NotificationService {
 
     public void sendBarterNotification(Long barterIdx, String title, Integer type);
 
-    public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type);
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type);
 
     public void sendNotification(Long userIdx, String title, String body);
 
     public NotificationListResponse getNotificationList(Long userIdx);
 
+    public void getAnswer(Long userIdx, NotificationAnswerRequest request);
 }

@@ -5,6 +5,7 @@ import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreConfirmResponse;
 import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.utils.DateTimeConverter;
 import org.mapstruct.IterableMapping;
@@ -13,6 +14,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel="spring")
@@ -62,4 +64,14 @@ public interface StoreMapper {
 
     @IterableMapping(qualifiedByName = "S2S")
     List<StoreItemData> storesToItemDatas(List<Store> storeList);
+
+    //Store -> StoreConfirm 매핑
+    default StoreConfirmResponse storeToComfirm(Store store) {
+        StoreConfirmResponse response = new StoreConfirmResponse();
+
+        response.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
+        response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(LocalDateTime.now()));
+
+        return null;
+    }
 }

@@ -32,7 +32,7 @@ public interface InquiryMapper {
 
         itemData.setUserIdx(inquiry.getUser().getUserIdx());
         itemData.setInquiryIdx(inquiry.getInquiryIdx());
-        itemData.setInquiryName(inquiry.getInquiryName());
+        itemData.setInquiryTitle(inquiry.getInquiryTitle());
         itemData.setInquiryCreatedDate(inquiry.getInquiryCreatedDate());
         itemData.setInquiryStatus(inquiry.getInquiryStatus());
         itemData.setInquiryType(inquiry.getInquiryType());

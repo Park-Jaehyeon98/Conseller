@@ -8,21 +8,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleRuntimeException(RuntimeException exception) {
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<CommonResponse> handleUserNameNotFoundException(CustomException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
-                .code(9999)
-                .message(exception.getMessage())
+                .code(exception.getStatus().getCode())
+                .message(exception.getStatus().getMessage())
                 .build();
 
         return ResponseEntity.badRequest()
                 .body(commonResponse);
     }
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<CommonResponse> handleUserNameNotFoundException(CustomExceptionStatus exception) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException exception) {
         CommonResponse commonResponse = CommonResponse.builder()
-                .code(exception.getCode())
+                .code(9999)
                 .message(exception.getMessage())
                 .build();
 

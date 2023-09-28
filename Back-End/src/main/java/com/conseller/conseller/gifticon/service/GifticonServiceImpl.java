@@ -2,10 +2,7 @@ package com.conseller.conseller.gifticon.service;
 
 import com.conseller.conseller.category.mainCategory.MainCategoryRepository;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
-import com.conseller.conseller.entity.Gifticon;
-import com.conseller.conseller.entity.MainCategory;
-import com.conseller.conseller.entity.SubCategory;
-import com.conseller.conseller.entity.User;
+import com.conseller.conseller.entity.*;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.GifticonValidator;
@@ -16,6 +13,7 @@ import com.conseller.conseller.gifticon.dto.request.GifticonRegisterRequest;
 import com.conseller.conseller.gifticon.dto.response.ImageUrlsResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.gifticon.repository.GifticonRepositoryImpl;
+import com.conseller.conseller.gifticon.repository.UsedGifticonRepository;
 import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.utils.DateTimeConverter;
@@ -25,6 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +34,7 @@ public class GifticonServiceImpl implements GifticonService {
     private final GifticonRepository gifticonRepository;
     private final GifticonRepositoryImpl gifticonRepositoryImpl;
     private final GifticonValidator gifticonValidator;
+    private final UsedGifticonRepository usedGifticonRepository;
 
     private final SubCategoryRepository subCategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
@@ -68,7 +68,7 @@ public class GifticonServiceImpl implements GifticonService {
     public void registGifticon(long userIdx, GifticonRegisterRequest gifticonRegisterRequest, String allImageUrl, String dataImageUrl) {
 
         //예외처리
-        gifticonValidator.isValidGiftion(gifticonRegisterRequest);
+//        gifticonValidator.isValidGiftion(gifticonRegisterRequest);
 
 
         //카테고리 엔티티를 가져온다.
@@ -106,6 +106,12 @@ public class GifticonServiceImpl implements GifticonService {
         String gifticonDataImageUrl = gifticon.getGifticonDataImageUrl();
 
         //여기서 usedGifticon entity 객체 생성해서 값 넣고 save
+        UsedGifticon usedGifticon = UsedGifticon.builder()
+                        .usedGifticonBarcode(gifticon.getGifticonBarcode())
+                        .usedGifticonDate(LocalDateTime.now())
+                        .build();
+
+        usedGifticonRepository.save(usedGifticon);
 
         gifticonRepository.delete(gifticon);
 

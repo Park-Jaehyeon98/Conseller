@@ -71,7 +71,13 @@ public interface StoreMapper {
 
         response.setGifticonDataImageName(store.getGifticon().getGifticonDataImageUrl());
         response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(LocalDateTime.now()));
+        response.setGiftconName(store.getGifticon().getGifticonName());
+        response.setStorePrice(store.getStorePrice());
+        response.setPostContent(store.getStoreText());
+        response.setBuyUserImageUrl(store.getUser().getUserProfileUrl());
+        response.setBuyUserNickname(store.getUser().getUserNickname());
+        response.setBuyUserIdx(store.getUser().getUserIdx());
 
-        return null;
+        return response;
     }
 }

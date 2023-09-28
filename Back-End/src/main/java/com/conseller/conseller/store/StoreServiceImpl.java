@@ -159,10 +159,9 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
+        StoreConfirmResponse response = StoreMapper.INSTANCE.storeToComfirm(store);
 
-
-
-        return null;
+        return response;
     }
 
 }

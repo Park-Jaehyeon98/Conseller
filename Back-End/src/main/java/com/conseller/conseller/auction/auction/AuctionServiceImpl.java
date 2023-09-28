@@ -162,7 +162,6 @@ public class AuctionServiceImpl implements AuctionService{
             auction.setHighestBidUser(auctionBidList.get(1).getUser());
         }
 
-        //여기서 유저가 같으니 다 삭제됨
         auctionBidRepository.deleteByUser_UserIdxAndAuction_AuctionIdx(auctionBidList.get(0).getUser().getUserIdx(), auctionIdx);
 
     }
@@ -192,4 +191,26 @@ public class AuctionServiceImpl implements AuctionService{
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
         auction.setAuctionCompletedDate(LocalDateTime.now());
     }
+
+    @Override
+    public AuctionConfirmResponse getConfirmAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+
+        AuctionConfirmResponse response = AuctionMapper.INSTANCE.auctionToConfirm(auction);
+
+        return response;
+    }
+
+    @Override
+    public AuctionConfirmBuyResponse getConfirmBuyAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+
+        AuctionConfirmBuyResponse response = AuctionMapper.INSTANCE.auctionToConfirmBuy(auction);
+
+        return response;
+    }
+
+
 }

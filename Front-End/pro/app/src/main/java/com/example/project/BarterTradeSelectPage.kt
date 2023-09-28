@@ -33,9 +33,10 @@ import kotlinx.coroutines.delay
 @Composable
 fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
     val mygifticonViewModel: MygifticonViewModel = hiltViewModel()
-    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
+    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState() // 내기프티콘
     val error by mygifticonViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
+
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
@@ -44,6 +45,9 @@ fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        mygifticonViewModel.getUserGifticons(1)
+    }
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true

@@ -171,7 +171,6 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful) {
                     _error.value = null
-                    fetchAuctionDetail(auctionIdx)
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

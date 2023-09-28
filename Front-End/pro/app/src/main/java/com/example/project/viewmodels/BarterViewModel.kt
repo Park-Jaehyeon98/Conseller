@@ -2,6 +2,7 @@ package com.example.project.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.api.BarterConfirmList
 import com.example.project.api.BarterConfirmPageResponseDTO
 import com.example.project.api.BarterConfirmRequestDTO
 import com.example.project.api.BarterCreateDTO
@@ -188,7 +189,6 @@ class BarterViewModel @Inject constructor(
 
                 if (response.isSuccessful) {
                     _error.value = null
-                    fetchBarterItems()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

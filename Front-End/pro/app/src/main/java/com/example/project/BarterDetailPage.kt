@@ -57,7 +57,6 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
     var snackbarText by remember { mutableStateOf("") }
 
 
-    // 페이지가 호출될 때 fetchBarterDetail 함수를 호출 (MVVM에 쬐끔 어긋나지만 훨씬 효율적)
     LaunchedEffect(key1 = index) {
         index?.toLongOrNull()?.let {
             barterViewModel.fetchBarterDetail(it)

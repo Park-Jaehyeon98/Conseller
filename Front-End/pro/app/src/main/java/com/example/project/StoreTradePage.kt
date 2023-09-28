@@ -34,12 +34,10 @@ import com.example.project.viewmodels.StoreViewModel
 @Composable
 fun StoreTradePage(index: String?, navController: NavHostController) {
     val storeViewModel: StoreViewModel = hiltViewModel()
-    val storeItems by storeViewModel.storeItems.collectAsState()
-    val tradeItems by storeViewModel.storeTrades.collectAsState()
+    val storeDetail by storeViewModel.storeDetail.collectAsState()    // 게시글종류
+    val storeTrades by storeViewModel.storeTrades.collectAsState()   // 계좌번호
     val cancelTradeResult by storeViewModel.cancelTradeSuccessful.collectAsState()
     val paymentCompleted by storeViewModel.error.collectAsState()
-
-    val currentItem = storeItems.find { it.storeIdx.toString() == index }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showDepositConfirmDialog by remember { mutableStateOf(false) }
@@ -51,6 +49,9 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
     LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
             storeViewModel.fetchAccountDetails(it)
+        }
+        if(index != null){
+            storeViewModel.fetchStoreDetail(index.toLong())
         }
     }
 
@@ -84,7 +85,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
         ) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val imagePainter =
-                    rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
+                    rememberAsyncImagePainter(model = storeDetail?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
                     contentDescription = null,
@@ -94,17 +95,17 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
             }
 
             Text(
-                text = "계좌번호 : ${tradeItems?.userAccount ?: "N/A"}",
+                text = "계좌번호 : ${storeTrades?.userAccount ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
             Text(
-                text = "거래은행 : ${tradeItems?.userAccountBank ?: "N/A"}",
+                text = "거래은행 : ${storeTrades?.userAccountBank ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
             Text(
-                text = "거래가격 : ${currentItem?.storePrice ?: "N/A"}",
+                text = "거래가격 : ${storeDetail?.storePrice ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )

@@ -12,9 +12,9 @@ import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
-import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.utils.DateTimeConverter;
@@ -117,6 +117,7 @@ public class AuctionServiceImpl implements AuctionService{
                         .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+
 
         auctionRepository.deleteById(auctionIdx);
 

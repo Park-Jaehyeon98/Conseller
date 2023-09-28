@@ -44,6 +44,7 @@ public enum CustomExceptionStatus {
     //기프티콘 관련
     GIFTICON_INVALID(1600,"존재하지 않는 기프티콘입니다."),
     GIFTICON_NOT_KEEP(1601, "보관 중인 기프티콘이 아닙니다."),
+    EXPIRED_GIFTICON(1602, "유효기간이 이미 지난 기프티콘 입니다."),
 
     //문의 관련
     INQUIRY_INVALID(1700, "존재하지 않는 문의입니다.");
@@ -51,6 +52,6 @@ public enum CustomExceptionStatus {
     //알림 관련
 
 
-    private Integer code;
-    private String message;
+    private final Integer code;
+    private final String message;
 }

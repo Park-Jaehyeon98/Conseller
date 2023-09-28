@@ -29,6 +29,9 @@ public class GifticonController {
 
         log.info("기프티콘 등록 호출");
 
+        //validation 클래스로 검증 후 사용하거나 유효기간이 지났으면 예외 처리
+
+
         String allImageUrl = s3Service.uploadFile(originalFile);
         String dataImageUrl = null;
 

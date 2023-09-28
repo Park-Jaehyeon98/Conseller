@@ -1,19 +1,20 @@
 package com.conseller.conseller.user.dto.request;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @ToString
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
-public class UserPartternRequest {
+public class UserPatternRequest {
 
-    @NoNull
+    @NotNull
     private Long userIdx;
 
     @NotBlank(message = "패턴을 입렫해야 합니다.")
-    private String pattern
-
+    private String pattern;
 }

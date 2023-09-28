@@ -11,6 +11,7 @@ import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
@@ -86,5 +87,7 @@ public interface UserService {
     public void getFirebaseToken(Long userIdx, FirebaseRequest request);
 
     //pattern 저장
-    public void patternRegister()
+    public void patternRegister(@Valid UserPatternRequest userPatternRequest);
+
+    public LoginResponse loginPattern(UserPatternRequest userPatternRequest);
 }

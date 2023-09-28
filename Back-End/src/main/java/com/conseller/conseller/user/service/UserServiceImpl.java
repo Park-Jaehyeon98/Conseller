@@ -6,6 +6,7 @@ import com.conseller.conseller.auction.auction.dto.response.DetailAuctionRespons
 import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDto;
+import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
@@ -318,15 +319,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BarterResponseDto> getUserBarters(long userIdx) {
+    public List<MyBarterResponseDto> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
-        List<BarterResponseDto> barterResponseDtos = new ArrayList<>();
+        List<MyBarterResponseDto> barterResponseDtos = new ArrayList<>();
 
         for (Barter barter : user.getBarters()) {
-            BarterResponseDto barterResponseDto = barter.toBarterResponseDto(barter);
-            barterResponseDtos.add(barterResponseDto);
+            MyBarterResponseDto.MyBarterResponseDtoBuilder barterResponseDto = MyBarterResponseDto.builder()
+                    .barterIdx(barter.getBarterIdx())
+                    .barterName(barter.getBarterName())
+                    .barterText(barter.getBarterText())
+                    .barterStatus(barter.getBarterStatus())
+                    .barterCreatedDate(DateTimeConverter.getInstance().convertString(barter.getBarterCreatedDate()))
+                    .barterEndDate(DateTimeConverter.getInstance().convertString(barter.getBarterEndDate()))
+                    .barterHostIdx(barter.getBarterHost().getUserIdx())
+                    .subCategory(String.valueOf(barter.getSubCategory().getSubCategoryIdx()));
+
+            List<GifticonResponse> gifticonResponses = barter.getBarterHostItemList().stream()
+                    .map(item -> item.getGifticon().toResponseDto())
+                    .collect(Collectors.toList());
+
+            barterResponseDto.barterHostItems(gifticonResponses);
+
+            if (barter.getBarterCompleteGuest() != null) {
+                barterResponseDto.barterCompleteGuestIdx(barter.getBarterCompleteGuest().getUserIdx());
+            }
+
+            barterResponseDtos.add(barterResponseDto.build());
         }
 
         return barterResponseDtos;

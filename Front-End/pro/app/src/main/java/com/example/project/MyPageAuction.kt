@@ -81,9 +81,12 @@ fun SelectAuction(){
                 fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        Row(modifier=Modifier.clickable(onClick = {})){
+            Text(
+                text = "거래 중",
+                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+            )
+        }
         Row(modifier=Modifier.clickable(onClick = {})){
             Text(
                 text = "내 입찰",

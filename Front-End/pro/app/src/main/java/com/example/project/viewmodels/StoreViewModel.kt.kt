@@ -323,7 +323,7 @@ class StoreViewModel @Inject constructor(
 data class StoreItemData(
     val storeIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
     val deposit: Boolean,

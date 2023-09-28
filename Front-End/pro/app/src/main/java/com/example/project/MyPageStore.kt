@@ -49,7 +49,7 @@ fun MypageStore(navController: NavHostController) {
         getMyStore?.forEach { item ->
             ShowMyStore(
                 image = item.gifticonDataImageName,
-                name = item.giftconName,
+                name = item.gifticonName,
                 gifticonTime = item.gifticonEndDate,
                 storeTime = item.storeEndDate,
                 isDeposit = item.isDeposit,
@@ -68,12 +68,24 @@ fun SelectStore(){
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         val commontextsize=18
         Row(modifier=Modifier.clickable(onClick = {})){
             Text(
                 text = "내 판매",
+                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+            )
+        }
+        Row(modifier=Modifier.clickable(onClick = {})){
+            Text(
+                text = "거래 중",
+                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+            )
+        }
+        Row(modifier=Modifier.clickable(onClick = {})){
+            Text(
+                text = "내 구매",
                 fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
             )
         }

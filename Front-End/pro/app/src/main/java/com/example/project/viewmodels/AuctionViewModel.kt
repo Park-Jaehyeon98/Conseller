@@ -139,7 +139,7 @@ class AuctionViewModel @Inject constructor(
 
     // 경매글 등록
     fun registerAuctionItem(upperLimit: Int, lowerLimit: Int, postContent: String, gifticonIdx: Long) {
-        val userIdx = sharedPreferencesUtil.getUserId()
+        val userIdx = getUserIdFromPreference()
 
         viewModelScope.launch {
             _isLoading.value = true
@@ -252,10 +252,12 @@ class AuctionViewModel @Inject constructor(
 
 
     // 경매 내 글 목록 불러오기
-    fun fetchMyAuctionItems(userIdx: Long) {
+    fun fetchMyAuctionItems() {
         viewModelScope.launch {
+            val userIdx = getUserIdFromPreference()
             _isLoading.value = true
             _error.value = null
+            Log.d("@@@@@@@@@@@@@@@2","${userIdx}")
             try {
                 val response = service.getMyAuctionItems(userIdx)
                 if (response.isSuccessful && response.body() != null) {

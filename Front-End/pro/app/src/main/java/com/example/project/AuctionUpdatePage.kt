@@ -55,11 +55,12 @@ import kotlinx.coroutines.delay
 @Composable
 fun AuctionUpdatePage(navController: NavHostController, index: String?) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
-    val auctionItems by auctionViewModel.auctionItems.collectAsState()   // 대분류 내용 들고오기
-    val auctionDetail by auctionViewModel.auctionDetail.collectAsState()   // text 내용 들고오기
-    val scrollState = rememberScrollState()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val auctionDetail by auctionViewModel.auctionDetail.collectAsState()
     val error by auctionViewModel.error.collectAsState()
+    val scrollState = rememberScrollState()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     // 상태값을 저장할 변수 추가
     var auctionText by remember { mutableStateOf(auctionDetail?.postContent ?: "") }
@@ -72,10 +73,11 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
     fun updateContent(newText: String) {
         auctionText = newText
     }
-
-    // 선택된 경매 상품 데이터 가져오기
-    val selectedAuctionItem = auctionItems?.find { it.auctionIdx == index?.toLong() }
-
+    LaunchedEffect(Unit) {
+        if (index != null) {
+            auctionViewModel.fetchAuctionDetail(index.toLong())
+        }
+    }
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true
@@ -112,7 +114,7 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
                     }
                 }
                 val imagePainter =
-                    rememberAsyncImagePainter(model = selectedAuctionItem?.gifticonDataImageName)
+                    rememberAsyncImagePainter(model = auctionDetail?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
                     contentDescription = null,
@@ -123,13 +125,13 @@ fun AuctionUpdatePage(navController: NavHostController, index: String?) {
 
             // 기존 상한가, 하한가 표시
             Text(
-                text = "상한가: ${selectedAuctionItem?.upperPrice}원",
+                text = "상한가: ${auctionDetail?.upperPrice}원",
                 modifier = Modifier.padding(8.dp),
                 color = Color.Gray,
                 fontSize = 18.sp
             )
             Text(
-                text = "하한가: ${selectedAuctionItem?.lowerPrice}원",
+                text = "하한가: ${auctionDetail?.lowerPrice}원",
                 modifier = Modifier.padding(8.dp),
                 color = Color.Gray,
                 fontSize = 18.sp

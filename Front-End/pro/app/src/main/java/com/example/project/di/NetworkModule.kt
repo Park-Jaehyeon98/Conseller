@@ -157,11 +157,6 @@ class ResponseInterceptor : Interceptor {
             return response
         }
 
-        Log.d("@@@@@@@@@@@@@@@@1","$response")
-        Log.d("@@@@@@@@@@@@@@@@2","${response.body}")
-        Log.d("@@@@@@@@@@@@@@@@3","${response.body?.string()}")
-        Log.d("@@@@@@@@@@@@@@@@4","${response.code}")
-        Log.d("@@@@@@@@@@@@@@@@5","${response.headers}")
         if (!response.isSuccessful) {
             when (response.code) {
                 400 -> throw CustomException("잘못된 요청입니다.")

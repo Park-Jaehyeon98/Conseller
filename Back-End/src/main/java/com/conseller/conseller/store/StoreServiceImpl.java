@@ -6,7 +6,6 @@ import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
-import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;

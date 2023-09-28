@@ -79,6 +79,13 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
 
+        List<BarterRequest> barterRequestList = barter.getBarterRequestList();
+        for(BarterRequest bq : barterRequestList) {
+            if(bq.getUser().getUserIdx() == barterRequestRegistDto.getUserIdx()) {
+                throw new RuntimeException("이미 교환 요청 보낸 글입니다.");
+            }
+        }
+
         User user = userRepository.findByUserIdx(barterRequestRegistDto.getUserIdx())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);

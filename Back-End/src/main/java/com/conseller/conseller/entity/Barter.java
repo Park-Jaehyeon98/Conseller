@@ -184,18 +184,6 @@ public class Barter {
 
     }
 
-    public BarterDetailResponseDTO toBarterDetailResponseDTO(Barter barter, List<GifticonResponse> barterGifticonList) {
-        return BarterDetailResponseDTO.builder()
-                .barterName(barter.getBarterName())
-                .barterText(barter.getBarterText())
-                .barterUserIdx(barter.getBarterHost().getUserIdx())
-                .barterUserProfileUrl(barter.getBarterHost().getUserProfileUrl())
-                .barterUserDeposit(barter.getBarterHost().getUserDeposit())
-                .barterUserNickname(barter.getBarterHost().getUserNickname())
-                .barterGifticonList(barterGifticonList)
-                .build();
-    }
-
     public BarterItemData toBarterItemData(Barter barter, Gifticon gifticon, Boolean deposit) {
         return BarterItemData.builder()
                 .barterIdx(barter.getBarterIdx())

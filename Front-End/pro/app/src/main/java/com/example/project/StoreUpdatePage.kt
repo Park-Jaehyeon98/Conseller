@@ -56,21 +56,25 @@ import kotlinx.coroutines.delay
 @Composable
 fun StoreUpdatePage(navController: NavHostController, index: String?) {
     val storeViewModel: StoreViewModel = hiltViewModel()
-    val storeItems by storeViewModel.storeItems.collectAsState()
     val storeDetail by storeViewModel.storeDetail.collectAsState()
     val error by storeViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val selectedStoreItem = storeItems?.find { storeItem -> storeItem.storeIdx == index?.toLong() }
-
     var postContent by remember { mutableStateOf(storeDetail?.postContent ?: "") }
-    var storePrice by remember { mutableStateOf(selectedStoreItem?.storePrice ?: 0) }
+    var storePrice by remember { mutableStateOf(storeDetail?.storePrice ?: 0) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showUpdateConfirmDialog by remember { mutableStateOf(false) }
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        if(index != null) {
+            storeViewModel.fetchStoreDetail(index.toLong())
+        }
+    }
 
     LaunchedEffect(error) {
         if (error != null) {
@@ -105,7 +109,7 @@ fun StoreUpdatePage(navController: NavHostController, index: String?) {
         ) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val imagePainter =
-                    rememberAsyncImagePainter(model = selectedStoreItem?.gifticonDataImageName)
+                    rememberAsyncImagePainter(model = storeDetail?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
                     contentDescription = null,

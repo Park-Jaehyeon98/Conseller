@@ -34,15 +34,9 @@ class MygifticonViewModel @Inject constructor(
 
     private var currentPage = 1
 
-    init {
-        val user_idx = sharedPreferencesUtil.getUserId().toLong()
-        getUserGifticons(user_idx, currentPage)
-    }
-
     fun changePage(page: Int) {
         currentPage = page
-        val user_idx = sharedPreferencesUtil.getUserId().toLong()
-        getUserGifticons(user_idx, currentPage)
+        getUserGifticons(currentPage)
     }
 
     // 물물교환 등록할때 이미지 불러오기용
@@ -51,10 +45,11 @@ class MygifticonViewModel @Inject constructor(
     }
 
     // 내 기프티콘 불러오기
-    fun getUserGifticons(user_idx: Long, page: Int) {
+    fun getUserGifticons(page:Int) {
         viewModelScope.launch {
+            val userIdx = sharedPreferencesUtil.getUserId()
             try {
-                val requestDTO = GifticonRequestDTO(user_idx, currentPage)
+                val requestDTO = GifticonRequestDTO(userIdx, page)
                 val response = myService.getGifticons(requestDTO)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
@@ -90,13 +85,13 @@ data class GifticonData(
 // 인터넷 미연결 샘플데이터
 private fun getSampleData(): List<GifticonData> {
     return listOf(
-        GifticonData(1,"https://via.placeholder.com/150", "Item1", "2일"),
-        GifticonData(2,"image2", "Item2", "3일"),
-        GifticonData(3,"image3", "Item3", "1일"),
-        GifticonData(4,"image4", "Item4", "4일"),
-        GifticonData(5,"image5", "Item5", "4일"),
-        GifticonData(6,"image6", "Item6", "4일"),
-        GifticonData(7,"image7", "Item7", "4일"),
-        GifticonData(8,"image8", "Item8", "5일"),
+        GifticonData(1,"https://via.placeholder.com/150", "Item1", "20240928172755"),
+        GifticonData(2,"image2", "Item2", "20240828172755"),
+        GifticonData(3,"image3", "Item3", "20240728172755"),
+        GifticonData(4,"image4", "Item4", "20240628172755"),
+        GifticonData(5,"image5", "Item5", "20240528172755"),
+        GifticonData(6,"image6", "Item6", "20240428172755"),
+        GifticonData(7,"image7", "Item7", "20240328172755"),
+        GifticonData(8,"image8", "Item8", "20240228172755"),
     )
 }

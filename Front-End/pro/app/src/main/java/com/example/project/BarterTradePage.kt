@@ -37,10 +37,8 @@ import kotlinx.coroutines.delay
 fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<Long>, index: String?) {
     val barterViewModel: BarterViewModel = hiltViewModel()
     val selectedItems = barterViewModel.getSelectedItems(selectedItemIndices) // 내가 고른사진
-    val barterItems by barterViewModel.barterItems.collectAsState() // 게시글 사진
+    val barterDetail by barterViewModel.barterDetail.collectAsState()   // 게시글 정보
     val error by barterViewModel.error.collectAsState()
-
-    val currentItem = barterItems.find { it.barterIdx.toString() == index } // 게시글 일치
 
     var showCancelDialog by remember { mutableStateOf(false) } // 취소 대화상자 표시 상태
     var showTradeProposalDialog by remember { mutableStateOf(false) } //거래신청 대화상자
@@ -48,6 +46,11 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
 
+    LaunchedEffect(key1 = index) {
+        index?.toLongOrNull()?.let {
+            barterViewModel.fetchBarterDetail(it)
+        }
+    }
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true
@@ -62,32 +65,35 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         if (showSnackbar) {
-            Snackbar(
-            ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Snackbar() {
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 )
             }
         }
+
         // 게시글의 이미지들을 보여주는 LazyRow
         LazyRow(
-            modifier = Modifier.fillMaxWidth().height(200.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(listOf(currentItem?.gifticonDataImageName).filterNotNull()) { imageUrl ->
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    val imagePainter =
-                        rememberAsyncImagePainter(model = currentItem?.gifticonDataImageName)
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
+            items(barterDetail?.barterImageList.orEmpty()) { item ->
+                val imagePainter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                Image(
+                    painter = imagePainter,
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp),
+                    contentScale = ContentScale.Crop
+                )
             }
         }
 

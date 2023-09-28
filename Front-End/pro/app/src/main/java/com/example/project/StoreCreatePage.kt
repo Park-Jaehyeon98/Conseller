@@ -31,6 +31,7 @@ fun StoreCreatePage(navController: NavHostController) {
     val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
     val error by mygifticonViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
+
     var currentPage by remember { mutableStateOf(1) }
     val itemsPerPage = 10
 
@@ -38,6 +39,10 @@ fun StoreCreatePage(navController: NavHostController) {
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        mygifticonViewModel.getUserGifticons(1)
+    }
 
     LaunchedEffect(error) {
         if (error != null) {

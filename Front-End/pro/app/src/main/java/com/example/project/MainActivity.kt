@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
         setContent {
             AppNavigation(sharedPreferencesUtil)
         }

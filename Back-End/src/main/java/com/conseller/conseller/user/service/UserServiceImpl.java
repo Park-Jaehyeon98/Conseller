@@ -246,31 +246,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<StoreResponse> getUserPurchaseStores(long userIdx) {
+    public List<StoreItemData> getUserPurchaseStores(long userIdx) {
         List<Store> userPurchaseStores = storeRepository.findStoresByConsumerIdx(userIdx);
-        List<StoreResponse> storeResponses = new ArrayList<>();
 
-        for (Store store : userPurchaseStores) {
-            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
-                    .storeIdx(store.getStoreIdx())
-                    .gifticonIdx(store.getGifticon().getGifticonIdx())
-                    .storePrice(store.getStorePrice())
-                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
-                    .storeText(store.getStoreText())
-                    .storeStatus(store.getStoreStatus());
-
-            if (store.getStoreEndDate() != null) {
-                response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
-            }
-
-            if (store.getConsumer() != null) {
-                response.consumerIdx(store.getConsumer().getUserIdx());
-            }
-
-            storeResponses.add(response.build());
-        }
-
-        return storeResponses;
+        return userPurchaseStores.stream()
+                .map(StoreMapper.INSTANCE::storeToItemData)
+                .collect(Collectors.toList());
     }
 
     @Override

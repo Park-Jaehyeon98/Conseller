@@ -191,9 +191,8 @@ public class UserController {
 
     //내 구매 보기
     @GetMapping("/{userIdx}/store/purchase")
-    public ResponseEntity<Item<List<StoreResponse>>> getUserPurchaseStores(@PathVariable long userIdx) {
-        List<StoreResponse> userStores = userService.getUserPurchaseStores(userIdx);
-        Item<List<StoreResponse>> response = new Item<>(userStores);
+    public ResponseEntity<Item<List<StoreItemData>>> getUserPurchaseStores(@PathVariable long userIdx) {
+        Item<List<StoreItemData>> response = new Item<>(userService.getUserPurchaseStores(userIdx));
         return ResponseEntity.ok()
                 .body(response);
     }

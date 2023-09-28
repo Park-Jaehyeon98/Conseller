@@ -4,15 +4,15 @@ import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
+import com.conseller.conseller.gifticon.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
-import com.conseller.conseller.store.dto.response.DetailStoreResponse;
-import com.conseller.conseller.store.dto.response.StoreItemData;
-import com.conseller.conseller.store.dto.response.StoreListResponse;
-import com.conseller.conseller.store.dto.response.StoreTradeResponse;
+import com.conseller.conseller.store.dto.response.*;
 import com.conseller.conseller.store.enums.StoreStatus;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.utils.DateTimeConverter;
@@ -54,12 +54,12 @@ public class StoreServiceImpl implements StoreService {
     public Long registStore(RegistStoreRequest request) {
 
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
-            return null;
+            throw new CustomException(CustomExceptionStatus.GIFTICON_NOT_KEEP);
         }else {
             Store store = StoreMapper.INSTANCE.registStoreRequestToStore(request, user, gifticon);
 
@@ -77,7 +77,7 @@ public class StoreServiceImpl implements StoreService {
     @Transactional(readOnly = true)
     public DetailStoreResponse detailStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
         DetailStoreResponse response = StoreMapper.INSTANCE.entityToDetailStoreResponse(store);
 
@@ -87,7 +87,7 @@ public class StoreServiceImpl implements StoreService {
     //스토어 글 수정
     public void modifyStore(Long storeIdx , ModifyStoreRequest storeRequest) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
         store.setStoreEndDate(DateTimeConverter.getInstance().convertLocalDateTime(storeRequest.getStoreEndDate()));
         store.setStoreText(storeRequest.getStoreText());
@@ -96,9 +96,9 @@ public class StoreServiceImpl implements StoreService {
     // 스토어 글 삭제
     public void deleteStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
         Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
-                        .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
+                        .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
 
@@ -109,9 +109,9 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreTradeResponse tradeStore(Long storeIdx, Long consumerIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
         User consumer = userRepository.findById(consumerIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         // 구매자의 인덱스를 저장
         store.setConsumer(consumer);
@@ -129,7 +129,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void cancelStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
         // 거래 상태를 진행중으로 변경
         store.setStoreStatus(StoreStatus.IN_PROGRESS.getStatus());
@@ -142,16 +142,28 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void confirmStore(Long storeIdx) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
         Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
-                .orElseThrow(() -> new RuntimeException("없는 기프티콘 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
         User user = userRepository.findById(store.getConsumer().getUserIdx())
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         store.setStoreStatus(StoreStatus.AWARDED.getStatus());
 
         gifticon.setUser(user);
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+    }
+
+    // 스토어 판매자 입금확인
+    @Override
+    public StoreConfirmResponse getConfirmStore(Long storeIdx) {
+        Store store = storeRepository.findById(storeIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
+
+
+
+
+        return null;
     }
 
 }

@@ -16,11 +16,11 @@ public class InquiryItemData {
 
     private Long inquiryIdx;
 
-    private String inquiryName;
+    private String inquiryTitle;
 
     private LocalDateTime inquiryCreatedDate;
 
     private String inquiryStatus;
 
-    private String inquiryType;
+    private Integer inquiryType;
 }

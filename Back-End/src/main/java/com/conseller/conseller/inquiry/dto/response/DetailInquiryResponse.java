@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class DetailInquiryResponse {
     private Long userIdx;
 
-    private String inquiryName;
+    private String inquiryTitle;
 
-    private String inquiryText;
+    private String inquiryContent;
 
     private String inquiryAnswer;
 
@@ -24,5 +24,5 @@ public class DetailInquiryResponse {
 
     private String inquiryStatus;
 
-    private String inquiryType;
+    private Integer inquiryType;
 }

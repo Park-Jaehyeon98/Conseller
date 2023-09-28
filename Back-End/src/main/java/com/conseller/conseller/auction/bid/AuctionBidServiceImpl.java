@@ -7,6 +7,8 @@ import com.conseller.conseller.auction.bid.dto.request.AuctionBidRequest;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.User;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +30,14 @@ public class AuctionBidServiceImpl implements AuctionBidService{
     @Override
     public void registAuctionBid(Long auctionIdx, AuctionBidRequest request) {
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
         if(auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS.getStatus())) {
 
             if (request.getAuctionBidPrice() < auction.getLowerPrice() || request.getAuctionBidPrice() > auction.getUpperPrice()) {
-                throw new RuntimeException("입찰금의 범위가 잘못되었습니다.");
+                throw new CustomException(CustomExceptionStatus.INVALID_BID_RANGE);
             }
 
             // 현재 최대 입찰금보다 지금 입찰한 금액이 더 크다면 최대 입찰금, 최대 금액 입찰한 유저 갱신
@@ -57,7 +59,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
 
             if (isExist) {
                 AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
-                        .orElseThrow(() -> new RuntimeException("없는 입찰 입니다."));
+                        .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
 
                 // 입찰 정보 수정
                 auctionBid.setAuctionBidPrice(request.getAuctionBidPrice());
@@ -70,7 +72,7 @@ public class AuctionBidServiceImpl implements AuctionBidService{
             }
         }
         else {
-            throw new RuntimeException("이미 거래 중인 경매입니다.");
+            throw new CustomException(CustomExceptionStatus.ALREADY_TRADE_AUCTION);
         }
 
     }
@@ -78,12 +80,12 @@ public class AuctionBidServiceImpl implements AuctionBidService{
     @Override
     public void deleteAuctionBid(Long auctionBidIdx) {
         AuctionBid auctionBid = auctionBidRepository.findById(auctionBidIdx)
-                        .orElseThrow(() -> new RuntimeException("없는 입찰 입니다."));
+                        .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
 
         // 삭제하려고 하는 입찰자가 최대 금액 입찰자라면 
         if(auctionBid.getAuction().getAuctionHighestBid().equals(auctionBid.getAuctionBidPrice())) {
             Auction auction = auctionRepository.findById(auctionBid.getAuction().getAuctionIdx())
-                    .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
+                    .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
             // 입찰 목록을 입찰 금액에 내림차순으로 정렬해서 가져옴-
             List<AuctionBid> auctionBidList = auctionBidRepository

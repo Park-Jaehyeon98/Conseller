@@ -4,6 +4,8 @@ import com.conseller.conseller.auction.auction.AuctionRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
 import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
@@ -37,7 +39,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
         User user = null;
         String contents = null;
@@ -57,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService{
 
             contents = user.getUserNickname() + " " + body;
         } else {
-            throw new RuntimeException("적합하지 않은 타입입니다.");
+            throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }
 
 
@@ -100,7 +102,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
         User user = null;
         String contents = null;
@@ -119,6 +121,8 @@ public class NotificationServiceImpl implements NotificationService{
             user = store.getUser();
 
             contents = user.getUserNickname() + " " + body;
+        } else {
+            throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }
 
 
@@ -209,7 +213,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type) {
         User user = userRepository.findById(userIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         if(user.getFcm() == null)
             return;
@@ -256,7 +260,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void sendNotification(Long userIdx, String title, String body) {
-        User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException());
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         Notification notification = Notification.builder()
                 .setTitle(title)

@@ -20,7 +20,7 @@ public class DetailAuctionResponse {
 
     private String auctionUserProfileUrl;
 
-    private Integer auctionUserDeposit;
+    private Long auctionUserDeposit;
 
     private List<AuctionBidItemData> auctionBidList;
 

@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.badRequest()
-                .body(exception.getMessage());
+                .body(commonResponse);
     }
 
     @ExceptionHandler(CustomException.class)

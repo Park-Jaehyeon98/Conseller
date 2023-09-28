@@ -4,6 +4,7 @@ import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.DetailStoreResponse;
+import com.conseller.conseller.store.dto.response.StoreConfirmResponse;
 import com.conseller.conseller.store.dto.response.StoreListResponse;
 import com.conseller.conseller.store.dto.response.StoreTradeResponse;
 
@@ -23,5 +24,7 @@ public interface StoreService {
     public void cancelStore(Long storeIdx);
 
     public void confirmStore(Long storeIdx);
+
+    public StoreConfirmResponse getConfirmStore(Long storeIdx);
 
 }

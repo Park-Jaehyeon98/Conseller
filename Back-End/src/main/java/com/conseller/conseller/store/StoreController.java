@@ -4,10 +4,7 @@ import com.conseller.conseller.notification.NotificationService;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
 import com.conseller.conseller.store.dto.request.StoreListRequest;
-import com.conseller.conseller.store.dto.response.DetailStoreResponse;
-import com.conseller.conseller.store.dto.response.RegistStoreResponse;
-import com.conseller.conseller.store.dto.response.StoreListResponse;
-import com.conseller.conseller.store.dto.response.StoreTradeResponse;
+import com.conseller.conseller.store.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -117,5 +114,13 @@ public class StoreController {
                 .build();
     }
 
+    // 스토어 판매자 입금확인
+    @GetMapping("/confirm/{store_idx}")
+    public ResponseEntity<StoreConfirmResponse> getConfirmStore(@PathVariable("store_idx") Long storeIdx) {
+        StoreConfirmResponse response = null;
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
 
 }

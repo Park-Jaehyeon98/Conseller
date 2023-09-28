@@ -1,11 +1,13 @@
 package com.conseller.conseller.notification;
 
 import com.conseller.conseller.auction.auction.AuctionRepository;
-import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.notification.dto.mapper.NotificationMapper;
+import com.conseller.conseller.notification.dto.request.NotificationAnswerRequest;
 import com.conseller.conseller.notification.dto.response.NotificationItemData;
 import com.conseller.conseller.notification.dto.response.NotificationListResponse;
 import com.conseller.conseller.store.StoreRepository;
@@ -32,13 +34,12 @@ public class NotificationServiceImpl implements NotificationService{
     private final NotificationRepository notificationRepository;
     private final DateTimeConverter dateTimeConverter;
     private final UserRepository userRepository;
-    private final BarterRepository barterRepository;
     private final BarterRequestRepository barterRequestRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
         Auction auction = auctionRepository.findById(auctionIdx)
-                .orElseThrow(() -> new RuntimeException("없는 경매 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
         User user = null;
         String contents = null;
@@ -58,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService{
 
             contents = user.getUserNickname() + " " + body;
         } else {
-            throw new RuntimeException("적합하지 않은 타입입니다.");
+            throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }
 
 
@@ -101,7 +102,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type) {
         Store store = storeRepository.findById(storeIdx)
-                .orElseThrow(() -> new RuntimeException("없는 스토어 글 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
         User user = null;
         String contents = null;
@@ -120,6 +121,8 @@ public class NotificationServiceImpl implements NotificationService{
             user = store.getUser();
 
             contents = user.getUserNickname() + " " + body;
+        } else {
+            throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }
 
 
@@ -208,14 +211,57 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendGifticonNotification(Long gifticonIdx, String title, String body, Integer type) {
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type) {
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
+        if(user.getFcm() == null)
+            return;
+
+        String title = "기프티콘 알림";
+        String body = " ";
+
+        if(gifticonCount == 1){
+            body = gifticionName + " 기프티콘 유효기간이 " + remainDay + "일 남았습니다.";
+        }else {
+            body = gifticionName + " 외 " + (gifticonCount - 1) + "개의 기프티콘 유효기간이 " + remainDay + "일 남았습니다.";
+        }
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(body);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(false);
+            notificationEntity.setUser(user);
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(user.getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
     }
 
 
     @Override
     public void sendNotification(Long userIdx, String title, String body) {
-        User user = userRepository.findById(userIdx).orElseThrow(() -> new RuntimeException());
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         Notification notification = Notification.builder()
                 .setTitle(title)
@@ -251,6 +297,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public NotificationListResponse getNotificationList(Long userIdx) {
         List<NotificationEntity> notificationEntityList = notificationRepository.findByUser_UserIdx(userIdx);
 
@@ -259,6 +306,17 @@ public class NotificationServiceImpl implements NotificationService{
         NotificationListResponse response = new NotificationListResponse(notificationItemDataList);
 
         return response;
+    }
+
+    @Override
+    public void getAnswer(Long userIdx, NotificationAnswerRequest request) {
+        NotificationEntity notification = notificationRepository.findById(request.getNotificationIdx())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 알림입니다."));
+
+        notification.setNotificationType(6);
+        
+        //알림 로직
+
     }
 
 

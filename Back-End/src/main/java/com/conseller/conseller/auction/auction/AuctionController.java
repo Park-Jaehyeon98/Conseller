@@ -67,12 +67,13 @@ public class AuctionController {
     }
 
     // 경매 거래 진행
-    // 없어도 될듯
-    @GetMapping("/trade/{auction_idx}")
-    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestParam(name = "im") Integer index ) {
-        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, index);
+    @GetMapping("/trade/{auction_idx}/{user_idx}")
+    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @PathVariable("user_idx") Long userIdx) {
+        log.info(auctionIdx+" "+userIdx);
+        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, userIdx);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", index, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 2, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 1, 1);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -82,11 +83,12 @@ public class AuctionController {
     // 없어도 될듯
     @PatchMapping("/cancel/{auction_idx}")
     public ResponseEntity<Object> cancelAuction(@PathVariable("auction_idx") Long auctionIdx) {
-        auctionService.cancelAuction(auctionIdx);
 
         // 거래 취소 알림
         notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "님과의 거래가 취소되었습니다", 1, 1);
         notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "님과의 거래가 취소되었습니다", 2, 1);
+
+        auctionService.cancelAuction(auctionIdx);
 
         return ResponseEntity.ok()
                 .build();
@@ -112,12 +114,11 @@ public class AuctionController {
             notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 완료", "님과의 거래가 완료되었습니다.", 1, 1);
         }
         else {
-            auctionService.cancelAuction(request.getAuctionIdx());
-
             // 거래 취소 알림
             notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 취소", "님과의 거래가 취소되었습니다", 1, 1);
             notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 취소", "님과의 거래가 취소되었습니다", 2, 1);
 
+            auctionService.cancelAuction(request.getAuctionIdx());
         }
 
         return ResponseEntity.ok()

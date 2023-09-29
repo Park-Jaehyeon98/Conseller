@@ -31,6 +31,9 @@ public class Store {
     @Column(name = "store_end_date")
     private LocalDateTime storeEndDate;
 
+    @Column(name = "notification_created_date")
+    private LocalDateTime notificationCreatedDate;
+
     @Column(name = "store_text")
     private String storeText;
 

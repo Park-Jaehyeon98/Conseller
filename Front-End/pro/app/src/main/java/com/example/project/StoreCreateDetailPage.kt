@@ -18,12 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -52,16 +48,14 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.MygifticonViewModel
 import com.example.project.viewmodels.StoreViewModel
 import formattedNumber
-import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: String?) {
-    val myGifticonViewModel: MygifticonViewModel = hiltViewModel()
+fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: String?, mygifticonViewModel: MygifticonViewModel) {
     val storeViewModel: StoreViewModel = hiltViewModel()
-    val myerror by myGifticonViewModel.error.collectAsState()
+    val myerror by mygifticonViewModel.error.collectAsState()
     val error by storeViewModel.error.collectAsState()
-    val gifticonItems by myGifticonViewModel.gifticonItems.collectAsState()
+    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
     val navigateToIdx by storeViewModel.navigateToStoreDetail.collectAsState()
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -86,6 +80,12 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
         if (myerror != null) {
             showSnackbar = true
             snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(navigateToIdx) {
+        navigateToIdx?.let { storeIdx ->
+            navController.navigate("StoreDetailPage/${storeIdx}")
+            storeViewModel.resetNavigation()
         }
     }
     LaunchedEffect(showSnackbar) {
@@ -124,7 +124,7 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
 
             selectedGifticon?.let {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonAllImagName)
+                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonImageName)
                     Image(
                         painter = imagePainter,
                         contentDescription = null,
@@ -210,13 +210,6 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
-
-            LaunchedEffect(navigateToIdx) {
-                navigateToIdx?.let { storeIdx ->
-                    navController.navigate("StoreDetailPage/${storeIdx}")
-                    storeViewModel.resetNavigation()
-                }
-            }
         }
 
         // 등록 확인 대화상자

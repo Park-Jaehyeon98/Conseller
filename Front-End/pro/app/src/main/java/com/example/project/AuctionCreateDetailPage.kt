@@ -2,15 +2,34 @@ package com.example.project
 
 import SelectButton
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -29,17 +48,15 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.MygifticonViewModel
 import formattedNumber
-import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex: String?) {
-    val myGifticonViewModel: MygifticonViewModel = hiltViewModel()
+fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex: String?, mygifticonViewModel: MygifticonViewModel) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
-    val gifticonItems by myGifticonViewModel.gifticonItems.collectAsState()
+    val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState()
     val navigateToIdx by auctionViewModel.navigateToAuctionDetail.collectAsState() // 등록시 idx받기
     val error by auctionViewModel.error.collectAsState()
-    val myerror by myGifticonViewModel.error.collectAsState()
+    val myerror by mygifticonViewModel.error.collectAsState()
 
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -65,6 +82,12 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
         if (myerror != null) {
             showSnackbar = true
             snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(navigateToIdx) {
+        navigateToIdx?.let { auctionIdx ->
+            auctionViewModel.resetNavigation()
+            navController.navigate("AuctionDetailPage/${auctionIdx}")
         }
     }
     LaunchedEffect(showSnackbar) {
@@ -102,7 +125,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
 
             selectedGifticon?.let {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonAllImagName)
+                    val imagePainter = rememberAsyncImagePainter(model = it.gifticonImageName)
                     Image(
                         painter = imagePainter,
                         contentDescription = null,
@@ -129,6 +152,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         } else {
                             upperPrice = 1_000_000_000
                         }
+                    }
+                    if (upperPrice <= lowerPrice) {
+                        upperPrice = lowerPrice + 1
+                        showSnackbar = true
+                        snackbarText = "상한가는 하한가보다 높아야 합니다."
                     }
                 },
                 modifier = Modifier
@@ -166,6 +194,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         } else {
                             lowerPrice = 1_000_000_000
                         }
+                    }
+                    if (lowerPrice >= upperPrice) {
+                        lowerPrice = upperPrice - 1
+                        showSnackbar = true
+                        snackbarText = "하한가는 상한가보다 낮아야 합니다."
                     }
                 },
                 modifier = Modifier
@@ -225,13 +258,6 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
-
-            LaunchedEffect(navigateToIdx) {
-                navigateToIdx?.let { auctionIdx ->
-                    navController.navigate("AuctionDetailPage/${auctionIdx}")
-                    auctionViewModel.resetNavigation()
-                }
-            }
         }
 
         // 등록 확인 대화상자
@@ -265,9 +291,6 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                                 postContent,
                                 selectedIndex
                             )
-                            if(error == null){
-                                navController.navigate("AuctionPage")
-                            }
                             showRegisterConfirmDialog = false
                         }
                     )

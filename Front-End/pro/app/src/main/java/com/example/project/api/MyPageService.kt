@@ -19,7 +19,6 @@ interface MyPageService {
     suspend fun getUserGifticoninfo(
         @Path("gifticonIdx") gifticonIdx: Long,
     ): Response<myGifticon>
-    // 기프티콘 전체 보기
 
     // 기프티콘 삭제(사용완료)
     @DELETE("api/gifticon/{gifticonIdx}")

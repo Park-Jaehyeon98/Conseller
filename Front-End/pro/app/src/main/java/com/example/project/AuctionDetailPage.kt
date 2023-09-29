@@ -51,17 +51,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
-import com.example.project.viewmodels.MyAuctionViewModel
+import com.example.project.viewmodels.MyPageViewModel
+import formattedNumber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuctionDetailPage(navController: NavHostController, index: String?) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
-    val myAuctionViewModel: MyAuctionViewModel = hiltViewModel()
+    val myPageViewModel: MyPageViewModel = hiltViewModel()
     val auctionDetail by auctionViewModel.auctionDetail.collectAsState()   // 글 상세보기했을때 들고온 정보
+    val getMyAuctionBidResponse by myPageViewModel.getMyAuctionBidResponse.collectAsState() // 내 경매 정보
     val scrollState = rememberScrollState()
-    val myAuctions by myAuctionViewModel.myAuctions.collectAsState()
-    val currentBidResponse by auctionViewModel.error.collectAsState() // 에러메시지
+
     val userIdFromPreference = auctionViewModel.getUserIdFromPreference()
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
@@ -74,19 +75,19 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
 
     val error by auctionViewModel.error.collectAsState()
-    val myerror by myAuctionViewModel.error.collectAsState()
+    val myerror by myPageViewModel.error.collectAsState()
 
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
 
     // myAuctions의 index값이 들고온 값이랑 같은것들을 세팅
-    val matchingAuction = myAuctions.find { it.auctionIdx == index?.toLongOrNull() }
+    val matchingAuction = getMyAuctionBidResponse.find { it.auctionIdx == index?.toLongOrNull() }
 
-    // 입찰가 상위 3개
+    // 입찰가 상위 3개matchingAuction
     val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
     val top3Bids = sortedBids?.take(3)
-    val topBids = auctionDetail?.auctionBidList?.getOrNull(0) ?: "Default Value or Fallback Object"
+    val topBids = sortedBids?.getOrNull(0)?.auctionBidPrice ?: "Default Value or Fallback Object"
 
     LaunchedEffect(index) {
         index?.toLongOrNull()?.let {
@@ -94,7 +95,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
         }
     }
     LaunchedEffect(Unit) {
-        myAuctionViewModel.fetchMyAuctions()
+        myPageViewModel.getMyAuctionBid()
     }
     LaunchedEffect(error) {
         if (error != null) {
@@ -127,6 +128,13 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
+            if (showSnackbar) {
+                Snackbar(
+                ) {
+                    Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
 
 
             auctionDetail?.let {
@@ -136,21 +144,6 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
                         .padding(8.dp)
                 ) {
-                    if (showSnackbar) {
-                        Snackbar(
-                            modifier = Modifier.align(Alignment.TopCenter)
-                        ) {
-                            Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                            )
-                        }
-                    }
-                    if (currentBidResponse == null) {
-                        snackbarText = "입찰이 성공적으로 완료되었습니다!"
-                        showSnackbar = true
-                    } else if (currentBidResponse != null) {
-                        snackbarText = "입찰에 문제가 발생했습니다."
-                        showSnackbar = true
-                    }
                     Column {
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -165,7 +158,16 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                             )
                         }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "${auctionDetail?.gifticonName}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -199,7 +201,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            "상한가 : ${it.upperPrice}",
+                            "상한가 : ${formattedNumber(it.upperPrice.toString())} 원",
                             modifier = Modifier.weight(1f),
                             fontSize = 18.sp
                         )
@@ -211,7 +213,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            "하한가 : ${it.lowerPrice}",
+                            "하한가 : ${formattedNumber(it.lowerPrice.toString())} 원",
                             modifier = Modifier.weight(1f),
                             fontSize = 18.sp
                         )
@@ -229,7 +231,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
             Column {
                 top3Bids?.forEachIndexed { index, bid ->
-                    Text("입찰가 ${index + 1}순위 : ${bid.auctionBidPrice}", fontSize = 18.sp)
+                    Text("입찰가 ${index + 1}순위 : ${formattedNumber(bid.auctionBidPrice.toString())} 원", fontSize = 18.sp)
                 }
             }
 
@@ -243,7 +245,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
             Spacer(modifier = Modifier.height(16.dp)) // 버튼들 사이의 간격 조절
 
-            if (selectedItemIndex != auctionDetail?.auctionUserIdx && false /*개발용*/) {
+            if (selectedItemIndex != auctionDetail?.auctionUserIdx) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -271,10 +273,14 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    SelectButton(
-                        text = "낙찰하기",
-                        onClick = { showConfirmDropDialog = true }
-                    )
+                    if (sortedBids.isNullOrEmpty()) {
+                        Text(text = "현재 등록된 입찰이 없습니다", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    } else {
+                        SelectButton(
+                            text = "낙찰하기",
+                            onClick = { showConfirmDropDialog = true }
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp)) // 낙찰하기와 수정하기 사이의 간격 조절
@@ -353,7 +359,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         Text(text = "입찰 확인")
                     },
                     text = {
-                        Text("${bidPrice}원 으로 입찰하시겠습니까?")
+                        Text("${formattedNumber(bidPrice)}원 으로 입찰하시겠습니까?")
                     },
                     dismissButton = {
                         SelectButton(

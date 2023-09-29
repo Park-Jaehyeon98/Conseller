@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.GifticonRequestDTO
@@ -7,6 +8,7 @@ import com.example.project.api.MyService
 import com.example.project.api.OcrService
 import com.example.project.api.UploadGifticonResponse
 import com.example.project.api.uploadImageResponse
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,15 +24,24 @@ class MygifticonViewModel @Inject constructor(
     private val myService: MyService, private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
+    // 기프티콘 전체목록 불러오기
     private val _gifticonItems = MutableStateFlow<List<GifticonData>>(emptyList())
     val gifticonItems: StateFlow<List<GifticonData>> get() = _gifticonItems
 
+    // 기프티콘 페이지
+    private val _totalItems = MutableStateFlow<Int>(0)
+    val totalItems: StateFlow<Int> = _totalItems
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    // 기프티콘 등록할때 선택용 저장소
+    private val _selectedItemIndices = MutableStateFlow(listOf<Long>())
+    val selectedItemIndices: StateFlow<List<Long>> get() = _selectedItemIndices
+
 
     private var currentPage = 1
 
@@ -49,27 +60,31 @@ class MygifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val userIdx = sharedPreferencesUtil.getUserId()
             try {
-                val requestDTO = GifticonRequestDTO(userIdx, page)
-                val response = myService.getGifticons(requestDTO)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        _gifticonItems.value = responseBody.items
-                    } else {
-                        _error.value = "No data received"
-                    }
-                } else {
-                    _error.value = "Network Error: ${response.code()}"
-                    // 실패시 예시 데이터 추가
-                    _gifticonItems.value = getSampleData()
+                val response = myService.getGifticons(GifticonRequestDTO(userIdx, page))
+
+                if (response.isSuccessful&&response.body() != null) {
+                    _gifticonItems.value = response.body()!!.items
+                    _totalItems.value = response.body()!!.totalPages
                 }
+            } catch (e: CustomException) {
+                _error.value = e.message
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
-                // 예외 발생 시 예시 데이터 추가
                 _gifticonItems.value = getSampleData()
             }
         }
     }
+    // 기프티콘 선택하기
+    fun toggleSelection(itemId: Long) {
+        if (selectedItemIndices.value.contains(itemId)) {
+            _selectedItemIndices.value = selectedItemIndices.value - itemId
+        } else {
+            if (selectedItemIndices.value.size < 5) {
+                _selectedItemIndices.value = selectedItemIndices.value + itemId
+            }
+        }
+    }
+
 
 }
 
@@ -77,8 +92,8 @@ class MygifticonViewModel @Inject constructor(
 // API response를 위한 데이터 클래스
 data class GifticonData(
     val gifticonIdx: Long,
-    val gifticonAllImagName: String,
-    val giftconName: String,
+    val gifticonImageName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
 )
 

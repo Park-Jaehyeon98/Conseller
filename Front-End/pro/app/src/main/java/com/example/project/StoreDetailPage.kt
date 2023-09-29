@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.StoreViewModel
+import formattedNumber
 
 @Composable
 fun StoreDetailPage(navController: NavHostController, index: String?) {
@@ -148,7 +149,7 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start
                         ) {
-                            Text("판매가 : ${it.storePrice} 원", fontSize = 18.sp)
+                            Text("판매가 : ${formattedNumber(it.storePrice.toString())} 원", fontSize = 18.sp)
                         }
                     }
                 }
@@ -162,7 +163,7 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    if (selectedItemIndex != storeDetail?.storeUserIdx && true/*개발용*/) {
+                    if (selectedItemIndex != storeDetail?.storeUserIdx) {
                         SelectButton(
                             text = "구매하기",
                             onClick = { navController.navigate("StoreTradePage/${storeDetail?.storeIdx}") }

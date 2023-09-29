@@ -4,7 +4,6 @@ import FilterButton
 import FormattedDateText
 import PaginationControls
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -29,8 +29,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,30 +41,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.example.project.api.AuctionFilterDTO
+import com.example.project.reuse_component.convertNameToNum
 import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.AuctionViewModel
-import convertNameToNum
+import formattedNumber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AuctionPage(navController: NavHostController) {
     val auctionViewModel: AuctionViewModel = hiltViewModel()
     val auctionItems by auctionViewModel.auctionItems.collectAsState()
+    val totalItems by auctionViewModel.totalItems.collectAsState()
     val error by auctionViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -258,10 +257,7 @@ fun AuctionPage(navController: NavHostController) {
                     nowprice = item.auctionHighestBid,
                     onItemClick = {
                         navController.navigate("AuctionDetailPage/${item.auctionIdx}")
-                        Log.d("AuctionPage", "auctionIdx: ${item.auctionIdx}")
-
                     }
-
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -269,7 +265,7 @@ fun AuctionPage(navController: NavHostController) {
 
             // 페이지네이션 컨트롤
             PaginationControls(
-                totalItems = auctionItems.size,
+                totalItems = totalItems,
                 currentPage = currentPage,
                 itemsPerPage = itemsPerPage
             ) { newPage ->
@@ -308,15 +304,17 @@ fun AuctionItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
-            .background(Color.White)
-            .padding(8.dp)
+            .height(360.dp)
+            .padding(2.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
             .clickable { onItemClick() }
+            .padding(8.dp)
     ) {
         // 65% 이미지
         Box(
             modifier = Modifier
-                .weight(0.65f)
+                .weight(0.7f)
                 .fillMaxWidth()
                 .background(Color.Gray),
             contentAlignment = Alignment.Center
@@ -326,21 +324,25 @@ fun AuctionItem(
                 model = image,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
         }
 
         // 10% 이름 및 유효기간
         Row(
             modifier = Modifier
-                .weight(0.1f)
+                .weight(0.18f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            FormattedDateText(gifticonTime,"유효기간")
+            Column (
+                modifier = Modifier.weight(1f)
+            ){
+                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                FormattedDateText(gifticonTime,"유효기간")
+            }
         }
 
         // 구분 줄
@@ -351,7 +353,7 @@ fun AuctionItem(
         // 15% 박스1
         Box(
             modifier = Modifier
-                .weight(0.2f)
+                .weight(0.18f)
                 .padding(horizontal = 12.dp)
         ) {
             Row(
@@ -372,10 +374,10 @@ fun AuctionItem(
                     horizontalAlignment = Alignment.End
                 ) {
                     // 30% 즉시구매가
-                    Text("즉시구매가 : $upperprice 원", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("즉시구매가 : ${formattedNumber(upperprice.toString())} 원", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
 
                     // 70% 현재입찰가
-                    Text("현재입찰가 : $nowprice 원", modifier = Modifier.weight(0.6f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("현재입찰가 : ${formattedNumber(nowprice.toString())} 원", modifier = Modifier.weight(0.6f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }
@@ -385,7 +387,7 @@ fun AuctionItem(
             gifticonTime = auctionTime,
             prefix = "마감일",
             modifier = Modifier
-                .weight(0.1f)
+                .weight(0.08f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         )

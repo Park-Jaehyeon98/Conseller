@@ -138,7 +138,7 @@ public class BarterServiceImpl implements BarterService{
 
 
         String date = barterCreateDto.getBarterEndDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime endDate = LocalDateTime.parse(date, formatter);
 
         Barter barter = BarterMapper.INSTANCE.registBarterCreateToBarter(barterCreateDto, user, endDate, subCategory, preferSubCategory);

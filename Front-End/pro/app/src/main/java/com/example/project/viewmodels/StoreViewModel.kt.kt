@@ -44,8 +44,13 @@ class StoreViewModel @Inject constructor(
     private val _myStoreItems = MutableStateFlow<List<StoreItemData>>(emptyList())
     val myStoreItems: StateFlow<List<StoreItemData>> = _myStoreItems
 
+    // 스토어 등록후 barterIdx 받기
     private val _navigateToStoreDetail = MutableStateFlow<Long?>(null)
     val navigateToStoreDetail: StateFlow<Long?> = _navigateToStoreDetail
+
+    // 스토어 수정후 네비게이션 받기
+    private val _updateStoreNavi = MutableStateFlow<Boolean?>(false)
+    val updateStoreNavi: StateFlow<Boolean?> = _updateStoreNavi
 
     // 스토어 거래 진행 계좌번호 받기
     private val _storeTrade = MutableStateFlow<StoreTradeResponseDTO?>(null)
@@ -65,6 +70,7 @@ class StoreViewModel @Inject constructor(
 
     fun resetNavigation() {
         _navigateToStoreDetail.value = null
+        _updateStoreNavi.value = false
     }
 
     fun changePage(page: Int) {
@@ -109,6 +115,7 @@ class StoreViewModel @Inject constructor(
         }
     }
 
+    // 스토어 등록
     fun registerStoreItem(storePrice: Int, storeText: String, gifticonIdx: Long) {
         val userIdx = sharedPreferencesUtil.getUserId()
 
@@ -131,16 +138,17 @@ class StoreViewModel @Inject constructor(
         }
     }
 
-    fun updateStoreItem(storeIdx: Long, endDate: String, storeText: String) {
+    // 스토어 수정
+    fun updateStoreItem(storeIdx: Long, storePrice: Int, storeText: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val updateData = UpdateStoreDTO(endDate, storeText)
+                val updateData = UpdateStoreDTO(storePrice,storeText)
                 val response = service.updateStoreItem(storeIdx, updateData)
 
                 if (response.isSuccessful) {
-                    fetchStoreDetail(storeIdx)
+                    _updateStoreNavi.value = true
                     _error.value = null
                 }
             } catch (e: CustomException) {
@@ -217,10 +225,11 @@ class StoreViewModel @Inject constructor(
     // 스토어 거래 진행
     fun fetchAccountDetails(storeIdx: Long) {
         viewModelScope.launch {
+            val userIdx = sharedPreferencesUtil.getUserId()
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.getStoreTrade(storeIdx)
+                val response = service.getStoreTrade(storeIdx,userIdx)
                 if (response.isSuccessful) {
                     _storeTrade.value = response.body()
                 }

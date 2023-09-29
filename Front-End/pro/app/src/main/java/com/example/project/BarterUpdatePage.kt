@@ -21,12 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -57,6 +52,7 @@ import com.example.project.viewmodels.BarterViewModel
 fun BarterUpdatePage(index: String?, navController: NavHostController) {
     val barterViewModel: BarterViewModel = hiltViewModel()
     val barterDetail by barterViewModel.barterDetail.collectAsState() // 게시글 사진
+    val updateBarterNavi by barterViewModel.updateBarterNavi.collectAsState() // 등록시 네비
     val error by barterViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -74,6 +70,12 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
         if (error != null) {
             showSnackbar = true
             snackbarText = error!!
+        }
+    }
+    LaunchedEffect(updateBarterNavi) {
+        if (updateBarterNavi == true) {
+            barterViewModel.resetNavigation()
+            navController.navigate("BarterDetailPage/${index?.toInt()}")
         }
     }
     LaunchedEffect(showSnackbar) {
@@ -218,11 +220,8 @@ fun BarterUpdatePage(index: String?, navController: NavHostController) {
                         filter2Selected,
                         postTitle,
                         postContent,
-                        "123"
+                        "11111111111111" // 추후 수정
                     )
-                    if(error == null) {
-                        navController.navigate("BarterDetailPage/${index}")
-                    }
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)

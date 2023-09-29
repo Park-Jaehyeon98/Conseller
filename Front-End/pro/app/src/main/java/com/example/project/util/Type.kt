@@ -7,9 +7,15 @@ import androidx.compose.ui.unit.sp
 import java.text.DecimalFormat
 
 @Composable
-fun FormattedDateText(dateString: String, modifier: Modifier = Modifier, fontSize: TextUnit = 14.sp, fontWeight: FontWeight = FontWeight.Normal) {
-        val formattedDate = formatToYearMonthDay(dateString)
-        Text("유효기간 : $formattedDate", modifier = modifier, fontSize = fontSize, fontWeight = fontWeight)
+fun FormattedDateText(gifticonTime: String, prefix: String, modifier: Modifier = Modifier) {
+        val year = gifticonTime.substring(0, 4).takeLast(2)   // YYYY
+        val month = gifticonTime.substring(4, 6)              // MM
+        val day = gifticonTime.substring(6, 8)                // DD
+        val hour = gifticonTime.substring(8, 10)              // HH
+        val minute = gifticonTime.substring(10, 12)           // MM
+
+        val formattedTime = "${year}년 ${month}월 ${day}일"
+        Text("$prefix : $formattedTime", modifier = modifier, fontWeight = FontWeight.Bold, fontSize = 16.sp)
 }
 
 @Composable

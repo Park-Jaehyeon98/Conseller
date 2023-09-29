@@ -202,13 +202,26 @@ data class myBarterItems(
 )
 data class myBarterData(
     val barterIdx: Long,
-    val gifticonDataImageName: String,
-    val giftconName: String,
-    val gifticonEndDate: String,
-    val barterEndDate: String,
-    val isDeposit: Boolean,
-    val preper: String,
     val barterName: String,
+    val barterText: String,
+    val barterCreatedDate: String,
+    val barterEndDate: String,
+    val barterStatus: String,
+    val subCategory: String,
+    val preferSubCategory: String?,
+    val barterHostIdx: Int,
+    val barterCompleteGuestIdx: Int?,
+    val barterHostItems: List<BarterHostItem>
+)
+
+data class BarterHostItem(
+    val gifticonIdx: Long,
+    val gifticonBarcode: String,
+    val gifticonName: String,
+    val gifticonStartDate: String,
+    val gifticonEndDate: String,
+    val gifticonAllImageUrl: String,
+    val gifticonDataImageUrl: String
 )
 
 data class myBarterRequestItems(

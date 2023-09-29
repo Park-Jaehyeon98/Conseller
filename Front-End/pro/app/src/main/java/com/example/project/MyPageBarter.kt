@@ -49,12 +49,12 @@ fun MypageBarter(navController: NavHostController) {
         Divider(color = Color.Gray, thickness = 1.dp)
         getMyBarter.forEach { item ->
             ShowMyBarter(
-                image = item.gifticonDataImageName,
-                name = item.giftconName,
-                gifticonTime = item.gifticonEndDate,
+                image = item.barterHostItems[0].gifticonDataImageUrl,
+                name = item.barterHostItems[0].gifticonName,
+                gifticonTime = item.barterHostItems[0].gifticonEndDate,
                 barterTime = item.barterEndDate,
-                isDeposit = item.isDeposit,
-                preper = item.preper,
+                isDeposit = false,
+                preper = item.preferSubCategory?:"선호없음",
                 title = item.barterName,
                 onItemClick = {
                     navController.navigate("BarterDetailPage/${item.barterIdx}")

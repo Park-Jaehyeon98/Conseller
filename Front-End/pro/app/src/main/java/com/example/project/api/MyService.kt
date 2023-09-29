@@ -1,26 +1,17 @@
 package com.example.project.api
 
 import com.example.project.viewmodels.GifticonData
-import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
-import java.io.File
-import java.util.Base64
 
 interface MyService {
 
-    // 기프티콘 불러오는 API
+    // 기프티콘 불러오는 API (페이지용)
     @POST("api/user/getgifticons")
     suspend fun getGifticons(
         @Body request: GifticonRequestDTO
-    ): Response<GifticonResponse>
-
-    // 내 경매 "입찰" 목록 불러오기
-    @GET("api/user/auctions/bid/{userIdx}")
-    suspend fun getMyAuctions(
-        @Path("userIdx") userIdx: Long
-    ): Response<List<MyAuctionListResponseDTO>>
+    ): Response<GifticonPageResponse>
 
     // 내 알람 목록 불러오기
     @GET("api/user/notifications/{userIdx}")
@@ -59,8 +50,9 @@ data class GifticonRequestDTO(
 )
 
 // 기프티콘 목록 응답 DTO
-data class GifticonResponse(
-    val total: Long,
+data class GifticonPageResponse(
+    val totalElements: Long,
+    val totalPages: Int,
     val items: List<GifticonData>
 )
 

@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +40,7 @@ fun InquiryPage(navController: NavHostController, opponentIdx: String?) {
     // 상태 관리를 위한 변수들
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) } // 취소하기 물어보기
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
@@ -99,7 +103,7 @@ fun InquiryPage(navController: NavHostController, opponentIdx: String?) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.Center,
         ) {
             SelectButton(
                 text = if (opponentIdx == null) "문의하기" else "신고하기",
@@ -107,9 +111,31 @@ fun InquiryPage(navController: NavHostController, opponentIdx: String?) {
                     myAuctionViewModel.resistInquiry(title,content,type,opponentIdx!!.toLong())
                 }
             )
+            Spacer(modifier = Modifier.width(16.dp))
+
             SelectButton(
-                text = "취소하기",
-                onClick = { navController.navigateUp() }
+                text = "뒤로가기",
+                onClick = { showDialog = true }
+            )
+        }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("알림") },
+                text = { Text("작성하시던 글을 삭제하시고 뒤로 가시겠습니까?") },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("취소")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        navController.navigateUp()
+                        showDialog = false
+                    }) {
+                        Text("확인")
+                    }
+                }
             )
         }
     }

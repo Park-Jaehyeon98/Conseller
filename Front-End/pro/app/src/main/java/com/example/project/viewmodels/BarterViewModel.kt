@@ -14,6 +14,7 @@ import com.example.project.api.StoreConfirmRequestDTO
 import com.example.project.api.TradeBarterRequestDTO
 import com.example.project.api.UpdateBarterDTO
 import com.example.project.di.CustomException
+import com.example.project.reuse_component.convertNameToNumTwo
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,8 +59,12 @@ class BarterViewModel @Inject constructor(
     val myBarterItems: StateFlow<List<BarterItemData>> = _myBarterItems
 
     // 물물교환 등록후 barterIdx 받기
-    private val _navigateToBarterDetail = MutableStateFlow<Long?>(null)
-    val navigateToBarterDetail: StateFlow<Long?> = _navigateToBarterDetail
+    private val _createBarterNavi = MutableStateFlow<Long?>(null)
+    val createBarterNavi: StateFlow<Long?> = _createBarterNavi
+
+    // 물물교환 수정후 네비게이션 받기
+    private val _updateBarterNavi = MutableStateFlow<Boolean?>(false)
+    val updateBarterNavi: StateFlow<Boolean?> = _updateBarterNavi
 
     // 물물교환 확정 페이지 데이터
     private val _barterConfirm = MutableStateFlow<BarterConfirmPageResponseDTO?>(null)
@@ -75,10 +80,10 @@ class BarterViewModel @Inject constructor(
 
 
 
-
-    // 물물교환 등록후 네비게이션 리셋
+    // 네비게이션 리셋
     fun resetNavigation() {
-        _navigateToBarterDetail.value = null
+        _createBarterNavi.value = null
+        _updateBarterNavi.value = false
     }
 
 
@@ -106,7 +111,7 @@ class BarterViewModel @Inject constructor(
     }
 
     // 물물교환 리스트 불러오기
-    private fun fetchBarterItems() {
+    fun fetchBarterItems() {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -115,7 +120,7 @@ class BarterViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _barterItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.totalNum
+                    _totalItems.value = response.body()!!.totalElements
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -131,17 +136,17 @@ class BarterViewModel @Inject constructor(
     // 물물교환 등록
     fun createBarterItem(kindBigStatus:String, kindSmallStatus:String, barterName:String, barterText:String, barterEndDate:String, selectedItemIndices: List<Long>) {
         val userIdx = sharedPreferencesUtil.getUserId()
-        val kindBigStatus = kindBigStatus.toInt()
-        val kindSmallStatus = kindSmallStatus.toInt()
+
+        val (filter1Id, filter2Id) = convertNameToNumTwo(kindBigStatus, kindSmallStatus)
 
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.createBarterItem(BarterCreateDTO(kindBigStatus,kindSmallStatus,barterName,barterText,barterEndDate,selectedItemIndices,userIdx))
+                val response = service.createBarterItem(BarterCreateDTO(filter1Id,filter2Id,barterName,barterText,barterEndDate,selectedItemIndices,userIdx))
 
                 if (response.isSuccessful && response.body() != null) {
-                    _navigateToBarterDetail.value = response.body()?.barterIdx
+                    _createBarterNavi.value = response.body()?.barterIdx
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -156,18 +161,17 @@ class BarterViewModel @Inject constructor(
     // 물물교환 글 수정
     fun updateBarterItem(barterIdx: Long, kindBigStatus: String, kindSmallStatus: String, barterName: String, barterText: String, barterEndDate: String) {
 
-        val kindBigStatus = kindBigStatus.toInt()
-        val kindSmallStatus = kindSmallStatus.toInt()
+        val (filter1Id, filter2Id) = convertNameToNumTwo(kindBigStatus, kindSmallStatus)
 
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.updateBarterItem(barterIdx, UpdateBarterDTO(kindBigStatus,kindSmallStatus,barterName,barterText,barterEndDate))
+                val response = service.updateBarterItem(barterIdx, UpdateBarterDTO(filter1Id,filter2Id,barterName,barterText,barterEndDate))
 
                 if (response.isSuccessful) {
                     _error.value = null
-                    fetchBarterItems()
+                    _updateBarterNavi.value = true
                     }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -205,8 +209,9 @@ class BarterViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
+            val userIdx = sharedPreferencesUtil.getUserId()
             try {
-                val response = service.getBarterDetail(barterIdx)
+                val response = service.getBarterDetail(barterIdx, userIdx)
 
                 if (response.isSuccessful && response.body() != null) {
                     _barterDetail.value = response.body()
@@ -320,7 +325,7 @@ class BarterViewModel @Inject constructor(
 data class BarterItemData(
     val barterIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val barterEndDate: String,
     val isDeposit: Boolean,

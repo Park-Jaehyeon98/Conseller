@@ -3,17 +3,24 @@ package com.example.project
 import FilterButton
 import FormattedDateText
 import PaginationControls
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,35 +29,41 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import com.example.project.api.AuctionFilterDTO
 import com.example.project.api.BarterFilterDTO
+import com.example.project.reuse_component.convertNameToNum
 import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.BarterViewModel
-import convertNameToNum
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BarterPage(navController: NavHostController) {
     val barterViewModel: BarterViewModel = hiltViewModel()
     val barterItems by barterViewModel.barterItems.collectAsState()
+    val totalItems by barterViewModel.totalItems.collectAsState()
     val error by barterViewModel.error.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -59,6 +72,10 @@ fun BarterPage(navController: NavHostController) {
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
     var snackbarText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        barterViewModel.fetchBarterItems()
+    }
 
     LaunchedEffect(error) {
         if (error != null) {
@@ -207,7 +224,7 @@ fun BarterPage(navController: NavHostController) {
             barterItems.forEach { item ->
                 BarterItem(
                     image = item.gifticonDataImageName,
-                    name = item.giftconName,
+                    name = item.gifticonName,
                     gifticonTime = item.gifticonEndDate,
                     barterTime = item.barterEndDate,
                     isDeposit = item.isDeposit,
@@ -224,7 +241,7 @@ fun BarterPage(navController: NavHostController) {
 
             // 페이지네이션 컨트롤 AuctionPage에서 정의된거 사용
             PaginationControls(
-                totalItems = barterItems.size,
+                totalItems = totalItems,
                 currentPage = currentPage,
                 itemsPerPage = itemsPerPage
             ) { newPage ->
@@ -262,15 +279,17 @@ fun BarterItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
-            .background(Color.White)
-            .padding(8.dp)
+            .height(360.dp)
+            .padding(2.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .shadow(elevation = 4.dp, shape = RoundedCornerShape(4.dp))
             .clickable { onItemClick() }
+            .padding(8.dp)
     ) {
         // 65% 이미지
         Box(
             modifier = Modifier
-                .weight(0.65f)
+                .weight(0.7f)
                 .fillMaxWidth()
                 .background(Color.Gray),
             contentAlignment = Alignment.Center
@@ -280,21 +299,25 @@ fun BarterItem(
                 model = image,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
         }
 
         // 10% 이름 및 유효기간
         Row(
             modifier = Modifier
-                .weight(0.1f)
+                .weight(0.18f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            FormattedDateText(gifticonTime,"유효기간")
+            Column (
+                modifier = Modifier.weight(1f)
+            ){
+                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                FormattedDateText(gifticonTime,"유효기간")
+            }
         }
 
         // 구분 줄
@@ -302,19 +325,9 @@ fun BarterItem(
         Divider(color = Color.Gray, modifier = Modifier.padding(horizontal = 12.dp))
         Spacer(modifier = Modifier.height(4.dp))
 
-        // 5% 경매기간
-        FormattedDateText(
-            gifticonTime = barterTime,
-            prefix = "마감일",
-            modifier = Modifier
-                .weight(0.1f)
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-        )
-
         // 15% 박스1
         Box(
-            modifier = Modifier.weight(0.15f).padding(horizontal = 12.dp)
+            modifier = Modifier.weight(0.08f).padding(horizontal = 12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -337,5 +350,14 @@ fun BarterItem(
                 }
             }
         }
+        // 5% 경매기간
+        FormattedDateText(
+            gifticonTime = barterTime,
+            prefix = "마감일",
+            modifier = Modifier
+                .weight(0.08f)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+        )
     }
 }

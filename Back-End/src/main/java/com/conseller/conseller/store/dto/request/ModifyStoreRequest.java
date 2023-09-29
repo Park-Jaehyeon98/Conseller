@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyStoreRequest {
-    private String storeEndDate;
+    private Integer storePrice;
 
     private String storeText;
 }

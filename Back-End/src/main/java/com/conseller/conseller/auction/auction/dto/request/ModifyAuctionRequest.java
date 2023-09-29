@@ -10,6 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyAuctionRequest {
-    private String auctionEndDate;
     private String auctionText;
 }

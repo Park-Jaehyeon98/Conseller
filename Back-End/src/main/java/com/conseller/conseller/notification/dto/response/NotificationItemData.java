@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,6 +12,6 @@ import java.time.LocalDateTime;
 public class NotificationItemData {
     private Long notificationIdx;
     private Integer notificationType;
-    private LocalDateTime notificationCreatedDate;
+    private String notificationCreatedDate;
     private String notificationStatus;
 }

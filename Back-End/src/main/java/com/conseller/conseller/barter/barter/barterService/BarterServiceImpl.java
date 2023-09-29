@@ -1,5 +1,7 @@
 package com.conseller.conseller.barter.barter.barterService;
 
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
+import com.conseller.conseller.barter.BarterHostItem.BarterHostItemRepository;
 import com.conseller.conseller.barter.BarterHostItem.barterHostItemService.BarterHostItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.BarterRepositoryImpl;
@@ -14,7 +16,6 @@ import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
 import com.conseller.conseller.entity.*;
-import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.user.UserRepository;
@@ -34,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.time.LocalDateTime.now;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,6 +49,8 @@ public class BarterServiceImpl implements BarterService{
     private final SubCategoryRepository subCategoryRepository;
     private final BarterHostItemService barterHostItemService;
     private final BarterRequestRepository barterRequestRepository;
+    private final BarterHostItemRepository barterHostItemRepository;
+    private final BarterGuestItemRepository barterGuestItemRepository;
 
 
     //구매자 입장
@@ -93,7 +98,7 @@ public class BarterServiceImpl implements BarterService{
         for(BarterHostItem bhi : barterHostItemList) {
             Gifticon gifticon = bhi.getGifticon();
             BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                    .giftconDataImageName(gifticon.getGifticonDataImageUrl())
+                    .gifticonDataImageName(gifticon.getGifticonDataImageUrl())
                     .gifticonName(gifticon.getGifticonName())
                     .gifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()))
                     .build();
@@ -190,6 +195,7 @@ public class BarterServiceImpl implements BarterService{
         for(BarterHostItem bhi : barterHostItemList) {
             Gifticon gift = bhi.getGifticon();
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+            barterHostItemRepository.deleteById(bhi.getBarterHostItemIdx());
         }
 
         for(BarterRequest br : barterRequestList) {
@@ -201,7 +207,9 @@ public class BarterServiceImpl implements BarterService{
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+                barterGuestItemRepository.deleteById(bg.getBarterGuestItemIdx());
             }
+            barterRequestRepository.deleteById(br.getBarterRequestIdx());
         }
 
         barterRepository.deleteById(barterIdx);
@@ -211,6 +219,9 @@ public class BarterServiceImpl implements BarterService{
     public void exchangeGifticon(Long barterIdx, Long userIdx) {
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException( "존재하지 않는 유저입니다."));
+
 
         Long barterRequestIdx = (long) -1;
 
@@ -229,6 +240,7 @@ public class BarterServiceImpl implements BarterService{
         List<BarterRequest> barterRequestList = barterRequestRepository.findByBarterIdx(barterIdx);
 
         barterRequest.setBarterRequestStatus(RequestStatus.ACCEPTED.getStatus());
+        barterRequestRepository.save(barterRequest);
 
         for(BarterRequest br : barterRequestList) {
 
@@ -245,13 +257,14 @@ public class BarterServiceImpl implements BarterService{
 
             List<BarterGuestItem> barterGuestItemList = br.getBarterGuestItemList();
             br.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
+            barterRequestRepository.save(br);
 
-            log.debug("거절까지 옵니다.");
 
             for(BarterGuestItem bg : barterGuestItemList) {
                 Gifticon gifticon = gifticonRepository.findById(bg.getGifticon().getGifticonIdx())
                         .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
                 gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+                gifticonRepository.save(gifticon);
             }
         }
         User barterHost = barter.getBarterHost();
@@ -264,15 +277,19 @@ public class BarterServiceImpl implements BarterService{
             Gifticon gift = hostItem.getGifticon();
             gift.setUser(barterRequester);
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
-
+            gifticonRepository.save(gift);
         }
         for(BarterGuestItem guestItem : barterRequest.getBarterGuestItemList()){
             Gifticon gift = guestItem.getGifticon();
             gift.setGifticonStatus(GifticonStatus.KEEP.getStatus());
             gift.setUser(barterHost);
+            gifticonRepository.save(gift);
         }
 
         barter.setBarterStatus(BarterStatus.EXCHANGED.getStatus());
+        barter.setBarterCompletedDate(now());
+        barter.setBarterCompleteGuest(user);
+        barterRepository.save(barter);
     }
 
     @Override
@@ -290,16 +307,17 @@ public class BarterServiceImpl implements BarterService{
             }
         }
         if(barterRequestIdx == -1) throw new RuntimeException("불가");
-
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
 
         barterRequest.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
+        barterRequestRepository.save(barterRequest);
 
         List<BarterGuestItem> gifticonList = barterRequest.getBarterGuestItemList();
         for(BarterGuestItem bgi : gifticonList) {
             Gifticon gifticon = bgi.getGifticon();
             gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+            gifticonRepository.save(gifticon);
         }
     }
 
@@ -315,7 +333,7 @@ public class BarterServiceImpl implements BarterService{
         List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
         for(BarterHostItem bhi : barterHostItemList) {
             BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                    .giftconDataImageName(bhi.getGifticon().getGifticonDataImageUrl())
+                    .gifticonDataImageName(bhi.getGifticon().getGifticonDataImageUrl())
                     .gifticonName(bhi.getGifticon().getGifticonName())
                     .gifticonEndDate(DateTimeConverter.getInstance().convertString(bhi.getGifticon().getGifticonEndDate()))
                     .build();
@@ -329,7 +347,7 @@ public class BarterServiceImpl implements BarterService{
             List<BarterConfirmList> barterConfirmLists = new ArrayList<>();
             for(BarterGuestItem bgi : barterGuestItemList) {
                 BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                        .giftconDataImageName(bgi.getGifticon().getGifticonDataImageUrl())
+                        .gifticonDataImageName(bgi.getGifticon().getGifticonDataImageUrl())
                         .gifticonName(bgi.getGifticon().getGifticonName())
                         .gifticonEndDate(DateTimeConverter.getInstance().convertString(bgi.getGifticon().getGifticonEndDate()))
                         .build();

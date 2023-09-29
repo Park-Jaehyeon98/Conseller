@@ -51,6 +51,9 @@ public class Auction {
     @Column(name = "auction_completed_date")
     private LocalDateTime auctionCompletedDate;
 
+    @Column(name = "notification_created_date")
+    private LocalDateTime notificationCreatedDate;
+
     @OneToOne
     @JoinColumn(name = "gifticon_idx")
     private Gifticon gifticon;
@@ -59,7 +62,7 @@ public class Auction {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AuctionBid> auctionBidList;
 
 }

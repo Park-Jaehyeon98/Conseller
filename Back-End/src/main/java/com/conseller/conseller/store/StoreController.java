@@ -84,11 +84,11 @@ public class StoreController {
     // 없어져야할듯
     @PatchMapping("/cancel/{store_idx}")
     public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
-        storeService.cancelStore(storeIdx);
-
         // 판매자 구매자 알림
         notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 1, 2);
         notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 2, 2);
+
+        storeService.cancelStore(storeIdx);
 
         return ResponseEntity.ok()
                 .build();
@@ -115,11 +115,11 @@ public class StoreController {
             notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 1, 2);
         }
         else {
-            storeService.cancelStore(request.getStoreIdx());
-
             // 판매자 구매자 알림
             notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 1, 2);
             notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 2, 2);
+
+            storeService.cancelStore(request.getStoreIdx());
         }
 
 

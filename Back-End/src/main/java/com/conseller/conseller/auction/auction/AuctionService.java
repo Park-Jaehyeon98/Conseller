@@ -4,6 +4,9 @@ import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.*;
+import com.conseller.conseller.entity.Auction;
+
+import java.util.List;
 
 public interface AuctionService {
 
@@ -17,7 +20,7 @@ public interface AuctionService {
 
     public void deleteAuction(Long auctionIdx);
 
-    public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index);
+    public AuctionTradeResponse tradeAuction(Long auctionIdx, Long userIdx);
 
     public void cancelAuction(Long auctionIdx);
 
@@ -26,4 +29,6 @@ public interface AuctionService {
     public AuctionConfirmResponse getConfirmAuction(Long auctionIdx);
 
     public AuctionConfirmBuyResponse getConfirmBuyAuction(Long auctionIdx);
+
+    public List<Auction> getAuctionConfirmList();
 }

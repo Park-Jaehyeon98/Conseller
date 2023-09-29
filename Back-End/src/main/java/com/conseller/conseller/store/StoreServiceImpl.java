@@ -3,10 +3,10 @@ package com.conseller.conseller.store;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.Store;
 import com.conseller.conseller.entity.User;
-import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.request.ModifyStoreRequest;
 import com.conseller.conseller.store.dto.request.RegistStoreRequest;
@@ -14,7 +14,6 @@ import com.conseller.conseller.store.dto.request.StoreListRequest;
 import com.conseller.conseller.store.dto.response.*;
 import com.conseller.conseller.store.enums.StoreStatus;
 import com.conseller.conseller.user.UserRepository;
-import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,8 +87,13 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
 
-        store.setStoreEndDate(DateTimeConverter.getInstance().convertLocalDateTime(storeRequest.getStoreEndDate()));
-        store.setStoreText(storeRequest.getStoreText());
+        if(store.getStoreStatus().equals(StoreStatus.IN_PROGRESS.getStatus())){
+            store.setStorePrice(storeRequest.getStorePrice());
+            store.setStoreText(storeRequest.getStoreText());
+        }
+        else {
+            throw new CustomException(CustomExceptionStatus.ALREADY_TRADE_STORE);
+        }
     }
 
     // 스토어 글 삭제
@@ -112,14 +116,21 @@ public class StoreServiceImpl implements StoreService {
         User consumer = userRepository.findById(consumerIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        // 구매자의 인덱스를 저장
-        store.setConsumer(consumer);
-        
-        // 거래 상태 거래중으로 변경
-        store.setStoreStatus(StoreStatus.IN_TRADE.getStatus());
+        StoreTradeResponse response = null;
 
-        StoreTradeResponse response = new StoreTradeResponse(store.getUser().getUserAccount(),
-                store.getUser().getUserAccountBank());
+        if(store.getStoreStatus().equals(StoreStatus.IN_PROGRESS.getStatus())){
+            // 구매자의 인덱스를 저장
+            store.setConsumer(consumer);
+
+            // 거래 상태 거래중으로 변경
+            store.setStoreStatus(StoreStatus.IN_TRADE.getStatus());
+
+            response = new StoreTradeResponse(store.getUser().getUserAccount(),
+                    store.getUser().getUserAccountBank());
+        }
+        else {
+            throw new CustomException(CustomExceptionStatus.ALREADY_TRADE_STORE);
+        }
 
         return response;
     }
@@ -162,6 +173,13 @@ public class StoreServiceImpl implements StoreService {
         StoreConfirmResponse response = StoreMapper.INSTANCE.storeToComfirm(store);
 
         return response;
+    }
+
+    @Override
+    public List<Store> getStoreConfirmList() {
+        List<Store> stores = storeRepository.findByStoreListConfirm();
+
+        return stores;
     }
 
 }

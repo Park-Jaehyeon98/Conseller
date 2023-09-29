@@ -179,7 +179,6 @@ public class Barter {
     public void modifyBarter(BarterModifyRequestDto barterModifyRequestDto, SubCategory preferSubCategory) {
         this.barterName = barterModifyRequestDto.getBarterName();
         this.barterText = barterModifyRequestDto.getBarterText();
-        this.barterEndDate = DateTimeConverter.getInstance().convertDateTime(barterModifyRequestDto.getBarterEndDate());
         this.preferSubCategory = preferSubCategory;
 
     }

@@ -169,6 +169,7 @@ public class BarterServiceImpl implements BarterService{
         try {
             LocalDateTime gifticonEndDate = barterHostItemService.addBarterHostItem(barterCreateDto.getSelectedItemIndices(), barter);
             barter.setBarterEndDate(gifticonEndDate);
+            barterRepository.save(barter);
         } catch(Exception e) {
             barterRepository.deleteById(barter.getBarterIdx());
             throw new RuntimeException("보관 상태인 기프티콘만 등록할 수 있습니다.");

@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BarterConfirmList {
-    private String giftconDataImageName;
+    private String gifticonDataImageName;
     private String gifticonName;
     private String gifticonEndDate;
 
     @Builder
-    public BarterConfirmList(String giftconDataImageName, String gifticonName, String gifticonEndDate){
-        this.giftconDataImageName = giftconDataImageName;
+    public BarterConfirmList(String gifticonDataImageName, String gifticonName, String gifticonEndDate){
+        this.gifticonDataImageName = gifticonDataImageName;
         this.gifticonName = gifticonName;
         this.gifticonEndDate = gifticonEndDate;
     }

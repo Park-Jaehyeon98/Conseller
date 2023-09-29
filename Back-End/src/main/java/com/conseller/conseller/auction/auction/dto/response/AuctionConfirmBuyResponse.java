@@ -12,8 +12,6 @@ import lombok.Setter;
 public class AuctionConfirmBuyResponse {
     private String gifticonDataImageName;
 
-    private String notificationCreatedDate;
-
     private String giftconName;
 
     private Integer auctionPrice;

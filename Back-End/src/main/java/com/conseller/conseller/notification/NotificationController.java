@@ -16,7 +16,7 @@ public class NotificationController {
 
     // 알림 목록
     @GetMapping("/{user_idx}")
-    public ResponseEntity<Object> getNotificationList(@PathVariable("user_idx") Long userIdx) {
+    public ResponseEntity<NotificationListResponse> getNotificationList(@PathVariable("user_idx") Long userIdx) {
 
         NotificationListResponse response = notificationService.getNotificationList(userIdx);
 

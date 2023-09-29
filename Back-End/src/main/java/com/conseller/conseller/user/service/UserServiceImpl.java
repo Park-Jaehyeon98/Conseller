@@ -10,6 +10,7 @@ import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.dto.response.GifticonData;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.store.StoreRepository;
 import com.conseller.conseller.store.dto.mapper.StoreMapper;
@@ -383,7 +384,8 @@ public class UserServiceImpl implements UserService {
         List<Gifticon> gifticonList = gifticonRepository.findAll();
         List<Gifticon> myGifticonList = new ArrayList<>();
         for(Gifticon gifticon: gifticonList) {
-            if(gifticon.getUser().getUserIdx() == gifticonRequestDTO.getUserIdx()){
+            if(gifticon.getUser().getUserIdx() == gifticonRequestDTO.getUserIdx()
+                    && gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
                 myGifticonList.add(gifticon);
             }
         }
@@ -401,7 +403,7 @@ public class UserServiceImpl implements UserService {
             Gifticon gifticon = myGifticonList.get(i);
             GifticonData gifticonData = GifticonData.builder()
                     .gifticonIdx(gifticon.getGifticonIdx())
-                    .gifticonAllImageName(gifticon.getGifticonAllImageUrl())
+                    .gifticonImageName(gifticon.getGifticonDataImageUrl())
                     .gifticonName(gifticon.getGifticonName())
                     .gifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()))
                     .build();

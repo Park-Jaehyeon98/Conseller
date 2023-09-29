@@ -10,14 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GifticonData {
     private Long gifticonIdx;
-    private String gifticonAllImageName;
+    private String gifticonImageName;
     private String gifticonName;
     private String gifticonEndDate;
 
     @Builder
-    public GifticonData(Long gifticonIdx, String gifticonAllImageName, String gifticonName, String gifticonEndDate) {
+    public GifticonData(Long gifticonIdx, String gifticonImageName, String gifticonName, String gifticonEndDate) {
         this.gifticonIdx = gifticonIdx;
-        this.gifticonAllImageName = gifticonAllImageName;
+        this.gifticonImageName = gifticonImageName;
         this.gifticonName = gifticonName;
         this.gifticonEndDate = gifticonEndDate;
     }

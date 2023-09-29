@@ -254,4 +254,9 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/getgifticons")
+    public ResponseEntity<Object> getUserGifticonPages(@RequestBody GifticonRequestDTO gifticonRequestDTO) {
+        return ResponseEntity.ok()
+                .body(userService.getGifticonPage(gifticonRequestDTO));
+    }
 }

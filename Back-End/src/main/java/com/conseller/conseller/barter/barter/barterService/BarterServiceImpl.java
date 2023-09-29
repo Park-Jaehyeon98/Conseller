@@ -16,7 +16,6 @@ import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.category.subCategory.SubCategoryRepository;
 import com.conseller.conseller.entity.*;
-import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.user.UserRepository;
@@ -35,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.time.LocalDateTime.now;
 
 @Slf4j
 @Service
@@ -97,7 +98,7 @@ public class BarterServiceImpl implements BarterService{
         for(BarterHostItem bhi : barterHostItemList) {
             Gifticon gifticon = bhi.getGifticon();
             BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                    .giftconDataImageName(gifticon.getGifticonDataImageUrl())
+                    .gifticonDataImageName(gifticon.getGifticonDataImageUrl())
                     .gifticonName(gifticon.getGifticonName())
                     .gifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()))
                     .build();
@@ -218,6 +219,9 @@ public class BarterServiceImpl implements BarterService{
     public void exchangeGifticon(Long barterIdx, Long userIdx) {
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException( "존재하지 않는 유저입니다."));
+
 
         Long barterRequestIdx = (long) -1;
 
@@ -283,6 +287,9 @@ public class BarterServiceImpl implements BarterService{
         }
 
         barter.setBarterStatus(BarterStatus.EXCHANGED.getStatus());
+        barter.setBarterCompletedDate(now());
+        barter.setBarterCompleteGuest(user);
+        barterRepository.save(barter);
     }
 
     @Override
@@ -326,7 +333,7 @@ public class BarterServiceImpl implements BarterService{
         List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
         for(BarterHostItem bhi : barterHostItemList) {
             BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                    .giftconDataImageName(bhi.getGifticon().getGifticonDataImageUrl())
+                    .gifticonDataImageName(bhi.getGifticon().getGifticonDataImageUrl())
                     .gifticonName(bhi.getGifticon().getGifticonName())
                     .gifticonEndDate(DateTimeConverter.getInstance().convertString(bhi.getGifticon().getGifticonEndDate()))
                     .build();
@@ -340,7 +347,7 @@ public class BarterServiceImpl implements BarterService{
             List<BarterConfirmList> barterConfirmLists = new ArrayList<>();
             for(BarterGuestItem bgi : barterGuestItemList) {
                 BarterConfirmList barterConfirmList = BarterConfirmList.builder()
-                        .giftconDataImageName(bgi.getGifticon().getGifticonDataImageUrl())
+                        .gifticonDataImageName(bgi.getGifticon().getGifticonDataImageUrl())
                         .gifticonName(bgi.getGifticon().getGifticonName())
                         .gifticonEndDate(DateTimeConverter.getInstance().convertString(bgi.getGifticon().getGifticonEndDate()))
                         .build();

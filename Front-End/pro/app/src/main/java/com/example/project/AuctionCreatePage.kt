@@ -127,7 +127,10 @@ fun AuctionCreatePage(navController: NavHostController, mygifticonViewModel: Myg
             ) {
                 Button(onClick = {
                     selectedItemIndex?.let {
-                        navController.navigate("AuctionCreateDetailPage/$it")
+                        navController.navigate("AuctionCreateDetailPage/$it"){
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
                     }
                 }) {
                     Icon(Icons.Default.ArrowForward, contentDescription = "다음")

@@ -64,7 +64,6 @@ fun PermissionRequester(navController: NavHostController) {
 
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
         color = BrandColor1
     ) {
         Button(onClick = {

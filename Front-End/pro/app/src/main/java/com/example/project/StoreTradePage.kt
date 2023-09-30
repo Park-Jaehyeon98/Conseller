@@ -150,7 +150,10 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                                 storeViewModel.completeStorePayment(index!!.toLong())
                                 when (paymentCompleted) {
                                     null -> {
-                                        navController.navigate("WaitingPage")
+                                        navController.navigate("WaitingPage"){
+                                            popUpTo(navController.graph.startDestinationId)
+                                            launchSingleTop = true
+                                        }
                                         showDepositConfirmDialog = false
                                     }
                                     else -> {

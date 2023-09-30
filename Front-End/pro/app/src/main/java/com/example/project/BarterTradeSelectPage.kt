@@ -137,7 +137,10 @@ fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
             ) {
                 Button(onClick = {
                     // 선택된 항목들을 다음 페이지로 전달. "/nextPageRoute/1,2,3"과 같이
-                    navController.navigate("BarterTradePage/${selectedItemIndices.joinToString(",")}/${index}")
+                    navController.navigate("BarterTradePage/${selectedItemIndices.joinToString(",")}/${index}"){
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
                 }) {
                     Icon(Icons.Default.ArrowForward, contentDescription = "다음")
                 }

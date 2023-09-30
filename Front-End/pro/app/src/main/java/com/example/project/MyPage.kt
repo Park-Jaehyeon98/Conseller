@@ -66,8 +66,6 @@ fun MyPage(navController: NavHostController) {
         viewModel.getMyBarter()
         viewModel.getMyStore()
         viewModel.getMyAuction()
-        viewModel.getMyAuctionBid()
-        viewModel.getMyBarterRequest()
     }
 
 
@@ -190,11 +188,6 @@ fun getBytesFromInputStream(inputStream: InputStream): ByteArray {
     return inputStream.readBytes()
 }
 
-// ByteArray를 MultipartBody.Part로 변환
-fun getMultipartFromByteArray(byteArray: ByteArray, fileName: String): MultipartBody.Part {
-    val requestBody = byteArray.toRequestBody("image/*".toMediaTypeOrNull())
-    return MultipartBody.Part.createFormData("image", fileName, requestBody)
-}
 
 
 @Composable
@@ -213,7 +206,7 @@ fun MypageCheck(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(70.dp)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -243,8 +236,8 @@ fun MypageCheck(
             contentAlignment = Alignment.Center
         ) {
             CustomCard(
-                label = "경매 관리",
-                imageResId = R.drawable.coupon,
+                label = "경매 현황",
+                imageResId = R.drawable.auction,
                 number = myAuction.size,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick2
@@ -258,7 +251,7 @@ fun MypageCheck(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(70.dp)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -270,8 +263,8 @@ fun MypageCheck(
             contentAlignment = Alignment.Center
         ) {
             CustomCard(
-                label = "판매 관리",
-                imageResId = R.drawable.coupon1,
+                label = "판매 현황",
+                imageResId = R.drawable.store,
                 number = myStore.size,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick3
@@ -288,11 +281,55 @@ fun MypageCheck(
             contentAlignment = Alignment.Center
         ) {
             CustomCard(
-                label = "물물교환 관리",
-                imageResId = R.drawable.coupon,
+                label = "물물교환 현황",
+                imageResId = R.drawable.barter,
                 number = myBarter.size,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick4
+            )
+        }
+    }
+    // 여백을 위한 Spacer
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // 세 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCard(
+                label = "구매/입찰 내역",
+                imageResId = R.drawable.coupon1,
+                number = myStore.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = {}
+            )
+        }
+
+        Spacer(modifier = Modifier.width(20.dp))
+
+        // 네 번째 Box
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomCard(
+                label = "물물교환 내역",
+                imageResId = R.drawable.coupon,
+                number = myBarter.size,
+                modifier = Modifier.fillMaxSize(),
+                onClick = {  }
             )
         }
     }

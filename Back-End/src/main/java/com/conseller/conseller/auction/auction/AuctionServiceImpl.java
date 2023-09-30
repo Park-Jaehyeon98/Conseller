@@ -168,6 +168,12 @@ public class AuctionServiceImpl implements AuctionService{
             // 경매 상태 거래중으로 변경
             auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
 
+            //입찰 상태를 낙찰 예정으로 변경
+            AuctionBid bid = auctionBidRepository.findByUser_UserIdxAndAuction_AuctionIdx(auction.getHighestBidUser().getUserIdx(), auctionIdx)
+                    .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
+
+            bid.setAuctionBidStatus(BidStatus.EXPECTED.getStatus());
+
             // 판매자의 계좌번호와 은행 전달
             response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
                     auction.getUser().getUserAccountBank());

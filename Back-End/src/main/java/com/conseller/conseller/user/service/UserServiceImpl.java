@@ -510,5 +510,55 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public void patternRegister(UserPatternRequest userPatternRequest){
+
+        // 입력 Idx 정보가 유효한지 확인
+        User user = userRepository.findByUserIdx(userPatternRequest.getUserIdx())
+                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+
+        user.setUserPattern(userPatternRequest.getPattern());
+    }
+
+    @Override
+    public LoginResponse loginPattern(UserPatternRequest userPatternRequest){
+
+        // 입력 Idx 정보가 유효한지 확인
+        User user = userRepository.findByUserIdx(userPatternRequest.getUserIdx())
+                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+
+        // 패턴이 맞는지 확인
+        if (!user.getUserPattern().equals(userPatternRequest.getPattern())) {
+            throw new RuntimeException("pattern이 틀립니다.");
+        }
+
+        // 입력한 유저가 사용 제한된 유저인지 확인
+        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
+            throw new RuntimeException("서비스 이용 제한된 유저입니다.");
+        }
+
+        // 입력한 유저가 탈퇴한 유저인지 확인
+        if (user.getUserDeletedDate() != null) {
+            throw new RuntimeException("이미 탈퇴한 유저입니다.");
+        }
+
+        // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
+        Authentication authentication = getAuthentication(user.getUserId(), user.getUserPassword());
+
+        // 인증 정보를 기반으로 JWT 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
+
+        //4. refresh token db 저장
+        user.setRefreshToken(jwtToken.getRefreshToken());
+
+        // 5. 토큰 정보로 response 생성 후 리턴
+        return LoginResponse.builder()
+                .userIdx(user.getUserIdx())
+                .userNickname(user.getUserNickname())
+                .accessToken(jwtToken.getAccessToken())
+                .refreshToken(jwtToken.getRefreshToken())
+                .build();
+    }
 
 }
+

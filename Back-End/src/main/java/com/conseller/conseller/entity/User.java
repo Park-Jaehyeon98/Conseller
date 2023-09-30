@@ -79,6 +79,9 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "fcm_token")
     private String fcm;
 
+    @Column(name = "user_pattern")
+    private String userPattern;
+
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Auction> auctions = new ArrayList<>();
@@ -110,7 +113,6 @@ public class User extends BaseTime implements UserDetails {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<NotificationEntity> notificationEntities = new ArrayList<>();
-
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

@@ -254,6 +254,30 @@ public class UserController {
                 .build();
     }
 
+    // pattern 저장
+    @PostMapping("/savepattern")
+    public ResponseEntity<Void> patternSave(@Valid @RequestBody UserPatternRequest userPatternRequest) {
+        log.info("유저 패턴 저장");
+        userService.patternRegister(userPatternRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verifypattern")
+    public ResponseEntity<Void> patternLogin(@Valid @RequestBody UserPatternRequest userPatternRequest){
+        log.info("유저 패턴 로그인");
+
+        LoginResponse loginResponse = userService.loginPattern(userPatternRequest);
+
+        log.info("user nickname : " + loginResponse.getUserNickname());
+        log.info("user accessToken : " + loginResponse.getAccessToken());
+        log.info("user refreshToken : " + loginResponse.getRefreshToken());
+        userService.patternRegister((userPatternRequest));
+
+        return ResponseEntity.ok().build();
+
+    }
+
     @PostMapping("/getgifticons")
     public ResponseEntity<Object> getUserGifticonPages(@RequestBody GifticonRequestDTO gifticonRequestDTO) {
         return ResponseEntity.ok()

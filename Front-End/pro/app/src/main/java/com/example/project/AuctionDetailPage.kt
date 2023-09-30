@@ -82,7 +82,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
 
 
     // myAuctions의 index값이 들고온 값이랑 같은것들을 세팅
-    val matchingAuction = getMyAuctionBidResponse.find { it.auctionIdx == index?.toLongOrNull() }
+    val matchingAuction = getMyAuctionBidResponse.find { it.auctionItemData.auctionIdx == index?.toLongOrNull() }
 
     // 입찰가 상위 3개matchingAuction
     val sortedBids = auctionDetail?.auctionBidList?.sortedByDescending { it.auctionBidPrice }
@@ -451,6 +451,8 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                             onClick = {
                                 // TODO
                                 showConfirmDropDialog = false
+                                auctionViewModel.fetchAccountDetails(index!!.toLong())
+
                             }
                         )
                     },

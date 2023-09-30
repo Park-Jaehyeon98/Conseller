@@ -3,6 +3,7 @@ package com.example.project
 import InquiryPage
 import MypageAuction
 import MypageStore
+import PermissionRequester
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -57,6 +58,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    composable("PermissionRequesterPage") { PermissionRequester(navController)}
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
@@ -138,7 +140,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         AuctionConfirmPage(navController, auctionIdx)
                     }
-                    composable("auctionConfirmBuyPage/{auctionIdx}") { backStackEntry ->
+                    composable("AuctionConfirmBuyPage/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         auctionConfirmBuyPage(navController, auctionIdx)
                     }
@@ -188,4 +190,5 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
         }
     }
 }
+
 

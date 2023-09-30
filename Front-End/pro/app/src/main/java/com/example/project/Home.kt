@@ -276,7 +276,7 @@ fun HomeLayout4(navController: NavController) {
                                                 interactionSource = itemInteractionState,
                                                 indication = rememberRipple(bounded = true),
                                                 onClick = {
-                                                    navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                                    navController.navigate("AuctionDetailPage/${item.auctionItemData.auctionIdx}")
                                                 }
                                             )
                                             .background(
@@ -289,7 +289,7 @@ fun HomeLayout4(navController: NavController) {
                                             modifier = Modifier.padding(8.dp)
                                         ) {
                                             val painter =
-                                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                                rememberAsyncImagePainter(model = item.auctionItemData.gifticonDataImageName)
                                             Image(
                                                 painter = painter,
                                                 contentDescription = null,
@@ -301,10 +301,10 @@ fun HomeLayout4(navController: NavController) {
                                             Column(
                                                 modifier = Modifier.align(Alignment.CenterVertically)
                                             ) {
-                                                Text(item.gifticonName?: "defaultText", fontSize = 18.sp)
+                                                Text(item.auctionItemData.gifticonName?: "defaultText", fontSize = 18.sp)
                                                 Spacer(modifier = Modifier.height(5.dp))
                                                 Text(
-                                                    "최고 입찰가: ${item.auctionHighestBid}원 (${if (item.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",
+                                                    "최고 입찰가: ${item.auctionItemData.auctionHighestBid}원 (${if (item.auctionItemData.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",
                                                     fontSize = 18.sp
                                                 )
                                             }

@@ -78,7 +78,9 @@ fun AuctionConfirmPage(navController: NavHostController, index: String?) {
         }
     }
     LaunchedEffect(auctionConfirmNavi) {
-        navController.navigate("Home")
+        if(auctionConfirmNavi){
+            navController.navigate("Home")
+        }
     }
 
     Box(

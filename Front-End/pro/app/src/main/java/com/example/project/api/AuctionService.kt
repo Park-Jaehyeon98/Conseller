@@ -240,4 +240,3 @@ data class AuctionConfirmBuyPageResponseDTO(
 
 
 
-

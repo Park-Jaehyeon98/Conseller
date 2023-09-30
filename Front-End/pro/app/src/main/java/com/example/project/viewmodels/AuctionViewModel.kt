@@ -79,12 +79,23 @@ class AuctionViewModel @Inject constructor(
 
 
     // 경매 확정 페이지 데이터
-    private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO?>(null)
-    val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO?> = _auctionConfirm
+    private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO>(
+        AuctionConfirmPageResponseDTO(
+            gifticonDataImageName = "",
+            notificationCreatedDate = "",
+            giftconName = "",
+            auctionPrice = 0,
+            postContent = "",
+            buyUserImageUrl = "",
+            buyUserNickname = "",
+            buyUserIdx = 0L
+        )
+    )
+    val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO> = _auctionConfirm
 
     // 경매 확정 페이지 네비게이터
-    private val _auctionConfirmNavi = MutableStateFlow<Boolean?>(null)
-    val auctionConfirmNavi: StateFlow<Boolean?> = _auctionConfirmNavi
+    private val _auctionConfirmNavi = MutableStateFlow<Boolean>(false)
+    val auctionConfirmNavi: StateFlow<Boolean> = _auctionConfirmNavi
 
     // 경매 낙찰 페이지 데이터
     private val _auctionConfirmBuy = MutableStateFlow<AuctionConfirmBuyPageResponseDTO?>(null)
@@ -350,7 +361,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.getAuctionConfirm(auctionIdx)
 
                 if (response.isSuccessful && response.body() != null) {
-                    _auctionConfirm.value = response.body()
+                    _auctionConfirm.value = response.body()!!
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -373,7 +384,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.auctionConfirm(AuctionConfirmRequestDTO(auctionIdx,confirm))
 
                 if (response.isSuccessful) {
-                    _auctionConfirm.value = null
+//                    _auctionConfirm.value = null
                     _auctionConfirmNavi.value = true
                 }
             } catch (e: CustomException) {

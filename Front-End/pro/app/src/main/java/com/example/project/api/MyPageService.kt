@@ -170,6 +170,7 @@ data class myAuctionData(
     val gifticonName: String,
     val gifticonEndDate: String,
     val auctionEndDate: String,
+    val acutionStatus:String,
     val deposit: Boolean,
     val upperPrice: Int,
     val lowerPrice: Int,

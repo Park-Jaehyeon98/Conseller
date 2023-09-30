@@ -18,6 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,63 +39,92 @@ fun MypageAuction(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         viewModel.getMyAuction()
+        viewModel.getMyAuctionBid()
     }
     val getMyAuction by viewModel.getMyAuctionResponse.collectAsState()
+
+    val getMyAuctionBid by viewModel.getMyAuctionBidResponse.collectAsState()
+
     val scrollstate= rememberScrollState()
+    var ChoiceStatus by remember { mutableStateOf(0) }
+
+    val filteredAuction = when (ChoiceStatus) {
+        1 -> getMyAuction.filter { it.acutionStatus== "진행 중" }
+        2 -> getMyAuction.filter { it.acutionStatus == "거래 중" }
+        else -> getMyAuction
+    }
     Column(
         modifier= Modifier.verticalScroll(scrollstate),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ){
-        SelectAuction()
+        SelectAuction(onSelectionChanged = { ChoiceStatus = it} )
         Divider(color = Color.Gray, thickness = 1.dp)
-        getMyAuction?.forEach { item ->
-            ShowMyAuction(
-                image = item.gifticonDataImageName,
-                name = item.gifticonName,
-                gifticonTime = item.gifticonEndDate,
-                auctionTime = item.auctionEndDate,
-                isDeposit = item.deposit,
-                upperprice = item.upperPrice,
-                nowprice = item.auctionHighestBid,
-                onItemClick = {
-                    navController.navigate("AuctionDetailPage/${item.auctionIdx}")
-                    Log.d("AuctionPage", "auctionIdx: ${item.auctionIdx}")
+        if(ChoiceStatus<=2){
+            filteredAuction?.forEach { item ->
+                ShowMyAuction(
+                    image = item.gifticonDataImageName,
+                    name = item.gifticonName,
+                    gifticonTime = item.gifticonEndDate,
+                    auctionTime = item.auctionEndDate,
+                    isDeposit = item.deposit,
+                    upperprice = item.upperPrice,
+                    nowprice = item.auctionHighestBid,
+                    onItemClick = {
+                        navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                        Log.d("AuctionPage", "auctionIdx: ${item.auctionIdx}")
 
-                }
+                    }
 
-            )
+                )
+            }
+        }else{
+
         }
     }
 }
 
 @Composable
-fun SelectAuction(){
+fun SelectAuction(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        val commontextsize=18
-        Row(modifier=Modifier.clickable(onClick = {})){
+        val commontextsize = 18
+        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(1) })) {
             Text(
                 text = "내 경매",
-                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+                fontSize = commontextsize.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
             )
         }
-        Row(modifier=Modifier.clickable(onClick = {})){
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(2) })) {
             Text(
                 text = "거래 중",
-                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+                fontSize = commontextsize.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
             )
         }
-        Row(modifier=Modifier.clickable(onClick = {})){
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(3) })) {
             Text(
                 text = "내 입찰",
-                fontSize = commontextsize.sp, fontWeight = FontWeight.Bold, color = Color.Gray
+                fontSize = commontextsize.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

@@ -3,6 +3,7 @@ package com.example.project
 import InquiryPage
 import MypageAuction
 import MypageStore
+import PermissionRequester
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -66,6 +67,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    composable("PermissionRequesterPage") { PermissionRequester(navController) }
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
@@ -197,3 +199,5 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
         }
     }
 }
+
+

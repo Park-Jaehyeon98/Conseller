@@ -20,6 +20,8 @@ public class StoreItemData {
 
     private String storeEndDate;
 
+    private String storeStatus;
+
     private Boolean deposit;
 
     private Integer storePrice;

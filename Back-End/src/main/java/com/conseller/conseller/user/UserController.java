@@ -7,10 +7,7 @@ import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterReq
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.user.dto.request.*;
-import com.conseller.conseller.user.dto.response.InfoValidationRequest;
-import com.conseller.conseller.user.dto.response.Item;
-import com.conseller.conseller.user.dto.response.LoginResponse;
-import com.conseller.conseller.user.dto.response.UserInfoResponse;
+import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.service.UserService;
 import com.conseller.conseller.utils.EmailService;
 import com.conseller.conseller.utils.dto.CommonResponse;
@@ -37,13 +34,14 @@ public class UserController {
 
     //회원가입
     @PostMapping
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<UserIdxResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
 
         log.info("유저 회원가입 호출");
-        userService.register(signUpRequest);
+
+        long userIdx = userService.register(signUpRequest).getUserIdx();
         
         return ResponseEntity.ok()
-                .build();
+                .body(UserIdxResponse.builder().userIdx(userIdx).build());
     }
 
     //일반 로그인

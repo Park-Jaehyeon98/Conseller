@@ -1,5 +1,6 @@
 package com.conseller.conseller.barter.barterRequest.barterRequestDto;
 
+import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import lombok.*;
 
@@ -20,6 +21,8 @@ public class MyBarterRequestResponseDto {
     private String barterName;
 
     private String barterStatus;
+
+    private MyBarterResponseDto myBarterResponseDto;
 
     private List<GifticonResponse> barterGuestItems;
 

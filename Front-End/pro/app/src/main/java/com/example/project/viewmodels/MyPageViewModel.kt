@@ -8,6 +8,7 @@ import com.example.project.api.myAuctionData
 import com.example.project.api.myBarterData
 import com.example.project.api.myBarterRequestData
 import com.example.project.api.myGifticon
+import com.example.project.api.myPurchaseData
 import com.example.project.api.myStoreData
 import com.example.project.api.userInfoResponse
 import com.example.project.api.userModifyRequest
@@ -79,6 +80,9 @@ class MyPageViewModel @Inject constructor(
 
     private val _GetMyStore = MutableStateFlow<List<myStoreData>>(emptyList())
     val getMyStoreResponse: StateFlow<List<myStoreData>> get() = _GetMyStore
+
+    private val _GetMyPurchase = MutableStateFlow<List<myPurchaseData>>(emptyList())
+    val getMyPurchaseResponse: StateFlow<List<myPurchaseData>> get() = _GetMyPurchase
 
     private val _DeleteUserReponse = MutableStateFlow(false)
     val deleteUserResponse: StateFlow<Boolean> get() = _DeleteUserReponse
@@ -262,7 +266,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserStore(userIdx)
                 if (response.isSuccessful) {
-                    _GetMyStore.value = response.body()?.items ?: listOf()
+                    _GetMyPurchase.value = response.body()?.items ?: listOf()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -274,6 +278,25 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun getMyPurchase() {
+        val userIdx = sharedPreferencesUtil.getUserId()
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getUserPurchase(userIdx)
+                if (response.isSuccessful) {
+                    _GetMyStore.value = response.body()?.items ?: listOf()
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 
 
 

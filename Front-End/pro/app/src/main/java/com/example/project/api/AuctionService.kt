@@ -59,9 +59,10 @@ interface AuctionService {
 
 
     // 경매진행 계좌번호 불러오기 API
-    @GET("api/auction/trade/{auctionIdx}")
+    @GET("api/auction/trade/{auctionIdx}/{userIdx}")
     suspend fun getAuctionTrade(
-        @Path("auctionIdx") auctionIdx: Long
+        @Path("auctionIdx") auctionIdx: Long,
+        @Path("userIdx") userIdx: Long,
     ): Response<AuctionTradeResponseDTO>
 
     // 경매진행 취소 API
@@ -234,7 +235,6 @@ data class AuctionConfirmBuyPageResponseDTO(
     val buyUserNickname: String,
     val buyUserIdx: Long
 )
-
 
 
 

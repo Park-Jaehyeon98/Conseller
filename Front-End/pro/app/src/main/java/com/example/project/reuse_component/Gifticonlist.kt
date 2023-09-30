@@ -36,7 +36,7 @@ fun GifticonIist(gifticonData: GifticonData, isSelected: Boolean, onClick: () ->
         Icon(Icons.Default.Home, contentDescription = "Image", modifier = Modifier.size(64.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(text = gifticonData.giftconName, fontWeight = FontWeight.Bold)
+            Text(text = gifticonData.gifticonName, fontWeight = FontWeight.Bold)
             Text(text = gifticonData.gifticonEndDate)
         }
     }

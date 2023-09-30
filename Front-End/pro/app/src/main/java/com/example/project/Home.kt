@@ -1,15 +1,30 @@
 package com.example.project
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,12 +48,18 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
-import com.example.project.viewmodels.MyAuctionViewModel
 import com.example.project.viewmodels.MyPageViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
+
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.also { entry ->
+            navController.popBackStack(entry.id, true)
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -155,6 +176,7 @@ fun HomeLayout4(navController: NavController) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
     val error by auctionViewModel.error.collectAsState()
     val myerror by myPageViewModel.error.collectAsState()
+
     val myAuctionItems by auctionViewModel.myAuctionItems.collectAsState()
     val myBids by myPageViewModel.getMyAuctionBidResponse.collectAsState()
 
@@ -254,7 +276,7 @@ fun HomeLayout4(navController: NavController) {
                                                 interactionSource = itemInteractionState,
                                                 indication = rememberRipple(bounded = true),
                                                 onClick = {
-                                                    navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                                                    navController.navigate("AuctionDetailPage/${item.auctionItemData.auctionIdx}")
                                                 }
                                             )
                                             .background(
@@ -267,7 +289,7 @@ fun HomeLayout4(navController: NavController) {
                                             modifier = Modifier.padding(8.dp)
                                         ) {
                                             val painter =
-                                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                                rememberAsyncImagePainter(model = item.auctionItemData.gifticonDataImageName)
                                             Image(
                                                 painter = painter,
                                                 contentDescription = null,
@@ -279,10 +301,10 @@ fun HomeLayout4(navController: NavController) {
                                             Column(
                                                 modifier = Modifier.align(Alignment.CenterVertically)
                                             ) {
-                                                Text(item.gifticonName?: "defaultText", fontSize = 18.sp)
+                                                Text(item.auctionItemData.gifticonName?: "defaultText", fontSize = 18.sp)
                                                 Spacer(modifier = Modifier.height(5.dp))
                                                 Text(
-                                                    "최고 입찰가: ${item.auctionHighestBid}원 (${if (item.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",
+                                                    "최고 입찰가: ${item.auctionItemData.auctionHighestBid}원 (${if (item.auctionItemData.auctionHighestBid == item.auctionBidPrice) "(본인)" else "(타인)"})",
                                                     fontSize = 18.sp
                                                 )
                                             }

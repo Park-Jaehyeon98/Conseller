@@ -50,9 +50,9 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
     var showSnackbar by remember { mutableStateOf(false) }
     var snackbarText by remember { mutableStateOf("") }
 
-    LaunchedEffect(index) {
+    LaunchedEffect(Unit) {
         index?.toLongOrNull()?.let {
-            auctionViewModel.fetchAccountDetails(it)
+            auctionViewModel.fetchAuctionConfirmBuyItems(it)
         }
     }
     LaunchedEffect(error) {

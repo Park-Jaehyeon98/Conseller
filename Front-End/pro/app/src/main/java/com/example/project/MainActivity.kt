@@ -4,7 +4,6 @@ import InquiryPage
 import MypageAuction
 import MypageStore
 import PermissionRequester
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,15 +15,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.project.sharedpreferences.SharedPreferencesUtil
-import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.MygifticonViewModel
-import com.example.project.viewmodels.StoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 val customBackgroundColor = Color(245, 245, 245)
@@ -34,40 +30,35 @@ class MainActivity : AppCompatActivity() {
 
     private val sharedPreferencesUtil by lazy { SharedPreferencesUtil(this) }
 
-    private val auctionViewModel: AuctionViewModel by viewModels()
-    private val storeViewModel: StoreViewModel by viewModels()
-    private val barterViewModel: StoreViewModel by viewModels()
     private val myGifticonViewModel: MygifticonViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-
         setContent {
-            AppNavigation(sharedPreferencesUtil)
+            AppNavigation(sharedPreferencesUtil, myGifticonViewModel)
         }
     }
 }
 
 @Composable
-fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
+fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewModel: MygifticonViewModel) {
     val navController = rememberNavController()
 
     // 로그인 여부에 따른 시작 화면 설정
     val startDestination = if (sharedPreferencesUtil.isLoggedIn()) "Login" else "TextLoginPage"
 
 
-
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage") {
                 TopBar(navController)
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
-                    composable("PermissionRequesterPage") { PermissionRequester(navController) }
+                    composable("PermissionRequesterPage") { PermissionRequester(navController)}
                     composable("Login") { LoginPage(navController) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
@@ -107,10 +98,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val storeIdx = backStackEntry.arguments?.getString("storeIdx")
                         StoreDetailPage(navController, storeIdx)
                     }
-                    composable("StoreCreatePage") { StoreCreatePage(navController) }
+                    composable("StoreCreatePage") { StoreCreatePage(navController,myGifticonViewModel) }
                     composable("StoreCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
                         val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
-                        StoreCreateDetailPage(navController, selectedItemIndex)
+                        StoreCreateDetailPage(navController, selectedItemIndex,myGifticonViewModel)
                     }
                     composable("storeUpdate/{storeIdx}") { backStackEntry ->
                         val storeIdx = backStackEntry.arguments?.getString("storeIdx")
@@ -132,10 +123,10 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val auctionIdx = backStackEntry.arguments?.getString("index")
                         AuctionDetailPage(navController, auctionIdx)
                     }
-                    composable("AuctionCreatePage") { AuctionCreatePage(navController) }
+                    composable("AuctionCreatePage") { AuctionCreatePage(navController,myGifticonViewModel) }
                     composable("AuctionCreateDetailPage/{selectedItemIndex}") { backStackEntry ->
                         val selectedItemIndex = backStackEntry.arguments?.getString("selectedItemIndex")
-                        AuctionCreateDetailPage(navController, selectedItemIndex)
+                        AuctionCreateDetailPage(navController, selectedItemIndex,myGifticonViewModel)
                     }
                     composable("auctionUpdate/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
@@ -149,7 +140,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         AuctionConfirmPage(navController, auctionIdx)
                     }
-                    composable("auctionConfirmBuyPage/{auctionIdx}") { backStackEntry ->
+                    composable("AuctionConfirmBuyPage/{auctionIdx}") { backStackEntry ->
                         val auctionIdx = backStackEntry.arguments?.getString("auctionIdx")
                         auctionConfirmBuyPage(navController, auctionIdx)
                     }
@@ -161,11 +152,11 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
                         BarterDetailPage(barterIdx, navController)
                     }
-                    composable("BarterCreatePage") { BarterCreatePage(navController) }
+                    composable("BarterCreatePage") { BarterCreatePage(navController,myGifticonViewModel) }
                     composable("BarterCreateDetailPage/{selectedItemIndices}") { backStackEntry ->
                         val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
                         val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
-                        BarterCreateDetailPage(navController, selectedItemIndicesList)
+                        BarterCreateDetailPage(navController, selectedItemIndicesList, myGifticonViewModel)
                     }
                     composable("barterUpdate/{barterIdx}") { backStackEntry ->
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
@@ -193,7 +184,7 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil) {
 
                 }
             }
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage") {
                 BottomBar(navController)
             }
         }

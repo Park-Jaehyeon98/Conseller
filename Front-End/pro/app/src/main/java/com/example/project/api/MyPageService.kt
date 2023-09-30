@@ -1,5 +1,6 @@
 package com.example.project.api
 
+import com.example.project.viewmodels.AuctionItemData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -19,7 +20,6 @@ interface MyPageService {
     suspend fun getUserGifticoninfo(
         @Path("gifticonIdx") gifticonIdx: Long,
     ): Response<myGifticon>
-    // 기프티콘 전체 보기
 
     // 기프티콘 삭제(사용완료)
     @DELETE("api/gifticon/{gifticonIdx}")
@@ -35,7 +35,13 @@ interface MyPageService {
     @GET("api/user/{userIdx}/store")
     suspend fun getUserStore(
         @Path("userIdx") useridx: Long,
+    ): Response<myPurchaseItems>
+    // 내 구매보기
+    @GET("api/user/{userIdx}/store/purchase")
+    suspend fun getUserPurchase(
+        @Path("userIdx") useridx: Long,
     ): Response<myStoreItems>
+
     // 내 경매 보기
     @GET("api/user/{userIdx}/auction")
     suspend fun getUserAuction(
@@ -170,7 +176,7 @@ data class myAuctionData(
     val gifticonName: String,
     val gifticonEndDate: String,
     val auctionEndDate: String,
-    val acutionStatus:String,
+    val auctionStatus:String,
     val deposit: Boolean,
     val upperPrice: Int,
     val lowerPrice: Int,
@@ -182,20 +188,11 @@ data class myAuctionBidItems(
 )
 
 data class myAuctionBidData(
-    val auctionBidIdx: Long,
+    val auctionBidIdx: Int,
     val auctionBidPrice: Int,
     val auctionRegistedDate: String,
     val auctionBidStatus: String,
-    val userIdx: Long,
-    val auctionIdx: Long,
-    val gifticonDataImageName: String,
-    val gifticonName: String,
-    val gifticonEndDate: String,
-    val auctionEndDate: String,
-    val deposit: Boolean,
-    val upperPrice: Int,
-    val lowerPrice: Int,
-    val auctionHighestBid: Int
+    val auctionItemData: AuctionItemData
 )
 
 data class myBarterItems(
@@ -238,13 +235,30 @@ data class myBarterRequestData(
 data  class myStoreItems(
     val items:List<myStoreData>
 )
+
+
 data class myStoreData(
     val storeIdx: Long,
     val gifticonDataImageName: String,
     val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
+    val storeStatus:String,
     val isDeposit: Boolean,
     val storePrice: Int,
 )
 
+data  class myPurchaseItems(
+    val items:List<myPurchaseData>
+)
+
+data class myPurchaseData(
+    val storeIdx: Long,
+    val storePrice: Int,
+    val storeCreatedDate: String,
+    val storeEndDate: String,
+    val storeText: String,
+    val storeStatus: String,
+    val gifticonIdx: Long,
+    val consumeridx: Long
+)

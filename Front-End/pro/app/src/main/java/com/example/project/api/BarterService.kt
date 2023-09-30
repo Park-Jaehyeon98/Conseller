@@ -38,9 +38,10 @@ interface BarterService {
     ): Response<Void>
 
     // 물물교환 상세보기 API
-    @GET("api/barter/{barterIdx}")
+    @GET("api/barter/{barterIdx}/{userIdx}")
     suspend fun getBarterDetail(
-        @Path("barterIdx") barterIdx: Long
+        @Path("barterIdx") barterIdx: Long,
+        @Path("userIdx") userIdx: Long
     ): Response<BarterDetailResponseDTO>
 
     // 물물교환 거래제안 API
@@ -84,7 +85,8 @@ data class BarterFilterDTO(
 
 // 목록, 검색 응답 DTO
 data class BarterResponse(
-    val totalNum: Int,
+    val totalElements: Int,
+    val totalPages: Int,
     val items: List<BarterItemData>
 )
 

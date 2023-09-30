@@ -43,15 +43,16 @@ interface StoreService {
     ): Response<Void>
 
     // 스토어글 상세보기 API
-    @GET("api/store/detail/{storeIdx}")
+    @GET("api/store/{storeIdx}")
     suspend fun getStoreDetail(
         @Path("storeIdx") storeIdx: Long
     ): Response<StoreDetailResponseDTO>
 
     // 스토어 거래진행 계좌번호 불러오기 API
-    @GET("api/store/trade/{storeIdx}")
+    @GET("api/store/trade/{storeIdx}/{userIdx}")
     suspend fun getStoreTrade(
-        @Path("storeIdx") storeIdx: Long
+        @Path("storeIdx") storeIdx: Long,
+        @Path("userIdx") userIdx: Long
     ): Response<StoreTradeResponseDTO>
 
     // 스토어 거래진행 취소 API
@@ -114,7 +115,7 @@ data class RegisterStoreResponse(
 // 상점 수정 요청 DTO
 // 상점 수정 응답 DTO = http형식
 data class UpdateStoreDTO(
-    val storeEndDate: String,
+    val storePrice: Int,
     val storeText: String,
 )
 

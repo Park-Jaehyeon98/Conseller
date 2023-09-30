@@ -59,7 +59,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
         if (triggerEffect) {
             when (cancelTradeResult) {
                 true -> {
-                    navController.navigate("AuctionDetailPage/${index}")
+                    navController.navigate("StoreDetailPage/${index}")
                     triggerEffect = false
                 }
                 false -> {
@@ -93,6 +93,11 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                     contentScale = ContentScale.Crop,
                 )
             }
+            Text(
+                text = "약 15분 내에 입금완료 되지 않으면 알람이 오고 거래가 중지됩니다.",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
 
             Text(
                 text = "계좌번호 : ${storeTrades?.userAccount ?: "N/A"}",
@@ -105,7 +110,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                 fontSize = 20.sp
             )
             Text(
-                text = "거래가격 : ${storeDetail?.storePrice ?: "N/A"}",
+                text = "거래가격 : ${storeDetail?.storePrice ?: "N/A"} 원",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -124,12 +129,6 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                     text = "거래취소",
                     modifier = Modifier.weight(1f),
                     onClick = { showDeleteDialog = true }
-                )
-
-                SelectButton(
-                    text = "임시 완료 이동 버튼",
-                    modifier = Modifier.weight(1f),
-                    onClick = { navController.navigate("WaitingPage") }
                 )
             }
 
@@ -151,7 +150,7 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                                 storeViewModel.completeStorePayment(index!!.toLong())
                                 when (paymentCompleted) {
                                     null -> {
-                                        navController.navigate("DesiredDestination") // 원하는 경로로 변경하세요.
+                                        navController.navigate("WaitingPage")
                                         showDepositConfirmDialog = false
                                     }
                                     else -> {

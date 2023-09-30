@@ -30,15 +30,15 @@ class AuctionViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
-    private var currentPage = 0
+    private var currentPage = 1
     private var currentFilter = AuctionFilterDTO(0, 0, 0, null, currentPage)
 
     // 경매글 전체 목록 불러오기
     private val _auctionItems = MutableStateFlow<List<AuctionItemData>>(emptyList())
     val auctionItems: StateFlow<List<AuctionItemData>> = _auctionItems
 
-    private val _totalItems = MutableStateFlow<Long>(0)
-    val totalItems: StateFlow<Long> = _totalItems
+    private val _totalItems = MutableStateFlow<Int>(0)
+    val totalItems: StateFlow<Int> = _totalItems
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -65,6 +65,10 @@ class AuctionViewModel @Inject constructor(
     private val _navigateToAuctionDetail = MutableStateFlow<Long?>(null)
     val navigateToAuctionDetail: StateFlow<Long?> = _navigateToAuctionDetail
 
+    // 물물교환 수정후 네비게이션 받기
+    private val _updateAuctionNavi = MutableStateFlow<Boolean?>(false)
+    val updateAuctionNavi: StateFlow<Boolean?> = _updateAuctionNavi
+
     // 경매 거래 진행 계좌번호 받기
     private val _auctionTrade = MutableStateFlow<AuctionTradeResponseDTO?>(null)
     val auctionTrades: StateFlow<AuctionTradeResponseDTO?> = _auctionTrade
@@ -75,12 +79,23 @@ class AuctionViewModel @Inject constructor(
 
 
     // 경매 확정 페이지 데이터
-    private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO?>(null)
-    val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO?> = _auctionConfirm
+    private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO>(
+        AuctionConfirmPageResponseDTO(
+            gifticonDataImageName = "",
+            notificationCreatedDate = "",
+            giftconName = "",
+            auctionPrice = 0,
+            postContent = "",
+            buyUserImageUrl = "",
+            buyUserNickname = "",
+            buyUserIdx = 0L
+        )
+    )
+    val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO> = _auctionConfirm
 
     // 경매 확정 페이지 네비게이터
-    private val _auctionConfirmNavi = MutableStateFlow<Boolean?>(null)
-    val auctionConfirmNavi: StateFlow<Boolean?> = _auctionConfirmNavi
+    private val _auctionConfirmNavi = MutableStateFlow<Boolean>(false)
+    val auctionConfirmNavi: StateFlow<Boolean> = _auctionConfirmNavi
 
     // 경매 낙찰 페이지 데이터
     private val _auctionConfirmBuy = MutableStateFlow<AuctionConfirmBuyPageResponseDTO?>(null)
@@ -94,6 +109,7 @@ class AuctionViewModel @Inject constructor(
     // 경매 등록후 네비게이션 리셋
     fun resetNavigation() {
         _navigateToAuctionDetail.value = null
+        _updateAuctionNavi.value = false
     }
 
     fun changePage(page: Int) {
@@ -124,7 +140,7 @@ class AuctionViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _auctionItems.value = response.body()!!.items
-                    _totalItems.value = response.body()!!.totalElements
+                    _totalItems.value = response.body()!!.totalPages
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -170,6 +186,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.updateAuctionItem(auctionIdx, updateData)
 
                 if (response.isSuccessful) {
+                    _updateAuctionNavi.value = true
                     _error.value = null
                 }
             } catch (e: CustomException) {
@@ -256,7 +273,6 @@ class AuctionViewModel @Inject constructor(
             val userIdx = getUserIdFromPreference()
             _isLoading.value = true
             _error.value = null
-            Log.d("@@@@@@@@@@@@@@@2","${userIdx}")
             try {
                 val response = service.getMyAuctionItems(userIdx)
                 if (response.isSuccessful && response.body() != null) {
@@ -275,10 +291,11 @@ class AuctionViewModel @Inject constructor(
     // 경매 거래 진행
     fun fetchAccountDetails(auctionIdx: Long) {
         viewModelScope.launch {
+            val userIdx = getUserIdFromPreference()
             _isLoading.value = true
             _error.value = null
             try {
-                val response = service.getAuctionTrade(auctionIdx)
+                val response = service.getAuctionTrade(auctionIdx,userIdx)
                 if (response.isSuccessful && response.body() != null) {
                     _auctionTrade.value = response.body()
                 }
@@ -344,7 +361,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.getAuctionConfirm(auctionIdx)
 
                 if (response.isSuccessful && response.body() != null) {
-                    _auctionConfirm.value = response.body()
+                    _auctionConfirm.value = response.body()!!
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -367,7 +384,7 @@ class AuctionViewModel @Inject constructor(
                 val response = service.auctionConfirm(AuctionConfirmRequestDTO(auctionIdx,confirm))
 
                 if (response.isSuccessful) {
-                    _auctionConfirm.value = null
+//                    _auctionConfirm.value = null
                     _auctionConfirmNavi.value = true
                 }
             } catch (e: CustomException) {

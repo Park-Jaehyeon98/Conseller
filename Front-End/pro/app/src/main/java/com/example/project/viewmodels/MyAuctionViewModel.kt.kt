@@ -43,28 +43,6 @@ class MyAuctionViewModel @Inject constructor(
     private val _event = MutableStateFlow<String?>(null)
     val event: StateFlow<String?> = _event
 
-
-    // 내가 입찰한 경매목록 불러오기
-    fun fetchMyAuctions() {
-        viewModelScope.launch {
-            _loading.value = true
-            _error.value = null
-            val userIdx = sharedPreferencesUtil.getUserId()
-            try {
-                val response = service.getMyAuctions(userIdx)
-                if (response.isSuccessful) {
-                    _myAuctions.value = response.body() ?: emptyList()
-                }
-            } catch (e: CustomException) {
-                _error.value = e.message
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
-            } finally {
-                _loading.value = false
-            }
-        }
-    }
-
     // 내 알람 목록 불러오기
     fun fetchMyNotifications() {
         viewModelScope.launch {

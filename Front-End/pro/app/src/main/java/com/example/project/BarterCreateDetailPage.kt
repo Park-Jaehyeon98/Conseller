@@ -2,49 +2,59 @@ package com.example.project
 
 import FilterButton
 import SelectButton
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.project.viewmodels.BarterViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.viewmodels.BarterViewModel
 import com.example.project.viewmodels.MygifticonViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>) {
+fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>, mygifticonViewModel: MygifticonViewModel) {
     val barterviewModel: BarterViewModel = hiltViewModel()
-    val mygifticonViewModel : MygifticonViewModel = hiltViewModel()
     val error by barterviewModel.error.collectAsState()
     val myerror by mygifticonViewModel.error.collectAsState()
     val selectedItems = mygifticonViewModel.getSelectedItems(selectedItemIndices)
-    val navigateToIdx by barterviewModel.navigateToBarterDetail.collectAsState() // 등록시 idx받기
+    val createBarterNavi by barterviewModel.createBarterNavi.collectAsState() // 등록시 idx받기
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -66,6 +76,12 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         if (myerror != null) {
             showSnackbar = true
             snackbarText = myerror!!
+        }
+    }
+    LaunchedEffect(createBarterNavi) {
+        createBarterNavi?.let { barterIdx ->
+            navController.navigate("BarterDetailPage/${barterIdx}")
+            barterviewModel.resetNavigation()
         }
     }
     LaunchedEffect(showSnackbar) {
@@ -112,7 +128,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             items(selectedItems.size) { index ->
                 val item = selectedItems[index]
                 Image(
-                    painter = rememberAsyncImagePainter(model = item.gifticonAllImagName),
+                    painter = rememberAsyncImagePainter(model = item.gifticonImageName),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(4.dp)
@@ -215,7 +231,6 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                 text = "등록",
                 onClick = {
                     if(error == null) {
-                        navController.navigate("BarterPage")
                         showRegisterConfirmDialog = true
                     }
                 },
@@ -233,13 +248,6 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
-
-            LaunchedEffect(navigateToIdx) {
-                navigateToIdx?.let { barterIdx ->
-                    navController.navigate("AuctionDetailPage/${barterIdx}")
-                    barterviewModel.resetNavigation()
-                }
-            }
         }
 
         // 등록 확인 대화상자
@@ -249,7 +257,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                     showRegisterConfirmDialog = false
                 },
                 title = {
-                    Text(text = "바터 아이템 등록")
+                    Text(text = "등록")
                 },
                 text = {
                     Text("등록하시겠습니까?", fontSize = 18.sp)
@@ -271,7 +279,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
                                 kindSmallStatus = filter2Selected,
                                 barterName = postTitle,
                                 barterText = postContent,
-                                barterEndDate = "123", // 나중에하자....
+                                barterEndDate = "11111111111111", // 추후 게시글 시간 조정할때 수정
                                 selectedItemIndices = selectedItemIndices,
                             )
                             showRegisterConfirmDialog = false

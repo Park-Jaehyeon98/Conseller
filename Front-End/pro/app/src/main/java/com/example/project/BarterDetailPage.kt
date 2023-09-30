@@ -204,7 +204,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                     .padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                if (selectedItemIndex != barterDetail?.barterUserIdx && false /*개발용*/) {
+                if (selectedItemIndex != barterDetail?.barterUserIdx) {
                     if(barterDetail?.barterRequestIdx?.toInt() == 0) {
                         SelectButton(
                             text = "제안하기",

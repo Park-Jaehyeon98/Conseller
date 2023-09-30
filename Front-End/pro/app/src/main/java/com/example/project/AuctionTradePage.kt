@@ -137,7 +137,10 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
 
                 SelectButton(
                     text = "(임시) 완료 버튼",
-                    onClick = { navController.navigate("WaitingPage") },
+                    onClick = { navController.navigate("WaitingPage"){
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    } },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -161,7 +164,10 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                             auctionViewModel.completeAuctionPayment(index!!.toLong())
                             when (error) {
                                 null -> {
-                                    navController.navigate("WaitingPage")
+                                    navController.navigate("WaitingPage"){
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
                                     showDepositConfirmDialog = false
                                 }
                                 else -> {

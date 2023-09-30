@@ -166,7 +166,10 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     if (selectedItemIndex != storeDetail?.storeUserIdx) {
                         SelectButton(
                             text = "구매하기",
-                            onClick = { navController.navigate("StoreTradePage/${storeDetail?.storeIdx}") }
+                            onClick = { navController.navigate("StoreTradePage/${storeDetail?.storeIdx}"){
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            } }
                         )
                     } else {
                         SelectButton(

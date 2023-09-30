@@ -35,12 +35,12 @@ interface MyPageService {
     @GET("api/user/{userIdx}/store")
     suspend fun getUserStore(
         @Path("userIdx") useridx: Long,
-    ): Response<myPurchaseItems>
+    ): Response<myStoreItems>
     // 내 구매보기
     @GET("api/user/{userIdx}/store/purchase")
     suspend fun getUserPurchase(
         @Path("userIdx") useridx: Long,
-    ): Response<myStoreItems>
+    ): Response<myPurchaseItems>
 
     // 내 경매 보기
     @GET("api/user/{userIdx}/auction")
@@ -243,22 +243,21 @@ data class myStoreData(
     val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
-    val storeStatus:String,
-    val isDeposit: Boolean,
-    val storePrice: Int,
+    val storeStatus: String,
+    val deposit: Boolean,
+    val storePrice: Int
 )
-
 data  class myPurchaseItems(
     val items:List<myPurchaseData>
 )
 
 data class myPurchaseData(
     val storeIdx: Long,
-    val storePrice: Int,
-    val storeCreatedDate: String,
+    val gifticonDataImageName: String,
+    val gifticonName: String,
+    val gifticonEndDate: String,
     val storeEndDate: String,
-    val storeText: String,
     val storeStatus: String,
-    val gifticonIdx: Long,
-    val consumeridx: Long
+    val deposit: Boolean,
+    val storePrice: Int
 )

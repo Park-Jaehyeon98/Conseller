@@ -254,7 +254,10 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                 ) {
                     SelectButton(
                         text = "즉시구매",
-                        onClick = { navController.navigate("AuctionTradePage/${auctionDetail?.auctionIdx}") }
+                        onClick = { navController.navigate("AuctionTradePage/${auctionDetail?.auctionIdx}"){
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        } }
                     )
 
                     Spacer(modifier = Modifier.width(24.dp))

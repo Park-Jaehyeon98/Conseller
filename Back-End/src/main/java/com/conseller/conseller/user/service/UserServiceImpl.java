@@ -3,6 +3,7 @@ package com.conseller.conseller.user.service;
 import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
+import com.conseller.conseller.barter.barter.barterDto.mapper.BarterMapper;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
@@ -93,21 +94,21 @@ public class UserServiceImpl implements UserService {
 
         // 입력 id 정보가 유효한지 확인
         User user = userRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("유효하지 않은 id 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.WRONG_ID));
 
         // 입력한 password 정보가 유효한지 확인
         if (!user.checkPassword(new BCryptPasswordEncoder(), loginRequest.getUserPassword())) {
-            throw new RuntimeException("유효하지 않은 password 입니다.");
+            throw new CustomException(CustomExceptionStatus.WRONG_PW);
         }
 
         // 입력한 유저가 탈퇴한 유저인지 확인
         if (user.getUserDeletedDate() != null) {
-            throw new RuntimeException("이미 탈퇴한 유저입니다.");
+            throw new CustomException(CustomExceptionStatus.RESTRICT);
         }
 
         //입력한 유저가 사용 제한된 유저인지 확인
         if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
-            throw new RuntimeException("서비스 이용 제한된 유저입니다.");
+            throw new CustomException(CustomExceptionStatus.RESTRICT);
         }
 
        // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
@@ -154,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
         // 2. 해당 이메일과 ID를 가진 유저 불러오기
         User user = userRepository.findByUserEmailAndUserId(emailAndIdRequest.getUserEmail(), emailAndIdRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("없는 유저 정보 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         // 3. 임시 비밀번호로 변경 및 암호화
         user.setUserPassword(tempPassword);
@@ -170,7 +171,7 @@ public class UserServiceImpl implements UserService {
 
         //1. 이메일과 이름을 통해 유저 정보를 불러온다.
         User user = userRepository.findByUserEmailAndUserName(emailAndNameRequest.getUserEmail(), emailAndNameRequest.getUserName())
-                .orElseThrow(() -> new RuntimeException("유저 정보를 불러올 수 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         StringBuilder partialEncodeId = new StringBuilder();
         String userId = user.getUserId();
@@ -188,7 +189,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponse getUserInfo(long userIdx) {
 
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("해당 인덱스에 대한 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         return UserInfoResponse.builder()
                 .userId(user.getUserId())
@@ -205,7 +206,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void uploadProfile(long userIdx, String profileUrl) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("유저 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         user.setUserProfileUrl(profileUrl);
     }
@@ -215,24 +216,24 @@ public class UserServiceImpl implements UserService {
     public void checkUserPassword(UserCheckPasswordRequest userCheckPasswordRequest) {
         //유저의 idx와 비밀번호를 통해 해당 유저가 존재하는지 확인하는 쿼리를 짜야함.
         User user = userRepository.findByUserIdx(userCheckPasswordRequest.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("유저가 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         if (!user.checkPassword(new BCryptPasswordEncoder(), userCheckPasswordRequest.getUserPassword())) {
-            throw new RuntimeException("해당 idx와 비밀번호를 가진 유저가 존재하지 않습니다.");
+            throw new CustomException(CustomExceptionStatus.USER_INVALID);
         }
     }
 
     @Override
     public void deposit(long userIdx, Long deposit) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         user.setUserDeposit(deposit);
     }
 
     @Override
     public List<GifticonResponse> getGifticons(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         return user.getGifticons()
                 .stream()
@@ -262,7 +263,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AuctionItemData> getUserAuctions(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         return AuctionMapper.INSTANCE.auctionsToItemDatas(user.getAuctions());
     }
@@ -270,8 +271,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AuctionBidResponse> getUserAuctionBids(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
-
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         List<AuctionBidResponse> auctionBidResponses = new ArrayList<>();
 
         for (AuctionBid bid : user.getAuctionBids()) {
@@ -292,41 +292,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<MyBarterResponseDto> getUserBarters(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        List<MyBarterResponseDto> barterResponseDtos = new ArrayList<>();
-
-        for (Barter barter : user.getBarters()) {
-            MyBarterResponseDto.MyBarterResponseDtoBuilder barterResponseDto = MyBarterResponseDto.builder()
-                    .barterIdx(barter.getBarterIdx())
-                    .barterName(barter.getBarterName())
-                    .barterText(barter.getBarterText())
-                    .barterStatus(barter.getBarterStatus())
-                    .barterCreatedDate(DateTimeConverter.getInstance().convertString(barter.getBarterCreatedDate()))
-                    .barterEndDate(DateTimeConverter.getInstance().convertString(barter.getBarterEndDate()))
-                    .barterHostIdx(barter.getBarterHost().getUserIdx())
-                    .subCategory(String.valueOf(barter.getSubCategory().getSubCategoryIdx()));
-
-            List<GifticonResponse> gifticonResponses = barter.getBarterHostItemList().stream()
-                    .map(item -> item.getGifticon().toResponseDto())
-                    .collect(Collectors.toList());
-
-            barterResponseDto.barterHostItems(gifticonResponses);
-
-            if (barter.getBarterCompleteGuest() != null) {
-                barterResponseDto.barterCompleteGuestIdx(barter.getBarterCompleteGuest().getUserIdx());
-            }
-
-            barterResponseDtos.add(barterResponseDto.build());
-        }
-
-        return barterResponseDtos;
+        return user.getBarters().stream()
+                .map(BarterMapper.INSTANCE::toMybarterResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<MyBarterRequestResponseDto> getUserBarterRequests(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         List<MyBarterRequestResponseDto> myBarterRequests = new ArrayList<>();
 
@@ -347,6 +323,7 @@ public class UserServiceImpl implements UserService {
                     .barterStatus(barterRequest.getBarter().getBarterStatus())
                     .barterRequestStatus(barterRequest.getBarterRequestStatus())
                     .barterGuestItems(barterGuestItems)
+                    .myBarterResponseDto(BarterMapper.INSTANCE.toMybarterResponseDto(barterRequest.getBarter()))
                     .build();
 
             myBarterRequests.add(myBarterRequest);
@@ -358,7 +335,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(long userIdx, String token) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         //블랙리스트에 토큰 저장
         BlackList blackList = BlackList.builder()
@@ -375,7 +352,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void getFirebaseToken(Long userIdx, FirebaseRequest request) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         user.setFcm(request.getFirebaseToken());
     }
@@ -430,7 +407,7 @@ public class UserServiceImpl implements UserService {
     public AccessTokenResponse reCreateAccessToken(HttpServletRequest request, long userIdx) {
         // 0.요청이 들어온 유저의 정보를 db에서 가져온다.
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         // 1. header에서 refresh token 추출
         String refreshToken = jwtTokenProvider.resolveToken(request);

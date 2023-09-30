@@ -56,6 +56,7 @@ public interface AuctionMapper {
         itemData.setGifticonName(auction.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(auction.getGifticon().getGifticonEndDate()));
         itemData.setAuctionEndDate(DateTimeConverter.getInstance().convertString(auction.getAuctionEndDate()));
+        itemData.setAuctionStatus(auction.getAuctionStatus());
         itemData.setDeposit(false);
         itemData.setUpperPrice(auction.getUpperPrice());
         itemData.setLowerPrice(auction.getLowerPrice());

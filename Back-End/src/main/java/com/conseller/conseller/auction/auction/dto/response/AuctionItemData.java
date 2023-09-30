@@ -13,6 +13,7 @@ public class AuctionItemData {
     private String gifticonName;
     private String gifticonEndDate;
     private String auctionEndDate;
+    private String auctionStatus;
     private Boolean deposit;
     private Integer upperPrice;
     private Integer lowerPrice;

@@ -56,6 +56,7 @@ public interface StoreMapper {
         itemData.setGifticonName(store.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(store.getGifticon().getGifticonEndDate()));
         itemData.setStoreEndDate(DateTimeConverter.getInstance().convertString(store.getStoreEndDate()));
+        itemData.setStoreStatus(store.getStoreStatus());
         itemData.setDeposit(false);
         itemData.setStorePrice(store.getStorePrice());
 

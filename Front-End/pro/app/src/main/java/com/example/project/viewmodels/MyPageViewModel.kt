@@ -266,7 +266,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserStore(userIdx)
                 if (response.isSuccessful) {
-                    _GetMyPurchase.value = response.body()?.items ?: listOf()
+                    _GetMyStore.value = response.body()?.items ?: listOf()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
@@ -286,7 +286,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.getUserPurchase(userIdx)
                 if (response.isSuccessful) {
-                    _GetMyStore.value = response.body()?.items ?: listOf()
+                    _GetMyPurchase.value = response.body()?.items ?: listOf()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

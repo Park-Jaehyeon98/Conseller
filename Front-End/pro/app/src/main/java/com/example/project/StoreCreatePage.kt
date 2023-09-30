@@ -130,7 +130,10 @@ fun StoreCreatePage(navController: NavHostController, mygifticonViewModel: Mygif
                 Button(onClick = {
                     selectedItemIndex?.let {
                         if(error == null) {
-                            navController.navigate("StoreCreateDetailPage/$it")
+                            navController.navigate("StoreCreateDetailPage/$it"){
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
                         }
                     }
                 }) {

@@ -69,7 +69,10 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
     }
     LaunchedEffect(auctionConfirmBuyNavi) {
         if (auctionConfirmBuyNavi == true) {
-            navController.navigate("WaitingPage")
+            navController.navigate("WaitingPage"){
+                popUpTo(navController.graph.startDestinationId)
+                launchSingleTop = true
+            }
         }
     }
 

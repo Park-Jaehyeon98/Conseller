@@ -78,7 +78,9 @@ fun StoreConfirmPage(navController: NavHostController, index: String?) {
         }
     }
     LaunchedEffect(storeConfirmNavi) {
-        navController.navigate("Home")
+        if(storeConfirmNavi==true){
+            navController.navigate("Home")
+        }
     }
 
     Box(

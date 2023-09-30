@@ -55,7 +55,7 @@ fun MypageCoupon(navController: NavHostController) {
 
     var showDialog by remember { mutableStateOf(false) }
 
-    var ChoiceStatus by remember { mutableStateOf(0) }
+    var ChoiceStatus by remember { mutableStateOf(1) }
 
     var ChoiceGifticonIdx by remember { mutableStateOf<Long>(0) }
 
@@ -113,6 +113,8 @@ fun MypageCoupon(navController: NavHostController) {
 // 클릭 시 수행할 함수d
 @Composable
 fun SelectBar(onSelectionChanged: (Int) -> Unit) {
+    var selectedOption by remember { mutableStateOf(0) }  // 상태 변수로 현재 선택된 항목을 저장
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -120,47 +122,45 @@ fun SelectBar(onSelectionChanged: (Int) -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val commontextsize = 18
-        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(1) })) {
-            Text(
-                text = "내 쿠폰",
-                fontSize = commontextsize.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
-        }
 
+        BarOption(text = "내 쿠폰", id = 1, selectedOption, onSelectionChanged) {
+            selectedOption = it
+        }
         Spacer(modifier = Modifier.height(16.dp))
-
-        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(2) })) {
-            Text(
-                text = "경매 쿠폰",
-                fontSize = commontextsize.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
+        BarOption(text = "경매 쿠폰", id = 2, selectedOption, onSelectionChanged) {
+            selectedOption = it
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(3) })) {
-            Text(
-                text = "물물교환 쿠폰",
-                fontSize = commontextsize.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
+        BarOption(text = "물물교환 쿠폰", id = 3, selectedOption, onSelectionChanged) {
+            selectedOption = it
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        Row(modifier = Modifier.clickable(onClick = { onSelectionChanged(4) })) {
-            Text(
-                text = "스토어 쿠폰",
-                fontSize = commontextsize.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
+        BarOption(text = "스토어 쿠폰", id = 4, selectedOption, onSelectionChanged) {
+            selectedOption = it
         }
+    }
+}
+
+@Composable
+fun BarOption(
+    text: String,
+    id: Int,
+    selectedOption: Int,
+    onSelectionChanged: (Int) -> Unit,
+    onOptionClicked: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.clickable(onClick = {
+            onSelectionChanged(id)
+            onOptionClicked(id)  // 여기에 selectedOption 값을 변경하는 로직을 상위 Composable에게 위임
+        })
+    ) {
+        Text(
+            text = text,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (selectedOption == id) Color.Red else Color.Gray  // 선택된 항목이면 색상을 변경
+        )
     }
 }
 

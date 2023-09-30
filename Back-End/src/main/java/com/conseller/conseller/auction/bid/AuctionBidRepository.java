@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
@@ -13,4 +14,6 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     List<AuctionBid> findByAuctionIdxOrderByAuctionBidPriceDesc(Long auctionIdx);
 
     void deleteByUser_UserIdxAndAuction_AuctionIdx(Long userIdx, Long auctionIdx);
+
+    Optional<AuctionBid> findByUser_UserIdxAndAuction_AuctionIdx(Long userIdx, Long auctionIdx);
 }

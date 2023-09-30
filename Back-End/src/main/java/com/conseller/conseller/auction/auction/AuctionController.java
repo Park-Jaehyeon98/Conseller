@@ -1,12 +1,10 @@
 package com.conseller.conseller.auction.auction;
 
+import com.conseller.conseller.auction.auction.dto.request.AuctionConfirmRequest;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
-import com.conseller.conseller.auction.auction.dto.response.AuctionListResponse;
-import com.conseller.conseller.auction.auction.dto.response.AuctionTradeResponse;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
-import com.conseller.conseller.auction.auction.dto.response.RegistAuctionResponse;
+import com.conseller.conseller.auction.auction.dto.response.*;
 import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,30 +67,35 @@ public class AuctionController {
     }
 
     // 경매 거래 진행
-    @GetMapping("/trade/{auction_idx}")
-    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @RequestParam(name = "im") Integer index ) {
-        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, index);
+    @GetMapping("/trade/{auction_idx}/{user_idx}")
+    public ResponseEntity<AuctionTradeResponse> tradeAuction(@PathVariable("auction_idx") Long auctionIdx, @PathVariable("user_idx") Long userIdx) {
+        log.info(auctionIdx+" "+userIdx);
+        AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, userIdx);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", index, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 2, 1);
+        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 1, 1);
 
         return ResponseEntity.ok()
                 .body(response);
     }
 
     // 경매 진행 취소
+    // 없어도 될듯
     @PatchMapping("/cancel/{auction_idx}")
     public ResponseEntity<Object> cancelAuction(@PathVariable("auction_idx") Long auctionIdx) {
-        auctionService.cancelAuction(auctionIdx);
 
         // 거래 취소 알림
         notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "님과의 거래가 취소되었습니다", 1, 1);
         notificationService.sendAuctionNotification(auctionIdx, "경매 거래 취소", "님과의 거래가 취소되었습니다", 2, 1);
+
+        auctionService.cancelAuction(auctionIdx);
 
         return ResponseEntity.ok()
                 .build();
     }
 
     // 입금 완료 버튼
+    // 없어도 될듯
     @PatchMapping("/complete/{auction_idx}")
     public ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
         // 판매자에게 알림
@@ -103,15 +106,42 @@ public class AuctionController {
     }
 
     // 거래 확정 버튼
-    @PatchMapping("/confirm/{auction_idx}")
-    public  ResponseEntity<Object> confirmAuction(@PathVariable("auction_idx") Long auctionIdx) {
-        auctionService.confirmAuction(auctionIdx);
+    @PatchMapping("/Confirm")
+    public  ResponseEntity<Object> confirmAuction(@RequestBody AuctionConfirmRequest request) {
+        if(request.getConfirm()) {
+            auctionService.confirmAuction(request.getAuctionIdx());
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 완료", "님과의 거래가 완료되었습니다.", 1, 1);
+            notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 완료", "님과의 거래가 완료되었습니다.", 1, 1);
+        }
+        else {
+            // 거래 취소 알림
+            notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 취소", "님과의 거래가 취소되었습니다", 1, 1);
+            notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 취소", "님과의 거래가 취소되었습니다", 2, 1);
+
+            auctionService.cancelAuction(request.getAuctionIdx());
+        }
 
         return ResponseEntity.ok()
                 .build();
     }
+
+    // 경매 판매자 입금 확인
+    @GetMapping("/Confirm/{auction_idx}")
+    public ResponseEntity<AuctionConfirmResponse> getConfirmAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        AuctionConfirmResponse response = auctionService.getConfirmAuction(auctionIdx);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    @GetMapping("/ConfirmBuy/{auction_idx}")
+    public ResponseEntity<AuctionConfirmBuyResponse> getConfirmBuyAuction(@PathVariable("auction_idx") Long auctionIdx) {
+        AuctionConfirmBuyResponse response = auctionService.getConfirmBuyAuction(auctionIdx);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
 
 
 }

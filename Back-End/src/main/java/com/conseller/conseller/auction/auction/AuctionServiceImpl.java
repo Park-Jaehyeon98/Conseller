@@ -7,17 +7,17 @@ import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.*;
 import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.AuctionBidRepository;
+import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.enums.BidStatus;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
 import com.conseller.conseller.entity.User;
-import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.user.UserRepository;
-import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -65,9 +65,9 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public Long registAuction(RegistAuctionRequest request) {
         User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         Gifticon gifticon = gifticonRepository.findById(request.getGifticonIdx())
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         if(!gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
             throw new CustomException(CustomExceptionStatus.GIFTICON_NOT_KEEP);
@@ -104,7 +104,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
-        auction.setAuctionEndDate(DateTimeConverter.getInstance().convertLocalDateTime(auctionRequest.getAuctionEndDate()));
         auction.setAuctionText(auctionRequest.getAuctionText());
     }
 
@@ -125,17 +124,63 @@ public class AuctionServiceImpl implements AuctionService{
 
     // 경매 거래 진행
     @Override
-    public AuctionTradeResponse tradeAuction(Long auctionIdx, Integer index) {
+    public AuctionTradeResponse tradeAuction(Long auctionIdx, Long userIdx) {
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        // 경매 상태 거래중으로 변경
-        auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
+        AuctionTradeResponse response = null;
 
-        // 판매자의 계좌번호와 은행 전달
-        AuctionTradeResponse response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
-                auction.getUser().getUserAccountBank());
+        if(auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS.getStatus())) {
+            if (!auction.getUser().getUserIdx().equals(userIdx)) { //즉시 구매자 라면
+                log.info("immediate");
 
+                auction.setAuctionHighestBid(auction.getUpperPrice());
+                auction.setHighestBidUser(user);
+
+                boolean isExist = false;
+                Long bidIdx = 0L;
+
+                // 이미 입찰이 있고 그 입찰이 지금 경매라면
+                for (AuctionBid bid : auction.getAuctionBidList()) {
+                    if (bid.getUser().getUserIdx().equals(userIdx)) {
+                        isExist = true;
+                        bidIdx = bid.getAuctionBidIdx();
+                    }
+                }
+
+                if (isExist) {
+                    AuctionBid auctionBid = auctionBidRepository.findById(bidIdx)
+                            .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
+
+                    // 입찰 정보 수정
+                    auctionBid.setAuctionBidPrice(auction.getUpperPrice());
+                    auctionBid.setAuction(auction);
+                } else { // 없으면
+                    AuctionBid auctionBid = AuctionBidMapper.INSTANCE.registImToAuctionBid(user, auction, auction.getUpperPrice());
+
+                    // 새로 등록
+                    auctionBidRepository.save(auctionBid);
+                }
+            }
+
+            // 경매 상태 거래중으로 변경
+            auction.setAuctionStatus(AuctionStatus.IN_TRADE.getStatus());
+
+            //입찰 상태를 낙찰 예정으로 변경
+            AuctionBid bid = auctionBidRepository.findByUser_UserIdxAndAuction_AuctionIdx(auction.getHighestBidUser().getUserIdx(), auctionIdx)
+                    .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
+
+            bid.setAuctionBidStatus(BidStatus.EXPECTED.getStatus());
+
+            // 판매자의 계좌번호와 은행 전달
+            response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
+                    auction.getUser().getUserAccountBank());
+        }
+        else {
+            throw new CustomException(CustomExceptionStatus.ALREADY_TRADE_AUCTION);
+        }
 
         return response;
     }
@@ -163,9 +208,8 @@ public class AuctionServiceImpl implements AuctionService{
             auction.setHighestBidUser(auctionBidList.get(1).getUser());
         }
 
-        //여기서 유저가 같으니 다 삭제됨
         auctionBidRepository.deleteByUser_UserIdxAndAuction_AuctionIdx(auctionBidList.get(0).getUser().getUserIdx(), auctionIdx);
-
+        log.info("거래 취소 완료");
     }
 
     // 경매 거래 확정
@@ -193,4 +237,38 @@ public class AuctionServiceImpl implements AuctionService{
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
         auction.setAuctionCompletedDate(LocalDateTime.now());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AuctionConfirmResponse getConfirmAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+
+        auction.setNotificationCreatedDate(LocalDateTime.now());
+
+        AuctionConfirmResponse response = AuctionMapper.INSTANCE.auctionToConfirm(auction);
+
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AuctionConfirmBuyResponse getConfirmBuyAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+
+        auction.setNotificationCreatedDate(LocalDateTime.now());
+
+        AuctionConfirmBuyResponse response = AuctionMapper.INSTANCE.auctionToConfirmBuy(auction);
+
+        return response;
+    }
+
+
+    public List<Auction> getAuctionConfirmList() {
+        List<Auction> auctions = auctionRepository.findByAuctionListConfirm();
+
+        return auctions;
+    }
+
 }

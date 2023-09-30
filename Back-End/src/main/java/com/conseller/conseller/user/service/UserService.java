@@ -6,9 +6,11 @@ import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponse
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
+import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -63,10 +65,10 @@ public interface UserService {
     public List<GifticonResponse> getGifticons(long userIdx);
 
     //내 판매목록 불러오기
-    public List<StoreResponse> getUserStores(long userIdx);
+    public List<StoreItemData> getUserStores(long userIdx);
 
     //내가 구매한 기프티콘에 대한 판매글 목록 불러오기
-    public List<StoreResponse> getUserPurchaseStores(long userIdx);
+    public List<StoreItemData> getUserPurchaseStores(long userIdx);
 
     //내 경매목록 불러오기
     public List<AuctionItemData> getUserAuctions(long userIdx);
@@ -89,5 +91,9 @@ public interface UserService {
     //pattern 저장
     public void patternRegister(@Valid UserPatternRequest userPatternRequest);
 
+    //pattern 로그인
     public LoginResponse loginPattern(UserPatternRequest userPatternRequest);
+
+    //기프티콘 페이지 단위로 보내주기
+    public GifticonPageResponse getGifticonPage(GifticonRequestDTO gifticonRequestDTO);
 }

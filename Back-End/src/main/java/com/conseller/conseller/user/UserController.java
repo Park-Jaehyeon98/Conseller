@@ -5,7 +5,7 @@ import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
-import com.conseller.conseller.store.dto.response.StoreResponse;
+import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.InfoValidationRequest;
 import com.conseller.conseller.user.dto.response.Item;
@@ -180,9 +180,9 @@ public class UserController {
 
     //내 판매 보기
     @GetMapping("/{userIdx}/store")
-    public ResponseEntity<Item<List<StoreResponse>>> getUserStores(@PathVariable long userIdx) {
+    public ResponseEntity<Item<List<StoreItemData>>> getUserStores(@PathVariable long userIdx) {
 
-        Item<List<StoreResponse>> response = new Item<>(userService.getUserStores(userIdx));
+        Item<List<StoreItemData>> response = new Item<>(userService.getUserStores(userIdx));
 
         return ResponseEntity.ok()
                 .body(response);
@@ -190,9 +190,8 @@ public class UserController {
 
     //내 구매 보기
     @GetMapping("/{userIdx}/store/purchase")
-    public ResponseEntity<Item<List<StoreResponse>>> getUserPurchaseStores(@PathVariable long userIdx) {
-        List<StoreResponse> userStores = userService.getUserPurchaseStores(userIdx);
-        Item<List<StoreResponse>> response = new Item<>(userStores);
+    public ResponseEntity<Item<List<StoreItemData>>> getUserPurchaseStores(@PathVariable long userIdx) {
+        Item<List<StoreItemData>> response = new Item<>(userService.getUserPurchaseStores(userIdx));
         return ResponseEntity.ok()
                 .body(response);
     }
@@ -279,29 +278,9 @@ public class UserController {
 
     }
 
-//    회원가입
-//    @PostMapping
-//    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-//
-//        log.info("유저 회원가입 호출");
-//        userService.register(signUpRequest);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
-//
-//    일반 로그인
-//    @PostMapping("/login")
-//    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-//
-//        LoginResponse loginResponse = userService.login(loginRequest);
-//
-//        log.info("user nickname : " + loginResponse.getUserNickname());
-//        log.info("user accessToken : " + loginResponse.getAccessToken());
-//        log.info("user refreshToken : " + loginResponse.getRefreshToken());
-//
-//        return ResponseEntity.ok()
-//                .body(loginResponse);
-//    }
-
+    @PostMapping("/getgifticons")
+    public ResponseEntity<Object> getUserGifticonPages(@RequestBody GifticonRequestDTO gifticonRequestDTO) {
+        return ResponseEntity.ok()
+                .body(userService.getGifticonPage(gifticonRequestDTO));
+    }
 }

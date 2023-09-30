@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyStoreRequest {
-    private Integer storePrice;
+public class StoreConfirmRequest {
+    private Long storeIdx;
 
-    private String storeText;
+    private Boolean confirm;
 }

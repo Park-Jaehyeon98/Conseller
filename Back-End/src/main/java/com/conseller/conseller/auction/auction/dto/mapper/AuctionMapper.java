@@ -1,9 +1,7 @@
 package com.conseller.conseller.auction.auction.dto.mapper;
 
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
-import com.conseller.conseller.auction.auction.dto.response.AuctionBidItemData;
-import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
-import com.conseller.conseller.auction.auction.dto.response.DetailAuctionResponse;
+import com.conseller.conseller.auction.auction.dto.response.*;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.Gifticon;
@@ -58,6 +56,7 @@ public interface AuctionMapper {
         itemData.setGifticonName(auction.getGifticon().getGifticonName());
         itemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(auction.getGifticon().getGifticonEndDate()));
         itemData.setAuctionEndDate(DateTimeConverter.getInstance().convertString(auction.getAuctionEndDate()));
+        itemData.setAuctionStatus(auction.getAuctionStatus());
         itemData.setDeposit(false);
         itemData.setUpperPrice(auction.getUpperPrice());
         itemData.setLowerPrice(auction.getLowerPrice());
@@ -87,4 +86,36 @@ public interface AuctionMapper {
     @IterableMapping(qualifiedByName = "B2B")
     List<AuctionBidItemData> bidsToItemDatas(List<AuctionBid> auctionBidList);
 
+    // auction -> auctionConfirmResponse 매핑
+    default AuctionConfirmResponse auctionToConfirm(Auction auction) {
+        AuctionConfirmResponse response = new AuctionConfirmResponse();
+
+        response.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
+        response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(auction.getNotificationCreatedDate()));
+        response.setGiftconName(auction.getGifticon().getGifticonName());
+        response.setAuctionPrice(auction.getAuctionHighestBid());
+        response.setPostContent(auction.getAuctionText());
+        response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());
+        response.setBuyUserNickname(auction.getHighestBidUser().getUserNickname());
+        response.setBuyUserIdx(auction.getHighestBidUser().getUserIdx());
+
+        return response;
+    }
+
+    // auction -> auctionConfirmBuyResponse 매핑
+    default AuctionConfirmBuyResponse auctionToConfirmBuy(Auction auction) {
+        AuctionConfirmBuyResponse response = new AuctionConfirmBuyResponse();
+
+        response.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
+        response.setGiftconName(auction.getGifticon().getGifticonName());
+        response.setAuctionPrice(auction.getAuctionHighestBid());
+        response.setPostContent(auction.getAuctionText());
+        response.setUserAccount(auction.getUser().getUserAccount());
+        response.setUserAccountBank(auction.getUser().getUserAccountBank());
+        response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());
+        response.setBuyUserNickname(auction.getHighestBidUser().getUserNickname());
+        response.setBuyUserIdx(auction.getHighestBidUser().getUserIdx());
+
+        return response;
+    }
 }

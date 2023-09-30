@@ -16,4 +16,8 @@ public interface AuctionBidMapper {
     @Mapping(source = "user", target = "user")
     @Mapping(source = "auction", target = "auction")
     AuctionBid registRequestToAuctionBid(User user, Auction auction, AuctionBidRequest request);
+
+    @Mapping(source = "user", target = "user")
+    @Mapping(source = "auction", target = "auction")
+    AuctionBid registImToAuctionBid(User user, Auction auction, Integer auctionBidPrice);
 }

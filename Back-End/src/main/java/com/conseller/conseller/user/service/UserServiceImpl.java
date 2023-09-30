@@ -4,14 +4,17 @@ import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.exception.CustomException;
 import com.conseller.conseller.exception.CustomExceptionStatus;
+import com.conseller.conseller.gifticon.dto.response.GifticonData;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.gifticon.enums.GifticonStatus;
+import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.store.StoreRepository;
-import com.conseller.conseller.store.dto.response.StoreResponse;
+import com.conseller.conseller.store.dto.mapper.StoreMapper;
+import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.request.*;
@@ -26,6 +29,9 @@ import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -52,6 +58,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final DateTimeConverter dateTimeConverter;
+    private final GifticonRepository gifticonRepository;
 
     @Override
     public User register(SignUpRequest signUpRequest) {
@@ -234,61 +241,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<StoreResponse> getUserStores(long userIdx) {
+    public List<StoreItemData> getUserStores(long userIdx) {
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        List<StoreResponse> storeResponses = new ArrayList<>();
-
-        for (Store store : user.getStores()) {
-            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
-                    .storeIdx(store.getStoreIdx())
-                    .gifticonIdx(store.getGifticon().getGifticonIdx())
-                    .storePrice(store.getStorePrice())
-                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
-                    .storeText(store.getStoreText())
-                    .storeStatus(store.getStoreStatus());
-
-                    if (store.getStoreEndDate() != null) {
-                        response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
-                    }
-
-                    if (store.getConsumer() != null) {
-                        response.consumerIdx(store.getConsumer().getUserIdx());
-                    }
-
-            storeResponses.add(response.build());
-        }
-
-        return storeResponses;
+        return user.getStores().stream()
+                .map(StoreMapper.INSTANCE::storeToItemData)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<StoreResponse> getUserPurchaseStores(long userIdx) {
+    public List<StoreItemData> getUserPurchaseStores(long userIdx) {
         List<Store> userPurchaseStores = storeRepository.findStoresByConsumerIdx(userIdx);
-        List<StoreResponse> storeResponses = new ArrayList<>();
 
-        for (Store store : userPurchaseStores) {
-            StoreResponse.StoreResponseBuilder response = StoreResponse.builder()
-                    .storeIdx(store.getStoreIdx())
-                    .gifticonIdx(store.getGifticon().getGifticonIdx())
-                    .storePrice(store.getStorePrice())
-                    .storeCreatedDate(dateTimeConverter.convertString(store.getStoreCreatedDate()))
-                    .storeText(store.getStoreText())
-                    .storeStatus(store.getStoreStatus());
-
-            if (store.getStoreEndDate() != null) {
-                response.storeEndDate(dateTimeConverter.convertString(store.getStoreEndDate()));
-            }
-
-            if (store.getConsumer() != null) {
-                response.consumerIdx(store.getConsumer().getUserIdx());
-            }
-
-            storeResponses.add(response.build());
-        }
-
-        return storeResponses;
+        return userPurchaseStores.stream()
+                .map(StoreMapper.INSTANCE::storeToItemData)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -375,6 +343,8 @@ public class UserServiceImpl implements UserService {
             MyBarterRequestResponseDto myBarterRequest = MyBarterRequestResponseDto.builder()
                     .barterRequestIdx(barterRequest.getBarterRequestIdx())
                     .barterIdx(barterRequest.getBarter().getBarterIdx())
+                    .barterName(barterRequest.getBarter().getBarterName())
+                    .barterStatus(barterRequest.getBarter().getBarterStatus())
                     .barterRequestStatus(barterRequest.getBarterRequestStatus())
                     .barterGuestItems(barterGuestItems)
                     .build();
@@ -408,6 +378,52 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
 
         user.setFcm(request.getFirebaseToken());
+    }
+
+    @Override
+    public GifticonPageResponse getGifticonPage(GifticonRequestDTO gifticonRequestDTO) {
+        Pageable pageable = PageRequest.of(gifticonRequestDTO.getPage() - 1, 10);
+        List<Gifticon> gifticonList = gifticonRepository.findAll();
+        List<Gifticon> myGifticonList = new ArrayList<>();
+        for(Gifticon gifticon: gifticonList) {
+            if(gifticon.getUser().getUserIdx() == gifticonRequestDTO.getUserIdx()
+                    && gifticon.getGifticonStatus().equals(GifticonStatus.KEEP.getStatus())){
+                myGifticonList.add(gifticon);
+            }
+        }
+        myGifticonList.sort((gifticon1, gifticon2) -> {
+            LocalDateTime endDate1 = gifticon1.getGifticonEndDate();
+            LocalDateTime endDate2 = gifticon2.getGifticonEndDate();
+            return endDate1.compareTo(endDate2);
+        });
+
+        int pageStart = (gifticonRequestDTO.getPage()-1)*10;
+
+        List<GifticonData> gifticonDataList = new ArrayList<>();
+        for(int i=pageStart; i<pageStart+10; i++) {
+            if(i >= myGifticonList.size()) break;
+            Gifticon gifticon = myGifticonList.get(i);
+            GifticonData gifticonData = GifticonData.builder()
+                    .gifticonIdx(gifticon.getGifticonIdx())
+                    .gifticonImageName(gifticon.getGifticonDataImageUrl())
+                    .gifticonName(gifticon.getGifticonName())
+                    .gifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()))
+                    .build();
+
+            gifticonDataList.add(gifticonData);
+        }
+
+        Long count = (long) myGifticonList.size();
+        Integer totalPage = 0;
+        if(count > 0) {
+            totalPage = ((int)((long) count))/10 + 1;
+        }
+
+        return GifticonPageResponse.builder()
+                .totalElements(count)
+                .totalPages(totalPage)
+                .items(gifticonDataList)
+                .build();
     }
 
     @Override

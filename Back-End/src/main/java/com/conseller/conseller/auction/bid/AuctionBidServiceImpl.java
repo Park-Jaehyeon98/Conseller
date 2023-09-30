@@ -4,6 +4,7 @@ import com.conseller.conseller.auction.auction.AuctionRepository;
 import com.conseller.conseller.auction.auction.enums.AuctionStatus;
 import com.conseller.conseller.auction.bid.dto.mapper.AuctionBidMapper;
 import com.conseller.conseller.auction.bid.dto.request.AuctionBidRequest;
+import com.conseller.conseller.auction.bid.enums.BidStatus;
 import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.entity.AuctionBid;
 import com.conseller.conseller.entity.User;
@@ -103,5 +104,13 @@ public class AuctionBidServiceImpl implements AuctionBidService{
         }
 
         auctionBidRepository.deleteById(auctionBidIdx);
+    }
+
+    @Override
+    public void rejectAuctionBid(Long auctionBidIdx) {
+        AuctionBid auctionBid = auctionBidRepository.findById(auctionBidIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_BID_INVALID));
+
+        auctionBid.setAuctionBidStatus(BidStatus.FAILURE.getStatus());
     }
 }

@@ -31,4 +31,8 @@ public interface AuctionService {
     public AuctionConfirmBuyResponse getConfirmBuyAuction(Long auctionIdx);
 
     public List<Auction> getAuctionConfirmList();
+
+    public List<Auction> getAuctionExpiredList();
+
+    public void rejectAuction(Long auctionIdx);
 }

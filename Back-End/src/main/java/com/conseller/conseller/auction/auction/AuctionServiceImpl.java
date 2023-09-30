@@ -271,4 +271,21 @@ public class AuctionServiceImpl implements AuctionService{
         return auctions;
     }
 
+    @Override
+    public List<Auction> getAuctionExpiredList() {
+        return auctionRepository.findAuctionAllExpired();
+    }
+
+    @Override
+    public void rejectAuction(Long auctionIdx) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+        Gifticon gifticon = gifticonRepository.findById(auction.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
+
+        auction.setAuctionCompletedDate(auction.getAuctionEndDate());
+        auction.setAuctionStatus(AuctionStatus.EXPIRED.getStatus());
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+    }
+
 }

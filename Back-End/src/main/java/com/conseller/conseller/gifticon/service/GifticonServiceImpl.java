@@ -124,6 +124,9 @@ public class GifticonServiceImpl implements GifticonService {
     @Async
     @Scheduled(cron = "0 0 * * * *")
     private void checkGifticonEndDate() {
+
+        log.info(LocalDateTime.now() + " 기프티콘 유효기간 알림 작업 시작");
+
         //쿼리 dsl로 불러온다.
         List<ExpiringGifticonResponse> gifticons = gifticonRepositoryImpl.getUserIdxAndExpiringGifticonCount();
 
@@ -131,5 +134,7 @@ public class GifticonServiceImpl implements GifticonService {
         for (ExpiringGifticonResponse item : gifticons) {
             notificationService.sendGifticonNotification(item.getUserIdx(), item.getExpiryDay(), item.getGifticonName(), item.getGifticonCnt(), 1);
         }
+
+        log.info(LocalDateTime.now() + " 기프티콘 유효기간 알림 작업 종료");
      }
 }

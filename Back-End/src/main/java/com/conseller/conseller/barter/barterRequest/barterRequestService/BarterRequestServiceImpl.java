@@ -7,6 +7,7 @@ import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
+import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
@@ -119,5 +120,19 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         }
 
         barterRequestRepository.deleteById(barterRequestIdx);
+    }
+
+    @Override
+    public void rejectByTimeBarterRequest(Long barterRequestIdx) {
+        BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 신청입니다."));
+        List<BarterGuestItem> barterGuestItemList =  barterRequest.getBarterGuestItemList();
+        for(BarterGuestItem bgi : barterGuestItemList) {
+            Gifticon gifticon = bgi.getGifticon();
+            gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+            gifticonRepository.save(gifticon);
+        }
+        barterRequest.setBarterRequestStatus(RequestStatus.REJECTED.getStatus());
+        barterRequestRepository.save(barterRequest);
     }
 }

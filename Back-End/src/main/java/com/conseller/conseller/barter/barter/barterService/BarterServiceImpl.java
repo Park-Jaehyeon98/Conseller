@@ -371,4 +371,9 @@ public class BarterServiceImpl implements BarterService{
                 .barterTradeAllList(barterConfirmListOfLists)
                 .build();
     }
+
+    @Override
+    public List<Barter> getExpiredBarterList() {
+        return barterRepository.findBarterAllExpired();
+    }
 }

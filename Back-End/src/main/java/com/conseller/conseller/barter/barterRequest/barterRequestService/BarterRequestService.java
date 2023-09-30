@@ -18,4 +18,6 @@ public interface BarterRequestService {
     void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx);
 
     void deleteBarterRequest(Long barterRequestIdx);
+
+    void rejectByTimeBarterRequest(Long barterRequestIdx);
 }

@@ -16,9 +16,7 @@ public interface BarterRepository extends JpaRepository<Barter, Long> {
     @Query("SELECT b FROM Barter b WHERE b.barterCompletedDate IS NULL AND b.barterHost.userIdx = ?1")
     List<Barter> findByHostIdx(Long userIdx);
 
-//    @Query("SELECT * FROM BARTER WHERE BARTER.subCategory =:subCategoryIdx")
-//    Optional<List<Barter>> findBarterIdx(Long subCategoryIdx, String condition);
-//
-//    Optional<>
+    @Query("SELECT b FROM Barter b WHERE b.barterCompletedDate IS NULL AND b.barterEndDate <= current_timestamp ")
+    List<Barter> findBarterAllExpired();
 
 }

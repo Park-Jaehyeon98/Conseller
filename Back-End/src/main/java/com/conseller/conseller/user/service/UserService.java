@@ -10,6 +10,7 @@ import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
+import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -85,4 +86,7 @@ public interface UserService {
 
     //fcm 토큰 발급
     public void getFirebaseToken(Long userIdx, FirebaseRequest request);
+
+    //기프티콘 페이지 단위로 보내주기
+    public GifticonPageResponse getGifticonPage(GifticonRequestDTO gifticonRequestDTO);
 }

@@ -17,6 +17,10 @@ public class MyBarterRequestResponseDto {
 
     private long barterIdx;
 
+    private String barterName;
+
+    private String barterStatus;
+
     private List<GifticonResponse> barterGuestItems;
 
 }

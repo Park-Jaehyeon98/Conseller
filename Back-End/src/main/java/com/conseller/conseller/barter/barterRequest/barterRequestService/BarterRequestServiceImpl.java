@@ -1,6 +1,7 @@
 package com.conseller.conseller.barter.barterRequest.barterRequestService;
 
 import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterGuestItemDto;
+import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
 import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 public class BarterRequestServiceImpl implements BarterRequestService{
 
     private final BarterRequestRepository barterRequestRepository;
+    private final BarterGuestItemRepository barterGuestItemRepository;
     private final BarterGuestItemService barterGuestItemService;
     private final GifticonRepository gifticonRepository;
     private final BarterRepository barterRepository;
@@ -112,6 +114,8 @@ public class BarterRequestServiceImpl implements BarterRequestService{
                     .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
             gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
             gifticonRepository.save(gifticon);
+
+            barterGuestItemRepository.deleteById(bgi.getBarterGuestItemIdx());
         }
 
         barterRequestRepository.deleteById(barterRequestIdx);

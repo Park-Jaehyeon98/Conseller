@@ -6,6 +6,7 @@ import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
+import com.conseller.conseller.entity.Barter;
 
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface BarterService {
     void rejectRequest(Long barterIdx, Long userIdx);
 
     BarterConfirmPageResponseDTO getBarterConfirmPage(Long barterIdx);
+
+    List<Barter> getExpiredBarterList();
 }

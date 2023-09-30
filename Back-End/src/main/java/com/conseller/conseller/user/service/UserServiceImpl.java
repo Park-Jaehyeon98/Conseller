@@ -343,6 +343,8 @@ public class UserServiceImpl implements UserService {
             MyBarterRequestResponseDto myBarterRequest = MyBarterRequestResponseDto.builder()
                     .barterRequestIdx(barterRequest.getBarterRequestIdx())
                     .barterIdx(barterRequest.getBarter().getBarterIdx())
+                    .barterName(barterRequest.getBarter().getBarterName())
+                    .barterStatus(barterRequest.getBarter().getBarterStatus())
                     .barterRequestStatus(barterRequest.getBarterRequestStatus())
                     .barterGuestItems(barterGuestItems)
                     .build();

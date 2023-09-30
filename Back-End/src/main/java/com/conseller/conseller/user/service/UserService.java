@@ -13,6 +13,7 @@ import com.conseller.conseller.user.dto.response.*;
 import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
@@ -86,6 +87,12 @@ public interface UserService {
 
     //fcm 토큰 발급
     public void getFirebaseToken(Long userIdx, FirebaseRequest request);
+
+    //pattern 저장
+    public void patternRegister(@Valid UserPatternRequest userPatternRequest);
+
+    //pattern 로그인
+    public LoginResponse loginPattern(UserPatternRequest userPatternRequest);
 
     //기프티콘 페이지 단위로 보내주기
     public GifticonPageResponse getGifticonPage(GifticonRequestDTO gifticonRequestDTO);

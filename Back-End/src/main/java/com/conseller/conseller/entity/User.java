@@ -1,5 +1,6 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.user.enums.Authority;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -167,5 +168,13 @@ public class User extends BaseTime implements UserDetails {
     //해당 비밀번호가 맞는지 확인
     public boolean checkPassword(PasswordEncoder passwordEncoder, String userPassword) {
         return passwordEncoder.matches(userPassword, this.userPassword);
+    }
+
+    public void addUserRole() {
+        this.roles.add(Authority.USER.name());
+    }
+
+    public void addAdminRole() {
+        this.roles.add(Authority.ADMIN.name());
     }
 }

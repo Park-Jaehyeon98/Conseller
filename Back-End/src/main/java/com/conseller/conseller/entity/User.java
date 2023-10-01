@@ -180,6 +180,11 @@ public class User extends BaseTime implements UserDetails {
         this.roles.add(Authority.ADMIN.name());
     }
 
+    public void updatePassword(String password) {
+        this.userPassword = password;
+        encryptPassword(new BCryptPasswordEncoder());
+    }
+
     public void updateUserInfo(UserInfoRequest userInfoRequest) {
 
         if (!checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {

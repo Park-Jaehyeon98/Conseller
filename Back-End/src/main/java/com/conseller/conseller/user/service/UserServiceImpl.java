@@ -131,9 +131,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserEmailAndUserId(emailAndIdRequest.getUserEmail(), emailAndIdRequest.getUserId())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        // 3. 임시 비밀번호로 변경 및 암호화
-        user.setUserPassword(tempPassword);
-        user.encryptPassword(new BCryptPasswordEncoder());
+        // 3. 임시 비밀번호로 변경
+        user.updatePassword(tempPassword);
 
         return TemporaryPasswordResponse.builder()
                 .temporaryPassword(tempPassword)

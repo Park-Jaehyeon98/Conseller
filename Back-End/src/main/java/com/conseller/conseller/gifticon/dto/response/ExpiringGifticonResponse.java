@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 public class ExpiringGifticonResponse {
 
-    private long userIdx;
-    private int expiryDay;
+    private Long userIdx;
+    private Integer expiryDay;
     private String gifticonName;
-    private int gifticonCnt;
+    private Integer gifticonCnt;
 }

@@ -217,7 +217,7 @@ fun SignUpPage(navController: NavHostController) {
 
 
         if (errorMessage.isNotEmpty()) {
-           dialogMessage=errorMessage.toString()
+            dialogMessage = errorMessage.toString()
             return false
         }
 
@@ -236,25 +236,18 @@ fun SignUpPage(navController: NavHostController) {
             }, text = {
                 Text(dialogMessage)
             }, confirmButton = {
-                SelectButton(
-                    text = "아니요",
-                    onClick = {
-                        showDialog = false
-                        navController.navigate("TextLoginPage")
+                SelectButton(text = "아니요", onClick = {
+                    showDialog = false
+                    navController.navigate("TextLoginPage")
+                })
+            }, dismissButton = {
+                SelectButton(text = "예", onClick = {
+                    showDialog = false
+                    navController.navigate("MakePatternPage") {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
                     }
-                )
-            },
-                dismissButton = {
-                    SelectButton(
-                        text = "예",
-                        onClick = {
-                            showDialog = false
-                            navController.navigate("MakePatternPage") {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
-                        }
-                    )
+                })
             })
         }
         if (showDialog2) {
@@ -304,7 +297,8 @@ fun SignUpPage(navController: NavHostController) {
                     }, error = nameError, showIcon = isValidName(name.text))
 
                     //성별
-                    GenderSelection(label = "성별",
+                    GenderSelection(
+                        label = "성별",
                         gender = gender,
                         onGenderSelected = { selectedGender ->
                             gender = selectedGender
@@ -315,7 +309,7 @@ fun SignUpPage(navController: NavHostController) {
                         if (newValue.text.all { it.isDigit() }) {
                             age = newValue
                         }
-                    })
+                    }, showNumber = true)
 
                     //아이디
                     CustomTextFieldWithButton(label = "아이디",
@@ -383,6 +377,7 @@ fun SignUpPage(navController: NavHostController) {
                         onButtonClick = { viewModel.checkDuplicatePhoneNumber(phoneNumber.text) },
                         showIcon = checkMarkPhone.value,
                         error = phoneError
+                        ,showNumber = true
                     )
 
                     // 이메일
@@ -428,24 +423,25 @@ fun SignUpPage(navController: NavHostController) {
 
                     // 계좌번호
                     CustomTextField(
-                        label = "계좌번호",
-                        value = accountBank,
-                        onValueChange = { newValue ->
+                        label = "계좌번호", value = accountBank, onValueChange = { newValue ->
                             if (newValue.text.all { it.isDigit() }) {
                                 accountBank = newValue
                             }
-                        },
+                        }, showNumber = true
                     )
 
 
                     Button(
                         onClick = {
-                            if (checkIdResult.status + checkEmailResult.status + checkPhoneNumberResult.status + checkNickNameResult.status == 4&&validateUser(request)) {
+                            if (checkIdResult.status + checkEmailResult.status + checkPhoneNumberResult.status + checkNickNameResult.status == 4 && validateUser(
+                                    request
+                                )
+                            ) {
                                 viewModel.registerUser(request)
                                 Signstatus = true
-                            } else if(!validateUser(request)) {
+                            } else if (!validateUser(request)) {
                                 showDialog2 = true
-                            }else{
+                            } else {
                                 dialogMessage = "중복확인해주세요."
                                 showDialog2 = true
                             }

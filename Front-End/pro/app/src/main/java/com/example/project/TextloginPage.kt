@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -105,7 +107,10 @@ fun TextLoginPage(navController: NavHostController) {
                         onValueChange = { loginText = it },
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 23.sp),
                         modifier = Modifier
-                            .size(300.dp, 70.dp)
+                            .size(300.dp, 70.dp),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
 
                     )
                     Spacer(
@@ -142,7 +147,10 @@ fun TextLoginPage(navController: NavHostController) {
                         visualTransformation = PasswordVisualTransformation(),
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 23.sp),
                         modifier = Modifier
-                            .size(300.dp, 70.dp)
+                            .size(300.dp, 70.dp),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
                     )
 
                     // Spacer to simulate the bottom border

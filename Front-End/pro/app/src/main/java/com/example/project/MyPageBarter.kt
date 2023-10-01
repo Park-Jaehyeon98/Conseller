@@ -43,10 +43,27 @@ fun MypageBarter(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         viewModel.getMyBarter()
+        viewModel.getMyBarterRequest()
     }
     var ChoiceStatus by remember { mutableStateOf(1) }
     val getMyBarter by viewModel.getMyBarterResponse.collectAsState()
+    val getMyBarterRequest by viewModel.getMyBarterRequestResponse.collectAsState()
     val scrollstate= rememberScrollState()
+
+
+    val filteredBarter = when (ChoiceStatus) {
+        1 -> getMyBarter.filter { it.barterStatus == "교환 가능" }
+        2 -> getMyBarter.filter { it.barterStatus == "제안" }
+        else -> getMyBarter
+    }
+
+    val filteredBarterBid = when (ChoiceStatus) {
+        3 -> getMyBarterRequest.filter { it.barterStatus == "교환 가능" }
+        4 -> getMyBarterRequest.filter { it.barterStatus == "교환 완료" }
+        else -> getMyBarterRequest
+    }
+
+
     Column(
         modifier= Modifier.verticalScroll(scrollstate),
         horizontalAlignment = Alignment.Start,
@@ -54,20 +71,43 @@ fun MypageBarter(navController: NavHostController) {
     ){
         SelectBarter(onSelectionChanged = { ChoiceStatus = it})
         Divider(color = Color.Gray, thickness = 1.dp)
-        getMyBarter.forEach { item ->
-            ShowMyBarter(
-                image = item.barterHostItems[0].gifticonDataImageUrl,
-                name = item.barterHostItems[0].gifticonName,
-                gifticonTime = item.barterHostItems[0].gifticonEndDate,
-                barterTime = item.barterEndDate,
-                isDeposit = false,
-                preper = item.preferSubCategory?:"선호없음",
-                title = item.barterName,
-                onItemClick = {
-                    navController.navigate("BarterDetailPage/${item.barterIdx}")
-                }
+        if (ChoiceStatus <= 2) {
+            filteredBarter.forEach { item ->
+                ShowMyBarter(
+                    image = item.barterHostItems[0].gifticonDataImageUrl,
+                    name = item.barterHostItems[0].gifticonName,
+                    gifticonTime = item.barterHostItems[0].gifticonEndDate,
+                    barterTime = item.barterEndDate,
+                    isDeposit = false,
+                    preper = item.preferSubCategory ?: "선호없음",
+                    title = item.barterName,
+                    onItemClick = {
+                        if(ChoiceStatus==1){
+                            navController.navigate("BarterDetailPage/${item.barterIdx}")
+                        }else if(ChoiceStatus==2){
+                            navController.navigate("barterConfirmPage/${item.barterIdx}")
+                        }
+                    }
 
-            )
+                )
+            }
+        }else{
+            filteredBarterBid.forEach { item ->
+                ShowMyBarter(
+                    image = item.myBarterResponseDto.barterHostItems[0].gifticonDataImageUrl,
+                    name = item.myBarterResponseDto.barterHostItems[0].gifticonName,
+                    gifticonTime = item.myBarterResponseDto.barterHostItems[0].gifticonEndDate,
+                    barterTime = item.myBarterResponseDto.barterEndDate,
+                    isDeposit = false,
+                    preper = item.myBarterResponseDto.preferSubCategory ?: "선호없음",
+                    title = item.barterName,
+                    onItemClick = {
+                        if(item.barterStatus=="교환 완료")
+                        navController.navigate("BarterDetailPage/${item.barterIdx}")
+                    }
+
+                )
+            }
         }
     }
 }
@@ -88,10 +128,10 @@ fun SelectBarter(onSelectionChanged: (Int) -> Unit) {
         BarterOption(text = "교환 중", id = 2, selectedOption, onSelectionChanged){
             selectedOption = it
         }
-        BarterOption(text = "교환 요청", id = 3, selectedOption, onSelectionChanged){
+        BarterOption(text = "내 제안", id = 3, selectedOption, onSelectionChanged){
             selectedOption = it
         }
-        BarterOption(text = "내 교환 요청(확정)", id = 4, selectedOption, onSelectionChanged){
+        BarterOption(text = "내 제안(확정)", id = 4, selectedOption, onSelectionChanged){
             selectedOption = it
         }
     }
@@ -184,7 +224,9 @@ fun ShowMyBarter(
 
         // 15% 박스1
         Box(
-            modifier = Modifier.weight(0.08f).padding(horizontal = 12.dp)
+            modifier = Modifier
+                .weight(0.08f)
+                .padding(horizontal = 12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),

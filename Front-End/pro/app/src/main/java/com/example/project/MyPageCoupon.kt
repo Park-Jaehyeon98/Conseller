@@ -62,9 +62,6 @@ fun MypageCoupon(navController: NavHostController) {
 
     val filteredGift = when (ChoiceStatus) {
         1 -> getMyGift.filter { it.gifticonStatus == "보관" }
-        2 -> getMyGift.filter { it.gifticonStatus == "경매" }
-        3 -> getMyGift.filter { it.gifticonStatus == "물물교환" }
-        4 -> getMyGift.filter { it.gifticonStatus == "판매" }
         else -> getMyGift
     }
 
@@ -119,23 +116,15 @@ fun SelectBar(onSelectionChanged: (Int) -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         val commontextsize = 18
 
-        BarOption(text = "내 쿠폰", id = 1, selectedOption, onSelectionChanged) {
+        BarOption(text = "사용가능한 쿠폰", id = 1, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
         Spacer(modifier = Modifier.height(16.dp))
-        BarOption(text = "경매 쿠폰", id = 2, selectedOption, onSelectionChanged) {
-            selectedOption = it
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        BarOption(text = "물물교환 쿠폰", id = 3, selectedOption, onSelectionChanged) {
-            selectedOption = it
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        BarOption(text = "스토어 쿠폰", id = 4, selectedOption, onSelectionChanged) {
+        BarOption(text = "거래 중인 쿠폰", id = 2, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
     }
@@ -196,9 +185,8 @@ fun ShowMyGifticon(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(backgroundColor)
-            .clickable(onClick = onClick)
-            .border(width = 1.dp, color = Color.Gray), // 테두리 추가
+            .background(Color.White)
+            .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -241,7 +229,7 @@ fun ShowMyGifticon(
                     onDelete()
                     onSelectGifticonIdx(gifticonData.gifticonIdx)
                 }) {
-                    Text("삭제")
+                    Text("사용완료")
                 }
             }
         }

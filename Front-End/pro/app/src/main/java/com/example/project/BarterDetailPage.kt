@@ -67,7 +67,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
     var snackbarText by remember { mutableStateOf("") }
 
 
-    LaunchedEffect(key1 = index) {
+    LaunchedEffect(Unit) {
         index?.toLongOrNull()?.let {
             barterViewModel.fetchBarterDetail(it)
         }

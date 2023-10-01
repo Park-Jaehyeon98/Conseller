@@ -67,21 +67,7 @@ public class UserServiceImpl implements UserService {
 
         userValidator.signUpDtoValidate(signUpRequest);
 
-        User user = User.builder()
-                .userId(signUpRequest.getUserId())
-                .userPassword(signUpRequest.getUserPassword())
-                .userEmail(signUpRequest.getUserEmail())
-                .userDeposit((long) 0)
-                .userNickname(signUpRequest.getUserNickname())
-                .userPhoneNumber(signUpRequest.getUserPhoneNumber())
-                .userGender(signUpRequest.getUserGender())
-                .userAge(signUpRequest.getUserAge())
-                .userName(signUpRequest.getUserName())
-                .userAccount(signUpRequest.getUserAccount())
-                .userRestrictCount(0)
-                .userStatus(UserStatus.ACTIVE.getStatus())
-                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
-                .build();
+        User user = UserMapper.INSTANCE.SignUpDtoToUser(signUpRequest);
 
         //비밀번호 암호화 및 유저 권한 설정
         user.encryptPassword(new BCryptPasswordEncoder());

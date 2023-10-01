@@ -2,6 +2,7 @@ package com.conseller.conseller.entity;
 
 import com.conseller.conseller.user.dto.request.UserInfoRequest;
 import com.conseller.conseller.user.enums.Authority;
+import com.conseller.conseller.user.enums.UserStatus;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,8 +50,9 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "user_age", nullable = false)
     private Integer userAge;
 
+    @Builder.Default
     @Column(name = "user_deposit", nullable = false)
-    private Long userDeposit;
+    private Long userDeposit = (long) 0;
 
     @Column(name = "user_deleted_date")
     private LocalDateTime userDeletedDate;
@@ -64,14 +66,16 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "user_account_bank")
     private String userAccountBank;
 
+    @Builder.Default
     @Column(name = "user_status", nullable = false)
-    private String userStatus;
+    private String userStatus = UserStatus.ACTIVE.getStatus();
 
     @Column(name = "user_restrict_end_date")
     private LocalDateTime userRestrictEndDate;
 
+    @Builder.Default
     @Column(name = "user_restrict_count")
-    private Integer userRestrictCount;
+    private Integer userRestrictCount = 0;
 
     @Column(name = "user_profile_url")
     private String userProfileUrl;

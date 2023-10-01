@@ -44,6 +44,8 @@ public class BarterScheduler {
             barter.setBarterCompletedDate(barter.getBarterEndDate());
             barter.setBarterStatus(BarterStatus.EXPIRED.getStatus());
             barterRepository.save(barter);
+            notificationService.sendBarterExpiredNotification(barter.getBarterIdx(), "물물교환 만료 알림", 3);
+            notificationService.sendBarterNotification(barter.getBarterIdx(), "물물교환 알림", 3);
         }
     }
 }

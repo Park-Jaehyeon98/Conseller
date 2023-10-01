@@ -16,6 +16,7 @@ public enum CustomExceptionStatus {
     FIND_ID_INVALID(1006, "유효하지 않은 정보입니다."),
     FIND_PW_INVALID(1007, "유효하지 않은 정보입니다."),
     USER_INVALID(1008, "존재하지 않는 유저입니다."),
+    ACCOUNT_BANK_INVALID(1009, "존재하지 않는 은행정보 입니다."),
 
     //경매 관련
     AUCTION_INVALID(1100, "존재하지 않는 경매입니다."),
@@ -50,7 +51,6 @@ public enum CustomExceptionStatus {
     INQUIRY_INVALID(1700, "존재하지 않는 문의입니다.");
 
     //알림 관련
-
 
     private final Integer code;
     private final String message;

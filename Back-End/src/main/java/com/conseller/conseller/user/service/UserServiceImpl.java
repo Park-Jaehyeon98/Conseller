@@ -18,6 +18,7 @@ import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
+import com.conseller.conseller.user.dto.UserMapper;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
@@ -66,25 +67,11 @@ public class UserServiceImpl implements UserService {
 
         userValidator.signUpDtoValidate(signUpRequest);
 
-        User user = User.builder()
-                .userId(signUpRequest.getUserId())
-                .userPassword(signUpRequest.getUserPassword())
-                .userEmail(signUpRequest.getUserEmail())
-                .userDeposit((long) 0)
-                .userNickname(signUpRequest.getUserNickname())
-                .userPhoneNumber(signUpRequest.getUserPhoneNumber())
-                .userGender(signUpRequest.getUserGender())
-                .userAge(signUpRequest.getUserAge())
-                .userName(signUpRequest.getUserName())
-                .userAccount(signUpRequest.getUserAccount())
-                .userRestrictCount(0)
-                .userStatus(UserStatus.ACTIVE.getStatus())
-                .userAccountBank(AccountBanks.fromString(signUpRequest.getUserAccountBank()).getBank())
-                .build();
+        User user = UserMapper.INSTANCE.SignUpDtoToUser(signUpRequest);
 
         //비밀번호 암호화 및 유저 권한 설정
         user.encryptPassword(new BCryptPasswordEncoder());
-        user.getRoles().add(Authority.USER.name());
+        user.addUserRole();
 
         return userRepository.save(user);
     }
@@ -92,24 +79,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
 
-        // 입력 id 정보가 유효한지 확인
-        User user = userRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.WRONG_ID));
-
-        // 입력한 password 정보가 유효한지 확인
-        if (!user.checkPassword(new BCryptPasswordEncoder(), loginRequest.getUserPassword())) {
-            throw new CustomException(CustomExceptionStatus.WRONG_PW);
-        }
-
-        // 입력한 유저가 탈퇴한 유저인지 확인
-        if (user.getUserDeletedDate() != null) {
-            throw new CustomException(CustomExceptionStatus.RESTRICT);
-        }
-
-        //입력한 유저가 사용 제한된 유저인지 확인
-        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
-            throw new CustomException(CustomExceptionStatus.RESTRICT);
-        }
+        //유저 검증 및 반환
+        User user = userValidator.validateLogin(loginRequest);
 
        // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
         Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());
@@ -134,17 +105,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        //비밀번호는 암호화 하기 때문에 바뀐 경우만 set 해준다.
-        if (!user.checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
-            user.setUserPassword(userInfoRequest.getUserPassword());
-            user.encryptPassword(new BCryptPasswordEncoder());
-
-        }
-
-        user.setUserNickname(userInfoRequest.getUserNickname());
-        user.setUserEmail(userInfoRequest.getUserEmail());
-        user.setUserAccount(userInfoRequest.getUserAccount());
-        user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+        user.updateUserInfo(userInfoRequest);
     }
 
     @Override
@@ -157,9 +118,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserEmailAndUserId(emailAndIdRequest.getUserEmail(), emailAndIdRequest.getUserId())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        // 3. 임시 비밀번호로 변경 및 암호화
-        user.setUserPassword(tempPassword);
-        user.encryptPassword(new BCryptPasswordEncoder());
+        // 3. 임시 비밀번호로 변경
+        user.updatePassword(tempPassword);
 
         return TemporaryPasswordResponse.builder()
                 .temporaryPassword(tempPassword)
@@ -191,16 +151,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        return UserInfoResponse.builder()
-                .userId(user.getUserId())
-                .userNickname(user.getUserNickname())
-                .userPassword(user.getUserPassword())
-                .userEmail(user.getUserEmail())
-                .userProfileUrl(user.getUserProfileUrl())
-                .userPhoneNumber(user.getUserPhoneNumber())
-                .userAccount(user.getUserAccount())
-                .userAccountBank(user.getUserAccountBank())
-                .build();
+        return UserMapper.INSTANCE.toUserInfoResponse(user);
     }
 
     @Override
@@ -425,7 +376,7 @@ public class UserServiceImpl implements UserService {
                     .accessToken(jwtTokenProvider.createAccessToken(authentication))
                     .build();
         } else {
-            throw new RuntimeException("refresh token이 만료되었습니다.");
+            throw new CustomException(CustomExceptionStatus.REFRESH_TOKEN_INVALID);
         }
     }
 

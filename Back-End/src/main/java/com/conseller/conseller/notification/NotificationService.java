@@ -16,7 +16,7 @@ public interface NotificationService {
 
     public void sendBarterRequestNotification(Long barterIdx, String title, Integer type);
 
-    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type);
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Long gifticonCount, Integer type);
 
     public void sendNotification(Long userIdx, String title, String body);
 

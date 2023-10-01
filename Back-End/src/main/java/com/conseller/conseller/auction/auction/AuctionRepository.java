@@ -14,4 +14,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     @Query("select a from Auction a where a.auctionStatus = '거래 중' and current_timestamp - a.notificationCreatedDate >= 14 * 60 * 1000")
     List<Auction> findByAuctionListConfirm();
+
+    @Query("select a from Auction a where a.auctionCompletedDate is null and a.auctionEndDate <= current_timestamp ")
+    List<Auction> findAuctionAllExpired();
 }

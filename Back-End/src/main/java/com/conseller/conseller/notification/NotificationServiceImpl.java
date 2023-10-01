@@ -342,7 +342,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Integer gifticonCount, Integer type) {
+    public void sendGifticonNotification(Long userIdx, Integer remainDay, String gifticionName, Long gifticonCount, Integer type) {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 

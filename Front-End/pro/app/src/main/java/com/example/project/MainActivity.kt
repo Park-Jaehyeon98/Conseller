@@ -86,6 +86,8 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
                     composable("MypageDelete") { MypageDelete(navController = navController) }
                     composable("MyGifticonAddDetail") { GifticonAddDetailPage(navController = navController) }
                     composable("SearchPage") { SearchPage() }
+                    composable("MySalesPage") { MySalesPage(navController = navController) }
+                    composable("MyPurchasePage") { MyPurchasePage(navController = navController) }
                     // 신고하기
                     composable("Inquiry/{opponentIdx}") { backStackEntry ->
                         val opponentIdx = backStackEntry.arguments?.getString("opponentIdx")

@@ -12,7 +12,6 @@ import com.example.project.api.myPurchaseData
 import com.example.project.api.myStoreData
 import com.example.project.api.userInfoResponse
 import com.example.project.api.userModifyRequest
-import com.example.project.api.userModifyResponse
 import com.example.project.api.userValidRequest
 import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
@@ -60,8 +59,8 @@ class MyPageViewModel @Inject constructor(
     val validUserResponse: StateFlow<Boolean> get() = _ValidUserReponse
 
     // 내 수정 확인
-    private val _ModifyUserResponse = MutableStateFlow(userModifyResponse("", ""))
-    val modifyUserResponse: StateFlow<userModifyResponse> get() = _ModifyUserResponse
+    private val _ModifyUserResponse = MutableStateFlow(false)
+    val modifyUserResponse: StateFlow<Boolean> get() = _ModifyUserResponse
 
     private val _GetMyGifticon = MutableStateFlow<List<myGifticon>>(emptyList())
     val getMyGifticonResponse: StateFlow<List<myGifticon>> get() = _GetMyGifticon
@@ -393,7 +392,7 @@ class MyPageViewModel @Inject constructor(
             try {
                 val response = service.modifyUserInfo(userIdx, request)
                 if (response.isSuccessful) {
-                    _ModifyUserResponse.value = response.body() ?: userModifyResponse("", "")
+                    _ModifyUserResponse.value = true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

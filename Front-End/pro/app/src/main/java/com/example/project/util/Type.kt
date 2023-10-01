@@ -65,3 +65,14 @@ fun formattedNumber(input: String): String {
                 input
         }
 }
+
+fun formatPhoneNumber(number: String): String {
+        val cleanNumber = number.filter { it.isDigit() }
+
+
+        return when(cleanNumber.length) {
+                10 -> "${cleanNumber.substring(0, 3)}-${cleanNumber.substring(3, 6)}-${cleanNumber.substring(6, 10)}"
+                11 -> "${cleanNumber.substring(0, 3)}-${cleanNumber.substring(3, 7)}-${cleanNumber.substring(7, 11)}"
+                else -> number // 다른 형식의 번호는 그대로 반환
+        }
+}

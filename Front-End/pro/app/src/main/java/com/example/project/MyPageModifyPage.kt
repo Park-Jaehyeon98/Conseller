@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,10 +78,13 @@ fun MyPageModifyPage(navController: NavHostController) {
     }
 
     LaunchedEffect(chekModifyState) {
-        if (chekModifyState.code == "200") {
-            navController.navigate("MyPage")
+        if (chekModifyState) {
+            navController.navigate("MyPage"){
+                popUpTo(navController.graph.startDestinationId)
+                launchSingleTop = true
+            }
         } else {
-            println(chekModifyState.message)
+
         }
     }
     // 메인
@@ -173,16 +175,6 @@ fun ProfileModifyImage(
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        if (showSnackbar) {
-            Snackbar(
-                modifier = Modifier.align(Alignment.TopCenter)
-            ) {
-                Text(
-                    text = snackbarText,
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                )
-            }
-        }
         Column(
             modifier = Modifier.padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -216,6 +208,16 @@ fun ProfileModifyImage(
                 )
             ) {
                 Text(text = "사진 수정")
+            }
+            if (showSnackbar) {
+                Snackbar(
+                    modifier=Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = snackbarText,
+                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
             }
         }
     }
@@ -396,7 +398,7 @@ fun ModifyUserProfile(
                 if (newValue.text.all { it.isDigit() }) {
                     modifyAccountBank = newValue
                 }
-            })
+            }, showNumber = true)
             Button(
                 onClick = { mypageModel.userModify(request) },
                 Modifier.size(120.dp, 40.dp),

@@ -97,7 +97,7 @@ interface MyPageService {
     suspend fun modifyUserInfo(
         @Path("userIdx") userIdx:Long,
         @Body request: userModifyRequest
-    ) :Response<userModifyResponse>
+    ) :Response<Void>
 
     @DELETE("api/user/{userIdx}")
     suspend fun deleteUser(
@@ -122,10 +122,6 @@ data class userModifyRequest(
     val userAccountBank: String
 )
 
-data class userModifyResponse(
-    val code:String,
-    val message:String,
-)
 data class userValidRequest(
     val userIdx:Long,
     val userPassword: String,
@@ -222,15 +218,22 @@ data class BarterHostItem(
     val gifticonDataImageUrl: String
 )
 
+
 data class myBarterRequestItems(
     val items:List<myBarterRequestData>
 )
 data class myBarterRequestData(
-    val barterRequestIdx: Long,
+    val barterRequestIdx: Int,
     val barterRequestStatus: String,
-    val barterIdx: Long,
+    val barterIdx: Int,
+    val barterName: String,
+    val barterStatus: String,
+    val myBarterResponseDto: myBarterData,
     val barterGuestItems: List<myGifticon>
 )
+
+
+
 
 data  class myStoreItems(
     val items:List<myStoreData>

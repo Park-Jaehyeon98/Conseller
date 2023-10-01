@@ -10,5 +10,5 @@ public class ExpiringGifticonResponse {
     private Long userIdx;
     private Integer expiryDay;
     private String gifticonName;
-    private Integer gifticonCnt;
+    private Long gifticonCnt;
 }

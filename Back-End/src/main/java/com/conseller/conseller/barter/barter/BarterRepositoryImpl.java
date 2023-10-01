@@ -29,7 +29,7 @@ public class BarterRepositoryImpl {
                 .where(
                         eqCategory(filter.getMainCategory(), filter.getSubCategory()),
                         eqSearch(filter.getSearchQuery()),
-                        barter.barterStatus.eq(BarterStatus.EXCHANGEABLE.getStatus())
+                        barter.barterStatus.in(BarterStatus.EXCHANGEABLE.getStatus(), BarterStatus.SUGGESTED.getStatus())
                 )
                 .orderBy(orderSpecifier(filter.getStatus()))
                 .offset(pageable.getOffset())
@@ -42,7 +42,7 @@ public class BarterRepositoryImpl {
                 .where(
                         eqCategory(filter.getMainCategory(), filter.getSubCategory()),
                         eqSearch(filter.getSearchQuery()),
-                        barter.barterStatus.eq(BarterStatus.EXCHANGEABLE.getStatus())
+                        barter.barterStatus.in(BarterStatus.EXCHANGEABLE.getStatus(), BarterStatus.SUGGESTED.getStatus())
                 )
                 .fetchOne();
         return new PageImpl<>(content, pageable, count);

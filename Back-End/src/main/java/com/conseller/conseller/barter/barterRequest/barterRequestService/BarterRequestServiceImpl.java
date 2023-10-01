@@ -4,6 +4,7 @@ import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemDto.BarterG
 import com.conseller.conseller.barter.BarterGuestItem.BarterGuestItemRepository;
 import com.conseller.conseller.barter.BarterGuestItem.barterGuestItemService.BarterGuestItemService;
 import com.conseller.conseller.barter.barter.BarterRepository;
+import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
@@ -81,6 +82,10 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     public void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx) {
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
+        String statusOfBarter = barter.getBarterStatus();
+        if(!statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus()) || !statusOfBarter.equals(BarterStatus.SUGGESTED.getStatus())){
+            throw new RuntimeException("완료 또는 만료된 교환입니다.");
+        }
 
         List<BarterRequest> barterRequestList = barter.getBarterRequestList();
         for(BarterRequest bq : barterRequestList) {
@@ -93,6 +98,10 @@ public class BarterRequestServiceImpl implements BarterRequestService{
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);
+        if(statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus())) {
+            barter.setBarterStatus(BarterStatus.SUGGESTED.getStatus());
+            barterRepository.save(barter);
+        }
 
         try{
             barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);

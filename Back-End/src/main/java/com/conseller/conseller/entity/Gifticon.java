@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter @Setter @ToString
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "gifticonIdx")
 public class Gifticon {

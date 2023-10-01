@@ -1,10 +1,12 @@
 package com.conseller.conseller.entity;
 
+import com.conseller.conseller.user.dto.request.UserInfoRequest;
 import com.conseller.conseller.user.enums.Authority;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -176,5 +178,18 @@ public class User extends BaseTime implements UserDetails {
 
     public void addAdminRole() {
         this.roles.add(Authority.ADMIN.name());
+    }
+
+    public void updateUserInfo(UserInfoRequest userInfoRequest) {
+
+        if (!checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
+            this.userPassword = userInfoRequest.getUserPassword();
+            encryptPassword(new BCryptPasswordEncoder());
+        }
+
+        this.userNickname = userInfoRequest.getUserNickname();
+        this.userEmail = userInfoRequest.getUserEmail();
+        this.userAccount = userInfoRequest.getUserAccount();
+        this.userAccountBank = userInfoRequest.getUserAccountBank();
     }
 }

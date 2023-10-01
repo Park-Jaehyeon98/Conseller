@@ -118,17 +118,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        //비밀번호는 암호화 하기 때문에 바뀐 경우만 set 해준다.
-        if (!user.checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
-            user.setUserPassword(userInfoRequest.getUserPassword());
-            user.encryptPassword(new BCryptPasswordEncoder());
-
-        }
-
-        user.setUserNickname(userInfoRequest.getUserNickname());
-        user.setUserEmail(userInfoRequest.getUserEmail());
-        user.setUserAccount(userInfoRequest.getUserAccount());
-        user.setUserAccountBank(userInfoRequest.getUserAccountBank());
+        user.updateUserInfo(userInfoRequest);
     }
 
     @Override
@@ -409,7 +399,7 @@ public class UserServiceImpl implements UserService {
                     .accessToken(jwtTokenProvider.createAccessToken(authentication))
                     .build();
         } else {
-            throw new RuntimeException("refresh token이 만료되었습니다.");
+            throw new CustomException(CustomExceptionStatus.REFRESH_TOKEN_INVALID);
         }
     }
 

@@ -182,4 +182,20 @@ public class StoreServiceImpl implements StoreService {
         return stores;
     }
 
+    @Override
+    public List<Store> getStoreExpiredList() {
+        return storeRepository.findStoreAllExpired();
+    }
+
+    @Override
+    public void rejectStore(Long storeIdx) {
+        Store store = storeRepository.findById(storeIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
+        Gifticon gifticon = gifticonRepository.findById(store.getGifticon().getGifticonIdx())
+                        .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
+
+        store.setStoreStatus(StoreStatus.EXPIRED.getStatus());
+        gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+    }
+
 }

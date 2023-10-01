@@ -32,4 +32,8 @@ public interface StoreService {
 
     public List<Store> getStoreConfirmList();
 
+    public List<Store> getStoreExpiredList();
+
+    public void rejectStore(Long storeIdx);
+
 }

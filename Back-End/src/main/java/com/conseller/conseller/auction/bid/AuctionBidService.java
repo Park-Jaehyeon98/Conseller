@@ -6,4 +6,6 @@ public interface AuctionBidService {
     public void registAuctionBid(Long auctionIdx, AuctionBidRequest request);
 
     public void deleteAuctionBid(Long auctionBidIdx);
+
+    public void rejectAuctionBid(Long auctionBidIdx);
 }

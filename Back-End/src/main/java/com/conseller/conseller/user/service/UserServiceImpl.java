@@ -18,6 +18,7 @@ import com.conseller.conseller.store.dto.mapper.StoreMapper;
 import com.conseller.conseller.store.dto.response.StoreItemData;
 import com.conseller.conseller.user.UserRepository;
 import com.conseller.conseller.user.UserValidator;
+import com.conseller.conseller.user.dto.UserMapper;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
@@ -164,16 +165,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        return UserInfoResponse.builder()
-                .userId(user.getUserId())
-                .userNickname(user.getUserNickname())
-                .userPassword(user.getUserPassword())
-                .userEmail(user.getUserEmail())
-                .userProfileUrl(user.getUserProfileUrl())
-                .userPhoneNumber(user.getUserPhoneNumber())
-                .userAccount(user.getUserAccount())
-                .userAccountBank(user.getUserAccountBank())
-                .build();
+        return UserMapper.INSTANCE.toUserInfoResponse(user);
     }
 
     @Override

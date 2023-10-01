@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
         //비밀번호 암호화 및 유저 권한 설정
         user.encryptPassword(new BCryptPasswordEncoder());
-        user.getRoles().add(Authority.USER.name());
+        user.addUserRole();
 
         return userRepository.save(user);
     }
@@ -92,24 +92,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
 
-        // 입력 id 정보가 유효한지 확인
-        User user = userRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.WRONG_ID));
-
-        // 입력한 password 정보가 유효한지 확인
-        if (!user.checkPassword(new BCryptPasswordEncoder(), loginRequest.getUserPassword())) {
-            throw new CustomException(CustomExceptionStatus.WRONG_PW);
-        }
-
-        // 입력한 유저가 탈퇴한 유저인지 확인
-        if (user.getUserDeletedDate() != null) {
-            throw new CustomException(CustomExceptionStatus.RESTRICT);
-        }
-
-        //입력한 유저가 사용 제한된 유저인지 확인
-        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
-            throw new CustomException(CustomExceptionStatus.RESTRICT);
-        }
+        //유저 검증 및 반환
+        User user = userValidator.validateLogin(loginRequest);
 
        // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
         Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());

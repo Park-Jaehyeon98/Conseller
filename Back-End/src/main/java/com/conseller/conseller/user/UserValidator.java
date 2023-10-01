@@ -44,7 +44,7 @@ public class UserValidator {
         return userRepository.existsByUserIdx(userIdx);
     }
 
-    public void validateLogin(LoginRequest request) {
+    public User validateLogin(LoginRequest request) {
         // 입력 id 정보가 유효한지 확인
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.WRONG_ID));
@@ -63,5 +63,7 @@ public class UserValidator {
         if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
             throw new CustomException(CustomExceptionStatus.RESTRICT);
         }
+
+        return user;
     }
 }

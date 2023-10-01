@@ -1,6 +1,8 @@
 package com.conseller.conseller.notification;
 
 import com.conseller.conseller.auction.auction.AuctionRepository;
+import com.conseller.conseller.barter.barter.BarterRepository;
+import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
@@ -35,6 +37,7 @@ public class NotificationServiceImpl implements NotificationService{
     private final DateTimeConverter dateTimeConverter;
     private final UserRepository userRepository;
     private final BarterRequestRepository barterRequestRepository;
+    private final BarterRepository barterRepository;
 
     @Override
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type) {
@@ -207,6 +210,134 @@ public class NotificationServiceImpl implements NotificationService{
             }catch (Exception e){
                 log.warn(br.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
             }
+        }
+    }
+
+    @Override
+    public void sendBarterExpiredNotification(Long barterIdx, String title, Integer type) {
+        Barter barter = barterRepository.findByBarterIdx(barterIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환글입니다."));
+
+        if(barter.getBarterHost().getFcm() == null)
+            return;
+
+        String contents = null;
+        if(barter.getBarterStatus().equals(BarterStatus.EXPIRED.getStatus())) {
+            contents = barter.getBarterName() + " 교환글이 만료되었습니다.";
+        }
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(contents)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(barter.getBarterHost().getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(contents);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(false);
+            notificationEntity.setUser(barter.getBarterHost());
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(barter.getBarterHost().getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
+    }
+
+    @Override
+    public void sendBarterRequestRejectedNotification(Long barterRequestIdx, String title, Integer type) {
+        BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환신청 입니다."));
+
+        if(barterRequest.getUser().getFcm() == null) return;
+
+        String contents = null;
+        if(barterRequest.getBarterRequestStatus().equals(RequestStatus.REJECTED)) {
+            contents = barterRequest.getBarter().getBarterName() + " 에 대한 교환 신청이 거절되었습니다.";
+        }
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(contents)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(barterRequest.getUser().getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(contents);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(false);
+            notificationEntity.setUser(barterRequest.getUser());
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(barterRequest.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
+
+    }
+
+    @Override
+    public void sendBarterRequestNotification(Long barterIdx, String title, Integer type){
+        Barter barter = barterRepository.findByBarterIdx(barterIdx)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환글입니다."));
+
+        if(barter.getBarterHost().getFcm() == null) return;
+
+        String contents = null;
+        if(barter.getBarterStatus().equals(BarterStatus.SUGGESTED.getStatus())) {
+            contents = barter.getBarterName() + " 에 대한 새로운 교환신청!";
+        }
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(contents)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(barter.getBarterHost().getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(contents);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(false);
+            notificationEntity.setUser(barter.getBarterHost());
+
+            notificationRepository.save(notificationEntity);
+
+
+        }catch (Exception e){
+            log.warn(barter.getBarterHost().getUserId() + ": 알림 전송에 실패하였습니다.");
         }
     }
 

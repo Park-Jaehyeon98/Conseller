@@ -3,6 +3,7 @@ package com.conseller.conseller.barter.barterRequest;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestRegistDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestService.BarterRequestService;
+import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.List;
 public class BarterRequestController {
 
     private final BarterRequestService barterRequestService;
+    private final NotificationService notificationService;
 
     // 판매자 입장
     //1. 전체 교환 요청보기 - 관리자 아니면 쓸 일 없을 듯
@@ -44,6 +46,7 @@ public class BarterRequestController {
     @PostMapping("/{barterIdx}")
     public ResponseEntity<Void> addBarterRequest(@PathVariable Long barterIdx, @RequestBody BarterRequestRegistDto barterRequestRegistDto){
         barterRequestService.addBarterRequest(barterRequestRegistDto, barterIdx);
+        notificationService.sendBarterRequestNotification(barterIdx, "물물교환 신청 알림", 3);
         return ResponseEntity.ok()
                 .build();
     }

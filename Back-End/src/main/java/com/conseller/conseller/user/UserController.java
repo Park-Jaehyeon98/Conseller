@@ -277,6 +277,17 @@ public class UserController {
 
     }
 
+    @GetMapping("/finger/{userIdx}")
+    public ResponseEntity<LoginResponse> fingerLogin(@PathVariable Long userIdx) {
+
+        log.info("지문 로그인");
+
+        LoginResponse loginResponse = userService.loginFinger(userIdx);
+
+        return ResponseEntity.ok()
+                .body(loginResponse);
+    }
+
     @PostMapping("/getgifticons")
     public ResponseEntity<Object> getUserGifticonPages(@RequestBody GifticonRequestDTO gifticonRequestDTO) {
         return ResponseEntity.ok()

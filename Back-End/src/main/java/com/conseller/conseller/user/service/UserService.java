@@ -94,6 +94,9 @@ public interface UserService {
     //pattern 로그인
     public LoginResponse loginPattern(UserPatternRequest userPatternRequest);
 
+    //지문 로그인
+    public LoginResponse loginFinger(long userIdx);
+
     //기프티콘 페이지 단위로 보내주기
     public GifticonPageResponse getGifticonPage(GifticonRequestDTO gifticonRequestDTO);
 }

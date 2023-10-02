@@ -54,16 +54,19 @@ public class UserValidator {
             throw new CustomException(CustomExceptionStatus.WRONG_PW);
         }
 
-        // 입력한 유저가 탈퇴한 유저인지 확인
-        if (user.getUserDeletedDate() != null) {
-            throw new CustomException(CustomExceptionStatus.RESTRICT);
-        }
+        return user;
+    }
 
-        //입력한 유저가 사용 제한된 유저인지 확인
+    //해당 유저가 서비스 이용이 가능한 유저인지 확인
+    public void validateUser(User user) {
+        // 입력한 유저가 사용 제한된 유저인지 확인
         if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
             throw new CustomException(CustomExceptionStatus.RESTRICT);
         }
 
-        return user;
+        // 입력한 유저가 탈퇴한 유저인지 확인
+        if (user.getUserDeletedDate() != null) {
+            throw new CustomException(CustomExceptionStatus.RESTRICT);
+        }
     }
 }

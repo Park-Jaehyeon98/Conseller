@@ -15,6 +15,6 @@ public class UserPatternRequest {
     @NotNull
     private Long userIdx;
 
-    @NotBlank(message = "패턴을 입렫해야 합니다.")
+    @NotBlank(message = "패턴을 입력해야 합니다.")
     private String pattern;
 }

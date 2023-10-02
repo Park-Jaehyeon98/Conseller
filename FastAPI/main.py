@@ -55,7 +55,7 @@ class Item(BaseModel):
     category: int
 
 
-async def crop_kakao(image_file):
+def crop_kakao(image_file):
     try:
         image = Image.open(image_file)
 
@@ -85,7 +85,7 @@ async def crop_kakao(image_file):
         raise HTTPException(status_code=502, detail=str(e))
 
 
-async def crop_ssafy(image_file):
+def crop_ssafy(image_file):
     try:
         image = Image.open(image_file)
 
@@ -115,7 +115,7 @@ async def crop_ssafy(image_file):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-async def crop_giftishow(image_file):
+def crop_giftishow(image_file):
     try:
         image = Image.open(image_file)
 
@@ -146,7 +146,7 @@ async def crop_giftishow(image_file):
 
 
 # OCR 함수 정의
-async def perform_ocr():
+def perform_ocr():
     try:
         # 이미지를 PIL Image로 열기
         image = Image.open("./bottom_crop/cropped_image.jpg")
@@ -200,7 +200,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
 
         # 카카오톡0,  기프티쇼1, 싸피 2
         if category == 0:
-            result = await crop_kakao(image.file)
+            result = crop_kakao(image.file)
 
             for idx, text in enumerate(result):
                 if text == "교환처" or text == "환처":
@@ -245,7 +245,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                         gifticon_name += result[i] + " "
 
         elif category == 1:
-            result = await crop_giftishow(image.file)
+            result = crop_giftishow(image.file)
             name_end_idx = 0
             for idx, text in enumerate(result):
                 if text == "사용처" or text == "용처" or text == "교환처" or text == "환처":
@@ -273,7 +273,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             gifticon_end_date = result[end_date_idx]
 
         elif category == 2:
-            result = await crop_ssafy(image.file)
+            result = crop_ssafy(image.file)
             name_end_idx = 0
             for idx, text in enumerate(result):
                 if text == "교환처" or text == "환처":

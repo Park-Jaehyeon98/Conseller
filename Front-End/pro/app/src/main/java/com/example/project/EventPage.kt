@@ -1,5 +1,6 @@
 package com.example.project
 
+import SelectButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -148,6 +149,10 @@ fun EventLayout2(navController: NavHostController) {
     ){
         Text("준비중입니다", fontSize = 20.sp)
     }
+    SelectButton(
+        text = "barterconfirm",
+        onClick = {navController.navigate("barterConfirmPage/5") },
+    )
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.MyPageService
@@ -175,7 +176,7 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-
+    // 유저의 경매 목록 보기
     fun getMyAuction() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {

@@ -266,28 +266,6 @@ class AuctionViewModel @Inject constructor(
         }
     }
 
-
-    // 경매 내 글 목록 불러오기
-    fun fetchMyAuctionItems() {
-        viewModelScope.launch {
-            val userIdx = getUserIdFromPreference()
-            _isLoading.value = true
-            _error.value = null
-            try {
-                val response = service.getMyAuctionItems(userIdx)
-                if (response.isSuccessful && response.body() != null) {
-                    _myAuctionItems.value = response.body()!!.items
-                }
-            } catch (e: CustomException) {
-                _error.value = e.message
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
     // 경매 거래 진행
     fun fetchAccountDetails(auctionIdx: Long) {
         viewModelScope.launch {

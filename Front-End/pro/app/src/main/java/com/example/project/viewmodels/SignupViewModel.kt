@@ -116,6 +116,7 @@ class SignupViewModel @Inject constructor(
 
                 if (response.isSuccessful) {
                     _SignupResponse.value=1
+                    sharedPreferencesUtil.setUserId(response.body()!!.userIdx)
                 }else{
                     _SignupResponse.value=2
                 }

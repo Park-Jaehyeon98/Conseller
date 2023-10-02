@@ -19,12 +19,6 @@ interface AuctionService {
         @Body filter: AuctionFilterDTO,
     ): Response<AuctionResponse>
 
-    // 내가 등록한 경매 목록 API
-    @GET("api/auction/{userIdx}")
-    suspend fun getMyAuctionItems(
-        @Path("userIdx") userIdx: Long,
-    ): Response<AuctionResponse>
-
     // 경매 등록 API
     @POST("api/auction/regist")
     suspend fun registerAuctionItem(

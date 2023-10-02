@@ -5,6 +5,7 @@ import SelectButton
 import UserDetailDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +18,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,14 +42,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.BarterViewModel
 import kotlinx.coroutines.delay
 @Composable
@@ -86,7 +94,7 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
         }
     }
     LaunchedEffect(barterConfirmNavi) {
-        if(barterConfirmNavi == true){
+        if (barterConfirmNavi == true) {
             navController.navigate("Home")
         }
     }
@@ -94,8 +102,9 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxSize()
             .background(Color.White)
-            .padding(8.dp)
+            .padding(4.dp)
     ) {
         if (showSnackbar) {
             Snackbar(
@@ -108,197 +117,258 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
             }
         }
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(scrollState)
+                .padding(8.dp)
+                .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
         ) {
-            // barterConfirmList의 이미지들을 LazyRow로
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(8.dp)
             ) {
-                items(confirmDetail?.barterConfirmList ?: listOf()) { item ->
-                    Box(contentAlignment = Alignment.Center) {
-                        val imagePainter =
-                            rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                        Image(
-                            painter = imagePainter,
-                            contentDescription = null,
-                            modifier = Modifier.size(200.dp),
-                            contentScale = ContentScale.Crop,
-                        )
+
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(confirmDetail?.barterConfirmList ?: listOf()) { item ->
+                        Box(contentAlignment = Alignment.Center) {
+                            val imagePainter =
+                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                            Image(
+                                painter = imagePainter,
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // barterTradeList의 이름들
-            confirmDetail?.barterConfirmList?.forEach { item ->
-                Text(text = item.gifticonName)
-            }
+                // barterTradeList의 이름들
+                confirmDetail?.barterConfirmList?.forEachIndexed { index, item ->
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("기프티콘 ${index + 1}번")
+                            }
+                            append(" : ${item.gifticonName}")
+                        },
+                        fontSize = 18.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // 제목
-            Text(text = "제목: ${confirmDetail?.barterName ?: ""}")
+                // 제목
+                Text(text = "제목: ${confirmDetail?.barterName ?: ""}", fontSize = 18.sp)
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // 내용
-            Text(text = "내용: ${confirmDetail?.barterText ?: ""}")
+                // 내용
+                Text(text = "내용: ${confirmDetail?.barterText ?: ""}", fontSize = 18.sp)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn {
-                // 반복: barterTradeAllList의 모든 항목에 대해
-                items(confirmDetail?.barterTradeAllList ?: listOf()) { tradeList ->
+                Divider(color = Color.Gray, thickness = 2.dp)
 
-                    // 이미지 표시
-                    LazyRow {
-                        items(tradeList.barterTradeList) { item ->
-                            Box(contentAlignment = Alignment.Center) {
-                                val imagePainter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                                Image(
-                                    painter = imagePainter,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(200.dp),
-                                    contentScale = ContentScale.Crop,
-                                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                confirmDetail?.barterTradeAllList?.forEach { tradeList ->
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // 이미지
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            tradeList.barterTradeList.forEach { item ->
+                                Box(contentAlignment = Alignment.Center) {
+                                    val imagePainter =
+                                        rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                    Image(
+                                        painter = imagePainter,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(200.dp),
+                                        contentScale = ContentScale.Crop,
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    // 이름 표시
-                    tradeList.barterTradeList.forEach { item ->
-                        Text(text = "기프티콘 명 : ${item.gifticonName}")
-                    }
-                    // 유효기간 표시
-                    tradeList.barterTradeList.forEach { item ->
-                        FormattedDateDot(item.gifticonEndDate, fontSize = 18.sp, label = "유효기간 :")
-                    }
+                        // 이름
+                        tradeList.barterTradeList.forEachIndexed { index, item ->
+                            Text(
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                        append("기프티콘 ${index + 1}번")
+                                    }
+                                    append(" : ${item.gifticonName}")
+                                },
+                                fontSize = 18.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    // 구매자 표시
-                    Text(text = "구매자: ${tradeList.buyUserNickname}",
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .clickable(
-                                indication = rememberRipple(),  // Ripple 효과 추가
-                                interactionSource = remember { MutableInteractionSource() }
+                        // 유효기간
+                        tradeList.barterTradeList.forEachIndexed { index, item ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                selectedBuyUserIdx = tradeList.buyUserIdx
-                                selectedBuyUserImage = tradeList.buyUserImageUrl
-                                selectedBuyUserNickname = tradeList.buyUserNickname
-                                showUserDetailDialog = true
-                            },
-                        textDecoration = TextDecoration.Underline,  // 텍스트에 밑줄 추가
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 버튼 표시
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(onClick = { showConfirmDialog = true
-                            selectedBuyUserIdx = tradeList.buyUserIdx }) {
-                            Text("수락")
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                            append("${index + 1}번 유효기간 :")
+                                        }
+                                    },
+                                    fontSize = 18.sp
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                FormattedDateDot(
+                                    item.gifticonEndDate,
+                                    fontSize = 18.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
-                        Button(onClick = { showCancleDialog = true
-                            selectedBuyUserIdx = tradeList.buyUserIdx}) {
-                            Text("거절")
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // 구매자
+                        Text(
+                            text = "구매자: ${tradeList.buyUserNickname}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .clickable(
+                                    indication = rememberRipple(),
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    //...
+                                },
+                            textDecoration = TextDecoration.Underline,
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // 버튼
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            SelectButton(
+                                text = "수락",
+                                onClick = {
+                                    showConfirmDialog = true
+                                    selectedBuyUserIdx = tradeList.buyUserIdx
+                                }
+                            )
+                            Spacer(modifier = Modifier.width(24.dp))
+                            SelectButton(
+                                text = "거절",
+                                onClick = {
+                                    showCancleDialog = true
+                                    selectedBuyUserIdx = tradeList.buyUserIdx
+                                }
+                            )
                         }
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-
-                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
-    }
 
-
-
-    if (showConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                showConfirmDialog = false
-            },
-            title = {
-                Text(text = "교환 확정")
-            },
-            text = {
-                Text("교환 하시겠습니까?")
-            },
-            dismissButton = {
-                SelectButton(
-                    text = "네",
-                    onClick = {
-                        barterViewModel.barterConfirm(index!!.toLong(), selectedBuyUserIdx!!, true)
-                        showConfirmDialog = false
-                    }
-                )
-            },
-            confirmButton = {
-                SelectButton(
-                    text = "아니오",
-                    onClick = {
-                        showConfirmDialog = false
-                    }
-                )
-            }
-        )
-    }
-    if (showCancleDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                showCancleDialog = false
-            },
-            title = {
-                Text(text = "거부하기")
-            },
-            text = {
-                Text("교환을 거부하시겠습니까?")
-            },
-            dismissButton = {
-                SelectButton(
-                    text = "네",
-                    onClick = {
-                        barterViewModel.barterConfirm(index!!.toLong(), selectedBuyUserIdx!!, false)
-                        showCancleDialog = false
-                    }
-                )
-            },
-            confirmButton = {
-                SelectButton(
-                    text = "아니오",
-                    onClick = {
-                        showCancleDialog = false
-                    }
-                )
-            }
-        )
-    }
-    // 구매자 상세보기
-    if (showUserDetailDialog) {
-        UserDetailDialog(
-            userImageUrl = selectedBuyUserImage,
-            userNickname = selectedBuyUserNickname,
-            userDeposit = 0,
-            onDismiss = { showUserDetailDialog = false },
-            onReportClick = {
-                navController.navigate("Inquiry/$selectedBuyUserIdx")
-            },
-            onMessageClick = {
-                // 1:1 채팅 미완성
-            }
-        )
+        if (showConfirmDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showConfirmDialog = false
+                },
+                title = {
+                    Text(text = "교환 확정")
+                },
+                text = {
+                    Text("교환 하시겠습니까?")
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "네",
+                        onClick = {
+                            barterViewModel.barterConfirm(
+                                index!!.toLong(),
+                                selectedBuyUserIdx!!,
+                                true
+                            )
+                            showConfirmDialog = false
+                        }
+                    )
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showConfirmDialog = false
+                        }
+                    )
+                }
+            )
+        }
+        if (showCancleDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showCancleDialog = false
+                },
+                title = {
+                    Text(text = "거부하기")
+                },
+                text = {
+                    Text("교환을 거부하시겠습니까?")
+                },
+                dismissButton = {
+                    SelectButton(
+                        text = "네",
+                        onClick = {
+                            barterViewModel.barterConfirm(
+                                index!!.toLong(),
+                                selectedBuyUserIdx!!,
+                                false
+                            )
+                            showCancleDialog = false
+                        }
+                    )
+                },
+                confirmButton = {
+                    SelectButton(
+                        text = "아니오",
+                        onClick = {
+                            showCancleDialog = false
+                        }
+                    )
+                }
+            )
+        }
+        // 구매자 상세보기
+        if (showUserDetailDialog) {
+            UserDetailDialog(
+                userImageUrl = selectedBuyUserImage,
+                userNickname = selectedBuyUserNickname,
+                userDeposit = 0,
+                onDismiss = { showUserDetailDialog = false },
+                onReportClick = {
+                    navController.navigate("Inquiry/$selectedBuyUserIdx")
+                },
+                onMessageClick = {
+                    // 1:1 채팅 미완성
+                }
+            )
+        }
     }
 }

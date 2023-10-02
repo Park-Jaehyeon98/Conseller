@@ -191,7 +191,8 @@ public class User extends BaseTime implements UserDetails {
 
     public void updateUserInfo(UserInfoRequest userInfoRequest) {
 
-        if (!checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())) {
+        if (!checkPassword(new BCryptPasswordEncoder(), userInfoRequest.getUserPassword())
+        && !this.userPassword.equals(userInfoRequest.getUserPassword())) {
             this.userPassword = userInfoRequest.getUserPassword();
             encryptPassword(new BCryptPasswordEncoder());
         }

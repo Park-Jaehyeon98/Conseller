@@ -1,10 +1,9 @@
 package com.conseller.conseller.barter.barter.barterDto.mapper;
 
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
-import com.conseller.conseller.entity.Barter;
-import com.conseller.conseller.entity.SubCategory;
-import com.conseller.conseller.entity.User;
+import com.conseller.conseller.entity.*;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.utils.DateTimeConverter;
 import org.mapstruct.Mapper;
@@ -13,6 +12,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +30,34 @@ public interface BarterMapper {
 
 //    @Mapping()
 //    BarterResponseDto entityToBarterResponseDto(Barter barter)
+
+    default BarterItemData toBarterItemData(Barter barter) {
+        List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
+        List<Gifticon> gifticonList = new ArrayList<>();
+        Gifticon gifticon = null;
+        for(BarterHostItem gift : barterHostItemList) {
+            if(gift.getGifticon().getSubCategory() == barter.getSubCategory()) {
+                gifticon = gift.getGifticon();
+                break;
+            }
+        }
+        Boolean deposit = false;
+        if(barter.getBarterHost().getUserDeposit() > 0) {
+            deposit = true;
+        }
+
+        BarterItemData barterItemData = new BarterItemData();
+        barterItemData.setBarterIdx(barter.getBarterIdx());
+        barterItemData.setGifticonDataImageName(gifticon.getGifticonDataImageUrl());
+        barterItemData.setGifticonName(gifticon.getGifticonName());
+        barterItemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()));
+        barterItemData.setBarterEndDate(DateTimeConverter.getInstance().convertString(barter.getBarterEndDate()));
+        barterItemData.setDeposit(deposit);
+        barterItemData.setPreper(barter.getPreferSubCategory().getSubCategoryContent());
+        barterItemData.setBarterName(barter.getBarterName());
+
+        return barterItemData;
+    }
 
     //Barter -> MyBarterResponseDto 매핑
     default MyBarterResponseDto toMybarterResponseDto(Barter barter) {

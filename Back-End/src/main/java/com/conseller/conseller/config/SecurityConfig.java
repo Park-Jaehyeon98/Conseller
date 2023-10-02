@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .antMatchers("/user/nickname").permitAll()
                 .antMatchers("/user/email").permitAll()
                 .antMatchers("/user/phone-number").permitAll()
+                .antMatchers("/user/savepattern").permitAll()
+                .antMatchers("/user/verifypattern").permitAll()
                 .antMatchers("/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()

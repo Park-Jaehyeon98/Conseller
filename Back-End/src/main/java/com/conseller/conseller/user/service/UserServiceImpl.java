@@ -82,22 +82,10 @@ public class UserServiceImpl implements UserService {
         //유저 검증 및 반환
         User user = userValidator.validateLogin(loginRequest);
 
-       // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
-        Authentication authentication = getAuthentication(loginRequest.getUserId(), loginRequest.getUserPassword());
+        //해당 유저가 사용 가능한 유지인지 검증
+        userValidator.validateUser(user);
 
-        // 인증 정보를 기반으로 JWT 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
-
-        //4. refresh token db 저장
-        user.setRefreshToken(jwtToken.getRefreshToken());
-
-        // 5. 토큰 정보로 response 생성 후 리턴
-        return LoginResponse.builder()
-                .userIdx(user.getUserIdx())
-                .userNickname(user.getUserNickname())
-                .accessToken(jwtToken.getAccessToken())
-                .refreshToken(jwtToken.getRefreshToken())
-                .build();
+       return authenticateAndGetToken(user);
     }
 
     @Override
@@ -460,15 +448,25 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("pattern이 틀립니다.");
         }
 
-        // 입력한 유저가 사용 제한된 유저인지 확인
-        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
-            throw new RuntimeException("서비스 이용 제한된 유저입니다.");
-        }
+        //사용이 가능한 유저인지 검증
+        userValidator.validateUser(user);
 
-        // 입력한 유저가 탈퇴한 유저인지 확인
-        if (user.getUserDeletedDate() != null) {
-            throw new RuntimeException("이미 탈퇴한 유저입니다.");
-        }
+        return authenticateAndGetToken(user);
+    }
+
+    @Override
+    public LoginResponse loginFinger(long userIdx) {
+        // 입력 Idx 정보가 유효한지 확인
+        User user = userRepository.findByUserIdx(userIdx)
+                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+
+        //사용 가능한 유저인지 검증
+        userValidator.validateUser(user);
+
+        return authenticateAndGetToken(user);
+    }
+
+    private LoginResponse authenticateAndGetToken(User user) {
 
         // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
         Authentication authentication = getAuthentication(user.getUserId(), user.getUserPassword());

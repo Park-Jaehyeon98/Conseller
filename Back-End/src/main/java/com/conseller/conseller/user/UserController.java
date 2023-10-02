@@ -262,7 +262,7 @@ public class UserController {
     }
 
     @PostMapping("/verifypattern")
-    public ResponseEntity<Void> patternLogin(@Valid @RequestBody UserPatternRequest userPatternRequest){
+    public ResponseEntity<LoginResponse> patternLogin(@Valid @RequestBody UserPatternRequest userPatternRequest){
         log.info("유저 패턴 로그인");
 
         LoginResponse loginResponse = userService.loginPattern(userPatternRequest);
@@ -272,8 +272,20 @@ public class UserController {
         log.info("user refreshToken : " + loginResponse.getRefreshToken());
         userService.patternRegister((userPatternRequest));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(loginResponse);
 
+    }
+
+    @GetMapping("/finger/{userIdx}")
+    public ResponseEntity<LoginResponse> fingerLogin(@PathVariable Long userIdx) {
+
+        log.info("지문 로그인");
+
+        LoginResponse loginResponse = userService.loginFinger(userIdx);
+
+        return ResponseEntity.ok()
+                .body(loginResponse);
     }
 
     @PostMapping("/getgifticons")

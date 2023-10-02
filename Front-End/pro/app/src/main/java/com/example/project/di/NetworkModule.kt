@@ -156,7 +156,6 @@ class ResponseInterceptor : Interceptor {
         if (request.url.encodedPath.endsWith("api/user/verifypattern")) {
             return response
         }
-        Log.d("@@@@@@@@@@@","${response.code}")
         if (!response.isSuccessful) {
             when (response.code) {
                 400 -> throw CustomException("잘못된 요청입니다.")

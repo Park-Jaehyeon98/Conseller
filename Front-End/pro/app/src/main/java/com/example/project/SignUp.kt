@@ -154,7 +154,7 @@ fun SignUpPage(navController: NavHostController) {
         Log.d("why", "Sibal${checker}")
         Log.d("why", "Sibal22${Signstatus}")
         if (checker == 1 && Signstatus) {
-            dialogMessage = "회원가입 성공\n 패턴로그인을 추가하겠습니까?"
+            dialogMessage = "회원가입 성공\n 패턴 및 지문 로그인을 추가하겠습니까?"
             showDialog = true
         }
         if (checker == 2 && Signstatus) {

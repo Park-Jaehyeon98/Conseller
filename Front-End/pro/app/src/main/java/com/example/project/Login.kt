@@ -1,7 +1,8 @@
 package com.example.project
 
-import android.util.Log
+import SelectButton
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.Image
 import com.example.project.viewmodels.BiometricViewModel
 import com.example.project.viewmodels.AuthenticationState
 import androidx.compose.runtime.*
@@ -10,11 +11,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +33,13 @@ fun LoginPage(navController: NavHostController) {
     val authenticationState by viewModel.authenticationState.collectAsState()
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
+    val biometricPrompt = rememberBiometricPrompt(fragmentActivity, viewModel)
+    val currentBiometricPrompt = rememberUpdatedState(biometricPrompt)
+
+
+    LaunchedEffect(Unit) {
+        authenticateWithBiometrics(currentBiometricPrompt.value)
+    }
 
     when (authenticationState) {
         is AuthenticationState.SUCCESS -> {
@@ -51,11 +62,17 @@ fun LoginPage(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "App Logo",
+            modifier = Modifier.align(Alignment.CenterHorizontally).scale(0.8f)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         PatternAuthentication(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
         TemporaryNavigationButtons(navController)
         Spacer(modifier = Modifier.height(16.dp))
-        BiometricAuthenticationButton(fragmentActivity, viewModel)
     }
 }
 
@@ -91,23 +108,23 @@ fun PatternAuthentication(viewModel: BiometricViewModel) {
 
 @Composable
 fun TemporaryNavigationButtons(navController: NavHostController) {
-    Button(onClick = { navController.navigate("Home") }) {
-        Text("임시 로그인")
-    }
+
+    SelectButton(
+        text = "아이디로 로그인 하기",
+        onClick = { navController.navigate("TextloginPage") }
+    )
+
     Spacer(modifier = Modifier.height(16.dp))
-    Button(onClick = { navController.navigate("SignUp") }) {
-        Text("회원가입임시")
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-    Button(onClick = { navController.navigate("TextloginPage") }) {
-        Text("아이디로 로그인 하기")
-    }
+
+    SelectButton(
+        text = "회원가입임시",
+        onClick = { navController.navigate("SignUp") }
+    )
 }
 
-@Composable
-fun BiometricAuthenticationButton(fragmentActivity: FragmentActivity?, viewModel: BiometricViewModel) {
-    val biometricPrompt = rememberBiometricPrompt(fragmentActivity, viewModel)
-
+fun authenticateWithBiometrics(
+    biometricPrompt: BiometricPrompt?
+) {
     val promptInfo = BiometricPrompt.PromptInfo.Builder()
         .setTitle("Title")
         .setSubtitle("Subtitle")
@@ -115,11 +132,7 @@ fun BiometricAuthenticationButton(fragmentActivity: FragmentActivity?, viewModel
         .setNegativeButtonText("Cancel")
         .build()
 
-    if (biometricPrompt != null) { // Null check 추가
-        Button(onClick = { biometricPrompt.authenticate(promptInfo) }) {
-            Text("지문인식 임시 세팅")
-        }
-    }
+    biometricPrompt?.authenticate(promptInfo)
 }
 
 @Composable
@@ -131,11 +144,23 @@ fun rememberBiometricPrompt(
 
     val authenticationCallback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            viewModel.setAuthenticationState(AuthenticationState.ERROR(errString.toString()))
+            when (errorCode) {
+                BiometricPrompt.ERROR_NEGATIVE_BUTTON,
+                BiometricPrompt.ERROR_CANCELED,
+                BiometricPrompt.ERROR_USER_CANCELED -> {
+                    // 사용자가 인증을 취소한 경우
+                    // 현재는 아무 동작도 하지 않습니다. 필요하다면 추가 동작을 여기에 구현.
+                }
+                else -> {
+                    // 그 외의 에러들에 대한 처리
+                    viewModel.setAuthenticationState(AuthenticationState.ERROR(errString.toString()))
+                }
+            }
         }
 
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            viewModel.setAuthenticationState(AuthenticationState.SUCCESS)
+            viewModel.authenticateWithBiometrics()
+            // 성공시 토큰 호출하고 성공했다는 메세지를 해서 홈으로 보내기
         }
 
         override fun onAuthenticationFailed() {
@@ -167,10 +192,10 @@ fun ShowAlertDialog(message: String) {
                 openDialog.value = false
             },
             title = {
-                Text(text = "Authentication Error")
+                Text(text = "패턴 인증 실패", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             },
             text = {
-                Text(text = message)
+                Text(text = message, fontSize = 18.sp)
             },
             confirmButton = {
                 Button(onClick = {

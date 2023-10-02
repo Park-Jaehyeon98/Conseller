@@ -13,7 +13,13 @@ interface LoginService {
     @POST("api/user/verifypattern")
     suspend fun verifyPattern(
         @Body request: PatternVerificationRequest
-    ): Response<PatternVerificationResponse>
+    ): Response<IdPwLoginResponse>
+
+    // 지문인식 로그인 토큰 받기
+    @GET("api/user/finger/{userIdx}")
+    suspend fun fingerLogin(
+        @Path("userIdx") userIdx: Long
+    ): Response<IdPwLoginResponse>
 
     // 패턴을 저장하기 위한 API
     @POST("api/user/savepattern")
@@ -29,7 +35,7 @@ interface LoginService {
     @POST("api/user/firebaseToken")
     fun sendToken(@Body token: firebaseToken): Call<Void>
 
-    //access token 재발금
+    //access token 재발급
     @GET("/api/user/refresh/{userIdx}")
     fun accessToken(@Path("userIdx") useridx: Long):Response<accessToken>
 
@@ -39,11 +45,6 @@ interface LoginService {
 data class PatternVerificationRequest(
     val userIdx: Long,
     val pattern: String
-)
-// 패턴 검증 응답에 대한 DTO
-data class PatternVerificationResponse(
-    val success: Boolean,
-    val message: String,
 )
 
 // 패턴 저장 요청 DTO
@@ -66,6 +67,7 @@ data class  IdPwLoginResponse(
     val accessToken :String,
     val refreshToken:String,
 )
+
 // firebase 토큰
 data class firebaseToken(
     val firebaseToken: String
@@ -74,4 +76,10 @@ data class firebaseToken(
 // AccessToken
 data class accessToken(
     val accessToken: String
+)
+
+// 에러용 응답
+data class ErrorLoginResponse(
+    val code: Int,
+    val message: String
 )

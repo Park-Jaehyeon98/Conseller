@@ -116,7 +116,7 @@ fun HomeLayout3(navController: NavHostController) {
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(24.dp))
                 ImageButton("스토어") { navController.navigate("StorePage") }
                 ImageButton("경매") { navController.navigate("AuctionPage") }
                 ImageButton("물물교환") { navController.navigate("BarterPage") }
@@ -172,13 +172,11 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
 
 @Composable
 fun HomeLayout4(navController: NavController) {
-    val auctionViewModel: AuctionViewModel = hiltViewModel()
     val myPageViewModel: MyPageViewModel = hiltViewModel()
-    val error by auctionViewModel.error.collectAsState()
-    val myerror by myPageViewModel.error.collectAsState()
+    val error by myPageViewModel.error.collectAsState()
 
-    val myAuctionItems by auctionViewModel.myAuctionItems.collectAsState()
     val myBids by myPageViewModel.getMyAuctionBidResponse.collectAsState()
+    val myauction by myPageViewModel.getMyAuctionResponse.collectAsState()
 
     var selectedTab by remember { mutableStateOf("입찰") } // 초기값은 "입찰"
 
@@ -187,18 +185,13 @@ fun HomeLayout4(navController: NavController) {
 
     LaunchedEffect(Unit) {
         myPageViewModel.getMyAuctionBid()
-        auctionViewModel.fetchMyAuctionItems()
+        myPageViewModel.getMyAuction()
     }
+
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true
             snackbarText = error!!
-        }
-    }
-    LaunchedEffect(myerror) {
-        if (myerror != null) {
-            showSnackbar = true
-            snackbarText = myerror!!
         }
     }
     LaunchedEffect(showSnackbar) {
@@ -321,14 +314,14 @@ fun HomeLayout4(navController: NavController) {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (myAuctionItems.isEmpty()) {
+                        if (myauction.isEmpty()) {
                             Text(text = "등록된 경매가 없습니다.", fontSize = 24.sp)
                         } else {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(top = 50.dp)
                             ) {
-                                myAuctionItems.take(3).forEach { item ->
+                                myauction.take(3).forEach { item ->
                                     val itemInteractionState =
                                         remember { MutableInteractionSource() }
                                     val itemIsPressed by itemInteractionState.collectIsPressedAsState()

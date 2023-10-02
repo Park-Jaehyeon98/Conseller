@@ -333,9 +333,11 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                             text = "입찰",
                             onClick = {
                                 val bidValue = bidPrice.toIntOrNull() ?: 0
+                                val upperLimit = auctionDetail?.upperPrice ?: Int.MAX_VALUE
+                                val lowerLimit = auctionDetail?.lowerPrice ?: 0
 
                                 // 상한가보다 입찰가격이 같거나 높은 경우
-                                if (bidValue >= auctionDetail?.upperPrice ?: Int.MAX_VALUE) {
+                                if (bidValue >= upperLimit || bidValue < lowerLimit) {
                                     showBidDialog = false
                                     showAlertBidDialog = true
                                 } else {
@@ -393,7 +395,8 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         showAlertBidDialog = false
                     },
                     title = { Text("경고") },
-                    text = { Text("입찰 가격이 상한가보다 같거나 높습니다.") },
+                    text = { Text(text = "입찰 가격이 상한가보다 높거나\n하한가보다 낮습니다.",
+                        fontSize = 18.sp) },
                     confirmButton = {
                         Button(onClick = {
                             showAlertBidDialog = false

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .antMatchers("/user/phone-number").permitAll()
                 .antMatchers("/user/savepattern").permitAll()
                 .antMatchers("/user/verifypattern").permitAll()
+                .antMatchers("/user/finger").permitAll()
                 .antMatchers("/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()

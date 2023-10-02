@@ -85,47 +85,47 @@ public class Barter {
         this.preferSubCategory = preferSubCategory;
     }
 
-    public static BarterItemData toBarterItemData(Barter barter) {
-
-        List<BarterHostItem> hostGifticons = barter.getBarterHostItemList();
-
-        String gifticonName = "";
-        String gifticonEndDate = "";
-        String gifticonDataImageName = "";
-
-        LocalDateTime recentExpireDate = null;
-        for(BarterHostItem hostGifticon : hostGifticons) {
-            Gifticon gift = hostGifticon.getGifticon();
-            if(recentExpireDate == null || gift.getGifticonEndDate().isBefore(recentExpireDate)){
-                recentExpireDate = gift.getGifticonEndDate();
-                gifticonEndDate = DateTimeConverter.getInstance().convertString(gift.getGifticonEndDate());
-                gifticonName = gift.getGifticonName();
-                gifticonDataImageName = gift.getGifticonDataImageUrl();
-            }
-        }
-
-        //디포짓
-        Long userDeposit = barter.getBarterHost().getUserDeposit();
-        Boolean deposit = false;
-        if(userDeposit > 0) deposit = true;
-
-        //선호
-        String preper = barter.getPreferSubCategory().getSubCategoryContent();
-
-        //barter 이름
-        String barterName = barter.getBarterName();
-
-
-        return BarterItemData.builder()
-                .barterIdx(barter.getBarterIdx())
-                .gifticonDataImageName(gifticonDataImageName)
-                .gifticonName(gifticonName)
-                .gifticonEndDate(gifticonEndDate)
-                .deposit(deposit)
-                .preper(preper)
-                .barterName(barterName)
-                .build();
-    }
+//    public static BarterItemData toBarterItemData(Barter barter) {
+//
+//        List<BarterHostItem> hostGifticons = barter.getBarterHostItemList();
+//
+//        String gifticonName = "";
+//        String gifticonEndDate = "";
+//        String gifticonDataImageName = "";
+//
+//        LocalDateTime recentExpireDate = null;
+//        for(BarterHostItem hostGifticon : hostGifticons) {
+//            Gifticon gift = hostGifticon.getGifticon();
+//            if(recentExpireDate == null || gift.getGifticonEndDate().isBefore(recentExpireDate)){
+//                recentExpireDate = gift.getGifticonEndDate();
+//                gifticonEndDate = DateTimeConverter.getInstance().convertString(gift.getGifticonEndDate());
+//                gifticonName = gift.getGifticonName();
+//                gifticonDataImageName = gift.getGifticonDataImageUrl();
+//            }
+//        }
+//
+//        //디포짓
+//        Long userDeposit = barter.getBarterHost().getUserDeposit();
+//        Boolean deposit = false;
+//        if(userDeposit > 0) deposit = true;
+//
+//        //선호
+//        String preper = barter.getPreferSubCategory().getSubCategoryContent();
+//
+//        //barter 이름
+//        String barterName = barter.getBarterName();
+//
+//
+//        return BarterItemData.builder()
+//                .barterIdx(barter.getBarterIdx())
+//                .gifticonDataImageName(gifticonDataImageName)
+//                .gifticonName(gifticonName)
+//                .gifticonEndDate(gifticonEndDate)
+//                .deposit(deposit)
+//                .preper(preper)
+//                .barterName(barterName)
+//                .build();
+//    }
 
     public BarterResponseDTO toBarterResponseDto(Barter barter){
         List<BarterHostItemDto> barterHostItemDtoList= new ArrayList<>();

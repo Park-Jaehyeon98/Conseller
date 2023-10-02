@@ -63,21 +63,22 @@ public class BarterServiceImpl implements BarterService{
         List<BarterItemData> barterItemDataList= new ArrayList<>();
 
         for(Barter barter : barterPage) {
-            List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
-            Gifticon gifticon = null;
-
-            for(BarterHostItem gift : barterHostItemList) {
-                if(gift.getGifticon().getSubCategory() == barter.getSubCategory()) {
-                    gifticon = gift.getGifticon();
-                    break;
-                }
-            }
-
-            Boolean deposit = false;
-            if(barter.getBarterHost().getUserDeposit() > 0) {
-                deposit = true;
-            }
-            BarterItemData barterItemData = barter.toBarterItemData(barter, gifticon, deposit);
+//            List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
+//            Gifticon gifticon = null;
+//
+//            for(BarterHostItem gift : barterHostItemList) {
+//                if(gift.getGifticon().getSubCategory() == barter.getSubCategory()) {
+//                    gifticon = gift.getGifticon();
+//                    break;
+//                }
+//            }
+//
+//            Boolean deposit = false;
+//            if(barter.getBarterHost().getUserDeposit() > 0) {
+//                deposit = true;
+//            }
+//            BarterItemData barterItemData = barter.toBarterItemData(barter, gifticon, deposit);
+            BarterItemData barterItemData = BarterMapper.INSTANCE.toBarterItemData(barter);
             barterItemDataList.add(barterItemData);
         }
 
@@ -118,7 +119,7 @@ public class BarterServiceImpl implements BarterService{
                 .preper(barter.getPreferSubCategory().getSubCategoryContent())
                 .barterName(barter.getBarterName())
                 .barterText(barter.getBarterText())
-                .barterUserIdx(barter.getBarterIdx())
+                .barterUserIdx(barter.getBarterHost().getUserIdx())
                 .barterUserProfileUrl(barter.getBarterHost().getUserProfileUrl())
                 .barterUserDeposit(barter.getBarterHost().getUserDeposit())
                 .barterUserNickname(barter.getBarterHost().getUserNickname())

@@ -3,7 +3,7 @@ package com.conseller.conseller.barter.barter.barterDto.response;
 import lombok.*;
 
 
-@Getter @Setter @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter @Setter @NoArgsConstructor
 public class BarterItemData {
     private Long barterIdx;
     private String gifticonDataImageName;

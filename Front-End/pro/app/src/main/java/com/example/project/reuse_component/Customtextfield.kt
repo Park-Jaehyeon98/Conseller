@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -41,6 +41,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -56,11 +58,17 @@ fun CustomTextField(
     onValueChange: (TextFieldValue) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     error: String? = null,
-    showIcon: Boolean = false
-
-//    Keyboard: KeyboardType = KeyboardType.Text
+    showIcon: Boolean = false,
+    showNumber: Boolean = false
 ) {
     val scrollState = rememberScrollState()
+
+    val keyboardType = if (showNumber) {
+        KeyboardType.Number
+    } else {
+        KeyboardType.Text
+    }
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -95,11 +103,17 @@ fun CustomTextField(
                     .height(40.dp)
                     .weight(1f)
                     .padding(start=8.dp)
-                    .horizontalScroll(scrollState)
+                    .horizontalScroll(scrollState),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboardType,
+                    imeAction = ImeAction.Done
+                ),
             )
         }
     }
 }
+
+
 
 @Composable
 fun CustomTextFieldWithButton(
@@ -110,7 +124,13 @@ fun CustomTextFieldWithButton(
     onButtonClick: () -> Unit,
     showIcon: Boolean = false,
     error: String? = null,
+    showNumber: Boolean = false
 ) {
+    val keyboardType = if (showNumber) {
+        KeyboardType.Number
+    } else {
+        KeyboardType.Text
+    }
     val shape = RoundedCornerShape(8.dp) // 모서리 둥글게 만들기 위한 shape 정의
     val scrollState = rememberScrollState()
 
@@ -153,7 +173,11 @@ fun CustomTextFieldWithButton(
                         .height(40.dp)
                         .fillMaxWidth()
                         .padding(start=8.dp)
-                        .horizontalScroll(scrollState)
+                        .horizontalScroll(scrollState),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType,
+                        imeAction = ImeAction.Done
+                    ),
                 )
             }
             Button(
@@ -228,7 +252,10 @@ fun EmailTextFieldWithDomain(
                         .weight(5f)
                         .padding(end = 8.dp)
                         .horizontalScroll(scrollState)
-                        .focusRequester(focusRequester)
+                        .focusRequester(focusRequester),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
                 )
 
                 LaunchedEffect(emailValue) {
@@ -259,7 +286,10 @@ fun EmailTextFieldWithDomain(
                                 .fillMaxWidth()
                                 .background(BrandColor1, RoundedCornerShape(8.dp))
                                 .padding(start=8.dp)
-                                .horizontalScroll(scrollState)
+                                .horizontalScroll(scrollState),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done
+                            ),
                         )
                     } else {
                         Text(text = when (selectedDomain) {

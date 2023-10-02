@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,9 +48,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import formatPhoneNumber
 import java.io.InputStream
 
 @Composable
@@ -108,7 +105,10 @@ fun MyPage(navController: NavHostController) {
                 onClick1 = { navController.navigate("MypageCoupon") },
                 onClick2 = { navController.navigate("MypageAuction") },
                 onClick3 = { navController.navigate("MypageStore") },
-                onClick4 = { navController.navigate("MypageBarter") })
+                onClick4 = { navController.navigate("MypageBarter") },
+                onClick5 = { navController.navigate("MySalesPage") },
+                onClick6 = { navController.navigate("MyPurchasePage") })
+
             Spacer(modifier = Modifier.height(14.dp))
             Row(
                 modifier = Modifier.padding(end = 8.dp),
@@ -173,9 +173,54 @@ fun UserProfile(
                 contentScale = ContentScale.FillHeight
             )
         }
-        Text(text = userNickName, fontSize = 22.sp)
-        Text(text = userEmail)
-        Text(text = userPhoneNumber)
+
+        // 배경색을 하얀색으로 설정
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally  // 각 항목 시작 부분 정렬
+        ) {
+            // 닉네임 항목
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "나의 별명: ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(text = userNickName, fontSize = 20.sp)
+            }
+
+            // 이메일 항목
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "이메일: ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Text(text = userEmail, fontSize = 18.sp)
+            }
+
+            // 전화번호 항목
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "전화번호: ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Text(text = formatPhoneNumber(userPhoneNumber), fontSize = 18.sp)
+            }
+        }
     }
 }
 
@@ -195,7 +240,9 @@ fun MypageCheck(
     onClick1: () -> Unit,
     onClick2: () -> Unit,
     onClick3: () -> Unit,
-    onClick4: () -> Unit
+    onClick4: () -> Unit,
+    onClick5: () -> Unit,
+    onClick6: () -> Unit
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
     val myGift by viewModel.getMyGifticonResponse.collectAsState()
@@ -307,11 +354,11 @@ fun MypageCheck(
             contentAlignment = Alignment.Center
         ) {
             CustomCard(
-                label = "구매/입찰 내역",
+                label = "경매/판매 내역",
                 imageResId = R.drawable.coupon1,
                 number = myStore.size,
                 modifier = Modifier.fillMaxSize(),
-                onClick = {}
+                onClick = onClick5
             )
         }
 
@@ -325,11 +372,11 @@ fun MypageCheck(
             contentAlignment = Alignment.Center
         ) {
             CustomCard(
-                label = "물물교환 내역",
+                label = "구매/입찰 내역",
                 imageResId = R.drawable.coupon,
                 number = myBarter.size,
                 modifier = Modifier.fillMaxSize(),
-                onClick = {  }
+                onClick = onClick6
             )
         }
     }
@@ -375,90 +422,3 @@ fun CustomCard(
     }
 }
 
-@Composable
-fun GiftCard(
-    giftIcon: String? = null,
-    giftName: String,
-    giftDuration: String,
-    transactionStatus: String, // 거래 상태 추가
-    currentBid: String, // 현재 입찰가 추가
-    onDetailsClick: () -> Unit,
-    onDeleteClick: () -> Unit
-) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(Color.Transparent),
-        border = BorderStroke(1.dp, Color.Black),
-    ) {
-        Box(Modifier.fillMaxWidth()) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                // 기프티콘 사진
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    if (giftIcon != null) {
-                        Image(
-                            painter = rememberAsyncImagePainter(giftIcon),
-                            contentDescription = "기프티콘 사진",
-                            modifier = Modifier.size(200.dp, 200.dp)
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.giftdefault),
-                            contentDescription = "Default Image",
-                            modifier = Modifier.size(100.dp, 100.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(text = "상세보기 >", modifier = Modifier.clickable { onDetailsClick() })
-                    }
-                }
-                // 기프트 이름, 사용 기간, 거래 상태 및 현재 입찰가
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .weight(2f)
-                ) {
-                    Text(text = giftName)
-                    Text(text = giftDuration)
-                }
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .weight(2f)
-                ) {
-                    Text(
-                        text = transactionStatus,
-                        fontSize = 22.sp,
-                        color = Color.Green,
-                        fontWeight = FontWeight.Bold
-                    ) // 거래 상태 표시
-                    Text(text = "현재 입찰가", fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(
-                        text = currentBid,
-                        fontSize = 20.sp,
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold
-                    )  // 현재 입찰가 표시
-                }
-            }
-            // 삭제 아이콘
-            Icon(imageVector = Icons.Default.Close,
-                contentDescription = "삭제",
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .clickable { onDeleteClick() }
-                    .padding(8.dp))
-        }
-    }
-}

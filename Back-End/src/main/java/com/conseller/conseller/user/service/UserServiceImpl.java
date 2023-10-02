@@ -23,6 +23,7 @@ import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
 import com.conseller.conseller.user.enums.AccountBanks;
 import com.conseller.conseller.user.enums.Authority;
+import com.conseller.conseller.user.enums.Login;
 import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
@@ -37,6 +38,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final DateTimeConverter dateTimeConverter;
     private final GifticonRepository gifticonRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     public User register(SignUpRequest signUpRequest) {
@@ -85,7 +88,7 @@ public class UserServiceImpl implements UserService {
         //해당 유저가 사용 가능한 유지인지 검증
         userValidator.validateUser(user);
 
-       return authenticateAndGetToken(user);
+       return authenticateAndGetToken(user, Login.GENERAL);
     }
 
     @Override
@@ -368,19 +371,30 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private Authentication getAuthentication(String userId, String userPassword) {
+    private Authentication getAuthentication(String userId, String userPassword, Login loginType) {
         log.info("getAuthentication 호출");
 
         // 1. username + password 를 기반으로 Authentication 객체 생성
         // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userId, userPassword);
+        UsernamePasswordAuthenticationToken authenticationToken;
+        if (loginType.equals(Login.GENERAL)) {
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userId, userPassword);
+        } else {
+            log.info("일반 로그인이 아닌 특수 로그인");
+            UserDetails userDetails = customUserDetailsService.loadUserWithoutPassword(userId, userPassword);
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        }
 
         log.info("authenticationToken:" + authenticationToken.getName());
         log.info(authenticationManagerBuilder.getObject().toString());
 
         // 2. 실제 검증. authenticate() 메서드를 통해 요청된 User에 대한 검증 진행
         // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
+        if (!loginType.equals(Login.GENERAL)) {
+            return authenticationToken;
+        }
         return authenticationManagerBuilder.getObject().authenticate(authenticationToken);
     }
 
@@ -431,7 +445,7 @@ public class UserServiceImpl implements UserService {
 
         // 입력 Idx 정보가 유효한지 확인
         User user = userRepository.findByUserIdx(userPatternRequest.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         user.setUserPattern(userPatternRequest.getPattern());
     }
@@ -441,35 +455,38 @@ public class UserServiceImpl implements UserService {
 
         // 입력 Idx 정보가 유효한지 확인
         User user = userRepository.findByUserIdx(userPatternRequest.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         // 패턴이 맞는지 확인
         if (!user.getUserPattern().equals(userPatternRequest.getPattern())) {
-            throw new RuntimeException("pattern이 틀립니다.");
+            throw new CustomException(CustomExceptionStatus.PATTERN_INVALID);
         }
 
         //사용이 가능한 유저인지 검증
         userValidator.validateUser(user);
 
-        return authenticateAndGetToken(user);
+        return authenticateAndGetToken(user, Login.PATTERN);
     }
 
     @Override
     public LoginResponse loginFinger(long userIdx) {
         // 입력 Idx 정보가 유효한지 확인
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("해당 idx에 해당하는 유저 정보가 없습니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
         //사용 가능한 유저인지 검증
         userValidator.validateUser(user);
 
-        return authenticateAndGetToken(user);
+        return authenticateAndGetToken(user, Login.FINGER);
     }
 
-    private LoginResponse authenticateAndGetToken(User user) {
+    private LoginResponse authenticateAndGetToken(User user, Login loginType) {
+
+        //로그인 방식에 따라 달라져야함.
 
         // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
-        Authentication authentication = getAuthentication(user.getUserId(), user.getUserPassword());
+        String password = loginType.equals(Login.GENERAL) ? user.getPassword() : user.getUserPattern();
+        Authentication authentication = getAuthentication(user.getUserId(), password, loginType);
 
         // 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);

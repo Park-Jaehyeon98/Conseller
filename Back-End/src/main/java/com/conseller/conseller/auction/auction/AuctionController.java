@@ -116,6 +116,7 @@ public class AuctionController {
             auctionService.confirmAuction(request.getAuctionIdx());
 
             notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 완료", "님과의 거래가 완료되었습니다.", 1, 1);
+            notificationService.sendAuctionNotification(request.getAuctionIdx(), "경매 거래 완료", "님과의 거래가 완료되었습니다.", 2, 1);
         }
         else {
             // 거래 취소 알림
@@ -174,6 +175,7 @@ public class AuctionController {
     // 가장 많은 서브카테고리
     @GetMapping("/category/sub")
     public ResponseEntity<AuctionCategoryResponse> getSubCategory() {
+
         List<Integer> list = auctionService.getSubCategory();
 
         AuctionCategoryResponse response = new AuctionCategoryResponse(list);

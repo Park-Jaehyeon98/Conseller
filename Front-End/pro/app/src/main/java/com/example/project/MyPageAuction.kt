@@ -73,7 +73,7 @@ fun MypageAuction(navController: NavHostController) {
     ) {
         SelectAuction(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (filteredAuction.isEmpty()||filteredAuctionBid.isEmpty()) {
+        if (ChoiceStatus == 1 && filteredAuction.isEmpty() || ChoiceStatus == 2 && filteredAuction.isEmpty() || ChoiceStatus == 3 && filteredAuctionBid.isEmpty() || ChoiceStatus == 4 && filteredAuctionBid.isEmpty()) {
             showNothingActionImage()
         } else {
             if (ChoiceStatus <= 2) {

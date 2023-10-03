@@ -53,14 +53,14 @@ public class NotificationServiceImpl implements NotificationService{
 
             user = auction.getHighestBidUser();
 
-            contents = user.getUserNickname() + " " + body;
+            contents = auction.getUser().getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(auction.getUser().getFcm() == null)
                 return;
 
             user = auction.getUser();
 
-            contents = user.getUserNickname() + " " + body;
+            contents = auction.getHighestBidUser().getUserNickname() + " " + body;
         } else {
             throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }
@@ -103,6 +103,54 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
+    public void sendAuctionBidNotification(Long auctionIdx, Long userIdx, String title, Integer type) {
+        Auction auction = auctionRepository.findById(auctionIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
+
+        User bidder = userRepository.findById(userIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
+
+        User user = auction.getUser();
+
+        if(user.getFcm() == null)
+            return;
+
+        String contents = bidder.getUserNickname() + " 님이 입찰하셨습니다.";
+
+
+
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(contents)
+                .build();
+
+        Message message = Message.builder()
+                .setNotification(notification)
+                .setToken(user.getFcm())
+                .putData("timestamp", dateTimeConverter.convertString(LocalDateTime.now()))
+                .build();
+
+        try{
+            String response = FirebaseMessaging.getInstance().send(message);
+
+            log.info(response);
+
+            //데이터베이스 저장
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setNotificationTitle(title);
+            notificationEntity.setNotificationContent(contents);
+            notificationEntity.setNotificationType(type);
+            notificationEntity.setSeller(true);
+            notificationEntity.setUser(user);
+
+            notificationRepository.save(notificationEntity);
+
+        }catch (Exception e){
+            log.warn(auction.getUser().getUserId() + ": 알림 전송에 실패하였습니다.");
+        }
+    }
+
+    @Override
     public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type) {
         Store store = storeRepository.findById(storeIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.STORE_INVALID));
@@ -116,14 +164,14 @@ public class NotificationServiceImpl implements NotificationService{
 
             user = store.getConsumer();
 
-            contents = user.getUserNickname() + " " + body;
+            contents = store.getUser().getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(store.getUser().getFcm() == null)
                 return;
 
             user = store.getUser();
 
-            contents = user.getUserNickname() + " " + body;
+            contents = store.getConsumer().getUserNickname() + " " + body;
         } else {
             throw new CustomException(CustomExceptionStatus.INVALID_NOTI_TYPE);
         }

@@ -6,6 +6,8 @@ import com.conseller.conseller.notification.dto.response.NotificationListRespons
 public interface NotificationService {
     public void sendAuctionNotification(Long auctionIdx, String title, String body, Integer index, Integer type);
 
+    public void sendAuctionBidNotification(Long auctionIdx, Long userIdx , String title, Integer type);
+
     public void sendStoreNotification(Long storeIdx, String title, String body, Integer index, Integer type);
 
     public void sendBarterNotification(Long barterIdx, String title, Integer type);

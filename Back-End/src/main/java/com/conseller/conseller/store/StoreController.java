@@ -77,6 +77,7 @@ public class StoreController {
 
         //판매자에게 알림
         notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "님과의 거래가 시작되었습니다.", 2, 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "님과의 거래가 시작되었습니다.", 1, 2);
 
         return ResponseEntity.ok()
                 .body(response);
@@ -114,6 +115,7 @@ public class StoreController {
 
             // 구매자에게 알림
             notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 1, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 2, 2);
         }
         else {
             // 판매자 구매자 알림

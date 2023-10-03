@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,6 +42,11 @@ class MygifticonViewModel @Inject constructor(
     // 기프티콘 등록할때 선택용 저장소
     private val _selectedItemIndices = MutableStateFlow(listOf<Long>())
     val selectedItemIndices: StateFlow<List<Long>> get() = _selectedItemIndices
+
+    // 저장소 초기화
+    fun resetSelectedItemIndices() {
+        _selectedItemIndices.value = listOf()
+    }
 
 
     private var currentPage = 1

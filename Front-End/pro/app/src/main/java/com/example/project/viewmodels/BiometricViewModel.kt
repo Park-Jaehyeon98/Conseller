@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.MyFirebaseMessagingService
 import com.example.project.PatternState
 import com.example.project.api.ErrorLoginResponse
 import com.example.project.api.IdPwLoginResponse
@@ -54,6 +55,7 @@ class BiometricViewModel @Inject constructor(
                     val successResponse = response.body() as IdPwLoginResponse
                     _authenticationState.value = AuthenticationState.SUCCESS
                     sharedPreferencesUtil.setUserToken(successResponse.accessToken)
+                    MyFirebaseMessagingService().getFirebaseToken()
                 } else{
                     val errorBody = response.errorBody()?.string()
                     val errorMessage = errorBody?.substringAfter("\"message\":\"")?.substringBefore("\"}")
@@ -106,6 +108,7 @@ class BiometricViewModel @Inject constructor(
                         sharedPreferencesUtil.setUserToken(it.accessToken)
                         sharedPreferencesUtil.setLoggedInStatus(true)
                         _authenticationState.value = AuthenticationState.SUCCESS
+                        MyFirebaseMessagingService().getFirebaseToken()
                         setAuthenticationState(AuthenticationState.SUCCESS)
                     } ?: run {
                         _authenticationState.value = AuthenticationState.ERROR("응답 본문이 존재하지 않습니다.")

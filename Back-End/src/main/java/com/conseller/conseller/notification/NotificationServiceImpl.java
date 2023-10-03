@@ -51,14 +51,14 @@ public class NotificationServiceImpl implements NotificationService{
             if(auction.getHighestBidUser().getFcm() == null)
                 return;
 
-            user = auction.getHighestBidUser();
+            user = auction.getUser();
 
             contents = user.getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(auction.getUser().getFcm() == null)
                 return;
 
-            user = auction.getUser();
+            user = auction.getHighestBidUser();
 
             contents = user.getUserNickname() + " " + body;
         } else {
@@ -114,14 +114,14 @@ public class NotificationServiceImpl implements NotificationService{
             if(store.getConsumer().getFcm() == null)
                 return;
 
-            user = store.getConsumer();
+            user = store.getUser();
 
             contents = user.getUserNickname() + " " + body;
         } else if( index == 2) { // 판매자
             if(store.getUser().getFcm() == null)
                 return;
 
-            user = store.getUser();
+            user = store.getConsumer();
 
             contents = user.getUserNickname() + " " + body;
         } else {

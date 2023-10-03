@@ -83,7 +83,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
         String statusOfBarter = barter.getBarterStatus();
-        if(!statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus()) || !statusOfBarter.equals(BarterStatus.SUGGESTED.getStatus())){
+        if(!statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus()) && !statusOfBarter.equals(BarterStatus.SUGGESTED.getStatus())){
             throw new RuntimeException("완료 또는 만료된 교환입니다.");
         }
 

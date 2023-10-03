@@ -245,8 +245,8 @@ public class UserController {
 
     //fcm 토큰 발급
     @PostMapping("/firebaseToken/{userIdx}")
-    public ResponseEntity<Object> getFirebaseToken(@PathVariable Long userIdx, @RequestBody FirebaseRequest request) {
-        userService.getFirebaseToken(userIdx, request);
+    public ResponseEntity<Object> setFirebaseToken(@PathVariable Long userIdx, @RequestBody FirebaseRequest request) {
+        userService.setFirebaseToken(userIdx, request);
 
         return ResponseEntity.ok()
                 .build();

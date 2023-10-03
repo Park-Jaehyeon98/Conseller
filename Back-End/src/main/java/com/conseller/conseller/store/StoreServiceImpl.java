@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -196,6 +197,70 @@ public class StoreServiceImpl implements StoreService {
 
         store.setStoreStatus(StoreStatus.EXPIRED.getStatus());
         gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
+    }
+
+    @Override
+    public List<Integer> getMainCategory() {
+        List<Store> stores = storeRepository.findAwardedStoreList();
+
+        int[] mainCategoryCount = new int[6];
+
+        for(Store store : stores) {
+            int idx = store.getGifticon().getMainCategory().getMainCategoryIdx();
+            mainCategoryCount[idx]++;
+        }
+
+        int maxIdx = 1;
+        for(int i = 1; i < 6; i++) {
+            if(mainCategoryCount[i] > mainCategoryCount[maxIdx]){
+                maxIdx = i;
+            }
+        }
+
+        int secondIdx = 2;
+        for(int i = 1; i < 6; i++) {
+            if(maxIdx != i && mainCategoryCount[i] > mainCategoryCount[maxIdx]){
+                secondIdx = i;
+            }
+        }
+
+        List<Integer> list = new ArrayList<>();
+        list.add(maxIdx);
+        list.add(secondIdx);
+
+        return list;
+    }
+
+    @Override
+    public List<Integer> getSubCategory() {
+        List<Store> stores = storeRepository.findAwardedStoreList();
+
+        int[] subCategoryCount = new int[11];
+
+        for(Store store : stores) {
+            int idx = store.getGifticon().getSubCategory().getSubCategoryIdx();
+            subCategoryCount[idx]++;
+        }
+
+        int maxIdx = 1;
+        for(int i = 1; i < 11; i++) {
+            if(subCategoryCount[i] > subCategoryCount[maxIdx]){
+                maxIdx = i;
+            }
+        }
+
+        int secondIdx = 2;
+        for(int i = 1; i < 11; i++) {
+            if(maxIdx != i && subCategoryCount[i] > subCategoryCount[maxIdx]){
+                secondIdx = i;
+            }
+        }
+
+        List<Integer> list = new ArrayList<>();
+        list.add(maxIdx);
+        list.add(secondIdx);
+
+        return list;
     }
 
 }

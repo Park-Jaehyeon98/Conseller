@@ -4,13 +4,11 @@ import com.conseller.conseller.auction.auction.dto.response.AuctionItemData;
 import com.conseller.conseller.auction.bid.dto.response.AuctionBidResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.MyBarterRequestResponseDto;
-import com.conseller.conseller.entity.*;
+import com.conseller.conseller.entity.User;
 import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.store.dto.response.StoreItemData;
-import com.conseller.conseller.store.dto.response.StoreResponse;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
-import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -86,7 +84,7 @@ public interface UserService {
     public void deleteUser(long userIdx, String token);
 
     //fcm 토큰 발급
-    public void getFirebaseToken(Long userIdx, FirebaseRequest request);
+    public void setFirebaseToken(Long userIdx, FirebaseRequest request);
 
     //pattern 저장
     public void patternRegister(@Valid UserPatternRequest userPatternRequest);

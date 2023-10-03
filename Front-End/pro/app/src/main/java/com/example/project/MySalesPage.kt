@@ -51,6 +51,7 @@ import com.example.project.api.myGifticon
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 import formattedNumber
+import showNothingActionImage
 
 @Composable
 fun MySalesPage(navController: NavHostController) {
@@ -66,7 +67,6 @@ fun MySalesPage(navController: NavHostController) {
 
 
     var ChoiceStatus by remember { mutableStateOf(1) }
-
 
 
     val filteredStore = when (ChoiceStatus) {
@@ -91,44 +91,48 @@ fun MySalesPage(navController: NavHostController) {
     ) {
         SelectSalesBar(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (ChoiceStatus == 1) {
+        if (ChoiceStatus == 1 && filteredStore.isEmpty() || ChoiceStatus == 2 && filteredAuction.isEmpty() || ChoiceStatus == 3 && filteredBarter.isEmpty()) {
+            showNothingActionImage()
+        } else {
+            if (ChoiceStatus == 1) {
 
-            filteredStore.forEach { item ->
-                ShowMySales(
-                    image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    storeTime = item.storeEndDate,
-                    isDeposit = item.deposit,
-                    Price = item.storePrice,
-                    Status = item.storeStatus
-                )
-            }
-        } else if (ChoiceStatus == 2) {
+                filteredStore.forEach { item ->
+                    ShowMySales(
+                        image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        storeTime = item.storeEndDate,
+                        isDeposit = item.deposit,
+                        Price = item.storePrice,
+                        Status = item.storeStatus
+                    )
+                }
+            } else if (ChoiceStatus == 2) {
 
-            filteredAuction.forEach { item ->
-                ShowMySales(
-                    image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    storeTime = item.auctionEndDate,
-                    isDeposit = item.deposit,
-                    Price = item.upperPrice,
-                    Status = item.auctionStatus
-                )
-            }
-        } else if (ChoiceStatus == 3) {
+                filteredAuction.forEach { item ->
+                    ShowMySales(
+                        image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        storeTime = item.auctionEndDate,
+                        isDeposit = item.deposit,
+                        Price = item.upperPrice,
+                        Status = item.auctionStatus
+                    )
+                }
+            } else if (ChoiceStatus == 3) {
 
-            filteredBarter.forEach { item ->
-                ShowMySales(
-                    image = item.barterHostItems[0].gifticonDataImageUrl,
-                    name = item.barterHostItems[0].gifticonName,
-                    gifticonTime = item.barterHostItems[0].gifticonEndDate,
-                    storeTime = item.barterEndDate,
-                    isDeposit = false,
-                    Price = 0,
-                    Status = item.barterStatus
-                )
+                filteredBarter.forEach { item ->
+                    ShowMySales(
+                        image = item.barterHostItems[0].gifticonDataImageUrl,
+                        name = item.barterHostItems[0].gifticonName,
+                        gifticonTime = item.barterHostItems[0].gifticonEndDate,
+                        storeTime = item.barterEndDate,
+                        isDeposit = false,
+                        Price = 0,
+                        Status = item.barterStatus
+                    )
+                }
             }
         }
     }
@@ -309,7 +313,7 @@ fun ShowMySales(
                     contentDescription = "구매 완료", modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }else if(Status=="교환완료"){
+        } else if (Status == "교환 완료") {
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)

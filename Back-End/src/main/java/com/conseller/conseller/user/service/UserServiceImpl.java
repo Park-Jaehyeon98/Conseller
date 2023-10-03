@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         //해당 유저가 사용 가능한 유지인지 검증
         userValidator.validateUser(user);
 
-       return authenticateAndGetToken(user, Login.GENERAL);
+       return authenticateAndGetToken(user, Login.GENERAL, loginRequest);
     }
 
     @Override
@@ -465,7 +465,7 @@ public class UserServiceImpl implements UserService {
         //사용이 가능한 유저인지 검증
         userValidator.validateUser(user);
 
-        return authenticateAndGetToken(user, Login.PATTERN);
+        return authenticateAndGetToken(user, Login.PATTERN, null);
     }
 
     @Override
@@ -477,15 +477,15 @@ public class UserServiceImpl implements UserService {
         //사용 가능한 유저인지 검증
         userValidator.validateUser(user);
 
-        return authenticateAndGetToken(user, Login.FINGER);
+        return authenticateAndGetToken(user, Login.FINGER, null);
     }
 
-    private LoginResponse authenticateAndGetToken(User user, Login loginType) {
+    private LoginResponse authenticateAndGetToken(User user, Login loginType, LoginRequest loginRequest) {
 
         //로그인 방식에 따라 달라져야함.
 
         // 입력된 id, password 기반으로 인증 후 인가 관련 인터페이스 생성
-        String password = loginType.equals(Login.GENERAL) ? user.getPassword() : user.getUserPattern();
+        String password = loginType.equals(Login.GENERAL) ? loginRequest.getUserPassword() : user.getUserPattern();
         Authentication authentication = getAuthentication(user.getUserId(), password, loginType);
 
         // 인증 정보를 기반으로 JWT 토큰 생성

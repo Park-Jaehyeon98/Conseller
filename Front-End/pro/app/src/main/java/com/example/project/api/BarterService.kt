@@ -139,7 +139,7 @@ data class BarterDetailResponseDTO(
 // 물물교환 거래제안 응답 DTO = http형식
 data class TradeBarterRequestDTO(
     val userIdx: Long,
-    val selectedItemIndices: List<Long>
+    val barterGuestItemList: List<Long>
 )
 
 

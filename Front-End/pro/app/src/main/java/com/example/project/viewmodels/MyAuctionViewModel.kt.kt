@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.MyAuctionListResponseDTO
@@ -52,12 +53,10 @@ class MyAuctionViewModel @Inject constructor(
             try {
                 val response = service.getMyNotifications(userIdx)
                 if (response.isSuccessful) {
-                    _myNotifications.value = response.body() ?: emptyList()
-                    _myNotifications.value = getSampleData()
+                    _myNotifications.value = response.body()!!.items ?: emptyList()
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
-                _myNotifications.value = getSampleData()
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {
@@ -71,9 +70,10 @@ class MyAuctionViewModel @Inject constructor(
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
+            val userIdx = sharedPreferencesUtil.getUserId()
             val requestDTO = MyNotificationAnswerRequestDTO(notificationIdx, notificationType, answer)
             try {
-                val response = service.submitNotificationAnswer(requestDTO)
+                val response = service.submitNotificationAnswer(userIdx,requestDTO)
                 if (response.isSuccessful) {
                     fetchMyNotifications()
                 }

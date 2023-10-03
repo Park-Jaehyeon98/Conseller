@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.viewmodels.FireBaseViewModel
 import com.mrhwsn.composelock.ComposeLock
 import com.mrhwsn.composelock.ComposeLockCallback
 import com.mrhwsn.composelock.Dot
@@ -30,6 +31,7 @@ import com.mrhwsn.composelock.Dot
 @Composable
 fun LoginPage(navController: NavHostController) {
     val viewModel: BiometricViewModel = hiltViewModel()
+    val fireBaseViewModel: FireBaseViewModel = hiltViewModel()
     val authenticationState by viewModel.authenticationState.collectAsState()
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
@@ -43,6 +45,7 @@ fun LoginPage(navController: NavHostController) {
 
     when (authenticationState) {
         is AuthenticationState.SUCCESS -> {
+            fireBaseViewModel.getFirebaseToken()
             navController.navigate("Home")
         }
         is AuthenticationState.ERROR -> {

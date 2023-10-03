@@ -314,7 +314,7 @@ fun AuctionDetailPage(navController: NavHostController, index: String?) {
                         showBidDialog = false
                     },
                     title = {
-                        Text(text = "입찰가격 입력 *입찰취소는 0원을 입력하면 됩니다.")
+                        Text(text = "*입찰취소는 \n0원을 입력하면 됩니다.")
                     },
                     text = {
                         TextField(

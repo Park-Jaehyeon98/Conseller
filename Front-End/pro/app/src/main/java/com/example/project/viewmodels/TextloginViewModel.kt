@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.MyFirebaseMessagingService
 import com.example.project.api.LoginService
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.api.IdPwLoginResponse
@@ -23,6 +24,8 @@ class TextloginViewModel @Inject constructor(
     private val loginService: LoginService,
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
+
+    val firebaseService = MyFirebaseMessagingService()
 
     private val _idPwLoginState = MutableLiveData<ResponseState<IdPwLoginResponse>>()
     val idPwLoginState: LiveData<ResponseState<IdPwLoginResponse>> = _idPwLoginState

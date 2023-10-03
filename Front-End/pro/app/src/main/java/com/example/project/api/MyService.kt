@@ -13,15 +13,15 @@ interface MyService {
         @Body request: GifticonRequestDTO
     ): Response<GifticonPageResponse>
 
-    // 내 알람 목록 불러오기
-    @GET("api/user/notifications/{userIdx}")
+    @GET("api/notification/{userIdx}")
     suspend fun getMyNotifications(
         @Path("userIdx") userIdx: Long
-    ): Response<List<MyNotificationResponseDTO>>
+    ): Response<NotificationsResponse>
 
     // 알람 버튼 선택값 보내기
-    @POST("api/user/notifications/answer")
+    @PATCH("api/notification/{userIdx}")
     suspend fun submitNotificationAnswer(
+        @Path("userIdx") userIdx: Long,
         @Body request: MyNotificationAnswerRequestDTO
     ): Response<Void>
 
@@ -68,6 +68,9 @@ data class MyAuctionListResponseDTO(
 
 // 알람 목록 요청 DTO = Path형식
 // 알람 목록 응답 DTO
+data class NotificationsResponse(
+    val items: List<MyNotificationResponseDTO>
+)
 data class MyNotificationResponseDTO(
     val notificationIdx: Long,
     val notificationType: Int,

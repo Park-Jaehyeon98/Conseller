@@ -133,8 +133,11 @@ public class BarterServiceImpl implements BarterService{
     @Override
     public Long addBarter(BarterCreateDto barterCreateDto) {
         User user = userRepository.findByUserIdx(barterCreateDto.getUserIdx()).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-
-        SubCategory preferSubCategory = subCategoryRepository.findById(barterCreateDto.getSubCategory()).orElseThrow(() -> new RuntimeException("존재하지 않는 분류입니다."));
+        if(barterCreateDto.getSubCategory() == 0) {
+            SubCategory prefercategory = subCategoryRepository.findById(11).orElseThrow(() -> new RuntimeException("존재하지 않는 분류입니다."));
+        } else {
+            SubCategory preferSubCategory = subCategoryRepository.findById(barterCreateDto.getSubCategory()).orElseThrow(() -> new RuntimeException("존재하지 않는 분류입니다."));
+        }
         SubCategory subCategory = null;
 
 

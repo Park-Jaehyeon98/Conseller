@@ -72,7 +72,7 @@ fun MypageBarter(navController: NavHostController) {
     ) {
         SelectBarter(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (filteredBarter.isEmpty() || filteredBarterBid.isEmpty()) {
+        if (ChoiceStatus == 1 && filteredBarter.isEmpty() || ChoiceStatus == 2 && filteredBarter.isEmpty() || ChoiceStatus == 3 && filteredBarterBid.isEmpty() || ChoiceStatus == 4 && filteredBarterBid.isEmpty()) {
             showNothingActionImage()
         } else {
             if (ChoiceStatus <= 2) {

@@ -97,7 +97,6 @@ public class StoreController {
     }
 
     // 스토어 입금 완료
-    // 없어야할듯
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자에게 알림

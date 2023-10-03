@@ -18,4 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("select s from Store s where s.storeStatus != '낙찰' and s.storeEndDate <= current_timestamp ")
     List<Store> findStoreAllExpired();
+
+    @Query("select s from Store s where s.storeStatus = '낙찰'")
+    List<Store> findAwardedStoreList();
 }

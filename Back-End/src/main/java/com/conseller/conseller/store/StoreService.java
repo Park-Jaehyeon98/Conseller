@@ -36,4 +36,8 @@ public interface StoreService {
 
     public void rejectStore(Long storeIdx);
 
+    public List<Integer> getMainCategory();
+
+    public List<Integer> getSubCategory();
+
 }

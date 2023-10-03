@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -95,7 +97,6 @@ public class StoreController {
     }
 
     // 스토어 입금 완료
-    // 없어야할듯
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자에게 알림
@@ -131,6 +132,28 @@ public class StoreController {
     @GetMapping("/Confirm/{store_idx}")
     public ResponseEntity<StoreConfirmResponse> getConfirmStore(@PathVariable("store_idx") Long storeIdx) {
         StoreConfirmResponse response = storeService.getConfirmStore(storeIdx);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // 가장 많은 메인카테고리
+    @GetMapping("/category/main")
+    public ResponseEntity<StoreCategoryResponse> getMainCategory() {
+        List<Integer> list = storeService.getMainCategory();
+
+        StoreCategoryResponse response = new StoreCategoryResponse(list);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // 가장 많은 서브카테고리
+    @GetMapping("/category/sub")
+    public ResponseEntity<StoreCategoryResponse> getSubCategory() {
+        List<Integer> list = storeService.getSubCategory();
+
+        StoreCategoryResponse response = new StoreCategoryResponse(list);
 
         return ResponseEntity.ok()
                 .body(response);

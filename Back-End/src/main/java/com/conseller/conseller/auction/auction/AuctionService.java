@@ -35,4 +35,10 @@ public interface AuctionService {
     public List<Auction> getAuctionExpiredList();
 
     public void rejectAuction(Long auctionIdx);
+
+    public List<Auction> getPopularAuction();
+
+    public List<Integer> getMainCategory();
+
+    public List<Integer> getSubCategory();
 }

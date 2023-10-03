@@ -21,10 +21,7 @@ import com.conseller.conseller.user.UserValidator;
 import com.conseller.conseller.user.dto.UserMapper;
 import com.conseller.conseller.user.dto.request.*;
 import com.conseller.conseller.user.dto.response.*;
-import com.conseller.conseller.user.enums.AccountBanks;
-import com.conseller.conseller.user.enums.Authority;
 import com.conseller.conseller.user.enums.Login;
-import com.conseller.conseller.user.enums.UserStatus;
 import com.conseller.conseller.utils.DateTimeConverter;
 import com.conseller.conseller.utils.TemporaryValueGenerator;
 import com.conseller.conseller.utils.jwt.BlackListRepository;
@@ -32,7 +29,6 @@ import com.conseller.conseller.utils.jwt.JwtToken;
 import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -292,7 +288,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getFirebaseToken(Long userIdx, FirebaseRequest request) {
+    public void setFirebaseToken(Long userIdx, FirebaseRequest request) {
         User user = userRepository.findByUserIdx(userIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 

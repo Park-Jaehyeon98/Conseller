@@ -1,15 +1,19 @@
 package com.conseller.conseller.auction.auction;
 
+import com.conseller.conseller.auction.auction.dto.mapper.AuctionMapper;
 import com.conseller.conseller.auction.auction.dto.request.AuctionConfirmRequest;
 import com.conseller.conseller.auction.auction.dto.request.AuctionListRequest;
 import com.conseller.conseller.auction.auction.dto.request.ModifyAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.request.RegistAuctionRequest;
 import com.conseller.conseller.auction.auction.dto.response.*;
+import com.conseller.conseller.entity.Auction;
 import com.conseller.conseller.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -134,6 +138,7 @@ public class AuctionController {
                 .body(response);
     }
 
+    // 입금확인 페이지
     @GetMapping("/ConfirmBuy/{auction_idx}")
     public ResponseEntity<AuctionConfirmBuyResponse> getConfirmBuyAuction(@PathVariable("auction_idx") Long auctionIdx) {
         AuctionConfirmBuyResponse response = auctionService.getConfirmBuyAuction(auctionIdx);
@@ -142,6 +147,39 @@ public class AuctionController {
                 .body(response);
     }
 
+    //가장 입찰이 많은 경매
+    @GetMapping("/popular")
+    public ResponseEntity<AuctionPopularResponse> getPopularAuction() {
+        List<Auction> auctionList = auctionService.getPopularAuction();
 
+        List<AuctionItemData> auctionItemDataList = AuctionMapper.INSTANCE.auctionsToItemDatas(auctionList);
+
+        AuctionPopularResponse response = new AuctionPopularResponse(auctionItemDataList);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // 가장 많은 메인카테고리
+    @GetMapping("/category/main")
+    public ResponseEntity<AuctionCategoryResponse> getMainCategory() {
+        List<Integer> list = auctionService.getMainCategory();
+
+        AuctionCategoryResponse response = new AuctionCategoryResponse(list);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    // 가장 많은 서브카테고리
+    @GetMapping("/category/sub")
+    public ResponseEntity<AuctionCategoryResponse> getSubCategory() {
+        List<Integer> list = auctionService.getSubCategory();
+
+        AuctionCategoryResponse response = new AuctionCategoryResponse(list);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
 
 }

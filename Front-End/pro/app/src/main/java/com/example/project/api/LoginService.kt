@@ -32,8 +32,11 @@ interface LoginService {
     suspend fun textLogin(@Body request:IdPwLoginRequest ): Response<IdPwLoginResponse>
 
     // firebase 토큰
-    @POST("api/user/firebaseToken")
-    fun sendToken(@Body token: firebaseToken): Call<Void>
+    @POST("api/user/firebaseToken/{userIdx}")
+    fun sendToken(
+        @Path("userIdx") userIdx: Long,
+        @Body token: firebaseToken
+    ): Call<Void>
 
     //access token 재발급
     @GET("/api/user/refresh/{userIdx}")

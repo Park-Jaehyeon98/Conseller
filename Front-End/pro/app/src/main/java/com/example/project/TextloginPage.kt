@@ -43,20 +43,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.ui.theme.BrandColor1
+import com.example.project.viewmodels.FireBaseViewModel
 import com.example.project.viewmodels.ResponseState
 import com.example.project.viewmodels.TextloginViewModel
 
 @Composable
 fun TextLoginPage(navController: NavHostController) {
     val textLoginModel: TextloginViewModel = hiltViewModel()
+    val fireBaseViewModel: FireBaseViewModel = hiltViewModel()
     var loginText by remember { mutableStateOf(TextFieldValue("")) }
     var passwordText by remember { mutableStateOf(TextFieldValue("")) }
 
     // 상태 확인
     val loginState by textLoginModel.idPwLoginState.observeAsState()
     val ErrorState by textLoginModel.checkError.collectAsState()
+<<<<<<< Updated upstream
     val firebaseService = MyFirebaseMessagingService()
 
+=======
+>>>>>>> Stashed changes
     LaunchedEffect(ErrorState){
         if(ErrorState){
             navController.navigate("TextLoginPage")
@@ -224,8 +229,12 @@ fun TextLoginPage(navController: NavHostController) {
             when (loginState) {
                 is ResponseState.Success -> {
                     // 로그인 성공 시 Home으로 이동
+                    fireBaseViewModel.getFirebaseToken()
                     navController.navigate("Home")
+<<<<<<< Updated upstream
                     firebaseService.getFirebaseToken() // 토큰 발급 받는 거
+=======
+>>>>>>> Stashed changes
                 }
                 is ResponseState.Error -> {
                    // 로그인 실패 에러 알림

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -159,6 +161,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         snackbarText = "상한가는 하한가보다 높아야 합니다."
                     }
                 },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Red,
+                    unfocusedBorderColor = Color.Gray
+                ),
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
@@ -201,6 +208,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         snackbarText = "하한가는 상한가보다 낮아야 합니다."
                     }
                 },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Red,
+                    unfocusedBorderColor = Color.Gray
+                ),
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
@@ -225,6 +237,11 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             OutlinedTextField(
                 value = postContent,
                 onValueChange = { postContent = it },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Red,
+                    unfocusedBorderColor = Color.Gray
+                ),
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()

@@ -48,7 +48,6 @@ class BarterViewModel @Inject constructor(
     // 유저idx 불러오기
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
-//        return 12345
     }
 
     // 물물교환글 상세보기

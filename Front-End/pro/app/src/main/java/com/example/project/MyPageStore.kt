@@ -48,71 +48,75 @@ fun MypageStore(navController: NavHostController) {
     var ChoiceStatus by remember { mutableStateOf(1) }
     val getMyStore by viewModel.getMyStoreResponse.collectAsState()
     val getMyPurchase by viewModel.getMyPurchaseResponse.collectAsState()
-    val scrollstate= rememberScrollState()
+    val scrollstate = rememberScrollState()
 
     val filteredStore = when (ChoiceStatus) {
-        1 -> getMyStore.filter { it.storeStatus== "진행 중" }
+        1 -> getMyStore.filter { it.storeStatus == "진행 중" }
         2 -> getMyStore.filter { it.storeStatus == "거래 중" }
         else -> getMyStore
     }
     val filteredPurchase = when (ChoiceStatus) {
-        3 -> getMyPurchase.filter { it.storeStatus== "거래 중" }
+        3 -> getMyPurchase.filter { it.storeStatus == "거래 중" }
         4 -> getMyPurchase.filter { it.storeStatus == "낙찰" }
         else -> getMyPurchase
     }
 
     Column(
-        modifier= Modifier.verticalScroll(scrollstate),
+        modifier = Modifier.verticalScroll(scrollstate),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
-    ){
-        SelectStore(onSelectionChanged = { ChoiceStatus = it})
+    ) {
+        SelectStore(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if(ChoiceStatus<=2) {
-            filteredStore?.forEach { item ->
-                ShowMyStore(
-                    image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    storeTime = item.storeEndDate,
-                    isDeposit = item.deposit,
-                    storePrice = item.storePrice,
-                    onItemClick = {
-                        if (item.storeStatus == "진행 중") {
-                            navController.navigate("StoreDetailPage/${item.storeIdx}")
-                        } else if (item.storeStatus == "거래 중") {
-                            navController.navigate("storeConfirmPage/${item.storeIdx}") {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
+        if (filteredStore.isEmpty() || filteredPurchase.isEmpty()) {
+            showNothingActionImage()
+        } else {
+            if (ChoiceStatus <= 2) {
+                filteredStore.forEach { item ->
+                    ShowMyStore(image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        storeTime = item.storeEndDate,
+                        isDeposit = item.deposit,
+                        storePrice = item.storePrice,
+                        onItemClick = {
+                            if (item.storeStatus == "진행 중") {
+                                navController.navigate("StoreDetailPage/${item.storeIdx}")
+                            } else if (item.storeStatus == "거래 중") {
+                                navController.navigate("storeConfirmPage/${item.storeIdx}") {
+                                    popUpTo(navController.graph.startDestinationId)
+                                    launchSingleTop = true
+                                }
                             }
                         }
-                    }
 
-                )
-            }
-        }else{
-            filteredPurchase?.forEach { item ->
-            ShowMyPurchase(
-                image = item.gifticonDataImageName,
-                name = item.gifticonName,
-                gifticonTime = item.gifticonEndDate,
-                storeTime = item.storeEndDate,
-                isDeposit = item.deposit,
-                storePrice = item.storePrice,
-                onItemClick = {
-                    if (item.storeStatus == "낙찰") {
-//                        navController.navigate("StoreDetailPage/${item.storeIdx}")
-                    } else if (item.storeStatus == "거래 중") {
-                        navController.navigate("StoreDetailPage/${item.storeIdx}")
-                    }
-                },
-                storeStatus=item.storeStatus
+                    )
+                }
+            } else {
+                filteredPurchase.forEach { item ->
+                    ShowMyPurchase(
+                        image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        storeTime = item.storeEndDate,
+                        isDeposit = item.deposit,
+                        storePrice = item.storePrice,
+                        onItemClick = {
+                            if (item.storeStatus == "낙찰") {
+            //                        navController.navigate("StoreDetailPage/${item.storeIdx}")
+                            } else if (item.storeStatus == "거래 중") {
+                                navController.navigate("StoreDetailPage/${item.storeIdx}")
+                            }
+                        },
+                        storeStatus = item.storeStatus
 
-            )
+                    )
+                }
             }
         }
     }
 }
+
 @Composable
 fun SelectStore(onSelectionChanged: (Int) -> Unit) {
     var selectedOption by remember { mutableStateOf(0) }  // 상태 변수로 현재 선택된 항목을 저장
@@ -167,7 +171,6 @@ fun StoreOption(
 }
 
 
-
 @Composable
 fun ShowMyStore(
     image: String,
@@ -178,16 +181,14 @@ fun ShowMyStore(
     storePrice: Int,
     onItemClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(360.dp)
-            .padding(2.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
-            .clickable { onItemClick() }
-            .padding(8.dp)
-    ) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .height(360.dp)
+        .padding(2.dp)
+        .background(Color.White, shape = RoundedCornerShape(8.dp))
+        .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
+        .clickable { onItemClick() }
+        .padding(8.dp)) {
         // 65% 이미지
         Box(
             modifier = Modifier
@@ -213,11 +214,17 @@ fun ShowMyStore(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Column (
+            Column(
                 modifier = Modifier.weight(1f)
-            ){
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                FormattedDateText(gifticonTime,"유효기간")
+            ) {
+                Text(
+                    name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                FormattedDateText(gifticonTime, "유효기간")
             }
         }
 
@@ -233,8 +240,7 @@ fun ShowMyStore(
                 .padding(horizontal = 12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // 40% 인기
                 Text(
@@ -246,10 +252,13 @@ fun ShowMyStore(
 
                 // 60% 박스2
                 Column(
-                    modifier = Modifier.weight(0.6f),
-                    horizontalAlignment = Alignment.End
+                    modifier = Modifier.weight(0.6f), horizontalAlignment = Alignment.End
                 ) {
-                    Text("구매가: ${formattedNumber(storePrice.toString())} 원", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        "구매가: ${formattedNumber(storePrice.toString())} 원",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                 }
             }
         }
@@ -264,6 +273,7 @@ fun ShowMyStore(
         )
     }
 }
+
 @Composable
 fun ShowMyPurchase(
     image: String,
@@ -275,15 +285,13 @@ fun ShowMyPurchase(
     storeStatus: String,
     onItemClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(360.dp)
-            .padding(2.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
-            .clickable { onItemClick() }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(360.dp)
+        .padding(2.dp)
+        .background(Color.White, shape = RoundedCornerShape(8.dp))
+        .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
+        .clickable { onItemClick() }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -354,8 +362,7 @@ fun ShowMyPurchase(
 
                     // 60% 박스2
                     Column(
-                        modifier = Modifier.weight(0.6f),
-                        horizontalAlignment = Alignment.End
+                        modifier = Modifier.weight(0.6f), horizontalAlignment = Alignment.End
                     ) {
                         Text(
                             "구매가: ${formattedNumber(storePrice.toString())} 원",
@@ -387,8 +394,7 @@ fun ShowMyPurchase(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.purchase), // 'purchase.jpg' 를 리소스로 로드
-                    contentDescription = "구매 완료",
-                    modifier = Modifier.align(Alignment.Center)
+                    contentDescription = "구매 완료", modifier = Modifier.align(Alignment.Center)
                 )
             }
         }

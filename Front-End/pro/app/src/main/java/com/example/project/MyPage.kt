@@ -63,6 +63,9 @@ fun MyPage(navController: NavHostController) {
         viewModel.getMyBarter()
         viewModel.getMyStore()
         viewModel.getMyAuction()
+        viewModel.getMyBarterRequest()
+        viewModel.getMyPurchase()
+        viewModel.getMyAuctionBid()
     }
 
 
@@ -249,6 +252,9 @@ fun MypageCheck(
     val myAuction by viewModel.getMyAuctionResponse.collectAsState()
     val myBarter by viewModel.getMyBarterResponse.collectAsState()
     val myStore by viewModel.getMyStoreResponse.collectAsState()
+    val myAcutionBid by viewModel.getMyAuctionBidResponse.collectAsState()
+    val myPurchase by viewModel.getMyPurchaseResponse.collectAsState()
+    val myBarterRequest by viewModel.getMyBarterRequestResponse.collectAsState()
 
     Row(
         modifier = Modifier
@@ -282,10 +288,11 @@ fun MypageCheck(
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
+            val notAuctionedCount = myAuction.filter { it.auctionStatus != "낙찰" }.size
             CustomCard(
                 label = "경매 현황",
                 imageResId = R.drawable.auction,
-                number = myAuction.size,
+                number = notAuctionedCount,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick2
             )
@@ -309,10 +316,11 @@ fun MypageCheck(
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
+            val notStoredCount = myStore.filter { it.storeStatus != "낙찰" }.size
             CustomCard(
                 label = "판매 현황",
                 imageResId = R.drawable.store,
-                number = myStore.size,
+                number = notStoredCount,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick3
             )
@@ -327,10 +335,11 @@ fun MypageCheck(
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
+            val notBarterCount = myBarter.filter { it.barterStatus != "교환 완료" }.size
             CustomCard(
                 label = "물물교환 현황",
                 imageResId = R.drawable.barter,
-                number = myBarter.size,
+                number = notBarterCount,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick4
             )
@@ -353,10 +362,14 @@ fun MypageCheck(
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
+            val AuctionedCount = myAuction.filter { it.auctionStatus == "낙찰" }.size
+            val StoredCount = myStore.filter { it.storeStatus == "낙찰" }.size
+            val BarterCount = myBarter.filter { it.barterStatus == "교환 완료" }.size
+            val AllCount=AuctionedCount+StoredCount+BarterCount
             CustomCard(
                 label = "경매/판매 내역",
                 imageResId = R.drawable.coupon1,
-                number = myStore.size,
+                number = AllCount,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick5
             )
@@ -371,10 +384,14 @@ fun MypageCheck(
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
+            val AuctionedBidCount = myAcutionBid.filter { it.auctionBidStatus == "낙찰" }.size
+            val PurchaseCount = myPurchase.filter { it.storeStatus == "낙찰" }.size
+            val BarterRequestCount = myBarterRequest.filter { it.barterRequestStatus == "수락" }.size
+            val PurcahseAllCount=AuctionedBidCount+PurchaseCount+BarterRequestCount
             CustomCard(
                 label = "구매/입찰 내역",
                 imageResId = R.drawable.coupon,
-                number = myBarter.size,
+                number = PurcahseAllCount,
                 modifier = Modifier.fillMaxSize(),
                 onClick = onClick6
             )

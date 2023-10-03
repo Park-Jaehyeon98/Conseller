@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -72,53 +73,57 @@ fun MypageAuction(navController: NavHostController) {
     ) {
         SelectAuction(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (ChoiceStatus <= 2) {
-            filteredAuction.forEach { item ->
-                ShowMyAuction(image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    auctionTime = item.auctionEndDate,
-                    isDeposit = item.deposit,
-                    upperprice = item.upperPrice,
-                    nowprice = item.auctionHighestBid,
-                    onItemClick = {
-                        if (item.auctionStatus == "진행 중") {
-                            navController.navigate("AuctionDetailPage/${item.auctionIdx}")
-                        } else if (item.auctionStatus == "거래 중") {
-                            Log.d(
-                                "AuctionClick",
-                                "Item clicked with auctionIdx: ${item.auctionIdx}"
-                            )
-                            navController.navigate("AuctionConfirmPage/${item.auctionIdx}")
-                        }
-                    }
-
-                )
-            }
+        if (filteredAuction.isEmpty()||filteredAuctionBid.isEmpty()) {
+            showNothingActionImage()
         } else {
-            filteredAuctionBid.forEach { item ->
-                ShowMyAuctionBid(image = item.auctionItemData.gifticonDataImageName,
-                    name = item.auctionItemData.gifticonName,
-                    gifticonTime = item.auctionItemData.gifticonEndDate,
-                    auctionTime = item.auctionItemData.auctionEndDate,
-                    isDeposit = item.auctionItemData.deposit,
-                    upperprice = item.auctionItemData.auctionHighestBid,
-                    myprice = item.auctionBidPrice,
-                    onItemClick = {
-                        if (item.auctionBidStatus == "입찰") {
-                            navController.navigate("AuctionDetailPage/${item.auctionItemData.auctionIdx}")
-                        } else if (item.auctionBidStatus == "낙찰 예정") {
-                            navController.navigate("AuctionConfirmBuyPage/${item.auctionItemData.auctionIdx}") {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
+            if (ChoiceStatus <= 2) {
+                filteredAuction.forEach { item ->
+                    ShowMyAuction(image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        auctionTime = item.auctionEndDate,
+                        isDeposit = item.deposit,
+                        upperprice = item.upperPrice,
+                        nowprice = item.auctionHighestBid,
+                        onItemClick = {
+                            if (item.auctionStatus == "진행 중") {
+                                navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                            } else if (item.auctionStatus == "거래 중") {
+                                Log.d(
+                                    "AuctionClick",
+                                    "Item clicked with auctionIdx: ${item.auctionIdx}"
+                                )
+                                navController.navigate("AuctionConfirmPage/${item.auctionIdx}")
                             }
                         }
 
+                    )
+                }
+            } else {
+                filteredAuctionBid.forEach { item ->
+                    ShowMyAuctionBid(image = item.auctionItemData.gifticonDataImageName,
+                        name = item.auctionItemData.gifticonName,
+                        gifticonTime = item.auctionItemData.gifticonEndDate,
+                        auctionTime = item.auctionItemData.auctionEndDate,
+                        isDeposit = item.auctionItemData.deposit,
+                        upperprice = item.auctionItemData.auctionHighestBid,
+                        myprice = item.auctionBidPrice,
+                        onItemClick = {
+                            if (item.auctionBidStatus == "입찰") {
+                                navController.navigate("AuctionDetailPage/${item.auctionItemData.auctionIdx}")
+                            } else if (item.auctionBidStatus == "낙찰 예정") {
+                                navController.navigate("AuctionConfirmBuyPage/${item.auctionItemData.auctionIdx}") {
+                                    popUpTo(navController.graph.startDestinationId)
+                                    launchSingleTop = true
+                                }
+                            }
 
-                    }
-                    ,status=item.auctionBidStatus
 
-                )
+                        },
+                        status = item.auctionBidStatus
+
+                    )
+                }
             }
         }
     }
@@ -419,4 +424,18 @@ fun ShowMyAuctionBid(
             }
         }
     }
+}
+
+
+@Composable
+fun showNothingActionImage() {
+    Image(
+        painter = painterResource(id = R.drawable.nothingaction),
+        contentDescription = "No available gifticon",
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(16.dp),
+        contentScale = ContentScale.Crop,
+    )
 }

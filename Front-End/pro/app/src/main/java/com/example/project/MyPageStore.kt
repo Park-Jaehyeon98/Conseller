@@ -68,7 +68,7 @@ fun MypageStore(navController: NavHostController) {
     ) {
         SelectStore(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (filteredStore.isEmpty() || filteredPurchase.isEmpty()) {
+        if (ChoiceStatus == 1 && filteredStore.isEmpty() || ChoiceStatus == 2 && filteredStore.isEmpty() || ChoiceStatus == 3 && filteredPurchase.isEmpty() || ChoiceStatus == 4 && filteredPurchase.isEmpty()) {
             showNothingActionImage()
         } else {
             if (ChoiceStatus <= 2) {

@@ -44,7 +44,7 @@ object NetworkModule {
     fun provideOkHttpClient(sharedPreferencesUtil: SharedPreferencesUtil): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(ResponseInterceptor())  //예외처리 인터셉터
+//            .addInterceptor(ResponseInterceptor())  //예외처리 인터셉터
             .addInterceptor { chain ->
                 val token = sharedPreferencesUtil.getUserToken() // 이거 get이름바뀌면 바꾸고
                 val request = chain.request().newBuilder()       // 토큰 형식 맞는지 확인하고

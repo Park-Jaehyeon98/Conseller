@@ -1,5 +1,6 @@
 package com.example.project.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.BarterConfirmList
@@ -227,14 +228,38 @@ class BarterViewModel @Inject constructor(
     }
 
     // 물물교환 거래 제안
+//    fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
+//        viewModelScope.launch {
+//            val userIdx = sharedPreferencesUtil.getUserId()
+//            _isLoading.value = true
+//            _error.value = null
+//            try {
+//                val response = service.proposeBarterTrade(barterIdx,
+//                    TradeBarterRequestDTO(userIdx,selectedItemIndices)
+//                )
+//
+//                if (response.isSuccessful) {
+//                    _error.value = null
+//                }
+//            } catch (e: CustomException) {
+//                _error.value = e.message
+//            } catch (e: Exception) {
+//                _error.value = e.localizedMessage
+//            } finally {
+//                _isLoading.value = false
+//            }
+//        }
+//    }
     fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
         viewModelScope.launch {
             val userIdx = sharedPreferencesUtil.getUserId()
             _isLoading.value = true
             _error.value = null
             try {
+                Log.d("ProposeBarter", "Sending values - barterIdx: $barterIdx, selectedItemIndices: $selectedItemIndices, userIdx: $userIdx")
+
                 val response = service.proposeBarterTrade(barterIdx,
-                    TradeBarterRequestDTO(userIdx,selectedItemIndices)
+                    TradeBarterRequestDTO(userIdx, selectedItemIndices)
                 )
 
                 if (response.isSuccessful) {
@@ -242,8 +267,10 @@ class BarterViewModel @Inject constructor(
                 }
             } catch (e: CustomException) {
                 _error.value = e.message
+                Log.e("ProposeBarter", "Caught CustomException: ${e.message}", e)
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
+                Log.e("ProposeBarter", "Caught Exception: ${e.localizedMessage}", e)
             } finally {
                 _isLoading.value = false
             }

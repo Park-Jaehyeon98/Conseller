@@ -157,7 +157,7 @@ data class BarterConfirmPageResponseDTO(
 // 물물교환 판매자 거래 확정 페이지 응답 DTO의 리스트의 리스트(전체)
 data class BarterConfirmListOfList(
     val buyUserImageUrl: String,
-    val buyUserNickname: String,
+    val buyUserNickName: String,
     val buyUserIdx: Long,
     val barterTradeList: List<BarterConfirmList>,
 )

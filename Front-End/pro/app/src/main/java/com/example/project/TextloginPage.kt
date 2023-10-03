@@ -56,6 +56,7 @@ fun TextLoginPage(navController: NavHostController) {
     val loginState by textLoginModel.idPwLoginState.observeAsState()
     val ErrorState by textLoginModel.checkError.collectAsState()
     val firebaseService = MyFirebaseMessagingService()
+
     LaunchedEffect(ErrorState){
         if(ErrorState){
             navController.navigate("TextLoginPage")
@@ -224,7 +225,7 @@ fun TextLoginPage(navController: NavHostController) {
                 is ResponseState.Success -> {
                     // 로그인 성공 시 Home으로 이동
                     navController.navigate("Home")
-                    firebaseService.getFirebaseToken()
+                    firebaseService.getFirebaseToken() // 토큰 발급 받는 거
                 }
                 is ResponseState.Error -> {
                    // 로그인 실패 에러 알림

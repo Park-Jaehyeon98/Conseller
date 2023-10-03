@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.project.viewmodels.MyPageViewModel
+import showNothingActionImage
 
 @Composable
 fun MypageBarter(navController: NavHostController) {
@@ -48,7 +49,7 @@ fun MypageBarter(navController: NavHostController) {
     var ChoiceStatus by remember { mutableStateOf(1) }
     val getMyBarter by viewModel.getMyBarterResponse.collectAsState()
     val getMyBarterRequest by viewModel.getMyBarterRequestResponse.collectAsState()
-    val scrollstate= rememberScrollState()
+    val scrollstate = rememberScrollState()
 
 
     val filteredBarter = when (ChoiceStatus) {
@@ -58,59 +59,63 @@ fun MypageBarter(navController: NavHostController) {
     }
 
     val filteredBarterBid = when (ChoiceStatus) {
-        3 -> getMyBarterRequest.filter { it.barterStatus == "교환 가능" }
-        4 -> getMyBarterRequest.filter { it.barterStatus == "교환 완료" }
+        3 -> getMyBarterRequest.filter { it.barterRequestStatus == "요청" }
+        4 -> getMyBarterRequest.filter { it.barterRequestStatus == "수락" }
         else -> getMyBarterRequest
     }
 
 
     Column(
-        modifier= Modifier.verticalScroll(scrollstate),
+        modifier = Modifier.verticalScroll(scrollstate),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
-    ){
-        SelectBarter(onSelectionChanged = { ChoiceStatus = it})
+    ) {
+        SelectBarter(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (ChoiceStatus <= 2) {
-            filteredBarter.forEach { item ->
-                ShowMyBarter(
-                    image = item.barterHostItems[0].gifticonDataImageUrl,
-                    name = item.barterHostItems[0].gifticonName,
-                    gifticonTime = item.barterHostItems[0].gifticonEndDate,
-                    barterTime = item.barterEndDate,
-                    isDeposit = false,
-                    preper = item.preferSubCategory ?: "선호없음",
-                    title = item.barterName,
-                    onItemClick = {
-                        if(ChoiceStatus==1){
-                            navController.navigate("BarterDetailPage/${item.barterIdx}")
-                        }else if(ChoiceStatus==2){
-                            navController.navigate("barterConfirmPage/${item.barterIdx}")
+        if (filteredBarter.isEmpty() || filteredBarterBid.isEmpty()) {
+            showNothingActionImage()
+        } else {
+            if (ChoiceStatus <= 2) {
+                filteredBarter.forEach { item ->
+                    ShowMyBarter(image = item.barterHostItems[0].gifticonDataImageUrl,
+                        name = item.barterHostItems[0].gifticonName,
+                        gifticonTime = item.barterHostItems[0].gifticonEndDate,
+                        barterTime = item.barterEndDate,
+                        isDeposit = false,
+                        preper = item.preferSubCategory ?: "선호없음",
+                        title = item.barterName,
+                        onItemClick = {
+                            if (ChoiceStatus == 1) {
+                                navController.navigate("BarterDetailPage/${item.barterIdx}")
+                            } else if (ChoiceStatus == 2) {
+                                navController.navigate("barterConfirmPage/${item.barterIdx}")
+                            }
                         }
-                    }
 
-                )
-            }
-        }else{
-            filteredBarterBid.forEach { item ->
-                ShowMyBarter(
-                    image = item.myBarterResponseDto.barterHostItems[0].gifticonDataImageUrl,
-                    name = item.myBarterResponseDto.barterHostItems[0].gifticonName,
-                    gifticonTime = item.myBarterResponseDto.barterHostItems[0].gifticonEndDate,
-                    barterTime = item.myBarterResponseDto.barterEndDate,
-                    isDeposit = false,
-                    preper = item.myBarterResponseDto.preferSubCategory ?: "선호없음",
-                    title = item.barterName,
-                    onItemClick = {
-                        if(item.barterStatus=="교환 완료")
-                        navController.navigate("BarterDetailPage/${item.barterIdx}")
-                    }
+                    )
+                }
+            } else {
+                filteredBarterBid.forEach { item ->
+                    ShowMyBarter(image = item.myBarterResponseDto.barterHostItems[0].gifticonDataImageUrl,
+                        name = item.myBarterResponseDto.barterHostItems[0].gifticonName,
+                        gifticonTime = item.myBarterResponseDto.barterHostItems[0].gifticonEndDate,
+                        barterTime = item.myBarterResponseDto.barterEndDate,
+                        isDeposit = false,
+                        preper = item.myBarterResponseDto.preferSubCategory ?: "선호없음",
+                        title = item.barterName,
+                        onItemClick = {
+                            if (item.barterRequestStatus == "요청") {
+                                navController.navigate("BarterDetailPage/${item.barterIdx}")
+                            }
+                        }
 
-                )
+                    )
+                }
             }
         }
     }
 }
+
 @Composable
 fun SelectBarter(onSelectionChanged: (Int) -> Unit) {
     var selectedOption by remember { mutableStateOf(0) }  // 상태 변수로 현재 선택된 항목을 저장
@@ -122,16 +127,16 @@ fun SelectBarter(onSelectionChanged: (Int) -> Unit) {
         horizontalArrangement = Arrangement.SpaceAround
     ) {
 
-        BarterOption(text = "내 교환", id = 1, selectedOption, onSelectionChanged){
+        BarterOption(text = "내 교환", id = 1, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
-        BarterOption(text = "교환 중", id = 2, selectedOption, onSelectionChanged){
+        BarterOption(text = "교환 중", id = 2, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
-        BarterOption(text = "내 제안", id = 3, selectedOption, onSelectionChanged){
+        BarterOption(text = "내 제안", id = 3, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
-        BarterOption(text = "내 제안(확정)", id = 4, selectedOption, onSelectionChanged){
+        BarterOption(text = "내 제안(확정)", id = 4, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
     }
@@ -161,7 +166,6 @@ fun BarterOption(
 }
 
 
-
 @Composable
 fun ShowMyBarter(
     image: String,
@@ -173,16 +177,14 @@ fun ShowMyBarter(
     title: String,
     onItemClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(360.dp)
-            .padding(2.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(4.dp))
-            .clickable { onItemClick() }
-            .padding(8.dp)
-    ) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .height(360.dp)
+        .padding(2.dp)
+        .background(Color.White, shape = RoundedCornerShape(8.dp))
+        .shadow(elevation = 4.dp, shape = RoundedCornerShape(4.dp))
+        .clickable { onItemClick() }
+        .padding(8.dp)) {
         // 65% 이미지
         Box(
             modifier = Modifier
@@ -209,11 +211,17 @@ fun ShowMyBarter(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Column (
+            Column(
                 modifier = Modifier.weight(1f)
-            ){
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                FormattedDateText(gifticonTime,"유효기간")
+            ) {
+                Text(
+                    name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                FormattedDateText(gifticonTime, "유효기간")
             }
         }
 
@@ -229,8 +237,7 @@ fun ShowMyBarter(
                 .padding(horizontal = 12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // 40% 인기
                 Text(
@@ -242,10 +249,14 @@ fun ShowMyBarter(
 
                 // 60% 박스2
                 Column(
-                    modifier = Modifier.weight(0.6f),
-                    horizontalAlignment = Alignment.End
+                    modifier = Modifier.weight(0.6f), horizontalAlignment = Alignment.End
                 ) {
-                    Text("대상품목: $preper", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        "대상품목: $preper",
+                        modifier = Modifier.weight(0.4f),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                 }
             }
         }

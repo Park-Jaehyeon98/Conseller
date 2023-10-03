@@ -246,7 +246,7 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
 
                         // 구매자
                         Text(
-                            text = "구매자: ${tradeList.buyUserNickname}",
+                            text = "구매자: ${tradeList.buyUserNickName}",
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .clickable(

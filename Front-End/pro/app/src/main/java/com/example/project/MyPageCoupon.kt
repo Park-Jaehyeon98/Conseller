@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,6 +64,7 @@ fun MypageCoupon(navController: NavHostController) {
 
     val filteredGift = when (ChoiceStatus) {
         1 -> getMyGift.filter { it.gifticonStatus == "보관" }
+        2 -> getMyGift.filter { it.gifticonStatus != "보관" }
         else -> getMyGift
     }
 
@@ -97,15 +100,23 @@ fun MypageCoupon(navController: NavHostController) {
                 }
             })
         }
-
-        filteredGift.forEach { gifticonData ->
-            ShowMyGifticon(gifticonData = gifticonData, isSelected = false, onClick = {
-                navController.navigate("MyPageCouponDetail/${gifticonData.gifticonIdx}")
-
-            }, onDelete = { showDialog = true }, onSelectGifticonIdx = { ChoiceGifticonIdx = it })
+        if (filteredGift.isEmpty()) {
+            showNothingGiftImage()
+        } else filteredGift.forEach { gifticonData ->
+            ShowMyGifticon(
+                gifticonData = gifticonData,
+                isSelected = false,
+                onClick = {
+                    navController.navigate("MyPageCouponDetail/${gifticonData.gifticonIdx}")
+                },
+                onDelete = { showDialog = true },
+                onSelectGifticonIdx = { ChoiceGifticonIdx = it },
+                status = gifticonData.gifticonStatus
+            )
         }
     }
 }
+
 
 // 클릭 시 수행할 함수d
 @Composable
@@ -160,7 +171,8 @@ fun ShowMyGifticon(
     isSelected: Boolean,
     onClick: () -> Unit,
     onDelete: () -> Unit,
-    onSelectGifticonIdx: (Long) -> Unit
+    onSelectGifticonIdx: (Long) -> Unit,
+    status: String,
 ) {
     val backgroundColor = if (isSelected) BrandColor1 else Color.Transparent
 
@@ -187,7 +199,8 @@ fun ShowMyGifticon(
             .padding(16.dp)
             .background(Color.White)
             .clickable(onClick = onClick),
-        horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             contentAlignment = Alignment.CenterStart, modifier = Modifier.size(130.dp)
@@ -225,13 +238,29 @@ fun ShowMyGifticon(
             ) {
                 Text(text = formattedDate, fontSize = 18.sp)
                 Spacer(modifier = Modifier.width(16.dp))
-                Button(onClick = {
-                    onDelete()
-                    onSelectGifticonIdx(gifticonData.gifticonIdx)
-                }) {
-                    Text("사용완료")
+                if (status == "보관") {
+                    Button(onClick = {
+                        onDelete()
+                        onSelectGifticonIdx(gifticonData.gifticonIdx)
+                    }) {
+                        Text("사용완료")
+                    }
                 }
             }
         }
     }
 }
+
+@Composable
+fun showNothingGiftImage() {
+    Image(
+        painter = painterResource(id = R.drawable.nothingcoupon),
+        contentDescription = "No available gifticon",
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(16.dp),
+        contentScale = ContentScale.Crop,
+    )
+}
+

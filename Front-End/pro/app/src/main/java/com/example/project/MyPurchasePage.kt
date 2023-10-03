@@ -49,6 +49,7 @@ import com.example.project.api.myGifticon
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 import formattedNumber
+import showNothingActionImage
 
 @Composable
 fun MyPurchasePage(navController: NavHostController) {
@@ -66,7 +67,6 @@ fun MyPurchasePage(navController: NavHostController) {
     var ChoiceStatus by remember { mutableStateOf(1) }
 
 
-
     val filteredStore = when (ChoiceStatus) {
         1 -> getMyPurchase.filter { it.storeStatus == "낙찰" }
         else -> getMyPurchase
@@ -76,7 +76,7 @@ fun MyPurchasePage(navController: NavHostController) {
         else -> getMyAuctionBid
     }
     val filteredBarter = when (ChoiceStatus) {
-        3 -> getMyBarterRequest.filter { it.barterStatus == "교환 완료" }
+        3 -> getMyBarterRequest.filter { it.barterRequestStatus == "수락" }
         else -> getMyBarterRequest
     }
 
@@ -89,44 +89,48 @@ fun MyPurchasePage(navController: NavHostController) {
     ) {
         SelectPurchaseBar(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
-        if (ChoiceStatus == 1) {
+        if (ChoiceStatus == 1 && filteredStore.isEmpty() || ChoiceStatus == 2 && filteredAuction.isEmpty() || ChoiceStatus == 3 && filteredBarter.isEmpty()) {
+            showNothingActionImage()
+        } else {
+            if (ChoiceStatus == 1) {
 
-            filteredStore.forEach { item ->
-                ShowMyPurchase(
-                    image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    storeTime = item.storeEndDate,
-                    isDeposit = item.deposit,
-                    Price = item.storePrice,
-                    Status = item.storeStatus
-                )
-            }
-        } else if (ChoiceStatus == 2) {
+                filteredStore.forEach { item ->
+                    ShowMyPurchase(
+                        image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        storeTime = item.storeEndDate,
+                        isDeposit = item.deposit,
+                        Price = item.storePrice,
+                        Status = item.storeStatus
+                    )
+                }
+            } else if (ChoiceStatus == 2) {
 
-            filteredAuction.forEach { item ->
-                ShowMyPurchase(
-                    image = item.auctionItemData.gifticonDataImageName,
-                    name = item.auctionItemData.gifticonName,
-                    gifticonTime = item.auctionItemData.gifticonEndDate,
-                    storeTime = item.auctionRegistedDate,
-                    isDeposit = item.auctionItemData.deposit,
-                    Price = item.auctionItemData.upperPrice,
-                    Status = item.auctionBidStatus
-                )
-            }
-        } else if (ChoiceStatus == 3) {
+                filteredAuction.forEach { item ->
+                    ShowMyPurchase(
+                        image = item.auctionItemData.gifticonDataImageName,
+                        name = item.auctionItemData.gifticonName,
+                        gifticonTime = item.auctionItemData.gifticonEndDate,
+                        storeTime = item.auctionRegistedDate,
+                        isDeposit = item.auctionItemData.deposit,
+                        Price = item.auctionItemData.upperPrice,
+                        Status = item.auctionBidStatus
+                    )
+                }
+            } else if (ChoiceStatus == 3) {
 
-            filteredBarter.forEach { item ->
-                ShowMyPurchase(
-                    image = item.myBarterResponseDto.barterHostItems[0].gifticonDataImageUrl,
-                    name = item.myBarterResponseDto.barterHostItems[0].gifticonName,
-                    gifticonTime = item.myBarterResponseDto.barterHostItems[0].gifticonEndDate,
-                    storeTime = item.myBarterResponseDto.barterEndDate,
-                    isDeposit = false,
-                    Price = 0,
-                    Status = item.barterStatus
-                )
+                filteredBarter.forEach { item ->
+                    ShowMyPurchase(
+                        image = item.myBarterResponseDto.barterHostItems[0].gifticonDataImageUrl,
+                        name = item.myBarterResponseDto.barterHostItems[0].gifticonName,
+                        gifticonTime = item.myBarterResponseDto.barterHostItems[0].gifticonEndDate,
+                        storeTime = item.myBarterResponseDto.barterEndDate,
+                        isDeposit = false,
+                        Price = 0,
+                        Status = item.barterStatus
+                    )
+                }
             }
         }
     }
@@ -307,7 +311,7 @@ fun ShowMyPurchase(
                     contentDescription = "구매 완료", modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }else if(Status=="교환 완료"){
+        } else if (Status == "교환 완료") {
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)

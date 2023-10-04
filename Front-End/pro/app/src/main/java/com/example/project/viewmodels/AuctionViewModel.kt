@@ -74,8 +74,8 @@ class AuctionViewModel @Inject constructor(
     val auctionTrades: StateFlow<AuctionTradeResponseDTO?> = _auctionTrade
 
     // 경매 거래 취소
-    private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
-    val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+    private val _cancelTradeSuccessful = MutableStateFlow<Boolean>(false)
+    val cancelTradeSuccessful: StateFlow<Boolean> get() = _cancelTradeSuccessful
 
     // 경매 인기 카테고리(Main)
     private val _auctionMainResponse = MutableStateFlow<List<Int>>(emptyList())

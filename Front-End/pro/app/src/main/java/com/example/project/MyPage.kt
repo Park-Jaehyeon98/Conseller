@@ -69,17 +69,17 @@ fun MyPage(navController: NavHostController) {
     }
 
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White), contentAlignment = Alignment.TopCenter) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.verticalScroll(scrollState),
         ) {
             UserProfile(
-                profileImage = checkIdResult.userProfileUrl,
-                userNickName = checkIdResult.userNickname,
-                userEmail = checkIdResult.userEmail,
-                userPhoneNumber = checkIdResult.userPhoneNumber
+//                profileImage = checkIdResult.userProfileUrl,
+//                userNickName = checkIdResult.userNickname,
+//                userEmail = checkIdResult.userEmail,
+//                userPhoneNumber = checkIdResult.userPhoneNumber
             )
 
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
@@ -104,8 +104,7 @@ fun MyPage(navController: NavHostController) {
 
             }
             Spacer(modifier = Modifier.height(14.dp))
-            MypageCheck(
-                onClick1 = { navController.navigate("MypageCoupon") },
+            MypageCheck(onClick1 = { navController.navigate("MypageCoupon") },
                 onClick2 = { navController.navigate("MypageAuction") },
                 onClick3 = { navController.navigate("MypageStore") },
                 onClick4 = { navController.navigate("MypageBarter") },
@@ -147,19 +146,19 @@ fun MyPage(navController: NavHostController) {
 
 @Composable
 fun UserProfile(
-    profileImage: String? = null, userNickName: String, userEmail: String, userPhoneNumber: String
+//    profileImage: String? = null, userNickName: String, userEmail: String, userPhoneNumber: String
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
-
+    val checkIdResult by viewModel.getMyinfoResponse.collectAsState()
 
     Column(
         modifier = Modifier.padding(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (profileImage != null) {
+        if (checkIdResult.userProfileUrl != null) {
             Image(
-                painter = rememberAsyncImagePainter(profileImage),
+                painter = rememberAsyncImagePainter(checkIdResult.userProfileUrl),
                 contentDescription = "유저 프로필 이미지",
                 modifier = Modifier
                     .size(200.dp)
@@ -176,12 +175,10 @@ fun UserProfile(
                 contentScale = ContentScale.FillHeight
             )
         }
-
         // 배경색을 하얀색으로 설정
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White, shape = RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally  // 각 항목 시작 부분 정렬
         ) {
@@ -190,42 +187,12 @@ fun UserProfile(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                Text(
-                    text = "나의 별명: ",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-                Text(text = userNickName, fontSize = 20.sp)
-            }
-
-            // 이메일 항목
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = "이메일: ",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-                Text(text = userEmail, fontSize = 18.sp)
-            }
-
-            // 전화번호 항목
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = "전화번호: ",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-                Text(text = formatPhoneNumber(userPhoneNumber), fontSize = 18.sp)
+                Text(text = "${checkIdResult.userNickname}님 반갑습니다.", fontSize = 20.sp)
             }
         }
     }
 }
+
 
 fun getInputStreamFromUri(context: Context, uri: Uri): InputStream? {
     return context.contentResolver.openInputStream(uri)
@@ -235,7 +202,6 @@ fun getInputStreamFromUri(context: Context, uri: Uri): InputStream? {
 fun getBytesFromInputStream(inputStream: InputStream): ByteArray {
     return inputStream.readBytes()
 }
-
 
 
 @Composable
@@ -365,7 +331,7 @@ fun MypageCheck(
             val AuctionedCount = myAuction.filter { it.auctionStatus == "낙찰" }.size
             val StoredCount = myStore.filter { it.storeStatus == "낙찰" }.size
             val BarterCount = myBarter.filter { it.barterStatus == "교환 완료" }.size
-            val AllCount=AuctionedCount+StoredCount+BarterCount
+            val AllCount = AuctionedCount + StoredCount + BarterCount
             CustomCard(
                 label = "경매/판매 내역",
                 imageResId = R.drawable.coupon1,
@@ -387,7 +353,7 @@ fun MypageCheck(
             val AuctionedBidCount = myAcutionBid.filter { it.auctionBidStatus == "낙찰" }.size
             val PurchaseCount = myPurchase.filter { it.storeStatus == "낙찰" }.size
             val BarterRequestCount = myBarterRequest.filter { it.barterRequestStatus == "수락" }.size
-            val PurcahseAllCount=AuctionedBidCount+PurchaseCount+BarterRequestCount
+            val PurcahseAllCount = AuctionedBidCount + PurchaseCount + BarterRequestCount
             CustomCard(
                 label = "구매/입찰 내역",
                 imageResId = R.drawable.coupon,
@@ -402,11 +368,7 @@ fun MypageCheck(
 
 @Composable
 fun CustomCard(
-    label: String,
-    imageResId: Int,
-    number: Int,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    label: String, imageResId: Int, number: Int, modifier: Modifier = Modifier, onClick: () -> Unit
 ) {
     Card(
         modifier = modifier

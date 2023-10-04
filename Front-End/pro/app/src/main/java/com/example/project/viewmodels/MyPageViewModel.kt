@@ -50,7 +50,7 @@ class MyPageViewModel @Inject constructor(
     // 내 정보 조회
     private val _GetMyInfoResponse = MutableStateFlow(
         userInfoResponse(
-            null, "", "통신에러", "SSAFY@naver.com", "국민은행", "12345678910", ""
+            null, "", "", "", "", "", ""
         )
     )
     val getMyinfoResponse: StateFlow<userInfoResponse> get() = _GetMyInfoResponse

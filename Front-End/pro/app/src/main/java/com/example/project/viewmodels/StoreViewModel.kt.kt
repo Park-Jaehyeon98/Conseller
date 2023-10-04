@@ -57,8 +57,8 @@ class StoreViewModel @Inject constructor(
     val storeTrades: StateFlow<StoreTradeResponseDTO?> = _storeTrade
 
     // 스토어 거래 취소
-    private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
-    val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
+    private val _cancelTradeSuccessful = MutableStateFlow<Boolean>(false)
+    val cancelTradeSuccessful: StateFlow<Boolean> get() = _cancelTradeSuccessful
 
     // 스토어 확정 페이지 데이터
     private val _storeConfirm = MutableStateFlow<StoreConfirmPageResponseDTO?>(null)

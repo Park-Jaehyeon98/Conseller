@@ -185,13 +185,13 @@ fun TextLoginPage(navController: NavHostController) {
                 )
             }
             Spacer(modifier = Modifier.height(60.dp))
-            Button(
-                onClick = {navController.navigate("Home") },
-                Modifier.size(181.dp, 45.dp),
-                colors = ButtonDefaults.buttonColors(BrandColor1)
-            ) {
-                Text("가짜 로그인", fontSize = 22.sp)
-            }
+//            Button(
+//                onClick = {navController.navigate("Home") },
+//                Modifier.size(181.dp, 45.dp),
+//                colors = ButtonDefaults.buttonColors(BrandColor1)
+//            ) {
+//                Text("가짜 로그인", fontSize = 22.sp)
+//            }
             Button(
                 onClick = onLoginClick,
                 Modifier.size(181.dp, 45.dp),
@@ -207,20 +207,13 @@ fun TextLoginPage(navController: NavHostController) {
             ) {
                 Text("회원가입", fontSize = 22.sp)
             }
-            Button(
-                onClick = {textLoginModel.reSetPreference() },
-                Modifier.size(181.dp, 45.dp),
-                colors = ButtonDefaults.buttonColors(BrandColor1)
-            ) {
-                Text("토큰 리셋", fontSize = 22.sp)
-            }
-            Button(
-                onClick = {navController.navigate("PermissionRequesterPage")},
-                Modifier.size(181.dp, 45.dp),
-                colors = ButtonDefaults.buttonColors(BrandColor1)
-            ) {
-                Text("권한 설정", fontSize = 22.sp)
-            }
+//            Button(
+//                onClick = {textLoginModel.reSetPreference() },
+//                Modifier.size(181.dp, 45.dp),
+//                colors = ButtonDefaults.buttonColors(BrandColor1)
+//            ) {
+//                Text("토큰 리셋", fontSize = 22.sp)
+//            }
             when (loginState) {
                 is ResponseState.Success -> {
                     // 로그인 성공 시 Home으로 이동

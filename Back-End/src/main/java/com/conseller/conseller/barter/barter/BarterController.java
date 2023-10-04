@@ -82,9 +82,7 @@ public class BarterController {
     // 인기 물물교환 전송
     @GetMapping("/popular")
     public ResponseEntity<Object> getPopularBarter() {
-        BarterItemData barterItemData = barterService.getPopularBarter();
-        Item<BarterItemData> response = new Item<>(barterItemData);
         return ResponseEntity.ok()
-                .body(response);
+                .body(barterService.getPopularBarter());
     }
 }

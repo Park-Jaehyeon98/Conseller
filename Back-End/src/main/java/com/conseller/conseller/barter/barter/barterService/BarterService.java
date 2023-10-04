@@ -7,7 +7,6 @@ import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyReque
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
-import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.entity.Barter;
 
 

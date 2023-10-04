@@ -2,12 +2,10 @@ package com.conseller.conseller.entity;
 
 import com.conseller.conseller.barter.BarterHostItem.BarterHostItemDto.BarterHostItemDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponseDTO;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
-import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.user.dto.response.UserInfoResponse;
 import com.conseller.conseller.utils.DateTimeConverter;
 import lombok.*;
@@ -84,48 +82,6 @@ public class Barter {
         this.subCategory = subCategory;
         this.preferSubCategory = preferSubCategory;
     }
-
-//    public static BarterItemData toBarterItemData(Barter barter) {
-//
-//        List<BarterHostItem> hostGifticons = barter.getBarterHostItemList();
-//
-//        String gifticonName = "";
-//        String gifticonEndDate = "";
-//        String gifticonDataImageName = "";
-//
-//        LocalDateTime recentExpireDate = null;
-//        for(BarterHostItem hostGifticon : hostGifticons) {
-//            Gifticon gift = hostGifticon.getGifticon();
-//            if(recentExpireDate == null || gift.getGifticonEndDate().isBefore(recentExpireDate)){
-//                recentExpireDate = gift.getGifticonEndDate();
-//                gifticonEndDate = DateTimeConverter.getInstance().convertString(gift.getGifticonEndDate());
-//                gifticonName = gift.getGifticonName();
-//                gifticonDataImageName = gift.getGifticonDataImageUrl();
-//            }
-//        }
-//
-//        //디포짓
-//        Long userDeposit = barter.getBarterHost().getUserDeposit();
-//        Boolean deposit = false;
-//        if(userDeposit > 0) deposit = true;
-//
-//        //선호
-//        String preper = barter.getPreferSubCategory().getSubCategoryContent();
-//
-//        //barter 이름
-//        String barterName = barter.getBarterName();
-//
-//
-//        return BarterItemData.builder()
-//                .barterIdx(barter.getBarterIdx())
-//                .gifticonDataImageName(gifticonDataImageName)
-//                .gifticonName(gifticonName)
-//                .gifticonEndDate(gifticonEndDate)
-//                .deposit(deposit)
-//                .preper(preper)
-//                .barterName(barterName)
-//                .build();
-//    }
 
     public BarterResponseDTO toBarterResponseDto(Barter barter){
         List<BarterHostItemDto> barterHostItemDtoList= new ArrayList<>();

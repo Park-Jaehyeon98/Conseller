@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -36,14 +39,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.BarterViewModel
+import com.example.project.viewmodels.MygifticonViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<Long>, index: String?) {
+fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<Long>, index: String?, mygifticonViewModel: MygifticonViewModel) {
     val barterViewModel: BarterViewModel = hiltViewModel()
-    val selectedItems = barterViewModel.getSelectedItems(selectedItemIndices) // 내가 고른사진
+    val selectedItems = mygifticonViewModel.getSelectedItems(selectedItemIndices) // 내가 고른사진
     val barterDetail by barterViewModel.barterDetail.collectAsState()   // 게시글 정보
+    val barterNavi by barterViewModel.barterNavi.collectAsState()   // 끝나고 페이지
     val error by barterViewModel.error.collectAsState()
+    val scrollState = rememberScrollState()
 
     var showCancelDialog by remember { mutableStateOf(false) } // 취소 대화상자 표시 상태
     var showTradeProposalDialog by remember { mutableStateOf(false) } //거래신청 대화상자
@@ -54,6 +60,12 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
     LaunchedEffect(key1 = index) {
         index?.toLongOrNull()?.let {
             barterViewModel.fetchBarterDetail(it)
+        }
+    }
+    LaunchedEffect(barterNavi) {
+        if(barterNavi != null){
+            mygifticonViewModel.resetSelectedItemIndices()
+            navController.navigate("BarterDetailPage/${index}")
         }
     }
     LaunchedEffect(error) {
@@ -72,7 +84,8 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         if (showSnackbar) {
@@ -84,39 +97,59 @@ fun BarterTradePage(navController: NavHostController, selectedItemIndices: List<
             }
         }
 
-        // 게시글의 이미지들을 보여주는 LazyRow
+        Text(text = "게시물 기프티콘", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(barterDetail?.barterImageList.orEmpty()) { item ->
-                val imagePainter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                Image(
-                    painter = imagePainter,
-                    contentDescription = null,
-                    modifier = Modifier.size(200.dp),
-                    contentScale = ContentScale.Crop
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    val imagePainter = rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = item.gifticonName, fontSize = 16.sp)
+                }
             }
         }
 
-        // 선택한 내 이미지들을 보여주는 LazyRow
+        Text(text = "내가 선택한 기프티콘", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         LazyRow(
-            modifier = Modifier.fillMaxWidth().height(200.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(selectedItems) { item ->
-                Image(
-                    painter = rememberAsyncImagePainter(model = item.gifticonDataImageName),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
-                        .background(Color.Gray)
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = item.gifticonImageName),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(180.dp)
+                            .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                            .background(Color.Gray)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = item.gifticonName, fontSize = 16.sp)
+                }
             }
         }
 

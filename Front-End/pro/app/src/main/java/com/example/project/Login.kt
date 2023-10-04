@@ -1,6 +1,7 @@
 package com.example.project
 
 import SelectButton
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import com.example.project.viewmodels.BiometricViewModel
@@ -23,25 +24,32 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.sharedpreferences.SharedPreferencesUtil
 import com.example.project.viewmodels.FireBaseViewModel
 import com.mrhwsn.composelock.ComposeLock
 import com.mrhwsn.composelock.ComposeLockCallback
 import com.mrhwsn.composelock.Dot
 
+
 @Composable
-fun LoginPage(navController: NavHostController) {
+fun LoginPage(navController: NavHostController, sharedPreferencesUtil: SharedPreferencesUtil) {
     val viewModel: BiometricViewModel = hiltViewModel()
     val fireBaseViewModel: FireBaseViewModel = hiltViewModel()
     val authenticationState by viewModel.authenticationState.collectAsState()
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
     val biometricPrompt = rememberBiometricPrompt(fragmentActivity, viewModel)
+
     val currentBiometricPrompt = rememberUpdatedState(biometricPrompt)
 
+    val useFingerprint = sharedPreferencesUtil.isFingerPermissionsChecked()
 
-    LaunchedEffect(Unit) {
-        authenticateWithBiometrics(currentBiometricPrompt.value)
+    if (useFingerprint) {
+        LaunchedEffect(Unit) {
+            authenticateWithBiometrics(currentBiometricPrompt.value)
+        }
     }
+
 
     when (authenticationState) {
         is AuthenticationState.SUCCESS -> {
@@ -74,7 +82,7 @@ fun LoginPage(navController: NavHostController) {
 
         PatternAuthentication(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
-        TemporaryNavigationButtons(navController)
+        NavigationButtons(navController)
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
@@ -110,18 +118,11 @@ fun PatternAuthentication(viewModel: BiometricViewModel) {
 }
 
 @Composable
-fun TemporaryNavigationButtons(navController: NavHostController) {
+fun NavigationButtons(navController: NavHostController) {
 
     SelectButton(
         text = "아이디로 로그인 하기",
         onClick = { navController.navigate("TextloginPage") }
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    SelectButton(
-        text = "회원가입임시",
-        onClick = { navController.navigate("SignUp") }
     )
 }
 
@@ -134,6 +135,7 @@ fun authenticateWithBiometrics(
         .setDescription("Description")
         .setNegativeButtonText("Cancel")
         .build()
+
 
     biometricPrompt?.authenticate(promptInfo)
 }

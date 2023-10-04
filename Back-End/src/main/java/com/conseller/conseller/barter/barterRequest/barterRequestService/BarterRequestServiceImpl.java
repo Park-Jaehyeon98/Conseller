@@ -10,6 +10,8 @@ import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterReque
 import com.conseller.conseller.barter.barterRequest.barterRequestDto.BarterRequestResponseDto;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
 import com.conseller.conseller.entity.*;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
 import com.conseller.conseller.gifticon.repository.GifticonRepository;
 import com.conseller.conseller.gifticon.enums.GifticonStatus;
 import com.conseller.conseller.user.UserRepository;
@@ -46,7 +48,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public BarterRequestResponseDto getBarterRequest(Long barterRequestIdx) {
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
         BarterRequestResponseDto barterRequestResponseDto = barterRequest.toBarterRequestResponseDto(barterRequest);
 
         return barterRequestResponseDto;
@@ -81,21 +83,21 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public void addBarterRequest(BarterRequestRegistDto barterRequestRegistDto, Long barterIdx) {
         Barter barter = barterRepository.findByBarterIdx(barterIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
         String statusOfBarter = barter.getBarterStatus();
         if(!statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus()) && !statusOfBarter.equals(BarterStatus.SUGGESTED.getStatus())){
-            throw new RuntimeException("완료 또는 만료된 교환입니다.");
+            throw new CustomException(CustomExceptionStatus.BARTER_EXPIRED_INVALID);
         }
 
         List<BarterRequest> barterRequestList = barter.getBarterRequestList();
         for(BarterRequest bq : barterRequestList) {
             if(bq.getUser().getUserIdx() == barterRequestRegistDto.getUserIdx()) {
-                throw new RuntimeException("이미 교환 요청 보낸 글입니다.");
+                throw new CustomException(CustomExceptionStatus.BARTER_ALREADY_SEND);
             }
         }
 
         User user = userRepository.findByUserIdx(barterRequestRegistDto.getUserIdx())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
         BarterRequest barterRequest = barterRequestRegistDto.toEntity(barter, user);
         barterRequestRepository.save(barterRequest);
         if(statusOfBarter.equals(BarterStatus.EXCHANGEABLE.getStatus())) {
@@ -107,7 +109,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
             barterGuestItemService.addBarterGuestItem(barterRequestRegistDto.getBarterGuestItemList(), barterRequest);
         } catch(Exception e) {
             barterRequestRepository.deleteById(barterRequest.getBarterRequestIdx());
-            throw new RuntimeException("보관 상태인 기프티콘만 등록할 수 있습니다.");
+            throw new CustomException(CustomExceptionStatus.GIFTICON_NOT_KEEP);
         }
 
     }
@@ -115,13 +117,13 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public void deleteBarterRequest(Long barterRequestIdx) {
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 요청입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_REQUEST_INVALID));
         List<BarterGuestItem> barterGuestItemList = barterRequest.getBarterGuestItemList();
 
         List<BarterGuestItemDto> barterGuestItemDtoList = new ArrayList<>();
         for(BarterGuestItem bgi : barterGuestItemList) {
             Gifticon gifticon = gifticonRepository.findById(bgi.getGifticon().getGifticonIdx())
-                    .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘입니다."));
+                    .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
             gifticon.setGifticonStatus(GifticonStatus.KEEP.getStatus());
             gifticonRepository.save(gifticon);
 
@@ -134,7 +136,7 @@ public class BarterRequestServiceImpl implements BarterRequestService{
     @Override
     public void rejectByTimeBarterRequest(Long barterRequestIdx) {
         BarterRequest barterRequest = barterRequestRepository.findByBarterRequestIdx(barterRequestIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 교환 신청입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
         List<BarterGuestItem> barterGuestItemList =  barterRequest.getBarterGuestItemList();
         for(BarterGuestItem bgi : barterGuestItemList) {
             Gifticon gifticon = bgi.getGifticon();

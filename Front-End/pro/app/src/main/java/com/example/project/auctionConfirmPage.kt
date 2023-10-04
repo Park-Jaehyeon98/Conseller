@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -154,16 +155,15 @@ fun AuctionConfirmPage(navController: NavHostController, index: String?) {
 
             // 버튼들
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { showConfirmDialog = true }) {
-                    Text("확정")
-                }
+                SelectButton(text = "확정", onClick = { showConfirmDialog = true })
 
-                Button(onClick = { showCancleDialog = true }) {
-                    Text("미입금")
-                }
+                Spacer(modifier = Modifier.width(24.dp))
+
+                SelectButton(text = "미입금", onClick = { showCancleDialog = true })
             }
         }
     }

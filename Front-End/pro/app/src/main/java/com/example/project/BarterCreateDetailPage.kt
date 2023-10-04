@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -128,21 +129,29 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         // 이미지 캐러셀
         LazyRow(
             modifier = Modifier
-                .height(160.dp)
+                .height(210.dp)
                 .fillMaxWidth()
         ) {
             items(selectedItems.size) { index ->
                 val item = selectedItems[index]
-                Image(
-                    painter = rememberAsyncImagePainter(model = item.gifticonImageName),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .width(150.dp)
-                        .height(150.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = item.gifticonImageName),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .width(150.dp)
+                            .height(150.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = item.gifticonName, fontSize = 16.sp)
+                }
             }
         }
 
@@ -235,7 +244,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             })
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Row(
             modifier = Modifier

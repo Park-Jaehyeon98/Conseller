@@ -76,9 +76,6 @@ public class AuctionController {
         log.info(auctionIdx+" "+userIdx);
         AuctionTradeResponse response = auctionService.tradeAuction(auctionIdx, userIdx);
 
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 2, 1);
-        notificationService.sendAuctionNotification(auctionIdx, "경매 거래 진행", "님과의 거래가 시작되었습니다.", 1, 1);
-
         return ResponseEntity.ok()
                 .body(response);
     }

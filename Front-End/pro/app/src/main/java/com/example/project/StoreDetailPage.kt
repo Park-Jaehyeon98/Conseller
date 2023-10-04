@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.StoreViewModel
 import formattedNumber
 
@@ -92,7 +93,9 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
             Snackbar(
                 modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 )
             }
         }
@@ -112,12 +115,18 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            val imagePainter = rememberAsyncImagePainter(model = it.gifticonDataImageName)
+                        Box(
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                        ) {
+                            val imagePainter =
+                                rememberAsyncImagePainter(model = it.gifticonDataImageName)
                             Image(
                                 painter = imagePainter,
                                 contentDescription = null,
-                                modifier = Modifier.size(200.dp),
+//                                modifier = Modifier.size(200.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
                                 contentScale = ContentScale.Crop,
                             )
                         }
@@ -132,13 +141,10 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                             Text(
                                 "판매자 : ${storeDetail?.storeUserNickname}",
                                 fontSize = 18.sp,
-                                modifier = Modifier
-                                    .clickable(
-                                        indication = rememberRipple(),  // Ripple 효과 추가
-                                        interactionSource = remember { MutableInteractionSource() }
-                                    ) {
-                                        showUserDetailDialog = true
-                                    },
+                                modifier = Modifier.clickable(indication = rememberRipple(),  // Ripple 효과 추가
+                                    interactionSource = remember { MutableInteractionSource() }) {
+                                    showUserDetailDialog = true
+                                },
                                 textDecoration = TextDecoration.Underline,  // 텍스트에 밑줄 추가
                             )
                         }
@@ -149,77 +155,136 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start
                         ) {
-                            Text("판매가 : ${formattedNumber(it.storePrice.toString())} 원", fontSize = 18.sp)
+                            Text(
+                                "판매가 : ${formattedNumber(it.storePrice.toString())} 원",
+                                fontSize = 18.sp
+                            )
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+                        .padding(8.dp)
+                ) {
+                    Column {
 
-                Text("내용 : ${storeDetail?.postContent}", fontSize = 18.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Text(
+                                    "ConSeller 주의사항",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = BrandColor1
+                                )
+
+                                Text(
+                                    "• 정확한 계좌번호 확인:\n 제공된 계좌번호가 올바른지 반드시 확인하세요. \n작은 오류도 큰 문제로 이어질 수 있습니다.",
+                                    color = Color.DarkGray
+                                )
+
+                                Text(
+                                    "• 입금 전 계좌주 정보 확인:\n입금하기 전에 제공된 계좌의 예금주 정보를 확인하세요.\n 계좌주와 거래 상대의 정보가 일치하는지 점검하세요.",
+                                    color = Color.DarkGray
+                                )
+
+                                Text(
+                                    "• 입금 금액 및 내역 확인:\n 정확한 금액을 입금했는지, 그리고 입금 내역 메모에 거래에 대한 구체적인 정보를 적었는지 확인하세요.",
+                                    color = Color.DarkGray
+                                )
+
+                                Text(
+                                    "• 거래 내역 활용:\n 거래의 문제 발생 시 거래 내역을 통해 문의해주세요.",
+                                    color = Color.DarkGray
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+                        .padding(8.dp)
+                ) {
+                    Column {
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+
+                                Text("상세설명 : ${storeDetail?.postContent}", fontSize = 18.sp)
+                            }
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     if (selectedItemIndex != storeDetail?.storeUserIdx) {
-                        SelectButton(
-                            text = "구매하기",
-                            onClick = { navController.navigate("StoreTradePage/${storeDetail?.storeIdx}"){
+                        SelectButton(text = "구매하기", onClick = {
+                            navController.navigate("StoreTradePage/${storeDetail?.storeIdx}") {
                                 popUpTo(navController.graph.startDestinationId)
                                 launchSingleTop = true
-                            } }
-                        )
+                            }
+                        })
                     } else {
-                        SelectButton(
-                            text = "수정하기",
-                            onClick = { navController.navigate("storeUpdate/${storeDetail?.storeIdx}") }
-                        )
+                        SelectButton(text = "수정하기",
+                            onClick = { navController.navigate("storeUpdate/${storeDetail?.storeIdx}") })
 
                         Spacer(modifier = Modifier.width(24.dp))
 
-                        SelectButton(
-                            text = "삭제하기",
-                            onClick = { showDeleteDialog = true }
-                        )
+                        SelectButton(text = "삭제하기", onClick = { showDeleteDialog = true })
                     }
                 }
             }
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = {
+                AlertDialog(onDismissRequest = {
+                    showDeleteDialog = false
+                }, title = {
+                    Text(text = "게시글 삭제")
+                }, text = {
+                    Text("정말 삭제하시겠습니까?")
+                }, dismissButton = {
+                    SelectButton(text = "네", onClick = {
+                        storeViewModel.deleteStoreItem(index!!.toLong())
+                        navController.navigate("StorePage")
                         showDeleteDialog = false
-                    },
-                    title = {
-                        Text(text = "게시글 삭제")
-                    },
-                    text = {
-                        Text("정말 삭제하시겠습니까?")
-                    },
-                    dismissButton = {
-                        SelectButton(
-                            text = "네",
-                            onClick = {
-                                storeViewModel.deleteStoreItem(index!!.toLong())
-                                navController.navigate("StorePage")
-                                showDeleteDialog = false
-                            }
-                        )
-                    },
-                    confirmButton = {
-                        SelectButton(
-                            text = "아니오",
-                            onClick = { showDeleteDialog = false }
-                        )
-                    }
-                )
+                    })
+                }, confirmButton = {
+                    SelectButton(text = "아니오", onClick = { showDeleteDialog = false })
+                })
             }
             // 판매자 상세보기
             if (showUserDetailDialog) {
-                UserDetailDialog(
-                    userImageUrl = storeDetail?.storeUserProfileUrl,
+                UserDetailDialog(userImageUrl = storeDetail?.storeUserProfileUrl,
                     userNickname = storeDetail?.storeUserNickname,
                     userDeposit = storeDetail?.storeUserDeposit,
                     onDismiss = { showUserDetailDialog = false },
@@ -228,9 +293,10 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     },
                     onMessageClick = {
                         // Handle message sending logic here
-                    }
-                )
+                    })
             }
         }
     }
 }
+
+

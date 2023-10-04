@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MygifticonViewModel
 
 @Composable
@@ -132,8 +134,8 @@ fun AuctionCreatePage(navController: NavHostController, mygifticonViewModel: Myg
                             launchSingleTop = true
                         }
                     }
-                }) {
-                    Icon(Icons.Default.ArrowForward, contentDescription = "다음")
+                }, colors = ButtonDefaults.buttonColors(BrandColor1)){
+                    Icon(Icons.Default.ArrowForward, contentDescription = "다음") // tint를 사용하여 Icon의 색상을 설정
                 }
             }
         }

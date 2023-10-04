@@ -149,10 +149,10 @@ fun EventLayout2(navController: NavHostController) {
     ){
         Text("준비중입니다", fontSize = 20.sp)
     }
-    SelectButton(
-        text = "MakePatternPage",
-        onClick = {navController.navigate("MakePatternPage") },
-    )
+//    SelectButton(
+//        text = "MakePatternPage",
+//        onClick = {navController.navigate("MakePatternPage") },
+//    )
 }
 
 @Composable

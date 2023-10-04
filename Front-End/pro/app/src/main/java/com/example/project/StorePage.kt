@@ -55,6 +55,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.project.api.StoreFilterDTO
 import com.example.project.reuse_component.convertNameToNum
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.StoreViewModel
 import formattedNumber
@@ -239,7 +240,6 @@ fun StorePage(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.5.dp)
-                    .background(logocolor)
             )
 
             // StoreItem 넣기
@@ -262,6 +262,7 @@ fun StorePage(navController: NavHostController) {
 
             // 페이지네이션 컨트롤
             PaginationControls(
+
                 totalItems = storeItems.size,
                 currentPage = currentPage,
                 itemsPerPage = itemsPerPage
@@ -272,6 +273,8 @@ fun StorePage(navController: NavHostController) {
         }
         // 등록하기
         FloatingActionButton(
+            contentColor = Color.Black,
+            containerColor = Color.White,
             onClick = { navController.navigate("StoreCreatePage") },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 우하단
@@ -304,7 +307,6 @@ fun StoreItem(
             .height(360.dp)
             .padding(2.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
             .clickable { onItemClick() }
             .padding(8.dp)
     ) {
@@ -313,14 +315,14 @@ fun StoreItem(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.Gray),
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = image,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Fit
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
 
@@ -333,11 +335,11 @@ fun StoreItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Column (
+            Column(
                 modifier = Modifier.weight(1f)
-            ){
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                FormattedDateText(gifticonTime,"유효기간")
+            ) {
+                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, color = Color.DarkGray)
+                FormattedDateText(gifticonTime, "유효기간")
             }
         }
 
@@ -360,7 +362,7 @@ fun StoreItem(
                 Text(
                     text = if (isDeposit) "보증금 있음" else "보증금 없음",
                     modifier = Modifier.weight(0.4f),
-                    fontWeight = FontWeight.Bold,
+                    color = Color.DarkGray,
                     fontSize = 16.sp
                 )
 
@@ -369,7 +371,7 @@ fun StoreItem(
                     modifier = Modifier.weight(0.6f),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Text("구매가: ${formattedNumber(storePrice.toString())} 원", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("구매가: ${formattedNumber(storePrice.toString())} 원", color = Color.DarkGray, fontSize = 16.sp)
                 }
             }
         }
@@ -384,3 +386,4 @@ fun StoreItem(
         )
     }
 }
+

@@ -52,11 +52,10 @@ interface BarterService {
     ): Response<Void>
 
     // 물물교환 거래제안 취소 API
-    @DELETE("api/barter/{barterRequestIdx}")
+    @DELETE("api/barterRequest/{barterRequestIdx}")
     suspend fun proposeCancleBarterTrade(
-        @Path("barterIdx") barterRequestIdx: Long,
+        @Path("barterRequestIdx") barterRequestIdx: Long,
     ): Response<Void>
-
 
 
     // 물물교환 판매자 확정 페이지 요청
@@ -70,6 +69,10 @@ interface BarterService {
     suspend fun barterConfirm(
         @Body confirmData: BarterConfirmRequestDTO
     ): Response<Void>
+
+    @GET("api/barter/popular")
+    suspend fun getPopularBarter(
+    ):Response<BarterItemData>
 
 
 }
@@ -177,3 +180,4 @@ data class BarterConfirmRequestDTO(
     val userIdx: Long,
     val confirm: Boolean,
 )
+

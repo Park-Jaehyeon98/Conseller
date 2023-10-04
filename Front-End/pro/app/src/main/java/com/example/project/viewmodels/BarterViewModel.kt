@@ -82,6 +82,11 @@ class BarterViewModel @Inject constructor(
     private val _barterNavi = MutableStateFlow<Boolean?>(null)
     val barterNavi: StateFlow<Boolean?> = _barterNavi
 
+    // 물물교환 인기
+    private val _barterPopular = MutableStateFlow<BarterItemData?>(null)
+
+    val barterPopular: StateFlow<BarterItemData?> = _barterPopular
+
 
 
     // 네비게이션 리셋
@@ -322,6 +327,27 @@ class BarterViewModel @Inject constructor(
             }
         }
     }
+
+    fun fetchPopularBarteritems() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularBarter()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _barterPopular.value = response.body()!!
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
 
 
 

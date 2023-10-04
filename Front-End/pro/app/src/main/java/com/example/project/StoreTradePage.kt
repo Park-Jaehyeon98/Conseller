@@ -55,24 +55,15 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
         }
     }
 
-    LaunchedEffect(triggerEffect) {
-        if (triggerEffect) {
-            when (cancelTradeResult) {
-                true -> {
-                    navController.navigate("StoreDetailPage/${index}")
-                    triggerEffect = false
-                }
-                false -> {
-                    showSnackbar = true
-                    snackbarText = "거래 취소에 실패했습니다. 다시 시도해주세요."
-                    triggerEffect = false
-                }
-                else -> {
-                    showSnackbar = true
-                    snackbarText = "알 수 없는 오류가 발생했습니다."
-                    triggerEffect = false
-                }
-            }
+    LaunchedEffect(cancelTradeResult) {
+        if (cancelTradeResult&&triggerEffect) {
+            navController.navigate("StoreDetailPage/${index}")
+            triggerEffect = false
+        }
+        if(!cancelTradeResult&&triggerEffect){
+            showSnackbar = true
+            snackbarText = "거래 취소에 실패했습니다. 다시 시도해주세요."
+            triggerEffect = false
         }
     }
 

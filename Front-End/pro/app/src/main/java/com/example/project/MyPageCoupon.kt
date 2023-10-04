@@ -2,11 +2,11 @@ package com.example.project
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,8 +55,6 @@ fun MypageCoupon(navController: NavHostController) {
     }
     val getMyGift by viewModel.getMyGifticonResponse.collectAsState()
 
-    val DeleteMyGift by viewModel.deleteGifticonResponse.collectAsState()
-
     var showDialog by remember { mutableStateOf(false) }
 
     var ChoiceStatus by remember { mutableStateOf(1) }
@@ -70,7 +70,9 @@ fun MypageCoupon(navController: NavHostController) {
 
     val scrollstate = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -113,6 +115,7 @@ fun MypageCoupon(navController: NavHostController) {
                 onSelectGifticonIdx = { ChoiceGifticonIdx = it },
                 status = gifticonData.gifticonStatus
             )
+            Divider()
         }
     }
 }
@@ -121,15 +124,15 @@ fun MypageCoupon(navController: NavHostController) {
 // 클릭 시 수행할 함수d
 @Composable
 fun SelectBar(onSelectionChanged: (Int) -> Unit) {
-    var selectedOption by remember { mutableStateOf(0) }  // 상태 변수로 현재 선택된 항목을 저장
+    var selectedOption by remember { mutableStateOf(1) }  // 상태 변수로 현재 선택된 항목을 저장
 
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        val commontextsize = 18
 
         BarOption(text = "사용가능한 쿠폰", id = 1, selectedOption, onSelectionChanged) {
             selectedOption = it
@@ -150,10 +153,12 @@ fun BarOption(
     onOptionClicked: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = {
-            onSelectionChanged(id)
-            onOptionClicked(id)  // 여기에 selectedOption 값을 변경하는 로직을 상위 Composable에게 위임
-        })
+        modifier = Modifier
+            .clickable(onClick = {
+                onSelectionChanged(id)
+                onOptionClicked(id)  // 여기에 selectedOption 값을 변경하는 로직을 상위 Composable에게 위임
+            })
+            .background(Color.White),
     ) {
         Text(
             text = text,
@@ -236,14 +241,19 @@ fun ShowMyGifticon(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = formattedDate, fontSize = 18.sp)
+                Text(text = "~${formattedDate}", fontSize = 22.sp)
                 Spacer(modifier = Modifier.width(16.dp))
                 if (status == "보관") {
-                    Button(onClick = {
-                        onDelete()
-                        onSelectGifticonIdx(gifticonData.gifticonIdx)
-                    }) {
-                        Text("사용완료")
+                    Button(
+                        onClick = {
+                            onDelete()
+                            onSelectGifticonIdx(gifticonData.gifticonIdx)
+                        },
+                        colors = ButtonDefaults.buttonColors(BrandColor1),
+                        modifier = Modifier.height(22.dp),
+                        contentPadding = PaddingValues(0.dp)  // 버튼의 내부 패딩을 제거
+                    ) {
+                        Text("사용완료", fontSize = 10.sp, textAlign = TextAlign.Center)
                     }
                 }
             }

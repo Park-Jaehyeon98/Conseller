@@ -1,6 +1,7 @@
 package com.conseller.conseller.barter.barter.barterDto.mapper;
 
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.entity.*;

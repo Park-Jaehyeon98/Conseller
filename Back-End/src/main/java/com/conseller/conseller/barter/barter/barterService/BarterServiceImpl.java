@@ -7,10 +7,7 @@ import com.conseller.conseller.barter.barter.BarterRepository;
 import com.conseller.conseller.barter.barter.BarterRepositoryImpl;
 import com.conseller.conseller.barter.barter.barterDto.mapper.BarterMapper;
 import com.conseller.conseller.barter.barter.barterDto.request.*;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterConfirmList;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
+import com.conseller.conseller.barter.barter.barterDto.response.*;
 import com.conseller.conseller.barter.barter.enums.BarterStatus;
 import com.conseller.conseller.barter.barterRequest.BarterRequestRepository;
 import com.conseller.conseller.barter.barterRequest.enums.RequestStatus;
@@ -363,5 +360,26 @@ public class BarterServiceImpl implements BarterService{
     @Override
     public List<Barter> getExpiredBarterList() {
         return barterRepository.findBarterAllExpired();
+    }
+
+    @Override
+    public BarterItemData getPopularBarter() {
+        Long popularBarterIdx = (long) 0;
+        Integer barterRequestCount = 0;
+
+        List<Barter> barterList = barterRepository.findAll();
+        for(Barter barter : barterList) {
+            if(barter.getBarterRequestList().size() > barterRequestCount) {
+                barterRequestCount = barter.getBarterRequestList().size();
+                popularBarterIdx = barter.getBarterIdx();
+            }
+        }
+
+        Barter barter = barterRepository.findByBarterIdx(popularBarterIdx)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
+
+
+
+        return BarterMapper.INSTANCE.toBarterItemData(barter);
     }
 }

@@ -2,10 +2,12 @@ package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.barter.barterDto.request.*;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.CreateBarterResponse;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
 import com.conseller.conseller.notification.NotificationService;
+import com.conseller.conseller.user.dto.response.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -75,5 +77,14 @@ public class BarterController {
     public ResponseEntity<BarterConfirmPageResponseDTO> getConfirmPage(@PathVariable Long barterIdx) {
         return ResponseEntity.ok()
                 .body(barterService.getBarterConfirmPage(barterIdx));
+    }
+
+    // 인기 물물교환 전송
+    @GetMapping("/popular")
+    public ResponseEntity<Object> getPopularBarter() {
+        BarterItemData barterItemData = barterService.getPopularBarter();
+        Item<BarterItemData> response = new Item<>(barterItemData);
+        return ResponseEntity.ok()
+                .body(response);
     }
 }

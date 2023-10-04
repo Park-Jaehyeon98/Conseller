@@ -80,6 +80,16 @@ interface StoreService {
         @Body confirmData: StoreConfirmRequestDTO
     ): Response<Void>
 
+    //인기 판매 카테고리(Main)
+    @GET("api/store/category/main")
+    suspend fun getPopularStoreMain(
+    ):Response<PopularCategory>
+
+    //인기 판매 카테고리(Sub)
+    @GET("api/store/category/sub")
+    suspend fun getPopularStoreSub(
+    ):Response<PopularCategory>
+
 
 }
 
@@ -175,9 +185,9 @@ data class StoreConfirmRequestDTO(
 )
 
 
-
-
-
+data class PopularCategory(
+    val items: List<Int>
+)
 
 
 

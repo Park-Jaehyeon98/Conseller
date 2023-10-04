@@ -72,6 +72,7 @@ interface BarterService {
     ): Response<Void>
 
 
+
 }
 
 // 목록, 검색 요청 DTO
@@ -177,3 +178,4 @@ data class BarterConfirmRequestDTO(
     val userIdx: Long,
     val confirm: Boolean,
 )
+

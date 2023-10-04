@@ -64,7 +64,9 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
         modifier = modifier.fillMaxSize(),
     ) {
         LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(10.dp)) }
@@ -88,6 +90,12 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
 
 @Composable
 fun HomeLayout2() {
+    val viewModel: AuctionViewModel = hiltViewModel()
+    LaunchedEffect(Unit){
+        viewModel.fetchPopularAuctionMain()
+        viewModel.fetchPopularAuctionSub()
+        viewModel.fetchPopularAuctionitems()
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -202,7 +210,9 @@ fun HomeLayout4(navController: NavController) {
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth().height(330.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(330.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         if (showSnackbar) {
@@ -219,12 +229,16 @@ fun HomeLayout4(navController: NavController) {
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
         ) {
             Column(
-                modifier = Modifier.align(Alignment.TopCenter).padding(top = 10.dp),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text("입찰",
@@ -262,7 +276,8 @@ fun HomeLayout4(navController: NavController) {
                                     val itemIsPressed by itemInteractionState.collectIsPressedAsState()
 
                                     Box(
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier
+                                            .fillMaxWidth()
                                             .height(85.dp)
                                             .padding(horizontal = 10.dp)
                                             .clickable(
@@ -327,7 +342,8 @@ fun HomeLayout4(navController: NavController) {
                                     val itemIsPressed by itemInteractionState.collectIsPressedAsState()
 
                                     Box(
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier
+                                            .fillMaxWidth()
                                             .height(85.dp)
                                             .padding(horizontal = 10.dp)
                                             .clickable(
@@ -375,7 +391,9 @@ fun HomeLayout4(navController: NavController) {
                     }
                 }
             }
-            Button(onClick = {}, modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp)) {
+            Button(onClick = {}, modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(10.dp)) {
                 Text("더보기", fontSize = 16.sp)
             }
         }

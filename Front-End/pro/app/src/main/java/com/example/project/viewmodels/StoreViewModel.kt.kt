@@ -68,6 +68,14 @@ class StoreViewModel @Inject constructor(
     private val _storeConfirmNavi = MutableStateFlow<Boolean?>(null)
     val storeConfirmNavi: StateFlow<Boolean?> = _storeConfirmNavi
 
+    // 경매 인기 카테고리(Main)
+    private val _storeMainResponse = MutableStateFlow<List<Int>>(emptyList())
+    val storeMainResponse: StateFlow<List<Int>> get() = _storeMainResponse
+
+    // 경매 인기 카테고리(Sub)
+    private val _storeSubResponse = MutableStateFlow<List<Int>>(emptyList())
+    val storeSubResponse: StateFlow<List<Int>> get() = _storeSubResponse
+
     fun resetNavigation() {
         _navigateToStoreDetail.value = null
         _updateStoreNavi.value = false
@@ -109,6 +117,47 @@ class StoreViewModel @Inject constructor(
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
                 _storeItems.value = getSampleData()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    //인기 판매 Main
+    fun fetchPopularStoreMain() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularStoreMain()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _storeMainResponse.value = response.body()!!.items
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun fetchPopularStoreSub() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularStoreSub()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _storeSubResponse.value = response.body()!!.items
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
             } finally {
                 _isLoading.value = false
             }

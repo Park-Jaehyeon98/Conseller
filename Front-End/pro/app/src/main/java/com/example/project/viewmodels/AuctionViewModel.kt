@@ -77,6 +77,18 @@ class AuctionViewModel @Inject constructor(
     private val _cancelTradeSuccessful = MutableStateFlow<Boolean?>(null)
     val cancelTradeSuccessful: StateFlow<Boolean?> get() = _cancelTradeSuccessful
 
+    // 경매 인기 카테고리(Main)
+    private val _auctionMainResponse = MutableStateFlow<List<Int>>(emptyList())
+    val auctionMainResponse: StateFlow<List<Int>> get() = _auctionMainResponse
+
+    // 경매 인기 카테고리(Sub)
+    private val _auctionSubResponse = MutableStateFlow<List<Int>>(emptyList())
+    val auctionSubResponse: StateFlow<List<Int>> get() = _auctionSubResponse
+
+    // 경매 인기
+    private val _auctionPopular = MutableStateFlow<List<AuctionItemData>>(emptyList())
+
+    val auctionPopular: StateFlow<List<AuctionItemData>> = _auctionPopular
 
     // 경매 확정 페이지 데이터
     private val _auctionConfirm = MutableStateFlow<AuctionConfirmPageResponseDTO>(
@@ -128,6 +140,68 @@ class AuctionViewModel @Inject constructor(
         currentFilter = currentFilter.copy(searchQuery = query, page = 1)
         currentPage = 1
         fetchAuctionItems()
+    }
+
+    //인기 경매 Main
+    fun fetchPopularAuctionMain() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularAuctionMain()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionMainResponse.value = response.body()!!.items
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    // 인기 경매 Sub
+    fun fetchPopularAuctionSub() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularAuctionSub()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionSubResponse.value = response.body()!!.items
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    // 인기 경매글
+    fun fetchPopularAuctionitems() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = service.getPopularAuction()
+
+                if (response.isSuccessful && response.body() != null) {
+                    _auctionPopular.value = response.body()!!.items
+                }
+            } catch (e: CustomException) {
+                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     // 경매글 리스트 불러오기

@@ -30,8 +30,10 @@ public class InquiryServiceImpl implements InquiryService{
     public void registInquiry(RegistInquiryRequest request) {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
+        User reportedUser = userRepository.findById(request.getReportedUserIdx())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
-        Inquiry inquiry = InquiryMapper.INSTANCE.registInquiryToInquiry(request, user);
+        Inquiry inquiry = InquiryMapper.INSTANCE.registInquiryToInquiry(request, user, reportedUser);
 
         inquiryRepository.save(inquiry);
     }

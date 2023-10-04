@@ -25,11 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.GifticonData
 
 @Composable
 fun GifticonItem(gifticonData: GifticonData, isSelected: Boolean, onClick: () -> Unit) {
-    val borderColor = if (isSelected) Color.Green else Color.Transparent
+    val borderColor = if (isSelected) BrandColor1 else Color.Transparent
 
     Row(
         modifier = Modifier

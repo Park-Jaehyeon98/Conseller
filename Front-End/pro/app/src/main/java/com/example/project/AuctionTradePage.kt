@@ -52,31 +52,32 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
         index?.toLongOrNull()?.let {
             auctionViewModel.fetchAccountDetails(it)
         }
-        if(index != null) {
+        if (index != null) {
             auctionViewModel.fetchAuctionDetail(index.toLong())
         }
     }
 
-    LaunchedEffect(triggerEffect) {
-        if (triggerEffect) {
-            when (cancelTradeResult) {
-                true -> {
-                    navController.navigate("AuctionDetailPage/${index}")
-                    triggerEffect = false
-                }
-                false -> {
-                    showSnackbar = true
-                    snackbarText = "거래 취소에 실패했습니다. 다시 시도해주세요."
-                    triggerEffect = false
-                }
-                else -> {
-                    showSnackbar = true
-                    snackbarText = "알 수 없는 오류가 발생했습니다."
-                    triggerEffect = false
-                }
+    LaunchedEffect(cancelTradeResult) {
+        if (cancelTradeResult&&triggerEffect) {
+                navController.navigate("AuctionDetailPage/${index}")
+                triggerEffect = false
             }
+        if(!cancelTradeResult&&triggerEffect){
+                showSnackbar = true
+                snackbarText = "거래 취소에 실패했습니다. 다시 시도해주세요."
+                triggerEffect = false
+            }
+//                false -> {
+//                    showSnackbar = true
+//                    snackbarText = "거래 취소에 실패했습니다. 다시 시도해주세요."
+//                    triggerEffect = false
+//                }
+//                else -> {
+//                    showSnackbar = true
+//                    snackbarText = "알 수 없는 오류가 발생했습니다."
+//                    triggerEffect = false
+//                }
         }
-    }
     LaunchedEffect(error) {
         if (error != null) {
             showSnackbar = true
@@ -102,11 +103,14 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     Snackbar(
                         modifier = Modifier.align(Alignment.TopCenter)
                     ) {
-                        Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = snackbarText,
+                            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         )
                     }
                 }
-                val imagePainter = rememberAsyncImagePainter(model = auctionDetail?.gifticonDataImageName)
+                val imagePainter =
+                    rememberAsyncImagePainter(model = auctionDetail?.gifticonDataImageName)
                 Image(
                     painter = imagePainter,
                     contentDescription = null,
@@ -115,9 +119,21 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                 )
             }
 
-            Text(text = "계좌번호 : ${tradeItems?.userAccount ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(text = "거래은행 : ${tradeItems?.userAccountBank ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(text = "거래가격 : ${auctionDetail?.upperPrice ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(
+                text = "계좌번호 : ${tradeItems?.userAccount ?: "N/A"}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Text(
+                text = "거래은행 : ${tradeItems?.userAccountBank ?: "N/A"}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Text(
+                text = "거래가격 : ${auctionDetail?.upperPrice ?: "N/A"}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -135,82 +151,53 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                     modifier = Modifier.weight(1f)
                 )
 
-                SelectButton(
-                    text = "(임시) 완료 버튼",
-                    onClick = { navController.navigate("WaitingPage"){
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
-                    } },
-                    modifier = Modifier.weight(1f)
-                )
             }
         }
 
         if (showDepositConfirmDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    showDepositConfirmDialog = false
-                },
-                title = {
-                    Text(text = "입금 완료 확인")
-                },
-                text = {
-                    Text("입금을 완료하셨습니까?" , fontSize = 18.sp)
-                },
-                dismissButton = {
-                    SelectButton(
-                        text = "예",
-                        onClick = {
-                            auctionViewModel.completeAuctionPayment(index!!.toLong())
-                            when (error) {
-                                null -> {
-                                    navController.navigate("WaitingPage"){
-                                        popUpTo(navController.graph.startDestinationId)
-                                        launchSingleTop = true
-                                    }
-                                    showDepositConfirmDialog = false
-                                }
-                                else -> {
-                                    showSnackbar = true
-                                    snackbarText = "응답실패. 완료를 다시 눌러주세요!"
-                                    showDepositConfirmDialog = false
-                                }
+            AlertDialog(onDismissRequest = {
+                showDepositConfirmDialog = false
+            }, title = {
+                Text(text = "입금 완료 확인")
+            }, text = {
+                Text("입금을 완료하셨습니까?", fontSize = 18.sp)
+            }, dismissButton = {
+                SelectButton(text = "예", onClick = {
+                    auctionViewModel.completeAuctionPayment(index!!.toLong())
+                    when (error) {
+                        null -> {
+                            navController.navigate("WaitingPage") {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
                             }
+                            showDepositConfirmDialog = false
                         }
-                    )
-                },
-                confirmButton = {
-                    SelectButton(
-                        text = "아니오",
-                        onClick = { showDepositConfirmDialog = false }
-                    )
-                }
-            )
+
+                        else -> {
+                            showSnackbar = true
+                            snackbarText = "응답실패. 완료를 다시 눌러주세요!"
+                            showDepositConfirmDialog = false
+                        }
+                    }
+                })
+            }, confirmButton = {
+                SelectButton(text = "아니오", onClick = { showDepositConfirmDialog = false })
+            })
         }
 
         if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { showDeleteDialog = false },
+            AlertDialog(onDismissRequest = { showDeleteDialog = false },
                 title = { Text(text = "거래 취소") },
                 text = { Text("정말 거래를 취소하시겠습니까?", fontSize = 18.sp) },
                 dismissButton = {
-                    SelectButton(
-                        text = "네",
-                        onClick = {
-                            if(error == null) {
-                                auctionViewModel.cancelAuctionTrade(index!!.toLong())
-                                triggerEffect = true
-                            }
-                        }
-                    )
+                    SelectButton(text = "네", onClick = {
+                        auctionViewModel.cancelAuctionTrade(index!!.toLong())
+                        triggerEffect = true
+                    })
                 },
                 confirmButton = {
-                    SelectButton(
-                        text = "아니오",
-                        onClick = { showDeleteDialog = false }
-                    )
-                }
-            )
+                    SelectButton(text = "아니오", onClick = { showDeleteDialog = false })
+                })
         }
     }
 }

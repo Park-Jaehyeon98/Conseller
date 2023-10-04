@@ -104,6 +104,28 @@ interface AuctionService {
         @Path("auctionIdx") auctionIdx: Long,
     ): Response<AuctionConfirmBuyPageResponseDTO>
 
+    // 인기 경매 카테고리(Main)
+    @GET("api/auction/category/main")
+    suspend fun getPopularAuctionMain(
+    ):Response<PopularCategory>
+
+    //인기 경매 카테고리(Sub)
+    @GET("api/auction/category/sub")
+    suspend fun getPopularAuctionSub(
+    ):Response<PopularCategory>
+
+    //인기 경매
+    @GET("api/auction/popular")
+    suspend fun getPopularAuction(
+    ):Response<MyAuctionResponse>
+
+
+
+
+
+
+
+
 
 }
 

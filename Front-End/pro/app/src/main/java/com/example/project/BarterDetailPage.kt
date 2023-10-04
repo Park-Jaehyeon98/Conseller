@@ -61,6 +61,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
 
     var selectedItemIndex by remember { mutableStateOf(userIdFromPreference) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showDeleteRequestDialog by remember { mutableStateOf(false) }
     var showUserDetailDialog by remember { mutableStateOf(false) } // 유저 자세히보기
 
     var showSnackbar by remember { mutableStateOf(false) } // 에러처리스낵바
@@ -95,7 +96,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(8.dp)
+            .padding(top = if (showSnackbar) 50.dp else 8.dp)
     ) {
         if (showSnackbar) {
             Snackbar(
@@ -122,7 +123,9 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                     Column {
                         // 이미지들을 보여주는 LazyRow
                         LazyRow(
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(detail.barterImageList) { imageItem ->
@@ -141,7 +144,9 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
 
                         // gifticonName들을 나열
                         LazyRow(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(detail.barterImageList) { imageItem ->
@@ -214,7 +219,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                     else{
                         SelectButton(
                             text = "제안 취소하기",
-                            onClick = { barterViewModel.proposeCancleBarterTrade(barterDetail?.barterRequestIdx)}
+                            onClick = { showDeleteRequestDialog=true}
                         )
                     }
                 } else {
@@ -277,6 +282,34 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                     },
                     onMessageClick = {
                         // Handle message sending logic here
+                    }
+                )
+            }
+            //판매자 삭제
+            if (showDeleteRequestDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showDeleteDialog = false
+                    },
+                    title = {
+                        Text(text = "제안 삭제")
+                    },
+                    text = {
+                        Text("정말 제안을 취소하시겠습니까?", fontSize = 18.sp)
+                    },
+                    dismissButton = {
+                        SelectButton(
+                            text = "네",
+                            onClick = {
+                                barterViewModel.proposeCancleBarterTrade(barterDetail?.barterRequestIdx)
+                            }
+                        )
+                    },
+                    confirmButton = {
+                        SelectButton(
+                            text = "아니오",
+                            onClick = { showDeleteRequestDialog = false }
+                        )
                     }
                 )
             }

@@ -142,7 +142,7 @@ fun MySalesPage(navController: NavHostController) {
 // 클릭 시 수행할 함수d
 @Composable
 fun SelectSalesBar(onSelectionChanged: (Int) -> Unit) {
-    var selectedOption by remember { mutableStateOf(0) }  // 상태 변수로 현재 선택된 항목을 저장
+    var selectedOption by remember { mutableStateOf(1) }  // 상태 변수로 현재 선택된 항목을 저장
 
     Row(
         modifier = Modifier

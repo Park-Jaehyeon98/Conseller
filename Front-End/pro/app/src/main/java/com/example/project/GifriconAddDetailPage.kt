@@ -59,6 +59,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.api.UploadGifticonResponse
 import com.example.project.api.userUploadGifticonResponse
+import com.example.project.reuse_component.CustomGiftTextField
 import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 import com.example.project.viewmodels.OcrViewModel
@@ -68,6 +69,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import truncateString
 
 @Composable
 fun GifticonAddDetailPage(navController: NavHostController) {
@@ -83,23 +85,23 @@ fun GifticonAddDetailPage(navController: NavHostController) {
     val getOcrResult by OcrViewModel.uploadGifticonResponse.collectAsState()
 
     var gifticonBarcode by remember {
-        mutableStateOf(TextFieldValue(getOcrResult?.gifticonBarcode ?: ""))
+        mutableStateOf(TextFieldValue(getOcrResult.gifticonBarcode))
     }
     var gifticonName by remember {
-        mutableStateOf(TextFieldValue(getOcrResult?.gifticonEndDate ?: ""))
+        mutableStateOf(TextFieldValue(getOcrResult.gifticonEndDate))
     }
     var gifticonEndDate by remember {
-        mutableStateOf(TextFieldValue(getOcrResult?.gifticonName ?: ""))
+        mutableStateOf(TextFieldValue(getOcrResult.gifticonName))
     }
 // Crop된 이미지
     var gifticonCropImage by remember {
-        mutableStateOf(getOcrResult?.gifticonCropImage)
+        mutableStateOf(getOcrResult.gifticonCropImage)
     }
 
     LaunchedEffect(getOcrResult) {
-        gifticonBarcode = TextFieldValue(getOcrResult?.gifticonBarcode ?: "")
-        gifticonName = TextFieldValue(getOcrResult?.gifticonName ?: "")
-        gifticonEndDate = TextFieldValue(getOcrResult?.gifticonEndDate ?: "")
+        gifticonBarcode = TextFieldValue(getOcrResult.gifticonBarcode)
+        gifticonName = TextFieldValue(getOcrResult.gifticonName)
+        gifticonEndDate = TextFieldValue(getOcrResult.gifticonEndDate)
         gifticonCropImage = getOcrResult.gifticonCropImage
     }
 
@@ -132,7 +134,7 @@ fun GifticonAddDetailPage(navController: NavHostController) {
 
 
     LaunchedEffect(selectImage) { // selectImage의 변화를 감지
-        val categorychice=selectedCategoryIndex
+        val categorychice = selectedCategoryIndex
         val currentImage = selectImage
         if (currentImage != null && SendState) {
             val inputStream = getInputStreamFromUri(context, currentImage)
@@ -166,7 +168,8 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         val jsonRequest = gson.toJson(request)
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val requestBody = jsonRequest.toRequestBody(mediaType)
-        val requestPart = MultipartBody.Part.createFormData("gifticonPostRequest", null, requestBody)
+        val requestPart =
+            MultipartBody.Part.createFormData("gifticonPostRequest", null, requestBody)
 
         return requestBody
     }
@@ -193,7 +196,7 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         val myname: String? = OcrViewModel.getUserNickName()
 
         // Base64로 인코딩된 문자열을 가져옵니다.
-        val base64String = getOcrResult?.gifticonCropImage ?: throw IllegalArgumentException("Base64 string is null")
+        val base64String = getOcrResult.gifticonCropImage
 
         // Base64 문자열을 디코딩하여 바이트 배열로 변환합니다.
         val byteArray = Base64.decode(base64String, Base64.DEFAULT)
@@ -220,80 +223,65 @@ fun GifticonAddDetailPage(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (currentUpdatedPage.value == 0) {
-            //메인 카테고리
-            ChoiceMainCategory(MainCategory = mainCategoryIdx,
-                onMainCategorySet = { newMainCategory -> mainCategoryIdx = newMainCategory },
-                subCategory = subCategoryIdx,
-                onSubCategorySet = { newSubCategory -> subCategoryIdx = newSubCategory })
-            Spacer(modifier = Modifier.height(40.dp))
-            if (subCategoryIdx >= 0 || mainCategoryIdx == 5) {
-                pagechanger(currentPage = currentPage,
-                    onSetPage = { newPage -> currentPage = newPage })
+        when (currentUpdatedPage.value) {
+            0 -> {
+                //메인 카테고리
+                ChoiceMainCategory(MainCategory = mainCategoryIdx,
+                    onMainCategorySet = { newMainCategory -> mainCategoryIdx = newMainCategory },
+                    subCategory = subCategoryIdx,
+                    onSubCategorySet = { newSubCategory -> subCategoryIdx = newSubCategory })
             }
-        } else if (currentUpdatedPage.value == 1) {
-            //카테고리
-            ChoiceCategory(category = selectedCategoryIndex,
-                onCategorySet = { newCategory -> selectedCategoryIndex = newCategory })
-            Spacer(modifier = Modifier.height(40.dp))
-            if (selectedCategoryIndex >= 0) {
-                pagechanger(
-                    currentPage = currentPage,
-                    onSetPage = { newPage -> currentPage = newPage })
+
+            1 -> {
+                //카테고리
+                ChoiceCategory(category = selectedCategoryIndex,
+                    onCategorySet = { newCategory -> selectedCategoryIndex = newCategory })
             }
-        } else if (currentUpdatedPage.value == 2) {
-            GifticonUpload(onImageSelected = { uri: Uri ->
-                selectImage = uri
-            }, setSendState = { Check: Boolean -> SendState = Check })
-            Spacer(modifier = Modifier.height(40.dp))
-            if (selectImage != null) {
-                pagechanger(
-                    currentPage = currentPage,
-                    onSetPage = { newPage -> currentPage = newPage })
+
+            2 -> {
+                GifticonUpload(onImageSelected = { uri: Uri ->
+                    selectImage = uri
+                }, setSendState = { Check: Boolean -> SendState = Check })
             }
-        } else if (currentUpdatedPage.value == 3) {
-            GifticonCheck(imageView = selectImage)
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomGiftTextField(
-                label = "일련번호",
-                value = gifticonBarcode,
-                onValueChange = { ModifyGifticonBarcode ->
-                    gifticonBarcode = ModifyGifticonBarcode
-                })
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomGiftTextField(
-                label = "유효기간",
-                value = gifticonEndDate,
-                onValueChange = { ModifyGifticonEndDate ->
-                    gifticonEndDate = ModifyGifticonEndDate
-                })
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomGiftTextField(
-                label = " 제품명",
-                value = gifticonName,
-                onValueChange = { ModifyGifticonName -> gifticonName = ModifyGifticonName })
-            Spacer(modifier = Modifier.height(30.dp))
-            NormalButton(
-                label = "기프티콘 등록",
-                buttonSize = 50,
-                textSize = 18,
-                onClick = {
+
+            3 -> {
+                GifticonCheck(imageView = selectImage)
+                Spacer(modifier = Modifier.height(10.dp))
+                CustomGiftTextField(label = "일련번호",
+                    value = gifticonBarcode,
+                    onValueChange = { ModifyGifticonBarcode ->
+                        gifticonBarcode = ModifyGifticonBarcode
+                    })
+                Spacer(modifier = Modifier.height(10.dp))
+                CustomGiftTextField(label = "유효기간",
+                    value = gifticonEndDate,
+                    onValueChange = { ModifyGifticonEndDate ->
+                        gifticonEndDate = ModifyGifticonEndDate
+                    })
+                Spacer(modifier = Modifier.height(10.dp))
+                CustomGiftTextField(label = " 제품명",
+                    value = gifticonName,
+                    onValueChange = { ModifyGifticonName -> gifticonName = ModifyGifticonName })
+                Spacer(modifier = Modifier.height(30.dp))
+                NormalButton(label = "기프티콘 등록", buttonSize = 50, textSize = 18, onClick = {
                     MyPageViewModel.gifticonUpload(
-                        makeRequest(),
-                        makeOriginalFile(),
-                        makeCropFile()
+                        makeRequest(), makeOriginalFile(), makeCropFile()
                     )
                 })
-            Spacer(modifier = Modifier.height(10.dp))
-        } else if (currentUpdatedPage.value == 4) {
-            GifticonRegistrationCompleteMessage(gifticonName = gifticonName.text)
-            NormalButton(
-                label = "확인",
-                buttonSize = 50,
-                textSize = 18,
-                onClick = { navController.navigate("MyPage") })
-        } else if (currentUpdatedPage.value == 5) {
-            Text(text = "다음5")
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            4 -> {
+                GifticonRegistrationCompleteMessage(gifticonName = gifticonName.text)
+                NormalButton(label = "확인",
+                    buttonSize = 50,
+                    textSize = 18,
+                    onClick = { navController.navigate("MyPage") })
+            }
+        }
+
+        if (currentUpdatedPage.value <4) {
+            Spacer(modifier = Modifier.height(40.dp)) // 이 부분이 Column의 나머지 공간을 채웁니다.
             pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
         }
     }
@@ -301,7 +289,7 @@ fun GifticonAddDetailPage(navController: NavHostController) {
 
 @Composable
 fun CustomGiftTextField(
-    label:String,
+    label: String,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
 ) {
@@ -310,9 +298,8 @@ fun CustomGiftTextField(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-        }
-        Text(text=label, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        ) {}
+        Text(text = label, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         Surface(
             modifier = Modifier
                 .shadow(4.dp, RoundedCornerShape(8.dp))
@@ -321,13 +308,16 @@ fun CustomGiftTextField(
         ) {
             BasicTextField(
                 value = value,
-                onValueChange =
-                onValueChange,
-                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Left, color = Color.White),
+                onValueChange = onValueChange,
+                textStyle = TextStyle(
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Left,
+                    color = Color.White
+                ),
                 modifier = Modifier
                     .height(40.dp)
                     .weight(0.8f)
-                    .padding(start=8.dp)
+                    .padding(start = 8.dp)
                     .horizontalScroll(scrollState)
                     .background(BrandColor1)
             )
@@ -741,7 +731,7 @@ fun ChoiceMainCategory(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.Center
             ) {
                 val imageModifier = Modifier
                     .size(60.dp, 60.dp)
@@ -1031,6 +1021,9 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
     val OcrViewModel: OcrViewModel = hiltViewModel()
     val myname: String? = OcrViewModel.getUserNickName()
     val scrollState = rememberScrollState()
+
+    val truncatedGifticonName = truncateString(gifticonName, 15)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -1041,13 +1034,12 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
                 .padding(16.dp)
                 .size(300.dp)
                 .verticalScroll(scrollState),
-
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(2.dp, Color.White),
             colors = CardDefaults.cardColors(BrandColor1)
         ) {
             Column(
-                modifier = Modifier.padding(32.dp), // 내부 패딩을 조절
+                modifier = Modifier.padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -1059,7 +1051,7 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "${myname}님 \n\n 제품명: ${gifticonName} \n\n 등록이 완료되었습니다!",
+                    text = "${myname}님 \n\n 제품명: ${truncatedGifticonName} \n\n 등록이 완료되었습니다!",
                     fontSize = 21.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -1069,4 +1061,3 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
         }
     }
 }
-

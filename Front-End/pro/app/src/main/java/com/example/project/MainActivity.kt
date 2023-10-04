@@ -44,27 +44,33 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewModel: MygifticonViewModel) {
+
+    val startDestination = when {
+        !sharedPreferencesUtil.isPermissionsChecked() -> "CheckPermission"
+        sharedPreferencesUtil.isLoggedIn() -> "Login"
+        else -> "TextLoginPage"
+    }
+
     val navController = rememberNavController()
-
-    // 로그인 여부에 따른 시작 화면 설정
-    val startDestination = if (sharedPreferencesUtil.isLoggedIn()) "Login" else "TextLoginPage"
-
 
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" &&
+                currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage" &&
+                currentDestination != "CheckPermission") {
                 TopBar(navController)
             }
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    composable("CheckPermission") { CheckPermission(navController, sharedPreferencesUtil)}
                     composable("PermissionRequesterPage") { PermissionRequester(navController)}
-                    composable("Login") { LoginPage(navController) }
+                    composable("Login") { LoginPage(navController, sharedPreferencesUtil) }
                     composable("SignUp") { SignUpPage(navController) }
                     composable("TextLoginPage") { TextLoginPage(navController) }
-                    composable("FindIdPage"){ FindIdPage(navController)}
+                    composable("com.example.project.FindIdPage"){ FindIdPage(navController)}
                     composable("FindPwPage"){ FindPwPage(navController)}
-                    composable("MakePatternPage"){ MakePatternPage(navController)}
+                    composable("MakePatternPage"){ MakePatternPage(navController, sharedPreferencesUtil)}
                     // top bar
                     composable("AlertPage") { AlertPage() }
                     // bottom bar
@@ -166,13 +172,13 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
                     }
                     composable("BarterTradeSelectPage/{barterIdx}") { backStackEntry ->
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
-                        BarterTradeSelectPage(barterIdx, navController)
+                        BarterTradeSelectPage(barterIdx, navController, myGifticonViewModel)
                     }
                     composable("BarterTradePage/{selectedItemIndices}/{barterIdx}") { backStackEntry ->
                         val selectedItemIndicesString = backStackEntry.arguments?.getString("selectedItemIndices") ?: ""
                         val selectedItemIndicesList = selectedItemIndicesString.split(",").map { it.toLongOrNull() }.filterNotNull()
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
-                        BarterTradePage(navController, selectedItemIndicesList, barterIdx)
+                        BarterTradePage(navController, selectedItemIndicesList, barterIdx, myGifticonViewModel)
                     }
                     composable("barterConfirmPage/{barterIdx}") { backStackEntry ->
                         val barterIdx = backStackEntry.arguments?.getString("barterIdx")
@@ -186,7 +192,9 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
 
                 }
             }
-            if (currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" &&
+                currentDestination != "TextLoginPage" && currentDestination != "MakePatternPage" &&
+                currentDestination != "CheckPermission") {
                 BottomBar(navController)
             }
         }

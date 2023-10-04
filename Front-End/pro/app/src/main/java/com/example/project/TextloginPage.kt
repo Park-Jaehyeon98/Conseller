@@ -172,7 +172,7 @@ fun TextLoginPage(navController: NavHostController) {
             ) {
                 Spacer(modifier = Modifier.weight(0.2f))
                 Text(text = "아이디", color = Color(0xFF1F59B6), modifier = Modifier.clickable {
-                    navController.navigate("FindIdPage")
+                    navController.navigate("com.example.project.FindIdPage")
                 })
                 Text(
                     text = " / ", color = Color(0xFF1F59B6)

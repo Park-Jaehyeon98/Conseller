@@ -37,8 +37,7 @@ import com.example.project.viewmodels.MygifticonViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun BarterTradeSelectPage(index: String?, navController: NavHostController) {
-    val mygifticonViewModel: MygifticonViewModel = hiltViewModel()
+fun BarterTradeSelectPage(index: String?, navController: NavHostController, mygifticonViewModel: MygifticonViewModel) {
     val gifticonItems by mygifticonViewModel.gifticonItems.collectAsState() // 내기프티콘
     val totalItems by mygifticonViewModel.totalItems.collectAsState() // 내기프티콘 총페이지
     val error by mygifticonViewModel.error.collectAsState()

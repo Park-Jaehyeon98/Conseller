@@ -12,6 +12,8 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_IDX = "1111111111"
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
+        private const val PERMISSIONS_CHECKED = "general_permissions_checked" // 최초권한
+        private const val FINGERPERMISSIONS_CHECKED = "finger_permissions_checked" // 기문권한
     }
 
     private val sharedPreferences: SharedPreferences
@@ -78,5 +80,31 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
             remove(USER_TOKEN)
             apply()
         }
+    }
+
+    // 권한 확인 여부를 저장하는 메서드
+    fun setPermissionsChecked() {
+        with(sharedPreferences.edit()) {
+            putBoolean(PERMISSIONS_CHECKED, true)
+            apply()
+        }
+    }
+
+    // 권한 확인 여부를 가져오는 메서드
+    fun isPermissionsChecked(): Boolean {
+        return sharedPreferences.getBoolean(PERMISSIONS_CHECKED, false)
+    }
+
+    // 지문 권한 확인 여부를 저장하는 메서드
+    fun setFingerPermissionsChecked(b: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean(FINGERPERMISSIONS_CHECKED, b)
+            apply()
+        }
+    }
+
+    // 지문 권한 확인 여부를 가져오는 메서드
+    fun isFingerPermissionsChecked(): Boolean {
+        return sharedPreferences.getBoolean(FINGERPERMISSIONS_CHECKED, false)
     }
 }

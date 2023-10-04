@@ -126,7 +126,10 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             )
 
             selectedGifticon?.let {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     val imagePainter = rememberAsyncImagePainter(model = it.gifticonImageName)
                     Image(
                         painter = imagePainter,
@@ -134,6 +137,8 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         modifier = Modifier.size(200.dp),
                         contentScale = ContentScale.Crop,
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = it.gifticonName, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -252,6 +257,9 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                 })
             )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         // 이전, 등록 버튼 부분
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

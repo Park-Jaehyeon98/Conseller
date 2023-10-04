@@ -1,15 +1,28 @@
 package com.example.project
 
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.project.sharedpreferences.SharedPreferencesUtil
 import com.example.project.viewmodels.AuthenticationState
 import com.example.project.viewmodels.BiometricViewModel
 import com.mrhwsn.composelock.ComposeLock
@@ -33,7 +47,7 @@ import com.mrhwsn.composelock.ComposeLockCallback
 import com.mrhwsn.composelock.Dot
 
 @Composable
-fun MakePatternPage(navController: NavHostController) {
+fun MakePatternPage(navController: NavHostController, sharedPreferencesUtil: SharedPreferencesUtil) {
     val viewModel: BiometricViewModel = hiltViewModel()
     val firstPattern = remember { mutableStateOf<String?>(null) }
     val authenticationState = viewModel.authenticationState.collectAsState().value
@@ -42,6 +56,9 @@ fun MakePatternPage(navController: NavHostController) {
     if (authenticationState is AuthenticationState.SUCCESS) {
         showAlert.value = true  // 성공 상태가 되면 알림창을 표시
     }
+
+    val checkBoxState = remember { mutableStateOf(sharedPreferencesUtil.isFingerPermissionsChecked()) }
+
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
@@ -135,6 +152,33 @@ fun MakePatternPage(navController: NavHostController) {
                         }
                     }
                 )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                IconToggleButton(
+                    checked = checkBoxState.value,
+                    onCheckedChange = { isChecked ->
+                        if (isChecked) {
+                            sharedPreferencesUtil.setFingerPermissionsChecked(true)
+                        } else {
+                            sharedPreferencesUtil.setFingerPermissionsChecked(false)
+                        }
+                        checkBoxState.value = isChecked
+                    },
+                    modifier = Modifier.size(30.dp)
+                ) {
+                    if (checkBoxState.value) {
+                        Icon(imageVector = Icons.Default.CheckBox, contentDescription = "Checked", tint = Color.Black, modifier = Modifier.size(30.dp))
+                    } else {
+                        Icon(imageVector = Icons.Default.CheckBoxOutlineBlank, contentDescription = "Unchecked", tint = Color.Black, modifier = Modifier.size(30.dp))
+                    }
+                }
+                Text(text = "지문 로그인 추가하기", fontSize = 20.sp)
             }
         }
     }

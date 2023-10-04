@@ -125,7 +125,10 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
             )
 
             selectedGifticon?.let {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     val imagePainter = rememberAsyncImagePainter(model = it.gifticonImageName)
                     Image(
                         painter = imagePainter,
@@ -133,6 +136,8 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                         modifier = Modifier.size(200.dp),
                         contentScale = ContentScale.Crop,
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = it.gifticonName, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -199,6 +204,7 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                 })
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
         // 이전, 등록 버튼 부분
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

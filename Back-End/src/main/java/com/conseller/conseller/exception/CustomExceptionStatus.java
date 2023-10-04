@@ -29,6 +29,12 @@ public enum CustomExceptionStatus {
     BARTER_NO_ITEM(1201, "해당 기프티콘이 존재하지 않습니다."),
     BARTER_NO_SELECT(1202, "기프티콘을 선택하지 않았습니다."),
 
+    BARTER_REQUEST_INVALID(1203, "존재하지 않는 물물교환 교환요청입니다."),
+    BARTER_EXPIRED_INVALID(1204, "이미 완료 또는 만료된 물물교환입니다."),
+    BARTER_ALREADY_SEND(1205, "이미 요청을 보낸 물물교환입니다."),
+
+
+
     //스토어 관련
     STORE_INVALID(1300, "존재하지 않는 판매입니다."),
     ALREADY_TRADE_STORE(1301, "이미 거래 중인 판매입니다."),

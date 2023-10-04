@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class BarterScheduler {
     private final NotificationService notificationService;
 
     @Async
+    @Transactional
     @Scheduled(cron="0 0 * * * ?")
     public void autoBarterExpire() {
         List<Barter> barters = barterService.getExpiredBarterList();

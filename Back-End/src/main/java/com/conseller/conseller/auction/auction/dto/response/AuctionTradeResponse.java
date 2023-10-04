@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuctionTradeResponse {
+    private String userName;
     private String userAccount;
     private String userAccountBank;
 }

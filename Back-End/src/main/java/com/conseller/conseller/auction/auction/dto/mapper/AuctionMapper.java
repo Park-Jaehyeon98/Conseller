@@ -110,6 +110,7 @@ public interface AuctionMapper {
         response.setGiftconName(auction.getGifticon().getGifticonName());
         response.setAuctionPrice(auction.getAuctionHighestBid());
         response.setPostContent(auction.getAuctionText());
+        response.setUserName(auction.getUser().getUsername());
         response.setUserAccount(auction.getUser().getUserAccount());
         response.setUserAccountBank(auction.getUser().getUserAccountBank());
         response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());

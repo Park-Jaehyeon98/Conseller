@@ -126,7 +126,7 @@ public class StoreServiceImpl implements StoreService {
             // 거래 상태 거래중으로 변경
             store.setStoreStatus(StoreStatus.IN_TRADE.getStatus());
 
-            response = new StoreTradeResponse(store.getUser().getUserAccount(),
+            response = new StoreTradeResponse(store.getUser().getUsername() ,store.getUser().getUserAccount(),
                     store.getUser().getUserAccountBank());
         }
         else {

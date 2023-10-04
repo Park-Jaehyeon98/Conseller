@@ -176,7 +176,7 @@ public class AuctionServiceImpl implements AuctionService{
             bid.setAuctionBidStatus(BidStatus.EXPECTED.getStatus());
 
             // 판매자의 계좌번호와 은행 전달
-            response = new AuctionTradeResponse(auction.getUser().getUserAccount(),
+            response = new AuctionTradeResponse(auction.getUser().getUsername() ,auction.getUser().getUserAccount(),
                     auction.getUser().getUserAccountBank());
         }
         else {

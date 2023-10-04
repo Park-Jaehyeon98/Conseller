@@ -18,6 +18,8 @@ public class AuctionConfirmBuyResponse {
 
     private String postContent;
 
+    private String userName;
+
     private String userAccount;
 
     private String userAccountBank;

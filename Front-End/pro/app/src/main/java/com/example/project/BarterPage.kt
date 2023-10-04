@@ -217,7 +217,6 @@ fun BarterPage(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.5.dp)
-                    .background(logocolor)
             )
 
             // BarterItem 넣기
@@ -251,6 +250,8 @@ fun BarterPage(navController: NavHostController) {
         }
         // 등록하기
         FloatingActionButton(
+            contentColor = Color.Black,
+            containerColor = Color.White,
             onClick = { navController.navigate("BarterCreatePage") },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 우하단
@@ -291,7 +292,7 @@ fun BarterItem(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.Gray),
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             // 이미지

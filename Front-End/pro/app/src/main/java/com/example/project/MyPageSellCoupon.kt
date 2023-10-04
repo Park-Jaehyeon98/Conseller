@@ -2,6 +2,7 @@ package com.example.project
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +49,7 @@ import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.MyPageViewModel
 
 @Composable
-fun MypageCoupon(navController: NavHostController) {
+fun MypageSellCoupon(navController: NavHostController) {
     val viewModel: MyPageViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         viewModel.getMyGifticon()
@@ -63,8 +64,9 @@ fun MypageCoupon(navController: NavHostController) {
 
 
     val filteredGift = when (ChoiceStatus) {
-        1 -> getMyGift.filter { it.gifticonStatus == "보관" }
-        2 -> getMyGift.filter { it.gifticonStatus != "보관" }
+        1 -> getMyGift.filter { it.gifticonStatus == "스토어" }
+        2 -> getMyGift.filter { it.gifticonStatus == "경매" }
+        3 -> getMyGift.filter { it.gifticonStatus == "물물교환" }
         else -> getMyGift
     }
 
@@ -76,7 +78,7 @@ fun MypageCoupon(navController: NavHostController) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
-        SelectBar(onSelectionChanged = { ChoiceStatus = it })
+        SelectSellBar(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
         if (showDialog) {
             AlertDialog(onDismissRequest = {
@@ -123,7 +125,7 @@ fun MypageCoupon(navController: NavHostController) {
 
 // 클릭 시 수행할 함수d
 @Composable
-fun SelectBar(onSelectionChanged: (Int) -> Unit) {
+fun SelectSellBar(onSelectionChanged: (Int) -> Unit) {
     var selectedOption by remember { mutableStateOf(1) }  // 상태 변수로 현재 선택된 항목을 저장
 
     Row(
@@ -134,18 +136,22 @@ fun SelectBar(onSelectionChanged: (Int) -> Unit) {
         horizontalArrangement = Arrangement.SpaceAround
     ) {
 
-        BarOption(text = "사용가능한 쿠폰", id = 1, selectedOption, onSelectionChanged) {
+        BarOption(text = "스토어 쿠폰", id = 1, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
         Spacer(modifier = Modifier.height(16.dp))
-        BarOption(text = "거래 중인 쿠폰", id = 2, selectedOption, onSelectionChanged) {
+        BarOption(text = "경매 쿠폰", id = 2, selectedOption, onSelectionChanged) {
+            selectedOption = it
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        BarOption(text = "물물교환", id = 3, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
     }
 }
 
 @Composable
-fun BarOption(
+fun SellBarOption(
     text: String,
     id: Int,
     selectedOption: Int,
@@ -170,107 +176,5 @@ fun BarOption(
 }
 
 
-@Composable
-fun ShowMyGifticon(
-    gifticonData: myGifticon,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    onDelete: () -> Unit,
-    onSelectGifticonIdx: (Long) -> Unit,
-    status: String,
-) {
-    val backgroundColor = if (isSelected) BrandColor1 else Color.Transparent
 
-    // gifticonEndDate 앞 8글자 추출
-    val rawDate = gifticonData.gifticonEndDate.substring(0, 8)
-
-    // 날짜 형식으로 변환 (예: "20230927" -> "2023-09-27")
-    val formattedDate =
-        "${rawDate.substring(0, 4)}-${rawDate.substring(4, 6)}-${rawDate.substring(6, 8)}"
-
-    // mainCategoryIdx 값에 따른 텍스트 할당
-    val mainCategoryText = when (gifticonData.mainCategoryIdx) {
-        1 -> "버거/치킨/피자"
-        2 -> "편의점"
-        3 -> "카페/베이커리"
-        4 -> "아이스크림"
-        5 -> "기타"
-        else -> "" // 기타 경우에 대한 기본값, 필요에 따라 수정 가능
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .background(Color.White)
-            .clickable(onClick = onClick),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            contentAlignment = Alignment.CenterStart, modifier = Modifier.size(130.dp)
-        ) {
-            val imagePainter = rememberAsyncImagePainter(model = gifticonData.gifticonDataImageUrl)
-            Image(
-                painter = imagePainter,
-                contentDescription = null,
-                modifier = Modifier.size(125.dp),
-                contentScale = ContentScale.Crop,
-            )
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-        Column {
-            Text(
-                text = gifticonData.gifticonName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(text = mainCategoryText, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = gifticonData.gifticonStatus,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = BrandColor1
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "~${formattedDate}", fontSize = 22.sp)
-                Spacer(modifier = Modifier.width(16.dp))
-                if (status == "보관") {
-                    Button(
-                        onClick = {
-                            onDelete()
-                            onSelectGifticonIdx(gifticonData.gifticonIdx)
-                        },
-                        colors = ButtonDefaults.buttonColors(BrandColor1),
-                        modifier = Modifier.height(22.dp),
-                        contentPadding = PaddingValues(0.dp)  // 버튼의 내부 패딩을 제거
-                    ) {
-                        Text("사용완료", fontSize = 10.sp, textAlign = TextAlign.Center)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun showNothingGiftImage() {
-    Image(
-        painter = painterResource(id = R.drawable.nothingcoupon),
-        contentDescription = "No available gifticon",
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp),
-        contentScale = ContentScale.Crop,
-    )
-}
 

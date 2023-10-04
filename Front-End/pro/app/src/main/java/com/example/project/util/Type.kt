@@ -76,3 +76,11 @@ fun formatPhoneNumber(number: String): String {
                 else -> number // 다른 형식의 번호는 그대로 반환
         }
 }
+
+fun truncateString(input: String, maxLength: Int): String {
+        return if (input.length <= maxLength) {
+                input
+        } else {
+                input.substring(0, maxLength - 3) + "..."
+        }
+}

@@ -242,7 +242,6 @@ fun AuctionPage(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.5.dp)
-                    .background(logocolor)
             )
 
             // AuctionItem 넣기
@@ -275,10 +274,13 @@ fun AuctionPage(navController: NavHostController) {
         }
         // 등록하기
         FloatingActionButton(
+            contentColor = Color.Black,
+            containerColor = Color.White,
             onClick = { navController.navigate("AuctionCreatePage") },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 우하단
-                .padding(16.dp) // 화면의 가장자리 간격
+                .padding(16.dp)
+            , // 화면의 가장자리 간격
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
                 // 글자 크기 조절
@@ -316,7 +318,7 @@ fun AuctionItem(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.Gray),
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             // 이미지

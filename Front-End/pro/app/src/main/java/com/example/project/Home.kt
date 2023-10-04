@@ -63,9 +63,9 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
     val BarterViewModel: BarterViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
+        AuctionviewModel.fetchPopularAuctionitems()
         AuctionviewModel.fetchPopularAuctionMain()
         AuctionviewModel.fetchPopularAuctionSub()
-        AuctionviewModel.fetchPopularAuctionitems()
         StoreViewModel.fetchPopularStoreMain()
         StoreViewModel.fetchPopularStoreSub()
         myPageViewModel.getMyAuctionBid()
@@ -462,7 +462,6 @@ fun HomeLayout5() {
             .clip(CircleShape)
         Column(
             modifier = Modifier.fillMaxSize(),
-//            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

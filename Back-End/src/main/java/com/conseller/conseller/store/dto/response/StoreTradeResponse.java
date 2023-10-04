@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoreTradeResponse {
+    private String userName;
+
     private String userAccount;
 
     private String userAccountBank;

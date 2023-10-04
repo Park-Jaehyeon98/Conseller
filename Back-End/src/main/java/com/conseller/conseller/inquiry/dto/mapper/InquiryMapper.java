@@ -19,7 +19,8 @@ public interface InquiryMapper {
 
     //RegistInquiryRequest -> Inquiry 매핑
     @Mapping(source = "user", target = "user")
-    Inquiry registInquiryToInquiry(RegistInquiryRequest request, User user);
+    @Mapping(source = "reportedUser", target = "reportedUser")
+    Inquiry registInquiryToInquiry(RegistInquiryRequest request, User user, User reportedUser);
 
     //User, Inquiry -> DetailInquiryResponse
     @Mapping(source = "user.userIdx", target = "userIdx")

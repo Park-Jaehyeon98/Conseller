@@ -28,8 +28,6 @@ public interface BarterMapper {
     @Mapping(source = "preferCategory", target = "preferSubCategory")
     Barter registBarterCreateToBarter(BarterCreateDto barterCreateDto, User user, LocalDateTime endDate, SubCategory subCategory, SubCategory preferCategory);
 
-//    @Mapping()
-//    BarterResponseDto entityToBarterResponseDto(Barter barter)
 
     default BarterItemData toBarterItemData(Barter barter) {
         List<BarterHostItem> barterHostItemList = barter.getBarterHostItemList();
@@ -46,6 +44,12 @@ public interface BarterMapper {
             deposit = true;
         }
 
+        String preferSubCategory = barter.getPreferSubCategory().getSubCategoryContent();
+
+        if(barter.getPreferSubCategory().getSubCategoryIdx() > 10) {
+            preferSubCategory = barter.getPreferSubCategory().getMainCategory().getMainCategoryContent();
+        }
+
         BarterItemData barterItemData = new BarterItemData();
         barterItemData.setBarterIdx(barter.getBarterIdx());
         barterItemData.setGifticonDataImageName(gifticon.getGifticonDataImageUrl());
@@ -53,7 +57,7 @@ public interface BarterMapper {
         barterItemData.setGifticonEndDate(DateTimeConverter.getInstance().convertString(gifticon.getGifticonEndDate()));
         barterItemData.setBarterEndDate(DateTimeConverter.getInstance().convertString(barter.getBarterEndDate()));
         barterItemData.setDeposit(deposit);
-        barterItemData.setPreper(barter.getPreferSubCategory().getSubCategoryContent());
+        barterItemData.setPreper(preferSubCategory);
         barterItemData.setBarterName(barter.getBarterName());
 
         return barterItemData;

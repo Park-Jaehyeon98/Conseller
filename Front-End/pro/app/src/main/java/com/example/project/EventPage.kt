@@ -150,8 +150,8 @@ fun EventLayout2(navController: NavHostController) {
         Text("준비중입니다", fontSize = 20.sp)
     }
     SelectButton(
-        text = "barterconfirm",
-        onClick = {navController.navigate("barterConfirmPage/5") },
+        text = "MakePatternPage",
+        onClick = {navController.navigate("MakePatternPage") },
     )
 }
 

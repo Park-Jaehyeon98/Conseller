@@ -78,12 +78,17 @@ class BarterViewModel @Inject constructor(
     private val _barterCancelNavi = MutableStateFlow<Boolean?>(null)
     val barterCancelNavi: StateFlow<Boolean?> = _barterCancelNavi
 
+    // 물물교환 제안신청후 페이지 네비게이터
+    private val _barterNavi = MutableStateFlow<Boolean?>(null)
+    val barterNavi: StateFlow<Boolean?> = _barterNavi
+
 
 
     // 네비게이션 리셋
     fun resetNavigation() {
         _createBarterNavi.value = null
         _updateBarterNavi.value = false
+        _barterNavi.value = null
     }
 
 
@@ -226,43 +231,19 @@ class BarterViewModel @Inject constructor(
         }
     }
 
-    // 물물교환 거래 제안
-//    fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
-//        viewModelScope.launch {
-//            val userIdx = sharedPreferencesUtil.getUserId()
-//            _isLoading.value = true
-//            _error.value = null
-//            try {
-//                val response = service.proposeBarterTrade(barterIdx,
-//                    TradeBarterRequestDTO(userIdx,selectedItemIndices)
-//                )
-//
-//                if (response.isSuccessful) {
-//                    _error.value = null
-//                }
-//            } catch (e: CustomException) {
-//                _error.value = e.message
-//            } catch (e: Exception) {
-//                _error.value = e.localizedMessage
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
     fun proposeBarterTrade(barterIdx: Long, selectedItemIndices: List<Long>) {
         viewModelScope.launch {
             val userIdx = sharedPreferencesUtil.getUserId()
             _isLoading.value = true
             _error.value = null
             try {
-                Log.d("ProposeBarter", "Sending values - barterIdx: $barterIdx, selectedItemIndices: $selectedItemIndices, userIdx: $userIdx")
-
                 val response = service.proposeBarterTrade(barterIdx,
                     TradeBarterRequestDTO(userIdx, selectedItemIndices)
                 )
 
                 if (response.isSuccessful) {
                     _error.value = null
+                    _barterNavi.value = true
                 }
             } catch (e: CustomException) {
                 _error.value = e.message

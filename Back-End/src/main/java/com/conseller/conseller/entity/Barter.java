@@ -65,7 +65,7 @@ public class Barter {
     private SubCategory subCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sub_catergory_idx")
+    @JoinColumn(name = "prefer_sub_catergory_idx")
     private SubCategory preferSubCategory;
 
     @OneToMany(mappedBy = "barter")

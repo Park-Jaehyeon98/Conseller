@@ -48,7 +48,11 @@ public enum CustomExceptionStatus {
     EXPIRED_GIFTICON(1602, "유효기간이 이미 지난 기프티콘 입니다."),
 
     //문의 관련
-    INQUIRY_INVALID(1700, "존재하지 않는 문의입니다.");
+    INQUIRY_INVALID(1700, "존재하지 않는 문의입니다."),
+
+    //카테고리 관련
+    MAIN_CATEGORY_INVALID(1800, "존재하지 않는 대분류입니다."),
+    SUB_CATEGORY_INVALID(1801, "존재하지 않는 대분류입니다.");
 
     //알림 관련
 

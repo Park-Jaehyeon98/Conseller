@@ -98,12 +98,9 @@ public class GifticonServiceImpl implements GifticonService {
     }
 
     @Override
-    public ImageUrlsResponse deleteGifticon(long gifticonIdx) {
+    public void deleteGifticon(long gifticonIdx) {
         Gifticon gifticon = gifticonRepository.findByGifticonIdx(gifticonIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.ALREADY_REGIST_GIFTICON));
-
-        String gifticonAllImageUrl = gifticon.getGifticonAllImageUrl();
-        String gifticonDataImageUrl = gifticon.getGifticonDataImageUrl();
 
         //여기서 usedGifticon entity 객체 생성해서 값 넣고 save
         UsedGifticon usedGifticon = UsedGifticon.builder()
@@ -113,16 +110,11 @@ public class GifticonServiceImpl implements GifticonService {
 
         usedGifticonRepository.save(usedGifticon);
 
-        gifticonRepository.delete(gifticon);
-
-        return ImageUrlsResponse.builder()
-                .gifticonAllImageUrl(gifticonAllImageUrl)
-                .gifticonDataImageUrl(gifticonDataImageUrl)
-                .build();
+        gifticon.setGifticonStatus(GifticonStatus.USED.getStatus());
     }
 
     @Async
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkGifticonEndDate() {
 
         log.info(LocalDateTime.now() + " 기프티콘 유효기간 알림 작업 시작");

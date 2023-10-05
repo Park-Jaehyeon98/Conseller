@@ -246,6 +246,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                     or result[i] == "UM"
                     or result[i] == "Il"
                     or result[i] == "Ge)"
+                    or result[i] == "나"
                     ):
                         continue
                     elif result[i] == "ㅣ" or result[i] == "|" or result[i].isdigit():

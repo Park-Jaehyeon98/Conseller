@@ -22,12 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GifticonServiceImpl implements GifticonService {
 
@@ -47,7 +49,7 @@ public class GifticonServiceImpl implements GifticonService {
 
     public GifticonResponse getGifticonResponse(long gifticonIdx) {
         Gifticon gifticon = gifticonRepository.findByGifticonIdx(gifticonIdx)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 기프티콘 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.GIFTICON_INVALID));
 
         return GifticonResponse.builder()
                 .gifticonIdx(gifticon.getGifticonIdx())
@@ -77,7 +79,7 @@ public class GifticonServiceImpl implements GifticonService {
         MainCategory mainCategory = mainCategoryRepository.findByMainCategoryIdx(gifticonRegisterRequest.getMainCategory())
                 .orElseThrow(() -> new RuntimeException("유효하지 않은 메인 카테고리 입니다."));
         User user = userRepository.findByUserIdx(userIdx)
-                .orElseThrow(() -> new RuntimeException("유효하지 않은 유저 idx 값 입니다."));
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_INVALID));
 
 
         Gifticon gifticon = Gifticon.builder()
@@ -104,9 +106,9 @@ public class GifticonServiceImpl implements GifticonService {
 
         //여기서 usedGifticon entity 객체 생성해서 값 넣고 save
         UsedGifticon usedGifticon = UsedGifticon.builder()
-                        .usedGifticonBarcode(gifticon.getGifticonBarcode())
-                        .usedGifticonDate(LocalDateTime.now())
-                        .build();
+                .usedGifticonBarcode(gifticon.getGifticonBarcode())
+                .usedGifticonDate(LocalDateTime.now())
+                .build();
 
         usedGifticonRepository.save(usedGifticon);
 
@@ -128,5 +130,6 @@ public class GifticonServiceImpl implements GifticonService {
         }
 
         log.info(LocalDateTime.now() + " 기프티콘 유효기간 알림 작업 종료");
-     }
+    }
 }
+

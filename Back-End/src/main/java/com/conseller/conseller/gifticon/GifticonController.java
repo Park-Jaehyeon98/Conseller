@@ -62,6 +62,8 @@ public class GifticonController {
         //기프티콘 엔티티를 삭제하고 url을 리턴한다.
         gifticonService.deleteGifticon(gifticonIdx);
 
+        log.info("기프티콘 삭제 완료");
+
         return ResponseEntity.ok()
                 .build();
     }

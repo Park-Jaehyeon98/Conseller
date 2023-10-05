@@ -112,18 +112,15 @@ fun NotificationItem(id: Int, notification: MyNotificationResponseDTO, viewModel
             .padding(16.dp)
     ) {
         Column {
+            Spacer(modifier = Modifier.height(4.dp))
+            val formatdate=formatAlertDate(notification.notificationCreatedDate)
             Text(
-                text = "번호: $id",
+                text = "${formatdate}",
                 style = MaterialTheme.typography.bodyMedium.copy(color = textColor, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "날짜: ${formatAlertDate(notification.notificationCreatedDate)}",
-                style = MaterialTheme.typography.bodyMedium.copy(color = textColor, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "상태: ${notification.notificationStatus}",
+                text = "${notification.notificationStatus}",
                 style = MaterialTheme.typography.bodyMedium.copy(color = textColor, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             )
 

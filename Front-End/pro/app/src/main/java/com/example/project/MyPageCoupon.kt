@@ -64,7 +64,7 @@ fun MypageCoupon(navController: NavHostController) {
 
     val filteredGift = when (ChoiceStatus) {
         1 -> getMyGift.filter { it.gifticonStatus == "보관" }
-        2 -> getMyGift.filter { it.gifticonStatus != "보관" }
+        2 -> getMyGift.filter { it.gifticonStatus == "사용" }
         else -> getMyGift
     }
 
@@ -138,7 +138,7 @@ fun SelectBar(onSelectionChanged: (Int) -> Unit) {
             selectedOption = it
         }
         Spacer(modifier = Modifier.height(16.dp))
-        BarOption(text = "거래 중인 쿠폰", id = 2, selectedOption, onSelectionChanged) {
+        BarOption(text = "사용한 쿠폰", id = 2, selectedOption, onSelectionChanged) {
             selectedOption = it
         }
     }

@@ -143,7 +143,7 @@ data class StoreDetailResponseDTO(
     val storeUserDeposit: Long,
     val storeIdx: Long,
     val gifticonDataImageName: String,
-    val giftconName: String,
+    val gifticonName: String,
     val gifticonEndDate: String,
     val storeEndDate: String,
     val deposit: Boolean,
@@ -155,6 +155,7 @@ data class StoreDetailResponseDTO(
 data class StoreTradeResponseDTO(
     val userAccount: String,
     val userAccountBank: String,
+    val userName:String,
 )
 
 // 스토어 완료 요청 DTO = Path형식
@@ -174,7 +175,8 @@ data class StoreConfirmPageResponseDTO(
     val postContent: String,
     val buyUserImageUrl: String,
     val buyUserNickname: String,
-    val buyUserIdx: Long
+    val buyUserIdx: Long,
+    val buyUserName:String
 )
 
 // 스토어 판매자 입금 확정 페이지 확정 요청 DTO

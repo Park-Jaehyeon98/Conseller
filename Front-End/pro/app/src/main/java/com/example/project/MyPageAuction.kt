@@ -198,7 +198,7 @@ fun ShowMyAuction(
         .height(360.dp)
         .padding(2.dp)
         .background(Color.White, shape = RoundedCornerShape(8.dp))
-        .shadow(elevation = 6.dp, shape = RoundedCornerShape(4.dp))
+        .shadow(elevation = 4.dp, shape = RoundedCornerShape(4.dp))
         .clickable { onItemClick() }
         .padding(8.dp)) {
         // 65% 이미지
@@ -206,7 +206,7 @@ fun ShowMyAuction(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.Gray),
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             // 이미지

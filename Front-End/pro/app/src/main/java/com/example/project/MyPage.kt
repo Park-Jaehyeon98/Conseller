@@ -468,10 +468,10 @@ fun CustomCard(
                     Image(
                         painter = painterResource(id = imageResId),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = label, fontSize = 16.sp, color = Color.DarkGray)
+                    Text(text = label, fontSize = 20.sp, color = Color.DarkGray)
                 }
             }
         }

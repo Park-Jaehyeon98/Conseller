@@ -53,7 +53,11 @@ import com.example.project.viewmodels.MygifticonViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices: List<Long>, mygifticonViewModel: MygifticonViewModel) {
+fun BarterCreateDetailPage(
+    navController: NavHostController,
+    selectedItemIndices: List<Long>,
+    mygifticonViewModel: MygifticonViewModel
+) {
     val barterviewModel: BarterViewModel = hiltViewModel()
     val error by barterviewModel.error.collectAsState()
     val myerror by mygifticonViewModel.error.collectAsState()
@@ -83,7 +87,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         }
     }
     LaunchedEffect(createBarterNavi) {
-        if(createBarterNavi != null){
+        if (createBarterNavi != null) {
             mygifticonViewModel.resetSelectedItemIndices()
         }
         createBarterNavi?.let { barterIdx ->
@@ -105,28 +109,25 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             .verticalScroll(scrollState)
     ) {
         if (showSnackbar) {
-            Snackbar(
-            ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Snackbar {
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 )
             }
         }
-
-        Text(
-            text = "2. 원하는 기프티콘의 분류군과",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
-        )
-        Text(
-            text = "게시글을 작성해주세요.",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(start = 28.dp)
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "물물교환 글 등록", fontWeight = FontWeight.Bold, fontSize = 24.sp
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 이미지 캐러셀
         LazyRow(
             modifier = Modifier
                 .height(210.dp)
@@ -156,11 +157,11 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
+        Text("선호 카테고리", modifier = Modifier.padding(8.dp), fontSize = 20.sp)
+        Spacer(modifier = Modifier.height(8.dp))
         // 필터 버튼의 상태
         var filter1Selected by remember { mutableStateOf("대분류") } // 필터1의 초기값
         var filter2Selected by remember { mutableStateOf("소분류") } // 필터2의 초기값
-
         // 필터 버튼
         Row(
             modifier = Modifier
@@ -171,12 +172,7 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             FilterButton(
                 selectedOption = filter1Selected,
                 options = listOf(
-                    "대분류",
-                    "버거/치킨/피자",
-                    "편의점",
-                    "카페/베이커리",
-                    "아이스크림",
-                    "기타"
+                    "대분류", "버거/치킨/피자", "편의점", "카페/베이커리", "아이스크림", "기타"
                 ),
             ) { selectedOption ->
                 filter1Selected = selectedOption
@@ -185,7 +181,6 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             }
 
             Spacer(modifier = Modifier.width(24.dp))  // 버튼 사이 간격 조절
-
             FilterButton(
                 selectedOption = filter2Selected,
                 options = when (filter1Selected) {
@@ -204,14 +199,13 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         Spacer(modifier = Modifier.height(16.dp))
 
         // 게시글 제목 입력
-        Text("게시글 제목", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
+        Text("글 제목", modifier = Modifier.padding(8.dp), fontSize = 20.sp)
         OutlinedTextField(
             value = postTitle,
             onValueChange = { postTitle = it },
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Red,
-                unfocusedBorderColor = Color.Gray
+                focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
             ),
             modifier = Modifier
                 .padding(8.dp)
@@ -225,14 +219,13 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
         Spacer(modifier = Modifier.height(16.dp))
 
         // 게시글 내용 입력
-        Text("게시글 내용", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
+        Text("물물교환 내용", modifier = Modifier.padding(8.dp), fontSize = 20.sp)
         OutlinedTextField(
             value = postContent,
             onValueChange = { postContent = it },
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Red,
-                unfocusedBorderColor = Color.Gray
+                focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
             ),
             modifier = Modifier
                 .padding(8.dp)
@@ -244,8 +237,8 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             })
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
 
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -253,65 +246,47 @@ fun BarterCreateDetailPage(navController: NavHostController, selectedItemIndices
             horizontalArrangement = Arrangement.Center
         ) {
             SelectButton(
-                text = "등록",
-                onClick = {
-                    if(error == null) {
+                text = "등록", onClick = {
+                    if (error == null) {
                         showRegisterConfirmDialog = true
                     }
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+                }, modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))  // 버튼 사이 간격 조절
 
             SelectButton(
-                text = "이전",
-                onClick = {
+                text = "이전", onClick = {
                     navController.navigate("BarterCreatePage")
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+                }, modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
         }
 
         // 등록 확인 대화상자
         if (showRegisterConfirmDialog) {
-            AlertDialog(
-                onDismissRequest = {
+            AlertDialog(onDismissRequest = {
+                showRegisterConfirmDialog = false
+            }, title = {
+                Text(text = "등록")
+            }, text = {
+                Text("등록하시겠습니까?", fontSize = 18.sp)
+            }, confirmButton = {
+                SelectButton(text = "아니오", onClick = {
                     showRegisterConfirmDialog = false
-                },
-                title = {
-                    Text(text = "등록")
-                },
-                text = {
-                    Text("등록하시겠습니까?", fontSize = 18.sp)
-                },
-                confirmButton = {
-                    SelectButton(
-                        text = "아니오",
-                        onClick = {
-                            showRegisterConfirmDialog = false
-                        }
+                })
+            }, dismissButton = {
+                SelectButton(text = "예", onClick = {
+                    barterviewModel.createBarterItem(
+                        kindBigStatus = filter1Selected,
+                        kindSmallStatus = filter2Selected,
+                        barterName = postTitle,
+                        barterText = postContent,
+                        barterEndDate = "11111111111111", // 추후 게시글 시간 조정할때 수정
+                        selectedItemIndices = selectedItemIndices,
                     )
-                },
-                dismissButton = {
-                    SelectButton(
-                        text = "예",
-                        onClick = {
-                            barterviewModel.createBarterItem(
-                                kindBigStatus = filter1Selected,
-                                kindSmallStatus = filter2Selected,
-                                barterName = postTitle,
-                                barterText = postContent,
-                                barterEndDate = "11111111111111", // 추후 게시글 시간 조정할때 수정
-                                selectedItemIndices = selectedItemIndices,
-                            )
-                            showRegisterConfirmDialog = false
-                        }
-                    )
-                }
-            )
+                    showRegisterConfirmDialog = false
+                })
+            })
         }
     }
 }

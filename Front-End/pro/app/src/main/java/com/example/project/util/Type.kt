@@ -24,7 +24,7 @@ fun FormattedDateDot(
         dateString: String,
         modifier: Modifier = Modifier,
         fontSize: TextUnit,
-        label: String = "유효기간 :" // 새로운 인자
+        label: String = "판매기간 :" // 새로운 인자
 ) {
         val formattedDate = "$label ${dateString.substring(2,4)}.${dateString.substring(4,6)}.${dateString.substring(6,8)}"
         Text(text = formattedDate, modifier = modifier, fontSize = fontSize,color= Color.DarkGray)

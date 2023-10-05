@@ -319,7 +319,7 @@ fun BarterItem(
             Column (
                 modifier = Modifier.weight(1f)
             ){
-                Text(name, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(title, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 FormattedDateText(gifticonTime,"유효기간")
             }
         }

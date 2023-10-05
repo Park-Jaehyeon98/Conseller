@@ -1,0 +1,370 @@
+[
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_logo.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\logo.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_user.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\user.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_event.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\event.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_support.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\support.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_bakery.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\bakery.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxhdpi_ic_main.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxhdpi\\ic_main.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_conveniencestore.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\conveniencestore.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_soldout.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\soldout.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_coca.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\coca.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_acutionsoldout.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\acutionsoldout.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_nothingaction.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\nothingaction.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_defaultimage.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\defaultimage.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_auction.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\auction.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_email.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\email.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_cafe.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\cafe.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_snack.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\snack.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-hdpi_ic_main.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-hdpi\\ic_main.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_hamburger.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\hamburger.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xhdpi_ic_main_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xhdpi\\ic_main_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_baskinrobbins.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\baskinrobbins.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_nothingcoupon.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\nothingcoupon.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_kimbab.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\kimbab.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_purchase.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\purchase.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_icecream.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\icecream.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_addbutton.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\addbutton.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_lock.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\lock.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xhdpi_ic_main_foreground.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xhdpi\\ic_main_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_barter.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\barter.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_noimage.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\noimage.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_barterend.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\barterend.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_coupon2.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\coupon2.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_pizza.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\pizza.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_giftishow.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\giftishow.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable-v24\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_coffee.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\coffee.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_deleteuser.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\deleteuser.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\xml\\backup_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxxhdpi_ic_main.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxxhdpi\\ic_main.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_giftvoucher.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\giftvoucher.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_fastfood.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\fastfood.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_mainbarter.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\mainbarter.png"
+    },
+    {
+        "merged": "com.example.project.app-merged_res-77:/drawable_alert.png.flat",
+        "source": "com.example.project.app-main-78:/drawable/alert.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-mdpi_ic_main_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-mdpi\\ic_main_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_chatbot.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\chatbot.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_fry.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\fry.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\layout_fragment_biometric_prompt_dialog.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\layout\\fragment_biometric_prompt_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxhdpi_ic_main_foreground.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxhdpi\\ic_main_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-hdpi_ic_main_foreground.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-hdpi\\ic_main_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_acutionpurchase.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\acutionpurchase.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_ssafy.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\ssafy.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-mdpi_ic_main_foreground.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-mdpi\\ic_main_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_mainauction.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\mainauction.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_selling.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\selling.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_ic_notification.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\ic_notification.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_mainevent.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\mainevent.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xhdpi_ic_main.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xhdpi\\ic_main.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxhdpi_ic_main_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxhdpi\\ic_main_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_etc.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\etc.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-hdpi_ic_main_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-hdpi\\ic_main_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-anydpi-v26_ic_main_round.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-anydpi-v26\\ic_main_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_coupon1.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\coupon1.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_coupon.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\coupon.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_buy.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\buy.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_store.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\store.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-hdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_uploadgiftdefault.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\uploadgiftdefault.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxxhdpi_ic_main_foreground.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxxhdpi\\ic_main_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_ic_main_background.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\ic_main_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-mdpi_ic_main.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-mdpi\\ic_main.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_uploadgiftcrop.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\uploadgiftcrop.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_kakaotalk.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\kakaotalk.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_home.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\home.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-xxxhdpi_ic_main_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-xxxhdpi\\ic_main_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-mdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_check.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\check.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-anydpi-v26_ic_main.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-anydpi-v26\\ic_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_alert.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\alert.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_giftdefault.jpg.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\giftdefault.jpg"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_mainshop.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\mainshop.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\drawable_account.png.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\drawable\\account.png"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-77:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-78:\\mipmap-mdpi\\ic_launcher_round.webp"
+    }
+]

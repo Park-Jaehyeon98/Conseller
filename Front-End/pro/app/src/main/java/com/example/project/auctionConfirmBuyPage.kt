@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,7 +74,7 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
     }
     LaunchedEffect(auctionConfirmBuyNavi) {
         if (auctionConfirmBuyNavi == true) {
-            navController.navigate("WaitingPage"){
+            navController.navigate("WaitingPage") {
                 popUpTo(navController.graph.startDestinationId)
                 launchSingleTop = true
             }
@@ -90,13 +91,16 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
             Snackbar(
                 modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                )
             }
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(2.dp, Color.Gray.copy(alpha=0.76f), RoundedCornerShape(4.dp))
+                .border(2.dp, Color.Gray.copy(alpha = 0.76f), RoundedCornerShape(4.dp))
                 .padding(22.dp)
         ) {
             Column(
@@ -105,7 +109,7 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "기프티콘의 낙찰에 성공하셨습니다.\n입금 후 입금확정을 눌러주세요.",
+                    text = "기프티콘 낙찰에 성공하셨습니다.\n\n입금 후 입금확정을 눌러주세요.",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -126,39 +130,46 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // 이름
-                Text(text = "이름: ${auctionConfirmBuy?.giftconName ?: ""}")
+                Text(
+                    text = "상품명: ${auctionConfirmBuy?.giftconName ?: ""}",
+                    fontSize = 20.sp,
+                    color = Color.DarkGray,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
-                val formatPrice =formattedNumber(auctionConfirmBuy?.auctionPrice.toString())
+                val formatPrice = formattedNumber(auctionConfirmBuy?.auctionPrice.toString())
                 // 판매가
-                Text(text = "낙찰가: ${formatPrice}원")
+                Text(text = "낙찰가: ${formatPrice}원", fontSize = 16.sp, color = Color.DarkGray)
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(text = "내용: ${auctionConfirmBuy?.postContent ?: ""}")
+                Text(
+                    text = "제품 설명: ${auctionConfirmBuy?.postContent ?: ""}",
+                    fontSize = 16.sp,
+                    color = Color.DarkGray
+                )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = "계좌번호 : ${auctionConfirmBuy?.userAccount ?: "N/A"}",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "거래은행 : ${auctionConfirmBuy?.userAccountBank ?: "N/A"}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    text = "거래은행 : ${auctionConfirmBuy?.userAccountBank ?: "N/A"}", fontSize = 16.sp
                 )
                 Text(
-                    text = "실명 : ${auctionConfirmBuy?.userName ?: "N/A"}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    text = "실명 : ${auctionConfirmBuy?.userName ?: "N/A"}", fontSize = 16.sp
                 )
 
-
+                Spacer(modifier = Modifier.height(12.dp))
                 // 버튼들
                 Row(
                     modifier = Modifier.fillMaxSize(),
@@ -175,63 +186,39 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
         }
     }
     if (showConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = {
+        AlertDialog(onDismissRequest = {
+            showConfirmDialog = false
+        }, title = {
+            Text(text = "입금 완료 확인")
+        }, text = {
+            Text("입금을 완료하셨습니까?", fontSize = 18.sp)
+        }, dismissButton = {
+            SelectButton(text = "네", onClick = {
+                auctionViewModel.completeAuctionPayment(index!!.toLong())
                 showConfirmDialog = false
-            },
-            title = {
-                Text(text = "입금 완료 확인")
-            },
-            text = {
-                Text("입금을 완료하셨습니까?" , fontSize = 18.sp)
-            },
-            dismissButton = {
-                SelectButton(
-                    text = "네",
-                    onClick = {
-                        auctionViewModel.completeAuctionPayment(index!!.toLong())
-                        showConfirmDialog = false
-                    }
-                )
-            },
-            confirmButton = {
-                SelectButton(
-                    text = "아니오",
-                    onClick = {
-                        showConfirmDialog = false
-                    }
-                )
-            }
-        )
+            })
+        }, confirmButton = {
+            SelectButton(text = "아니오", onClick = {
+                showConfirmDialog = false
+            })
+        })
     }
     if (showCancleDialog) {
-        AlertDialog(
-            onDismissRequest = {
+        AlertDialog(onDismissRequest = {
+            showCancleDialog = false
+        }, title = {
+            Text(text = "거래 취소")
+        }, text = {
+            Text("정말 거래를 취소하시겠습니까?")
+        }, dismissButton = {
+            SelectButton(text = "네", onClick = {
+                auctionViewModel.cancelAuctionTrade(index!!.toLong())
                 showCancleDialog = false
-            },
-            title = {
-                Text(text = "거래 취소")
-            },
-            text = {
-                Text("정말 거래를 취소하시겠습니까?")
-            },
-            dismissButton = {
-                SelectButton(
-                    text = "네",
-                    onClick = {
-                        auctionViewModel.cancelAuctionTrade(index!!.toLong())
-                        showCancleDialog = false
-                    }
-                )
-            },
-            confirmButton = {
-                SelectButton(
-                    text = "아니오",
-                    onClick = {
-                        showCancleDialog = false
-                    }
-                )
-            }
-        )
+            })
+        }, confirmButton = {
+            SelectButton(text = "아니오", onClick = {
+                showCancleDialog = false
+            })
+        })
     }
 }

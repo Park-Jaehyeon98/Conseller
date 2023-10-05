@@ -66,6 +66,7 @@ public class GifticonServiceImpl implements GifticonService {
                 .build();
     }
 
+    @Transactional
     @Override
     public void registGifticon(long userIdx, GifticonRegisterRequest gifticonRegisterRequest, String allImageUrl, String dataImageUrl) {
 
@@ -99,6 +100,7 @@ public class GifticonServiceImpl implements GifticonService {
         log.info("기프티콘 등록 완료");
     }
 
+    @Transactional
     @Override
     public void deleteGifticon(long gifticonIdx) {
         Gifticon gifticon = gifticonRepository.findByGifticonIdx(gifticonIdx)

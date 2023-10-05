@@ -235,7 +235,7 @@ public class StoreServiceImpl implements StoreService {
     public List<Integer> getSubCategory() {
         List<Store> stores = storeRepository.findAwardedStoreList();
 
-        int[] subCategoryCount = new int[11];
+        int[] subCategoryCount = new int[14];
 
         for(Store store : stores) {
             int idx = store.getGifticon().getSubCategory().getSubCategoryIdx();
@@ -243,14 +243,14 @@ public class StoreServiceImpl implements StoreService {
         }
 
         int maxIdx = 1;
-        for(int i = 1; i < 11; i++) {
+        for(int i = 1; i < 14; i++) {
             if(subCategoryCount[i] > subCategoryCount[maxIdx]){
                 maxIdx = i;
             }
         }
 
         int secondIdx = 2;
-        for(int i = 1; i < 11; i++) {
+        for(int i = 1; i < 14; i++) {
             if(maxIdx != i && subCategoryCount[i] > subCategoryCount[maxIdx]){
                 secondIdx = i;
             }

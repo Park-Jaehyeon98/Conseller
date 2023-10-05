@@ -80,7 +80,6 @@ public class StoreController {
     }
 
     // 스토어 거래 진행 취소
-    // 없어져야할듯
     @PatchMapping("/cancel/{store_idx}")
     public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자 구매자 알림

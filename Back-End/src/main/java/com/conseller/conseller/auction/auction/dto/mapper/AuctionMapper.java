@@ -98,6 +98,7 @@ public interface AuctionMapper {
         response.setPostContent(auction.getAuctionText());
         response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());
         response.setBuyUserNickname(auction.getHighestBidUser().getUserNickname());
+        response.setBuyUserName(auction.getHighestBidUser().getName());
         response.setBuyUserIdx(auction.getHighestBidUser().getUserIdx());
 
         return response;
@@ -116,7 +117,7 @@ public interface AuctionMapper {
         response.setUserAccountBank(auction.getUser().getUserAccountBank());
         response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());
         response.setBuyUserNickname(auction.getHighestBidUser().getUserNickname());
-        response.setBuyUserName(auction.getHighestBidUser().getUsername());
+        response.setBuyUserName(auction.getHighestBidUser().getName());
         response.setBuyUserIdx(auction.getHighestBidUser().getUserIdx());
 
         return response;

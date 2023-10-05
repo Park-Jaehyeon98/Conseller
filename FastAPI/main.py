@@ -9,10 +9,9 @@ import base64
 from starlette.datastructures import UploadFile as StarletteUploadFile
 import sys
 import re
-import logging
 
 
-async def isHangul(text):
+def isHangul(text):
     # Check the Python Version
     pyVer3 = sys.version_info >= (3, 0)
 
@@ -34,10 +33,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 origins = [
     "https://j9b207.p.ssafy.io",
-    "http://localhost:8000",
     "http://localhost",
-    "http://localhost:443",
-    "http://localhost:80",
     "http://0.0.0.0:8000",
     "http://0.0.0.0",
 ]
@@ -81,7 +77,6 @@ def crop_kakao(image_file):
         return ocr_result
 
     except Exception as e:
-        logging.warn(e)
         raise HTTPException(status_code=502, detail=str(e))
 
 
@@ -111,7 +106,6 @@ def crop_ssafy(image_file):
         return ocr_result
 
     except Exception as e:
-        logging.warn("try 진입")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -176,19 +170,18 @@ def perform_ocr():
                 result[i] = "헤피머니"
             elif result[i] == "피머니온라인상품권[3,000원]":
                 result[i] = "해피머니온라인상품권[3,000원]"
+            elif result[i] == "해태)갈아만든배캔3407":
+                result[i] == "해태)갈아만든배캔340ml"
 
         return result
     except Exception as e:
-        logging.warn(e)
         raise HTTPException(status_code=504, detail=str(e))
 
 
 # 이미지 업로드 및 OCR 수행
 @app.post("/gifticon")
 async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
-    logging.warn("post, def진입 ")
     try:
-        logging.warn("try 진입")
         result = ""
         barcode_idx = 0
         name_idx = 0
@@ -207,6 +200,11 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                     barcode_idx = idx
                 elif text == "유효기간" or text == "효기간" or text == "기간":
                     end_date_idx = idx + 1
+                elif text == "유효기":
+                    if result[idx+1][:-1].isdigit():
+                        end_date_idx = idx + 1
+                    else:
+                        end_date_idx = idx + 2
 
             if len(result[barcode_idx - 4]) == 4 and result[barcode_idx - 4].isdigit():
                 if (
@@ -236,8 +234,25 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             gifticon_end_date += result[end_date_idx + 2][:-1]
 
             if barcode_idx != 0:
-                for i in range(barcode_idx):
-                    if result[i] == "ㅣ":
+                for i in range(barcode_idx-3):
+                    if (
+                    result[i][:4] == "1111"
+                    or result[i][:4] == "1110"
+                    or result[i][:4] == "1100"
+                    or result[i][:4] == "1000"
+                    or result[i][:5] == "10100"
+                    or result[i] == "8"
+                    or result[i] == "MoM"
+                    or result[i] == "UM"
+                    or result[i] == "Il"
+                    or result[i] == "Ge)"
+                    ):
+                        continue
+                    elif result[i] == "ㅣ" or result[i] == "|" or result[i].isdigit():
+                        continue
+                    elif result[i] == "=":
+                        break
+                    elif result[i] == "T" and gifticon_name[-2] == "T":
                         continue
                     elif isHangul(result[i]) or result[i] == "T":
                         gifticon_name += result[i] + " "
@@ -319,6 +334,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             image_data = ""
 
         data = {
+            "result" : result,
             "gifticonBarcode": gifticon_barcode,
             "gifticonName": gifticon_name,
             "gifticonEndDate": gifticon_end_date,
@@ -328,5 +344,4 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
         return data  # JSON 데이터와 이미지 데이터를 함께 반환
 
     except HTTPException as e:
-        logging.warn(e)
         raise HTTPException(status_code=e.status_code, detail=e.detail)

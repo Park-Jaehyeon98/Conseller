@@ -100,7 +100,8 @@ class AuctionViewModel @Inject constructor(
             postContent = "",
             buyUserImageUrl = "",
             buyUserNickname = "",
-            buyUserIdx = 0L
+            buyUserIdx = 0L,
+            ""
         )
     )
     val auctionConfirm: StateFlow<AuctionConfirmPageResponseDTO> = _auctionConfirm

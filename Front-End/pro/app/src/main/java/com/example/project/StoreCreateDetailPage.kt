@@ -148,8 +148,8 @@ fun StoreCreateDetailPage(
                         text = it.gifticonName,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 1,  // 텍스트의 최대 라인 수를 1로 설정
-                        overflow = TextOverflow.Ellipsis  // 텍스트가 최대 라인 수를 초과하면 생략
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

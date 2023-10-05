@@ -226,7 +226,8 @@ data class AuctionConfirmPageResponseDTO(
     val postContent: String,
     val buyUserImageUrl: String,
     val buyUserNickname: String,
-    val buyUserIdx: Long
+    val buyUserIdx: Long,
+    val buyUserName:String,
 )
 
 // 경매 판매자 입금 확정 페이지 확정 요청 DTO

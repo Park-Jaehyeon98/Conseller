@@ -170,7 +170,7 @@ def perform_ocr():
                 result[i] = "헤피머니"
             elif result[i] == "피머니온라인상품권[3,000원]":
                 result[i] = "해피머니온라인상품권[3,000원]"
-            elif result[i] == "해태)갈아만든배캔3407":
+            elif result[i] == "해태)갈아만든배캔340ㅠ|":
                 result[i] == "해태)갈아만든배캔340ml"
 
         return result
@@ -250,7 +250,7 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
                         continue
                     elif result[i] == "ㅣ" or result[i] == "|" or result[i].isdigit():
                         continue
-                    elif result[i] == "=":
+                    elif result[i] == "=" or result[i] == "\"그":
                         break
                     elif result[i] == "T" and gifticon_name[-2] == "T":
                         continue
@@ -334,7 +334,6 @@ async def ocr_request(category: int = Form(...), image: UploadFile = Form(...)):
             image_data = ""
 
         data = {
-            "result" : result,
             "gifticonBarcode": gifticon_barcode,
             "gifticonName": gifticon_name,
             "gifticonEndDate": gifticon_end_date,

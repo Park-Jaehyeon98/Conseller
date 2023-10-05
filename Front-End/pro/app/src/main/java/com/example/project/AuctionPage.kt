@@ -56,6 +56,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.project.api.AuctionFilterDTO
 import com.example.project.reuse_component.convertNameToNum
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.AuctionViewModel
 import formattedNumber
@@ -274,8 +275,8 @@ fun AuctionPage(navController: NavHostController) {
         }
         // 등록하기
         FloatingActionButton(
-            contentColor = Color.Black,
-            containerColor = Color.White,
+            contentColor = Color.White,
+            containerColor = BrandColor1,
             onClick = { navController.navigate("AuctionCreatePage") },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 우하단
@@ -284,7 +285,7 @@ fun AuctionPage(navController: NavHostController) {
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
                 // 글자 크기 조절
-                Text("등록하기", fontSize = 18.sp)
+                Text("등록", fontSize = 18.sp)
             }
 
         }

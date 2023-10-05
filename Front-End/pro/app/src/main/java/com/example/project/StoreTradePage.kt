@@ -1,6 +1,7 @@
 package com.example.project
 
 import SelectButton
+import android.icu.number.FormattedNumber
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.StoreViewModel
+import formattedNumber
 
 @Composable
 fun StoreTradePage(index: String?, navController: NavHostController) {
@@ -89,19 +91,24 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
-
             Text(
-                text = "계좌번호 : ${storeTrades?.userAccount ?: "N/A"}",
+                text = "실명 : ${storeTrades?.userName ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
             Text(
-                text = "거래은행 : ${storeTrades?.userAccountBank ?: "N/A"}",
+                text = "계좌번호 : ${storeTrades?.userAccountBank ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
             Text(
-                text = "거래가격 : ${storeDetail?.storePrice ?: "N/A"} 원",
+                text = "거래은행 : ${storeTrades?.userAccount ?: "N/A"}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            val formatPrice =formattedNumber(storeDetail?.storePrice.toString())
+            Text(
+                text = "거래가격 : ${formatPrice} 원",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -111,15 +118,15 @@ fun StoreTradePage(index: String?, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SelectButton(
-                    text = "입금완료",
+                            text = "거래취소",
                     modifier = Modifier.weight(1f),
-                    onClick = { showDepositConfirmDialog = true }
+                    onClick = { showDeleteDialog = true }
                 )
 
                 SelectButton(
-                    text = "거래취소",
+                    text = "입금완료",
                     modifier = Modifier.weight(1f),
-                    onClick = { showDeleteDialog = true }
+                    onClick = { showDepositConfirmDialog = true }
                 )
             }
 

@@ -37,7 +37,7 @@ fun GifticonItem(gifticonData: GifticonData, isSelected: Boolean, onClick: () ->
             .fillMaxWidth()
             .padding(2.dp)
             .background(color = Color.White, shape = RoundedCornerShape(8.dp))
-            .border(8.dp, borderColor, RoundedCornerShape(8.dp))
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(4.dp))
             .padding(8.dp)
             .clickable(onClick = onClick),
@@ -58,7 +58,8 @@ fun GifticonItem(gifticonData: GifticonData, isSelected: Boolean, onClick: () ->
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(text = gifticonData.gifticonName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            val truncatedGifticonName = truncateString(gifticonData.gifticonName, 15)
+            Text(text = truncatedGifticonName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.height(8.dp))
             FormattedDateText(gifticonData.gifticonEndDate, "유효기간")
         }

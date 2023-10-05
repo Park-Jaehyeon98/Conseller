@@ -1,8 +1,12 @@
 package com.example.project
 
 import ShowMyAuction
+import android.provider.CalendarContract.Colors
+import android.widget.ImageButton
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +42,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -50,11 +57,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.viewmodels.AuctionViewModel
 import com.example.project.viewmodels.BarterViewModel
 import com.example.project.viewmodels.MyPageViewModel
 import com.example.project.viewmodels.StoreViewModel
+import formattedNumber
 import kotlinx.coroutines.delay
+import truncateString
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
@@ -94,11 +104,11 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { HomeLayout4(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout2() }
-            item { Spacer(modifier = Modifier.height(10.dp)) }
             item { HomeLayout6() }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { HomeLayout7() }
+            item { HomeLayout2(navController) }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
+            item { HomeLayout7(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { HomeLayout8() }
 
@@ -107,7 +117,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
 }
 
 @Composable
-fun HomeLayout2() {
+fun HomeLayout2(navController: NavHostController) {
     val AuctionviewModel: AuctionViewModel = hiltViewModel()
 
     val popularAuction by AuctionviewModel.auctionPopular.collectAsState()
@@ -127,6 +137,7 @@ fun HomeLayout2() {
                 "현재 인기 경매글",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
+                color=Color.DarkGray
             )
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
@@ -138,10 +149,9 @@ fun HomeLayout2() {
                     auctionTime = item.gifticonEndDate,
                     isDeposit = item.deposit,
                     upperprice = item.upperPrice,
-                    nowprice = item.lowerPrice
-                ) {
-
-                }
+                    nowprice = item.lowerPrice,
+                    onItemClick = {   navController.navigate("AuctionDetailPage/${item.auctionIdx}")}
+                )
             }
         }
     }
@@ -152,16 +162,21 @@ fun HomeLayout3(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(130.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.weight(1f))  // 상단에 공간을 주기 위해 weight를 사용
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
-                horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
             ) {
                 Spacer(modifier = Modifier.width(24.dp))
                 ImageButton("스토어") { navController.navigate("StorePage") }
@@ -178,10 +193,10 @@ fun HomeLayout3(navController: NavHostController) {
 @Composable
 fun ImageButton(imageName: String, onClick: () -> Unit) {
     val resourceId = when (imageName) {
-        "경매" -> R.drawable.auction
-        "물물교환" -> R.drawable.barter
-        "스토어" -> R.drawable.store
-        "이벤트" -> R.drawable.event
+        "경매" -> R.drawable.mainauction
+        "물물교환" -> R.drawable.mainbarter
+        "스토어" -> R.drawable.mainshop
+        "이벤트" -> R.drawable.mainevent
         else -> R.drawable.chatbot
     }
 
@@ -189,24 +204,36 @@ fun ImageButton(imageName: String, onClick: () -> Unit) {
     var scale by remember { mutableFloatStateOf(1f) }
     val pressedScale = 0.95f
 
-    Image(painter = painterResource(id = resourceId),
-        contentDescription = null,
-        modifier = Modifier
-            .size(88.dp)
-            .clickable(
-                interactionSource = interactionSource, indication = null, onClick = onClick
-            )
-            .graphicsLayer(
-                scaleX = scale, scaleY = scale
-            )
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = { onClick() }, onPress = {
-                    tryAwaitRelease()
-                    scale = pressedScale
-                    delay(100L)
-                    scale = 1f
-                })
-            })
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(1.dp)
+    ) {
+        Surface(
+            modifier = Modifier.clip(CircleShape).background(Color.DarkGray.copy(alpha = 0.4f))
+        ) {
+            Image(painter = painterResource(id = resourceId),
+                contentDescription = null,
+                modifier = Modifier
+                    .scale(0.6f)
+                    .size(72.dp)
+                    .clickable(
+                        interactionSource = interactionSource, indication = null, onClick = onClick
+                    )
+                    .graphicsLayer(
+                        scaleX = scale, scaleY = scale
+                    )
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { onClick() }, onPress = {
+                            tryAwaitRelease()
+                            scale = pressedScale
+                            delay(100L)
+                            scale = 1f
+                        })
+                    })
+        }
+        Text(text = imageName)
+    }
 }
 
 @Composable
@@ -318,33 +345,43 @@ fun HomeLayout4(navController: NavController) {
                                                 if (itemIsPressed) Color.LightGray else Color.Transparent
                                             )
                                     ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Start,
-                                            modifier = Modifier.padding(8.dp)
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            shape = RoundedCornerShape(8.dp),
+                                            shadowElevation = 12.dp
                                         ) {
-                                            val painter =
-                                                rememberAsyncImagePainter(model = item.auctionItemData.gifticonDataImageName)
-                                            Image(
-                                                painter = painter,
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(85.dp)
-                                                    .align(Alignment.CenterVertically)
-                                            )
-                                            Spacer(modifier = Modifier.width(25.dp))
-                                            Column(
-                                                modifier = Modifier.align(Alignment.CenterVertically)
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Start,
+                                                modifier = Modifier.padding(8.dp)
                                             ) {
-                                                Text(
-                                                    item.auctionItemData.gifticonName,
-                                                    fontSize = 18.sp
+                                                val painter =
+                                                    rememberAsyncImagePainter(model = item.auctionItemData.gifticonDataImageName)
+                                                Image(
+                                                    painter = painter,
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .size(85.dp)
+                                                        .align(Alignment.CenterVertically)
                                                 )
-                                                Spacer(modifier = Modifier.height(5.dp))
-                                                Text(
-                                                    "최고 입찰가: ${item.auctionItemData.auctionHighestBid}원 (${if (item.auctionItemData.auctionHighestBid == item.auctionBidPrice) "본인" else "타인"})",
-                                                    fontSize = 18.sp
-                                                )
+                                                Spacer(modifier = Modifier.width(25.dp))
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                                ) {
+                                                    val truncatedGifticonName = truncateString(
+                                                        item.auctionItemData.gifticonName, 15
+                                                    )
+                                                    Text(
+                                                        truncatedGifticonName, fontSize = 18.sp
+                                                    )
+                                                    Spacer(modifier = Modifier.height(5.dp))
+                                                    val formatPrice =
+                                                        formattedNumber(item.auctionItemData.auctionHighestBid.toString())
+                                                    Text(
+                                                        "최고 입찰가: ${formatPrice}원 (${if (item.auctionItemData.auctionHighestBid == item.auctionBidPrice) "본인" else "타인"})",
+                                                        fontSize = 18.sp
+                                                    )
+                                                }
                                             }
                                         }
                                     }
@@ -384,30 +421,39 @@ fun HomeLayout4(navController: NavController) {
                                                 if (itemIsPressed) Color.LightGray else Color.Transparent
                                             )
                                     ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Start,
-                                            modifier = Modifier.padding(8.dp)
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            shape = RoundedCornerShape(8.dp),
+                                            shadowElevation = 12.dp
                                         ) {
-                                            val painter =
-                                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                                            Image(
-                                                painter = painter,
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(85.dp)
-                                                    .align(Alignment.CenterVertically)
-                                            )
-                                            Spacer(modifier = Modifier.width(25.dp))
-                                            Column(
-                                                modifier = Modifier.align(Alignment.CenterVertically)
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Start,
+                                                modifier = Modifier.padding(8.dp),
                                             ) {
-                                                Text("${item.gifticonName}", fontSize = 18.sp)
-                                                Spacer(modifier = Modifier.height(5.dp))
-                                                Text(
-                                                    "최고 입찰가: ${item.auctionHighestBid}원",
-                                                    fontSize = 18.sp
+                                                val painter =
+                                                    rememberAsyncImagePainter(model = item.gifticonDataImageName)
+                                                Image(
+                                                    painter = painter,
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .size(85.dp)
+                                                        .align(Alignment.CenterVertically)
                                                 )
+                                                Spacer(modifier = Modifier.width(25.dp))
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                                ) {
+                                                    val truncatedGifticonName =
+                                                        truncateString(item.gifticonName, 15)
+                                                    Text(truncatedGifticonName, fontSize = 18.sp)
+                                                    Spacer(modifier = Modifier.height(5.dp))
+                                                    val formatPrice =
+                                                        formattedNumber(item.auctionHighestBid.toString())
+                                                    Text(
+                                                        "최고 입찰가: ${formatPrice}원", fontSize = 18.sp
+                                                    )
+                                                }
                                             }
                                         }
                                     }
@@ -453,7 +499,7 @@ fun HomeLayout5() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(150.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -461,23 +507,23 @@ fun HomeLayout5() {
             .size(60.dp)
             .clip(CircleShape)
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "\uD83D\uDD25 이번 주 스토어 인기 품목 \uD83D\uDD25",
+                "\uD83D\uDD25 이번 주 경매 인기 품목 \uD83D\uDD25",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
+                color=Color.DarkGray
             )
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             if (auctionMain.isNotEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                        .padding(horizontal = 35.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
@@ -494,6 +540,7 @@ fun HomeLayout5() {
                             fontWeight = FontWeight.Bold
                         )
                     }
+                    Spacer(modifier=Modifier.width(20.dp))
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -546,7 +593,7 @@ fun HomeLayout6() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(150.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -557,19 +604,20 @@ fun HomeLayout6() {
             modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "\uD83D\uDD25 이번 주 인기 판매 품목 \uD83D\uDD25",
+                "\uD83D\uDD25 이번 주 판매 인기 품목 \uD83D\uDD25",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
+                color=Color.DarkGray
             )
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             if (storeMain.isNotEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                        .padding(horizontal = 35.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
@@ -585,6 +633,7 @@ fun HomeLayout6() {
                             text = "${getCategoryName(storeMain[0])}", fontWeight = FontWeight.Bold
                         )
                     }
+                    Spacer(modifier=Modifier.width(20.dp))
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -608,7 +657,7 @@ fun HomeLayout6() {
 
 
 @Composable
-fun HomeLayout7() {
+fun HomeLayout7(navController: NavHostController) {
     val BarterViewModel: BarterViewModel = hiltViewModel()
 
     val popularBarter by BarterViewModel.barterPopular.collectAsState()
@@ -628,6 +677,7 @@ fun HomeLayout7() {
                 "현재 인기 물물교환 글",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
+                color=Color.DarkGray
             )
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
@@ -638,10 +688,11 @@ fun HomeLayout7() {
                 isDeposit = showPopular.isDeposit,
                 barterTime = showPopular.barterEndDate,
                 preper = showPopular.preper,
-                title = showPopular.barterName
-            ) {
-
-            }
+                title = showPopular.barterName,
+                onItemClick = {
+                        navController.navigate("BarterDetailPage/${showPopular.barterIdx}")
+                }
+            )
         }
     }
 }

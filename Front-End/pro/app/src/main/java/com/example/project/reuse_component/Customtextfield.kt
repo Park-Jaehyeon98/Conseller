@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.project.R
 import com.example.project.ui.theme.BrandColor1
+import com.example.project.ui.theme.BrandColor2
 
 @Composable
 fun CustomTextField(
@@ -391,19 +392,17 @@ fun CustomGiftTextField(
         Surface(
             modifier = Modifier
                 .shadow(4.dp, RoundedCornerShape(8.dp))
-                .background(BrandColor1)
                 .fillMaxWidth(0.8f)
         ) {
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Left, color = Color.White),
+                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Left, color = Color.DarkGray),
                 modifier = Modifier
                     .height(40.dp)
                     .weight(0.8f)
                     .padding(start=8.dp)
                     .horizontalScroll(scrollState)
-                    .background(BrandColor1)
             )
         }
     }

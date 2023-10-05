@@ -11,6 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val BrandColor1 =Color(0xFFF76A4D)
+val BrandColor2 =Color(0xFFEC7D17)
 var BlueChecker =Color(0xFF1F59B6).copy(alpha=0.6f)
 
 val logocolor = Color(red = 246, green = 103, blue = 76)

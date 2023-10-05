@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -127,11 +128,22 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp),
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.Fit,
                             )
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "${storeDetail?.gifticonName}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = Color.DarkGray,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -163,7 +175,14 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    "제품 설명",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(8.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,9 +190,6 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                         .padding(8.dp)
                 ) {
                     Column {
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         Box(
                             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
                         ) {
@@ -183,64 +199,14 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
                                     .padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Text(
-                                    "ConSeller 주의사항",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp,
-                                    color = BrandColor1
-                                )
-
-                                Text(
-                                    "• 정확한 계좌번호 확인:\n 제공된 계좌번호가 올바른지 반드시 확인하세요. \n작은 오류도 큰 문제로 이어질 수 있습니다.",
-                                    color = Color.DarkGray
-                                )
-
-                                Text(
-                                    "• 입금 전 계좌주 정보 확인:\n입금하기 전에 제공된 계좌의 예금주 정보를 확인하세요.\n 계좌주와 거래 상대의 정보가 일치하는지 점검하세요.",
-                                    color = Color.DarkGray
-                                )
-
-                                Text(
-                                    "• 입금 금액 및 내역 확인:\n 정확한 금액을 입금했는지, 그리고 입금 내역 메모에 거래에 대한 구체적인 정보를 적었는지 확인하세요.",
-                                    color = Color.DarkGray
-                                )
-
-                                Text(
-                                    "• 거래 내역 활용:\n 거래의 문제 발생 시 거래 내역을 통해 문의해주세요.",
-                                    color = Color.DarkGray
-                                )
+                                Text("${storeDetail?.postContent}", fontSize = 18.sp)
                             }
                         }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
-                        .padding(8.dp)
-                ) {
-                    Column {
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Box(
-                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-
-                                Text("상세설명 : ${storeDetail?.postContent}", fontSize = 18.sp)
-                            }
-                        }
-                    }
-                }
+                consellerHelp()
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -299,4 +265,55 @@ fun StoreDetailPage(navController: NavHostController, index: String?) {
     }
 }
 
+@Composable
+fun consellerHelp(
 
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+            .padding(8.dp)
+    ) {
+        Column {
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        "ConSeller 주의사항",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = BrandColor1
+                    )
+
+                    Text(
+                        "• 정확한 계좌번호 확인:\n 제공된 계좌번호가 올바른지 반드시 확인하세요. \n 작은 오류도 큰 문제로 이어질 수 있습니다.",
+                        color = Color.DarkGray
+                    )
+
+                    Text(
+                        "• 입금 전 계좌주 정보 확인:\n 입금하기 전에 제공된 계좌의 예금주 정보를 확인하세요.\n 계좌주와 거래 상대의 정보가 일치하는지 점검하세요.",
+                        color = Color.DarkGray
+                    )
+
+                    Text(
+                        "• 입금 금액 및 내역 확인:\n 정확한 금액을 입금했는지, 그리고 입금 내역에 \n 상대방이 맞는 지 확인하세요.",
+                        color = Color.DarkGray
+                    )
+
+                    Text(
+                        "• 거래 내역 활용:\n 거래의 문제 발생 시 거래 내역을 통해 문의해주세요.", color = Color.DarkGray
+                    )
+                }
+            }
+        }
+    }
+}

@@ -4,6 +4,7 @@ import InquiryPage
 import MypageAuction
 import MypageStore
 import PermissionRequester
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -36,14 +39,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 
+
         setContent {
-            AppNavigation(sharedPreferencesUtil, myGifticonViewModel)
+            AppNavigation(intent,sharedPreferencesUtil, myGifticonViewModel)
+        }
+    }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setContent {
+            AppNavigation(intent,sharedPreferencesUtil, myGifticonViewModel)
         }
     }
 }
 
 @Composable
-fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewModel: MygifticonViewModel) {
+fun AppNavigation(intent:Intent?,sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewModel: MygifticonViewModel) {
 
     val startDestination = when {
         !sharedPreferencesUtil.isPermissionsChecked() -> "CheckPermission"
@@ -51,8 +61,13 @@ fun AppNavigation(sharedPreferencesUtil: SharedPreferencesUtil, myGifticonViewMo
         else -> "TextLoginPage"
     }
 
-    val navController = rememberNavController()
 
+    val navController = rememberNavController()
+    LaunchedEffect(intent?.action) {
+        if (intent?.action == "OPEN_MYPAGE_COMPOSABLE") {
+            navController.navigate("MyPage")
+        }
+    }
     Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
         Column {
             val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route

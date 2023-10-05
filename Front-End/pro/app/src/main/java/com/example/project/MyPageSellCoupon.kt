@@ -64,7 +64,7 @@ fun MypageSellCoupon(navController: NavHostController) {
 
 
     val filteredGift = when (ChoiceStatus) {
-        1 -> getMyGift.filter { it.gifticonStatus == "스토어" }
+        1 -> getMyGift.filter { it.gifticonStatus == "판매" }
         2 -> getMyGift.filter { it.gifticonStatus == "경매" }
         3 -> getMyGift.filter { it.gifticonStatus == "물물교환" }
         else -> getMyGift

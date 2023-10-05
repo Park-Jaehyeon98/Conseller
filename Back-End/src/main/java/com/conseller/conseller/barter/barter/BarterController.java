@@ -2,12 +2,10 @@ package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.barter.barterDto.request.*;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.CreateBarterResponse;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
 import com.conseller.conseller.notification.NotificationService;
-import com.conseller.conseller.user.dto.response.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

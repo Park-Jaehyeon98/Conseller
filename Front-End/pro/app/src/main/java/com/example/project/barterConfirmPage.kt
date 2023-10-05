@@ -47,12 +47,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.project.api.myGifticon
+import com.example.project.ui.theme.BrandColor1
 import com.example.project.ui.theme.logocolor
 import com.example.project.viewmodels.BarterViewModel
 import kotlinx.coroutines.delay
@@ -124,142 +127,23 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
                 .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(8.dp)
             ) {
-
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(confirmDetail?.barterConfirmList ?: listOf()) { item ->
-                        Box(contentAlignment = Alignment.Center) {
-                            val imagePainter =
-                                rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                            Image(
-                                painter = imagePainter,
-                                contentDescription = null,
-                                modifier = Modifier.size(200.dp),
-                                contentScale = ContentScale.Crop,
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // barterTradeList의 이름들
-                confirmDetail?.barterConfirmList?.forEachIndexed { index, item ->
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("기프티콘 ${index + 1}번")
-                            }
-                            append(" : ${item.gifticonName}")
-                        },
-                        fontSize = 18.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // 제목
-                Text(text = "제목: ${confirmDetail?.barterName ?: ""}", fontSize = 18.sp)
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 내용
-                Text(text = "내용: ${confirmDetail?.barterText ?: ""}", fontSize = 18.sp)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Divider(color = Color.Gray, thickness = 2.dp)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 confirmDetail?.barterTradeAllList?.forEach { tradeList ->
                     Column(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        // 이미지
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            tradeList.barterTradeList.forEach { item ->
-                                Box(contentAlignment = Alignment.Center) {
-                                    val imagePainter =
-                                        rememberAsyncImagePainter(model = item.gifticonDataImageName)
-                                    Image(
-                                        painter = imagePainter,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(200.dp),
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // 이름
+                        Text("${tradeList.buyUserNickName}님의 제안입니다.",fontSize=20.sp,color=Color.DarkGray,fontWeight=FontWeight.Bold)
                         tradeList.barterTradeList.forEachIndexed { index, item ->
-                            Text(
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("기프티콘 ${index + 1}번")
-                                    }
-                                    append(" : ${item.gifticonName}")
-                                },
-                                fontSize = 18.sp
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            ShowTradeGifticon(item.gifticonEndDate,item.gifticonName,item.gifticonDataImageName)
+                            Divider()
                         }
-
                         Spacer(modifier = Modifier.height(16.dp))
-
-                        // 유효기간
-                        tradeList.barterTradeList.forEachIndexed { index, item ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = buildAnnotatedString {
-                                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                            append("${index + 1}번 유효기간 :")
-                                        }
-                                    },
-                                    fontSize = 18.sp
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                FormattedDateDot(
-                                    item.gifticonEndDate,
-                                    fontSize = 18.sp
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // 구매자
-                        Text(
-                            text = "구매자: ${tradeList.buyUserNickName}",
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .clickable(
-                                    indication = rememberRipple(),
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    //...
-                                },
-                            textDecoration = TextDecoration.Underline,
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
                         // 버튼
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -282,6 +166,7 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
                             )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
+                        Divider(color = Color.Gray, thickness = 2.dp)
                     }
                 }
             }
@@ -372,3 +257,60 @@ fun BarterConfirmPage(navController: NavHostController, index: String?) {
         }
     }
 }
+
+
+@Composable
+fun ShowTradeGifticon(
+    gifticonDate:String,
+    gifticonName:String,
+    gifticonImage:String,
+) {
+
+    // gifticonEndDate 앞 8글자 추출
+    val rawDate = gifticonDate.substring(0, 8)
+
+    // 날짜 형식으로 변환 (예: "20230927" -> "2023-09-27")
+    val formattedDate =
+        "${rawDate.substring(0, 4)}-${rawDate.substring(4, 6)}-${rawDate.substring(6, 8)}"
+
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.White),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            contentAlignment = Alignment.CenterStart, modifier = Modifier.size(130.dp)
+        ) {
+            val imagePainter = rememberAsyncImagePainter(model = gifticonImage)
+            Image(
+                painter = imagePainter,
+                contentDescription = null,
+                modifier = Modifier.size(125.dp),
+                contentScale = ContentScale.Crop,
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            Text(
+                text = gifticonName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "~${formattedDate}", fontSize = 22.sp)
+            }
+        }
+    }
+}
+

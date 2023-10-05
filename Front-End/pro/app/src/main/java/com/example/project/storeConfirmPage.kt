@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -147,7 +148,14 @@ fun StoreConfirmPage(navController: NavHostController, index: String?) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // 이름
-                Text(text = "기프티콘 명: ${confirmDetail?.giftconName ?: ""}")
+                Text(
+                    text = "기프티콘 명: ${confirmDetail?.giftconName}",
+                    fontSize = 16.sp,
+                    color = Color.DarkGray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 

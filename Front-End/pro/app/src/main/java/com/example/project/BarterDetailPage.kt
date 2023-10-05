@@ -102,13 +102,16 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
             Snackbar(
                 modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 )
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(8.dp)
                 .verticalScroll(scrollState)
         ) {
             barterDetail?.let { detail ->
@@ -121,11 +124,23 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                         .padding(8.dp)
                 ) {
                     Column {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                "${barterDetail?.barterName}",
+                                fontSize = 18.sp,
+                                color = Color.DarkGray
+                                , fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier=Modifier.height(4.dp))
                         // 이미지들을 보여주는 LazyRow
                         LazyRow(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp),
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(detail.barterImageList) { imageItem ->
@@ -153,8 +168,10 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                                 Text(
                                     text = "${imageItem.gifticonName} /",
                                     fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.DarkGray
                                 )
+
                             }
                         }
 
@@ -163,9 +180,7 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                         // gifticonEndDate들을 나열
                         detail.barterImageList.forEach { imageItem ->
                             FormattedDateDot(
-                                imageItem.gifticonEndDate,
-                                fontSize = 18.sp,
-                                label = "게시기한 :"
+                                imageItem.gifticonEndDate, fontSize = 18.sp, label = "물물교환 기한 :"
                             )
                         }
 
@@ -176,13 +191,10 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = "판매자 : ${detail.barterUserNickname}",
+                            Text(text = "판매자 : ${detail.barterUserNickname}",
                                 fontSize = 18.sp,
-                                modifier = Modifier.clickable(
-                                    indication = rememberRipple(),
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
+                                modifier = Modifier.clickable(indication = rememberRipple(),
+                                    interactionSource = remember { MutableInteractionSource() }) {
                                     showUserDetailDialog = true
                                 },
                                 textDecoration = TextDecoration.Underline
@@ -193,16 +205,38 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                         Text("원하는 품목 : ${barterDetail?.preper}", fontSize = 18.sp)
                     }
                 }
-
-                // Other remaining elements outside the Box
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("제목 : ${barterDetail?.barterName}", fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    "물물교환 설명",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(8.dp)
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("내용 : ${barterDetail?.barterText}", fontSize = 18.sp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Gray, RoundedCornerShape(4.dp))
+                        .padding(8.dp)
+                ) {
+                    Column {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Text("${barterDetail?.barterText}", fontSize = 18.sp)
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -210,70 +244,46 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 if (selectedItemIndex != barterDetail?.barterUserIdx) {
-                    if(barterDetail?.barterRequestIdx?.toInt() == 0) {
-                        SelectButton(
-                            text = "제안하기",
-                            onClick = { navController.navigate("BarterTradeSelectPage/${index}") }
-                        )
-                    }
-                    else{
-                        SelectButton(
-                            text = "제안 취소하기",
-                            onClick = { showDeleteRequestDialog=true}
-                        )
+                    if (barterDetail?.barterRequestIdx?.toInt() == 0) {
+                        SelectButton(text = "제안하기",
+                            onClick = { navController.navigate("BarterTradeSelectPage/${index}") })
+                    } else {
+                        SelectButton(text = "제안 취소하기", onClick = { showDeleteRequestDialog = true })
                     }
                 } else {
                     Spacer(modifier = Modifier.width(24.dp))
 
-                    SelectButton(
-                        text = "수정하기",
-                        onClick = { navController.navigate("barterUpdate/${index}") }
-                    )
+                    SelectButton(text = "수정하기",
+                        onClick = { navController.navigate("barterUpdate/${index}") })
 
                     Spacer(modifier = Modifier.width(24.dp))
 
-                    SelectButton(
-                        text = "삭제하기",
-                        onClick = { showDeleteDialog = true }
-                    )
+                    SelectButton(text = "삭제하기", onClick = { showDeleteDialog = true })
                 }
             }
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = {
-                        showDeleteDialog = false
-                    },
-                    title = {
-                        Text(text = "게시글 삭제")
-                    },
-                    text = {
-                        Text("정말 삭제하시겠습니까?", fontSize = 18.sp)
-                    },
-                    dismissButton = {
-                        SelectButton(
-                            text = "네",
-                            onClick = {
-                                barterViewModel.deleteBarterItem(index!!.toLong())
-                                if(error == null) {
-                                    navController.navigate("BarterPage")
-                                    showDeleteDialog = false
-                                }
-                            }
-                        )
-                    },
-                    confirmButton = {
-                        SelectButton(
-                            text = "아니오",
-                            onClick = { showDeleteDialog = false }
-                        )
-                    }
-                )
+                AlertDialog(onDismissRequest = {
+                    showDeleteDialog = false
+                }, title = {
+                    Text(text = "게시글 삭제")
+                }, text = {
+                    Text("정말 삭제하시겠습니까?", fontSize = 18.sp)
+                }, dismissButton = {
+                    SelectButton(text = "네", onClick = {
+                        barterViewModel.deleteBarterItem(index!!.toLong())
+                        if (error == null) {
+                            navController.navigate("BarterPage")
+                            showDeleteDialog = false
+                        }
+                    })
+                }, confirmButton = {
+                    SelectButton(text = "아니오", onClick = { showDeleteDialog = false })
+                })
             }
             // 판매자 상세보기
             if (showUserDetailDialog) {
-                UserDetailDialog(
-                    userImageUrl = barterDetail?.barterUserProfileUrl,
+                UserDetailDialog(userImageUrl = barterDetail?.barterUserProfileUrl,
                     userNickname = barterDetail?.barterUserNickname,
                     userDeposit = barterDetail?.barterUserDeposit,
                     onDismiss = { showUserDetailDialog = false },
@@ -282,37 +292,24 @@ fun BarterDetailPage(index: String?, navController: NavHostController) {
                     },
                     onMessageClick = {
                         // Handle message sending logic here
-                    }
-                )
+                    })
             }
             //판매자 삭제
             if (showDeleteRequestDialog) {
-                AlertDialog(
-                    onDismissRequest = {
-                        showDeleteDialog = false
-                    },
-                    title = {
-                        Text(text = "제안 삭제")
-                    },
-                    text = {
-                        Text("정말 제안을 취소하시겠습니까?", fontSize = 18.sp)
-                    },
-                    dismissButton = {
-                        SelectButton(
-                            text = "네",
-                            onClick = {
-                                barterViewModel.proposeCancleBarterTrade(barterDetail?.barterRequestIdx)
-                            }
-                        )
-                    },
-                    confirmButton = {
-                        SelectButton(
-                            text = "아니오",
-                            onClick = { showDeleteRequestDialog = false }
-                        )
-                    }
-                )
+                AlertDialog(onDismissRequest = {
+                    showDeleteDialog = false
+                }, title = {
+                    Text(text = "제안 삭제")
+                }, text = {
+                    Text("정말 제안을 취소하시겠습니까?", fontSize = 18.sp)
+                }, dismissButton = {
+                    SelectButton(text = "네", onClick = {
+                        barterViewModel.proposeCancleBarterTrade(barterDetail?.barterRequestIdx)
+                    })
+                }, confirmButton = {
+                    SelectButton(text = "아니오", onClick = { showDeleteRequestDialog = false })
+                })
             }
         }
-        }
     }
+}

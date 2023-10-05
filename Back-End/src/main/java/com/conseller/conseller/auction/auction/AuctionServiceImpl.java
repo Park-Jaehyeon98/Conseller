@@ -245,8 +245,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
-        auction.setNotificationCreatedDate(LocalDateTime.now());
-
         AuctionConfirmResponse response = AuctionMapper.INSTANCE.auctionToConfirm(auction);
 
         return response;
@@ -341,7 +339,7 @@ public class AuctionServiceImpl implements AuctionService{
     public List<Integer> getSubCategory() {
         List<Auction> auctions = auctionRepository.findAwardedAuctionList();
 
-        int[] subCategoryCount = new int[11];
+        int[] subCategoryCount = new int[14];
 
         for(Auction auction : auctions) {
             int idx = auction.getGifticon().getSubCategory().getSubCategoryIdx();
@@ -349,14 +347,14 @@ public class AuctionServiceImpl implements AuctionService{
         }
 
         int maxIdx = 1;
-        for(int i = 1; i < 11; i++) {
+        for(int i = 1; i < 14; i++) {
             if(subCategoryCount[i] > subCategoryCount[maxIdx]){
                 maxIdx = i;
             }
         }
 
         int secondIdx = 2;
-        for(int i = 1; i < 11; i++) {
+        for(int i = 1; i < 14; i++) {
             if(maxIdx != i && subCategoryCount[i] > subCategoryCount[maxIdx]){
                 secondIdx = i;
             }

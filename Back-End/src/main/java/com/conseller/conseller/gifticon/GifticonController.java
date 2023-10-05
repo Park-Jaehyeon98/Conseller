@@ -60,10 +60,7 @@ public class GifticonController {
         log.info("기프티콘 삭제 호출");
 
         //기프티콘 엔티티를 삭제하고 url을 리턴한다.
-        ImageUrlsResponse urls = gifticonService.deleteGifticon(gifticonIdx);
-
-        //기프티콘 이미지 파일을 삭제한다.
-        s3Service.deleteFile(urls);
+        gifticonService.deleteGifticon(gifticonIdx);
 
         return ResponseEntity.ok()
                 .build();

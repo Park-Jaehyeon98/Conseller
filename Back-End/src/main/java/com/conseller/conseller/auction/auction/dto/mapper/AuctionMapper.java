@@ -115,6 +115,7 @@ public interface AuctionMapper {
         response.setUserAccountBank(auction.getUser().getUserAccountBank());
         response.setBuyUserImageUrl(auction.getHighestBidUser().getUserProfileUrl());
         response.setBuyUserNickname(auction.getHighestBidUser().getUserNickname());
+        response.setBuyUserName(auction.getHighestBidUser().getUsername());
         response.setBuyUserIdx(auction.getHighestBidUser().getUserIdx());
 
         return response;

@@ -32,7 +32,7 @@ public class GifticonValidator {
             throw new CustomException(CustomExceptionStatus.ALREADY_REGIST_GIFTICON);
         }
 
-        if (DateTimeConverter.getInstance().convertLocalDateTime(request.getGifticonEndDate()).isBefore(LocalDateTime.now())) {
+        if (DateTimeConverter.getInstance().convertDateTime(request.getGifticonEndDate()).isBefore(LocalDateTime.now())) {
             throw new CustomException(CustomExceptionStatus.EXPIRED_GIFTICON);
         }
     }

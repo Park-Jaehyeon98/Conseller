@@ -245,8 +245,6 @@ public class AuctionServiceImpl implements AuctionService{
         Auction auction = auctionRepository.findById(auctionIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.AUCTION_INVALID));
 
-        auction.setNotificationCreatedDate(LocalDateTime.now());
-
         AuctionConfirmResponse response = AuctionMapper.INSTANCE.auctionToConfirm(auction);
 
         return response;

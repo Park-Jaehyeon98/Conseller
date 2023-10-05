@@ -1,7 +1,5 @@
 package com.conseller.conseller.barter.barter.barterDto.response;
 
-import com.conseller.conseller.entity.Barter;
-import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import lombok.*;
 
 import java.util.List;

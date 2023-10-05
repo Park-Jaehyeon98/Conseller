@@ -294,8 +294,13 @@ public class AuctionServiceImpl implements AuctionService{
         List<Auction> auctions = auctionRepository.findAuctionList();
 
         List<Auction> auctionList = new ArrayList<>();
-        auctionList.add(auctions.get(0));
-        auctionList.add(auctions.get(1));
+        if(auctions.size() >= 1) {
+            auctionList.add(auctions.get(0));
+        }
+
+        if(auctions.size() >= 2) {
+            auctionList.add(auctions.get(1));
+        }
 
         return auctionList;
     }

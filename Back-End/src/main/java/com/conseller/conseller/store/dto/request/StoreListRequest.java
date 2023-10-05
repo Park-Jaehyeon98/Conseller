@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class StoreListRequest {
     private Integer mainCategory;
     private Integer subCategory;
-    private String status;
+    private Integer status;
     private String searchQuery;
     private Integer page;
 

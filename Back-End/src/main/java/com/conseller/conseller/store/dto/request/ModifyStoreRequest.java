@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModifyStoreRequest {
-    private LocalDateTime storeEndDate;
+    private Integer storePrice;
 
     private String storeText;
 }

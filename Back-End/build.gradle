@@ -57,6 +57,15 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    //aws
+    implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    //email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'

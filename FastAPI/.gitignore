@@ -39,3 +39,7 @@ out/
 
 ### FastAPI ###
 models/*.pth
+__pycache__
+
+### ModelTrain ###
+test

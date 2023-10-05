@@ -1,17 +1,16 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode(of = "auctionIdx")
+@Getter @Setter @Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@EqualsAndHashCode(of = "usedGifticonIdx")
 public class UsedGifticon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +19,6 @@ public class UsedGifticon {
     @Column(name = "used_gifticon_barcode")
     private String usedGifticonBarcode;
 
-    @CreatedDate
+    @Column(name = "used_gifticon_date")
     private LocalDateTime usedGifticonDate;
 }

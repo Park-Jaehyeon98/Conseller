@@ -1,8 +1,14 @@
 package com.conseller.conseller.user;
 
+import com.conseller.conseller.entity.User;
+import com.conseller.conseller.exception.CustomException;
+import com.conseller.conseller.exception.CustomExceptionStatus;
+import com.conseller.conseller.user.dto.request.LoginRequest;
 import com.conseller.conseller.user.dto.request.SignUpRequest;
+import com.conseller.conseller.user.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,4 +40,33 @@ public class UserValidator {
         }
     }
 
+    public boolean isVaildByUserIdx(long userIdx) {
+        return userRepository.existsByUserIdx(userIdx);
+    }
+
+    public User validateLogin(LoginRequest request) {
+        // 입력 id 정보가 유효한지 확인
+        User user = userRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.WRONG_ID));
+
+        // 입력한 password 정보가 유효한지 확인
+        if (!user.checkPassword(new BCryptPasswordEncoder(), request.getUserPassword())) {
+            throw new CustomException(CustomExceptionStatus.WRONG_PW);
+        }
+
+        return user;
+    }
+
+    //해당 유저가 서비스 이용이 가능한 유저인지 확인
+    public void validateUser(User user) {
+        // 입력한 유저가 사용 제한된 유저인지 확인
+        if (UserStatus.RESTRICTED.getStatus().equals(user.getUserStatus())) {
+            throw new CustomException(CustomExceptionStatus.RESTRICT);
+        }
+
+        // 입력한 유저가 탈퇴한 유저인지 확인
+        if (user.getUserDeletedDate() != null) {
+            throw new CustomException(CustomExceptionStatus.RESTRICT);
+        }
+    }
 }

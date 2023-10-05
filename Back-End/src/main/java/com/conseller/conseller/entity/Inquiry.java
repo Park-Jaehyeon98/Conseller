@@ -1,9 +1,10 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.inquiry.enums.InquiryStatus;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "inquiryIdx")
 public class Inquiry {
 
@@ -23,19 +28,28 @@ public class Inquiry {
     private User user;
 
     @Column(nullable = false)
-    private String inquiryName;
+    private String inquiryTitle;
 
     @Column(nullable = false)
-    private String inquiryText;
+    private String inquiryContent;
+
+    @Column
+    private String inquiryAnswer;
+
+    @Column
+    private LocalDateTime inquiryAnswerDate;
 
     @CreatedDate
-    private LocalDateTime inquiryCreatedTime;
+    private LocalDateTime inquiryCreatedDate;
 
-//    @Enumerated(EnumType.STRING)
-//    private InquiryStatus inquiryStatus;
+    @Column(nullable = false)
+    private String inquiryStatus = InquiryStatus.CHECKING.getStatus();
 
-//    @Enumerated(EnumType.STRING)
-//    private InquiryType inquiryType;
+    @Column(nullable = false)
+    private Integer inquiryType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_user")
+    private User reportedUser;
 
 }

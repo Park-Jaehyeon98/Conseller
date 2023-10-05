@@ -16,6 +16,6 @@ public class MainCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer mainCategoryIdx;
 
-    @Column(name = "main_categroy_content", nullable = false)
+    @Column(name = "main_category_content", nullable = false)
     private String mainCategoryContent;
 }

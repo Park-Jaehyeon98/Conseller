@@ -84,8 +84,8 @@ public class StoreController {
     @PatchMapping("/cancel/{store_idx}")
     public ResponseEntity<Object> cancelStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자 구매자 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 1, 2);
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 2, 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님이 스토어 거래를 취소하였습니다", 1, 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 거래 취소", "님이 스토어 거래를 취소하였습니다", 2, 2);
 
         storeService.cancelStore(storeIdx);
 
@@ -97,7 +97,7 @@ public class StoreController {
     @PatchMapping("/complete/{store_idx}")
     public ResponseEntity<Object> completeStore(@PathVariable("store_idx") Long storeIdx) {
         // 판매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 입금 완료", "님이 입금을 완료하였습니다.", 2, 2);
+        notificationService.sendStoreNotification(storeIdx, "스토어 입금 완료", "님이 스토어 입금을 완료하였습니다.", 2, 2);
 
         return ResponseEntity.ok()
                 .build();
@@ -110,13 +110,13 @@ public class StoreController {
             storeService.confirmStore(request.getStoreIdx());
 
             // 구매자에게 알림
-            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 1, 2);
-            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 거래가 완료되었습니다.", 2, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 스토어 거래가 완료되었습니다.", 1, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 완료", "님과의 스토어 거래가 완료되었습니다.", 2, 2);
         }
         else {
             // 판매자 구매자 알림
-            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 1, 2);
-            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 거래가 취소되었습니다.", 2, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 스토어 거래가 취소되었습니다.", 1, 2);
+            notificationService.sendStoreNotification(request.getStoreIdx(), "스토어 거래 취소", "님과의 스토어 거래가 취소되었습니다.", 2, 2);
 
             storeService.cancelStore(request.getStoreIdx());
         }

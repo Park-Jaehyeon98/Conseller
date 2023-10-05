@@ -118,6 +118,7 @@ public class GifticonServiceImpl implements GifticonService {
 
     @Async
     @Scheduled(cron = "0 */5 * * * ?")
+    @Transactional
     public void checkGifticonEndDate() {
 
         log.info(LocalDateTime.now() + " 기프티콘 유효기간 알림 작업 시작");

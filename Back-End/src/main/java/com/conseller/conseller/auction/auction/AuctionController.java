@@ -84,7 +84,6 @@ public class AuctionController {
     }
 
     // 경매 진행 취소
-    // 없어도 될듯
     @PatchMapping("/cancel/{auction_idx}")
     public ResponseEntity<Object> cancelAuction(@PathVariable("auction_idx") Long auctionIdx) {
 
@@ -99,7 +98,6 @@ public class AuctionController {
     }
 
     // 입금 완료 버튼
-    // 없어도 될듯
     @PatchMapping("/complete/{auction_idx}")
     public ResponseEntity<Object> completeAuction(@PathVariable("auction_idx") Long auctionIdx) {
         // 판매자에게 알림

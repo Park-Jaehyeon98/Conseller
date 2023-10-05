@@ -13,6 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel="spring")
@@ -91,7 +92,7 @@ public interface AuctionMapper {
         AuctionConfirmResponse response = new AuctionConfirmResponse();
 
         response.setGifticonDataImageName(auction.getGifticon().getGifticonDataImageUrl());
-        response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(auction.getNotificationCreatedDate()));
+        response.setNotificationCreatedDate(DateTimeConverter.getInstance().convertString(LocalDateTime.now()));
         response.setGiftconName(auction.getGifticon().getGifticonName());
         response.setAuctionPrice(auction.getAuctionHighestBid());
         response.setPostContent(auction.getAuctionText());

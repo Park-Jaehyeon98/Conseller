@@ -117,7 +117,7 @@ public class GifticonServiceImpl implements GifticonService {
     }
 
     @Async
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void checkGifticonEndDate() {
 

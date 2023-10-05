@@ -1,7 +1,6 @@
 package com.conseller.conseller.barter.barter.barterDto.mapper;
 
 import com.conseller.conseller.barter.barter.barterDto.request.BarterCreateDto;
-import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
 import com.conseller.conseller.barter.barter.barterDto.response.MyBarterResponseDto;
 import com.conseller.conseller.entity.*;
@@ -9,7 +8,6 @@ import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
 import com.conseller.conseller.utils.DateTimeConverter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;

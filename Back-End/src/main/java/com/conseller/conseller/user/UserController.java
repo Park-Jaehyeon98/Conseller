@@ -170,7 +170,11 @@ public class UserController {
     @GetMapping("{userIdx}/gifticons")
     public ResponseEntity<Item<List<GifticonResponse>>> getUserGifticons(@PathVariable long userIdx) {
 
+        log.info("내 기프티콘 목록 보기 호출");
+
         Item<List<GifticonResponse>> response = new Item<>(userService.getGifticons(userIdx));
+
+        log.info("내 기프티콘 목록 보기 호출 완료");
 
         return ResponseEntity.ok()
                 .body(response);

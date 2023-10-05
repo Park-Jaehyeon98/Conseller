@@ -367,7 +367,7 @@ public class BarterServiceImpl implements BarterService{
         Long popularBarterIdx = (long) 0;
         Integer barterRequestCount = 0;
 
-        List<Barter> barterList = barterRepository.findAll();
+        List<Barter> barterList = barterRepository.findOngoingBarterList();
         for(Barter barter : barterList) {
             if(barter.getBarterRequestList().size() > barterRequestCount) {
                 barterRequestCount = barter.getBarterRequestList().size();
@@ -375,9 +375,10 @@ public class BarterServiceImpl implements BarterService{
             }
         }
 
+        if(popularBarterIdx == 0) popularBarterIdx = (long)1;
+
         Barter barter = barterRepository.findByBarterIdx(popularBarterIdx)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
-
 
 
         return BarterMapper.INSTANCE.toBarterItemData(barter);

@@ -1,17 +1,20 @@
 package com.conseller.conseller.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.conseller.conseller.gifticon.dto.response.GifticonResponse;
+import com.conseller.conseller.utils.DateTimeConverter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Builder
+@Getter @Setter @ToString
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EqualsAndHashCode(of = "gifticonIdx")
 public class Gifticon {
     @Id
@@ -24,26 +27,25 @@ public class Gifticon {
     @Column(name = "gifticon_name", nullable = false)
     private String gifticonName;
 
-    /*
-    생성 시에 초 단위는 어떻게 할껀지?
-     */
     @CreatedDate
+    @Column(name = "gifticon_start_date", nullable = false)
     private LocalDateTime gifticonStartDate;
 
-    @Column(name = "gifticon_end_date")
+    @Column(name = "gifticon_end_date", nullable = false)
     private LocalDateTime gifticonEndDate;
 
-    @LastModifiedDate
-    private LocalDateTime gifticonRegistedDate;
+    /*
+    원본이미지 : not null
+    짜른 이미지 : null
+     */
+    @Column(name = "gifticon_all_image_url", nullable = false)
+    private String gifticonAllImageUrl;
 
-    @Column(name = "gifticon_all_image_name")
-    private String gifticonAllImageName;
+    @Column(name = "gifticon_data_image_url")
+    private String gifticonDataImageUrl;
 
-    @Column(name = "gifticon_data_image_name")
-    private String gifticonDateImageName;
-
-//    @Enumerated
-//    private Enum gifticonStatus;
+    @Column(name = "gifticon_status", nullable = false)
+    private String gifticonStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
@@ -57,4 +59,20 @@ public class Gifticon {
     @JoinColumn(name = "main_category_idx")
     private MainCategory mainCategory;
 
+    public GifticonResponse toResponseDto() {
+        return GifticonResponse.builder()
+                .gifticonIdx(this.gifticonIdx)
+                .gifticonBarcode(this.gifticonBarcode)
+                .gifticonName(this.gifticonName)
+                .gifticonAllImageUrl(this.gifticonAllImageUrl)
+                .gifticonDataImageUrl(this.gifticonDataImageUrl)
+                .gifticonStartDate(DateTimeConverter.getInstance().convertString(this.gifticonStartDate))
+                .gifticonEndDate(DateTimeConverter.getInstance().convertString(this.gifticonEndDate))
+                .gifticonStatus(this.gifticonStatus)
+                .userIdx(this.user.getUserIdx())
+                .subCategoryIdx(this.subCategory.getSubCategoryIdx())
+                .mainCategoryIdx(this.mainCategory.getMainCategoryIdx())
+                .build();
+
+    }
 }

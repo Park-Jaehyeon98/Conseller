@@ -14,14 +14,13 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(of = "storeIdx")
 @DynamicUpdate
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long storeIdx;
+    private Long storeIdx;
 
     @Column(name = "store_price", nullable = false)
     private Integer storePrice;
@@ -32,19 +31,25 @@ public class Store {
     @Column(name = "store_end_date")
     private LocalDateTime storeEndDate;
 
+    @Column(name = "notification_created_date")
+    private LocalDateTime notificationCreatedDate;
+
     @Column(name = "store_text")
     private String storeText;
 
     @Column(name = "store_status")
-    @Enumerated(EnumType.STRING)
-    private StoreStatus storeStatus;
+    private String storeStatus = StoreStatus.IN_PROGRESS.getStatus();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gifticon_idx")
     private Gifticon gifticon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "store_user_idx")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_consumer_idx")
+    private User consumer;
 
 }

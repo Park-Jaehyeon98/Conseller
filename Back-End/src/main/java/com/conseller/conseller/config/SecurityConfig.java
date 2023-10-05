@@ -1,15 +1,16 @@
 package com.conseller.conseller.config;
 
 import com.conseller.conseller.security.JwtAuthenticationFilter;
-import com.conseller.conseller.utils.JwtTokenProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.conseller.conseller.utils.jwt.BlackListRepository;
+import com.conseller.conseller.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final BlackListRepository blackListRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -30,17 +32,25 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user").permitAll()
+                .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers("/user/login").permitAll()
-//                .antMatchers("/members/test").hasRole("USER")
+                .antMatchers("/user/encode/**").permitAll()
+                .antMatchers("/user/id").permitAll()
+                .antMatchers("/user/nickname").permitAll()
+                .antMatchers("/user/email").permitAll()
+                .antMatchers("/user/phone-number").permitAll()
+                .antMatchers("/user/savepattern").permitAll()
+                .antMatchers("/user/verifypattern").permitAll()
+                .antMatchers("/user/finger/**").permitAll()
+                .antMatchers("/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, blackListRepository), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 }

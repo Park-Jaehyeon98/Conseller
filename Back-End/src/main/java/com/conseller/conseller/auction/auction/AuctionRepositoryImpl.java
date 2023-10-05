@@ -50,12 +50,12 @@ public class AuctionRepositoryImpl{
     }
 
     private BooleanExpression eqCategory(Integer mainCategory, Integer subCategory) {
-        if(mainCategory == 0 && subCategory == 0) {
-            return null;
+        if(subCategory != 0) {
+            return auction.gifticon.subCategory.subCategoryIdx.eq(subCategory);
         }else if(mainCategory != 0 && subCategory == 0) {
             return auction.gifticon.mainCategory.mainCategoryIdx.eq(mainCategory);
         }else {
-            return auction.gifticon.subCategory.subCategoryIdx.eq(subCategory);
+            return null;
         }
     }
 

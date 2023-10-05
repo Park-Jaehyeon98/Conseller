@@ -75,10 +75,6 @@ public class StoreController {
                                                          @PathVariable("consumer_idx") Long consumerIdx) {
         StoreTradeResponse response = storeService.tradeStore(storeIdx, consumerIdx);
 
-        //판매자에게 알림
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "님과의 거래가 시작되었습니다.", 2, 2);
-        notificationService.sendStoreNotification(storeIdx, "스토어 거래 진행", "님과의 거래가 시작되었습니다.", 1, 2);
-
         return ResponseEntity.ok()
                 .body(response);
     }

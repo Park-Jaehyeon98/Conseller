@@ -24,5 +24,7 @@ public class AuctionConfirmResponse {
 
     private String buyUserNickname;
 
+    private String buyUserName;
+
     private Long buyUserIdx;
 }

@@ -19,4 +19,7 @@ public interface BarterRepository extends JpaRepository<Barter, Long> {
     @Query("SELECT b FROM Barter b WHERE b.barterCompletedDate IS NULL AND b.barterEndDate <= current_timestamp ")
     List<Barter> findBarterAllExpired();
 
+    @Query("select b from Barter b where b.barterStatus = '제안' or b.barterStatus = '교환 가능'")
+    List<Barter> findOngoingBarterList();
+
 }

@@ -42,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -119,7 +120,7 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "2. 입력값을 채워주세요",
+                text = "경매 글 등록",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -138,7 +139,13 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
                         contentScale = ContentScale.Crop,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = it.gifticonName, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = it.gifticonName,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
 
@@ -265,9 +272,9 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             SelectButton(
-                text = "등록",
+                text = "이전",
                 onClick = {
-                    showRegisterConfirmDialog = true
+                    navController.navigate("AuctionCreatePage")
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
@@ -276,9 +283,9 @@ fun AuctionCreateDetailPage(navController: NavHostController, selectedItemIndex:
             Spacer(modifier = Modifier.width(24.dp))
 
             SelectButton(
-                text = "이전",
+                text = "등록",
                 onClick = {
-                    navController.navigate("AuctionCreatePage")
+                    showRegisterConfirmDialog = true
                 },
                 modifier = Modifier
                     .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)

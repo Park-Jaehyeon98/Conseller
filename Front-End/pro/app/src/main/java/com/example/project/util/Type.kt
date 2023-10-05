@@ -1,6 +1,7 @@
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -26,7 +27,7 @@ fun FormattedDateDot(
         label: String = "유효기간 :" // 새로운 인자
 ) {
         val formattedDate = "$label ${dateString.substring(2,4)}.${dateString.substring(4,6)}.${dateString.substring(6,8)}"
-        Text(text = formattedDate, modifier = modifier, fontSize = fontSize)
+        Text(text = formattedDate, modifier = modifier, fontSize = fontSize,color= Color.DarkGray)
 }
 
 fun formatAlertDate(dateString: String): String {

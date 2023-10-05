@@ -249,7 +249,8 @@ data class AuctionConfirmBuyPageResponseDTO(
     val userAccountBank: String,
     val buyUserImageUrl: String,
     val buyUserNickname: String,
-    val buyUserIdx: Long
+    val buyUserIdx: Long,
+    val userName:String,
 )
 
 

@@ -3,6 +3,7 @@ package com.example.project
 import SelectButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Snackbar
@@ -37,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
+import formattedNumber
 
 @Composable
 fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
@@ -90,65 +93,85 @@ fun auctionConfirmBuyPage(navController: NavHostController, index: String?) {
                 Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
             }
         }
-
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .fillMaxWidth()
+                .border(2.dp, Color.Gray.copy(alpha=0.76f), RoundedCornerShape(4.dp))
+                .padding(22.dp)
         ) {
-            Text(
-                text = "기프티콘의 낙찰에 성공하셨습니다. 입금을 하시고 입금확정을 눌러주세요.",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            // 이미지
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                val imagePainter = rememberAsyncImagePainter(model = auctionConfirmBuy?.gifticonDataImageName)
-                Image(
-                    painter = imagePainter,
-                    contentDescription = null,
-                    modifier = Modifier.size(200.dp),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 이름
-            Text(text = "이름: ${auctionConfirmBuy?.giftconName ?: ""}")
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 판매가
-            Text(text = "낙찰가: ${auctionConfirmBuy?.auctionPrice ?: 0}")
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(text = "내용: ${auctionConfirmBuy?.postContent ?: ""}")
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(text = "계좌번호 : ${auctionConfirmBuy?.userAccount ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(text = "거래은행 : ${auctionConfirmBuy?.userAccountBank ?: "N/A"}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-
-            // 버튼들
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                SelectButton(text = "입금완료", onClick = { showConfirmDialog = true })
+                Text(
+                    text = "기프티콘의 낙찰에 성공하셨습니다.\n입금 후 입금확정을 눌러주세요.",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-                Spacer(modifier = Modifier.width(24.dp))
+                // 이미지
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val imagePainter =
+                        rememberAsyncImagePainter(model = auctionConfirmBuy?.gifticonDataImageName)
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
 
-                SelectButton(text = "낙찰취소", onClick = { showCancleDialog = true })
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 이름
+                Text(text = "이름: ${auctionConfirmBuy?.giftconName ?: ""}")
+
+                Spacer(modifier = Modifier.height(4.dp))
+                val formatPrice =formattedNumber(auctionConfirmBuy?.auctionPrice.toString())
+                // 판매가
+                Text(text = "낙찰가: ${formatPrice}원")
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(text = "내용: ${auctionConfirmBuy?.postContent ?: ""}")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "계좌번호 : ${auctionConfirmBuy?.userAccount ?: "N/A"}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "거래은행 : ${auctionConfirmBuy?.userAccountBank ?: "N/A"}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = "실명 : ${auctionConfirmBuy?.userName ?: "N/A"}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+
+
+                // 버튼들
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SelectButton(text = "입금완료", onClick = { showConfirmDialog = true })
+
+                    Spacer(modifier = Modifier.width(24.dp))
+
+                    SelectButton(text = "낙찰취소", onClick = { showCancleDialog = true })
+                }
             }
-
         }
     }
     if (showConfirmDialog) {

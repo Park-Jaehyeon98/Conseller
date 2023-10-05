@@ -224,12 +224,13 @@ fun MypageCheck(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White),
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                "Conseller 기프티콘 관리",
+                "내 기프티콘 관리",
                 fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.DarkGray,
                 modifier = Modifier.padding(start = 15.dp)
             )
@@ -244,7 +245,7 @@ fun MypageCheck(
             ) {
                 CustomCard(
                     label = "기프티콘 등록",
-                    imageResId = R.drawable.auction,
+                    imageResId = R.drawable.addbutton,
                     modifier = Modifier.fillMaxSize(),
                     onClick = onClick8
                 )
@@ -254,7 +255,8 @@ fun MypageCheck(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White),
-                horizontalArrangement = Arrangement.Center  // 항목들을 수평 방향으로 중앙에 배치
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically// 항목들을 수평 방향으로 중앙에 배치
             ) {
                 // 첫 번째 Box
                 Box(
@@ -304,8 +306,9 @@ fun MypageCheck(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                "Conseller 거래 관리",
+                "내 거래 관리",
                 fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.DarkGray,
                 modifier = Modifier.padding(start = 15.dp)
             )
@@ -322,7 +325,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notAuctionedCount = myAuction.filter { it.auctionStatus != "낙찰" }.size
                 CustomCard(
-                    label = "경매 관리", imageResId = R.drawable.auction,
+                    label = "경매 관리", imageResId = R.drawable.mainauction,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick2
                 )
@@ -331,7 +334,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notStoredCount = myStore.filter { it.storeStatus != "낙찰" }.size
                 CustomCard(
-                    label = "판매 관리", imageResId = R.drawable.store,
+                    label = "판매 관리", imageResId = R.drawable.mainshop,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick3
                 )
@@ -340,7 +343,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notBarterCount = myBarter.filter { it.barterStatus != "교환 완료" }.size
                 CustomCard(
-                    label = "물물교환 관리", imageResId = R.drawable.barter,
+                    label = "물물교환 관리", imageResId = R.drawable.mainbarter,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick4
                 )
@@ -352,7 +355,7 @@ fun MypageCheck(
                 val BarterCount = myBarter.filter { it.barterStatus == "교환 완료" }.size
                 val AllCount = AuctionedCount + StoredCount + BarterCount
                 CustomCard(
-                    label = "경매/판매 내역", imageResId = R.drawable.coupon1,
+                    label = "경매/판매 내역", imageResId = R.drawable.selling,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick5
                 )
@@ -365,7 +368,7 @@ fun MypageCheck(
                     myBarterRequest.filter { it.barterRequestStatus == "수락" }.size
                 val PurcahseAllCount = AuctionedBidCount + PurchaseCount + BarterRequestCount
                 CustomCard(
-                    label = "구매/입찰 내역", imageResId = R.drawable.coupon,
+                    label = "구매/입찰 내역", imageResId = R.drawable.buy,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick6
                 )
@@ -391,6 +394,7 @@ fun MypageCheck(
             Text(
                 "일반",
                 fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.DarkGray,
                 modifier = Modifier.padding(start = 15.dp)
             )
@@ -407,7 +411,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notAuctionedCount = myAuction.filter { it.auctionStatus != "낙찰" }.size
                 CustomCard(
-                    label = "회원정보 수정", imageResId = R.drawable.auction,
+                    label = "회원정보 수정", imageResId = R.drawable.user,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick9
                 )
@@ -416,7 +420,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notStoredCount = myStore.filter { it.storeStatus != "낙찰" }.size
                 CustomCard(
-                    label = "고객센터 문의", imageResId = R.drawable.store,
+                    label = "고객센터 문의", imageResId = R.drawable.support,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick10
                 )
@@ -425,7 +429,7 @@ fun MypageCheck(
             Box(modifier = boxModifier, contentAlignment = Alignment.Center) {
                 val notBarterCount = myBarter.filter { it.barterStatus != "교환 완료" }.size
                 CustomCard(
-                    label = "회원탈퇴", imageResId = R.drawable.barter,
+                    label = "회원탈퇴", imageResId = R.drawable.deleteuser,
 
                     modifier = Modifier.fillMaxSize(), onClick = onClick11
                 )
@@ -464,10 +468,10 @@ fun CustomCard(
                     Image(
                         painter = painterResource(id = imageResId),
                         contentDescription = null,
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(16.dp)
                     )
-                    Text(text = label, fontSize = 22.sp, color = Color.DarkGray)
-//                    Text(text = number.toString(), fontWeight = FontWeight.Bold, fontSize = 32.sp)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = label, fontSize = 16.sp, color = Color.DarkGray)
                 }
             }
         }

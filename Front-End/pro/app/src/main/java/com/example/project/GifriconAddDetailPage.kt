@@ -1035,8 +1035,8 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
                 .size(300.dp)
                 .verticalScroll(scrollState),
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(2.dp, Color.White),
-            colors = CardDefaults.cardColors(BrandColor1)
+            border = BorderStroke(2.dp, BrandColor1),
+            colors = CardDefaults.cardColors(Color.White)
         ) {
             Column(
                 modifier = Modifier.padding(32.dp),
@@ -1047,14 +1047,14 @@ fun GifticonRegistrationCompleteMessage(gifticonName: String) {
                     text = "\uD83C\uDF89 축하드려요! \uD83C\uDF89",
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = Color.DarkGray
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "${myname}님 \n\n 제품명: ${truncatedGifticonName} \n\n 등록이 완료되었습니다!",
                     fontSize = 21.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = Color.DarkGray,
                     textAlign = TextAlign.Center
                 )
             }

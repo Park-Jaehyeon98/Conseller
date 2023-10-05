@@ -3,6 +3,7 @@ package com.example.project
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,26 +61,32 @@ fun TopBar(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
+                val interactionSource = remember { MutableInteractionSource() }
                 Box(modifier = Modifier.padding(top = 24.dp, start = 12.dp)) {
                     Image(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = null,
-                        Modifier.padding(start = 120.dp).scale(1.5f)
+                        Modifier
+                            .padding(start = 120.dp)
+                            .scale(1.5f)
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null,
+                                onClick = { navController.navigate("Home") }
+                            )
                     )
                 }
-
-                if (currentDestination != "AlertPage") {
-                    Image(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickable { navController.navigate("AlertPage") }
-                            .size(70.dp)
-                            .scale(1.4f)
-                            .padding(top = 16.dp)
-                    )
-                }
+                Image(painter = painterResource(id = R.drawable.alert),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = { navController.navigate("AlertPage") }
+                        )
+                        .size(70.dp)
+                        .scale(1.4f)
+                        .padding(top = 16.dp))
             }
             Spacer(modifier = Modifier.height(20.dp))
             Spacer(
@@ -98,16 +105,14 @@ fun BottomBar(navController: NavHostController) {
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
+        AlertDialog(onDismissRequest = { showDialog = false },
             title = { Text("알림") },
             text = { Text("개발중인 기능입니다") },
             confirmButton = {
                 Button(onClick = { showDialog = false }) {
                     Text("확인")
                 }
-            }
-        )
+            })
     }
 
     Box(
@@ -151,7 +156,7 @@ fun BottomBarButton(label: String, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .widthIn(min = 64.dp, max = 80.dp)
     ) {
-        val icon = when(label) {
+        val icon = when (label) {
             "메인" -> Icons.Default.Home
             "검색" -> Icons.Default.Search
             "내정보" -> Icons.Default.AccountCircle
@@ -159,9 +164,7 @@ fun BottomBarButton(label: String, onClick: () -> Unit) {
         }
 
         Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            imageVector = icon, contentDescription = null, modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(4.dp)) // 아이콘과 텍스트 사이 간격
         Text(label)

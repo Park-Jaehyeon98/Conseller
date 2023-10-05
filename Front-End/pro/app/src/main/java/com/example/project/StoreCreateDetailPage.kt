@@ -42,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,7 +54,11 @@ import formattedNumber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: String?, mygifticonViewModel: MygifticonViewModel) {
+fun StoreCreateDetailPage(
+    navController: NavHostController,
+    selectedItemIndex: String?,
+    mygifticonViewModel: MygifticonViewModel
+) {
     val storeViewModel: StoreViewModel = hiltViewModel()
     val myerror by mygifticonViewModel.error.collectAsState()
     val error by storeViewModel.error.collectAsState()
@@ -62,7 +67,7 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val selectedGifticon = gifticonItems?.find { it.gifticonIdx == selectedItemIndex!!.toLong() }
+    val selectedGifticon = gifticonItems.find { it.gifticonIdx == selectedItemIndex!!.toLong() }
 
     // 판매가와 게시글 내용을 위한 상태값
     var storePrice by remember { mutableStateOf(0) }
@@ -107,9 +112,10 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         if (showSnackbar) {
-            Snackbar(
-            ) {
-                Text(text = snackbarText, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Snackbar {
+                Text(
+                    text = snackbarText,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 )
             }
         }
@@ -118,7 +124,7 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "2. 입력값을 채워주세요",
+                text = "판매 글 작성",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -137,15 +143,26 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                         contentScale = ContentScale.Crop,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = it.gifticonName, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
+                    Text(
+                        text = it.gifticonName,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,  // 텍스트의 최대 라인 수를 1로 설정
+                        overflow = TextOverflow.Ellipsis  // 텍스트가 최대 라인 수를 초과하면 생략
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("판매가", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
-            OutlinedTextField(
-                value = formattedNumber(storePrice.toString()),
+            Text(
+                "판매가",
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            OutlinedTextField(value = formattedNumber(storePrice.toString()),
                 onValueChange = { newValue ->
                     val pureValue = newValue.filter { it.isDigit() }
                     // 숫자만 입력되도록 체크
@@ -162,15 +179,13 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                 },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray
+                    focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
                 ),
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     keyboardController?.hide() // 키보드 숨기기
@@ -180,19 +195,22 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
                 },
                 trailingIcon = {
                     Text(text = "원")
-                }
-            )
+                })
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("게시글 내용", modifier = Modifier.padding(bottom = 8.dp), fontSize = 20.sp)
+            Text(
+                "제품 설명",
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
             OutlinedTextField(
                 value = postContent,
                 onValueChange = { postContent = it },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray
+                    focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
                 ),
                 modifier = Modifier
                     .padding(8.dp)
@@ -210,57 +228,39 @@ fun StoreCreateDetailPage(navController: NavHostController, selectedItemIndex: S
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             SelectButton(
-                text = "등록",
-                onClick = {
-                    showRegisterConfirmDialog = true
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+                text = "이전", onClick = {
+                    navController.navigate("StoreCreatePage")
+                }, modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
 
             Spacer(modifier = Modifier.width(24.dp))
 
             SelectButton(
-                text = "이전",
-                onClick = {
-                    navController.navigate("StoreCreatePage")
-                },
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
+                text = "등록", onClick = {
+                    showRegisterConfirmDialog = true
+                }, modifier = Modifier.defaultMinSize(minWidth = 100.dp, minHeight = 50.dp)
             )
         }
 
         // 등록 확인 대화상자
         if (showRegisterConfirmDialog) {
-            AlertDialog(
-                onDismissRequest = {
+            AlertDialog(onDismissRequest = {
+                showRegisterConfirmDialog = false
+            }, title = {
+                Text(text = "상점 아이템 등록")
+            }, text = {
+                Text("등록하시겠습니까?", fontSize = 18.sp)
+            }, confirmButton = {
+                SelectButton(text = "아니오", onClick = {
                     showRegisterConfirmDialog = false
-                },
-                title = {
-                    Text(text = "상점 아이템 등록")
-                },
-                text = {
-                    Text("등록하시겠습니까?", fontSize = 18.sp)
-                },
-                confirmButton = {
-                    SelectButton(
-                        text = "아니오",
-                        onClick = {
-                            showRegisterConfirmDialog = false
-                        }
-                    )
-                },
-                dismissButton = {
-                    SelectButton(
-                        text = "예",
-                        onClick = {
-                            val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
-                            storeViewModel.registerStoreItem(storePrice, postContent, selectedIndex)
-                            showRegisterConfirmDialog = false
-                        }
-                    )
-                }
-            )
+                })
+            }, dismissButton = {
+                SelectButton(text = "예", onClick = {
+                    val selectedIndex: Long = selectedGifticon?.gifticonIdx ?: -1L
+                    storeViewModel.registerStoreItem(storePrice, postContent, selectedIndex)
+                    showRegisterConfirmDialog = false
+                })
+            })
         }
     }
 }

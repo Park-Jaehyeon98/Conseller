@@ -39,7 +39,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         private fun sendNotification(title: String?, body: String){
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java).apply{
+                        action="OPEN_MYPAGE_COMPOSABLE"
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // 액티비티 중복 생성 방지
                 val pendingIntent = PendingIntent.getActivity(this, 0 , intent,
                         PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE) // 일회성

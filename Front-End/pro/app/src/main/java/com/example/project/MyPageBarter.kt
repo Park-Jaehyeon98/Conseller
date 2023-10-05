@@ -190,7 +190,7 @@ fun ShowMyBarter(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.Gray),
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             // 이미지

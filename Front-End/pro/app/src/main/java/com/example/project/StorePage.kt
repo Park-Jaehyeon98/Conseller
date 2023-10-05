@@ -273,16 +273,17 @@ fun StorePage(navController: NavHostController) {
         }
         // 등록하기
         FloatingActionButton(
-            contentColor = Color.Black,
-            containerColor = Color.White,
+            contentColor = Color.White,
+            containerColor = BrandColor1,
             onClick = { navController.navigate("StoreCreatePage") },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // 우하단
-                .padding(16.dp) // 화면의 가장자리 간격
+                .padding(16.dp)
+            , // 화면의 가장자리 간격
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
                 // 글자 크기 조절
-                Text("등록하기", fontSize = 18.sp)
+                Text("등록", fontSize = 18.sp)
             }
 
         }
@@ -315,14 +316,15 @@ fun StoreItem(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
+            // 이미지
             AsyncImage(
                 model = image,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Fit
             )
         }
 

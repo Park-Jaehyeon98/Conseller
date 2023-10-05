@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.AbyssSpecter:ComposeLock:1.0.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f20d40ee3354e779a58ee7fef697bcb6/transformed/ComposeLock-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f20d40ee3354e779a58ee7fef697bcb6/transformed/ComposeLock-1.0.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.AbyssSpecter/ComposeLock/1.0.0/c65a66ba9cfa1b6630e77ce6d18c9be1f1b7e48d/ComposeLock-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -9,24 +9,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40d2bba0-4320-49c6-960a-f197bff239b7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/release/app-release.apk" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/app-release.apk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterCreateDetailPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterCreateDetailPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterDetailPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterDetailPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterTradePage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterTradePage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterTradeSelectPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/BarterTradeSelectPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/MyPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/MyPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/StoreCreateDetailPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/StoreCreateDetailPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/api/AuctionService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/api/AuctionService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/auctionConfirmBuyPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/auctionConfirmBuyPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/auctionConfirmPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/auctionConfirmPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/barterConfirmPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/barterConfirmPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/storeConfirmPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/storeConfirmPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/ui/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/ui/theme/Color.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/util/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/util/Type.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/project/viewmodels/AuctionViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/project/viewmodels/AuctionViewModel.kt" afterDir="false" />
-    </list>
+    <list default="true" id="40d2bba0-4320-49c6-960a-f197bff239b7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

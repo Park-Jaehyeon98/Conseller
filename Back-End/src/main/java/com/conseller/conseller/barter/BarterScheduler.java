@@ -30,7 +30,7 @@ public class BarterScheduler {
 
     @Async
     @Transactional
-    @Scheduled(cron="0 0 * * * ?")
+    @Scheduled(cron="0 0 0 * * ?")
     public void autoBarterExpire() {
         List<Barter> barters = barterService.getExpiredBarterList();
         for(Barter barter : barters) {

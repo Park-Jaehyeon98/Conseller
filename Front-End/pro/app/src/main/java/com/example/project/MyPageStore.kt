@@ -62,7 +62,9 @@ fun MypageStore(navController: NavHostController) {
     }
 
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -103,9 +105,9 @@ fun MypageStore(navController: NavHostController) {
                         storePrice = item.storePrice,
                         onItemClick = {
                             if (item.storeStatus == "낙찰") {
-            //                        navController.navigate("StoreDetailPage/${item.storeIdx}")
+                                //                        navController.navigate("StoreDetailPage/${item.storeIdx}")
                             } else if (item.storeStatus == "거래 중") {
-                                navController.navigate("StoreDetailPage/${item.storeIdx}")
+                                navController.navigate("StoreTradePage/${item.storeIdx}")
                             }
                         },
                         storeStatus = item.storeStatus
@@ -124,7 +126,8 @@ fun SelectStore(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val commontextsize = 18
@@ -156,10 +159,13 @@ fun StoreOption(
     onOptionClicked: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = {
-            onSelectionChanged(id)
-            onOptionClicked(id)
-        })
+        modifier = Modifier
+            .clickable(onClick = {
+                onSelectionChanged(id)
+                onOptionClicked(id)
+
+            })
+            .background(Color.White),
     ) {
         Text(
             text = text,
@@ -303,8 +309,7 @@ fun ShowMyPurchase(
                 modifier = Modifier
                     .weight(0.7f)
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.7f)),
-                contentAlignment = Alignment.Center
+                    .background(Color.White.copy(alpha = 0.7f)), contentAlignment = Alignment.Center
             ) {
                 // 이미지
                 AsyncImage(
@@ -320,6 +325,7 @@ fun ShowMyPurchase(
                 modifier = Modifier
                     .weight(0.18f)
                     .fillMaxWidth()
+                    .background(Color.White)
                     .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom

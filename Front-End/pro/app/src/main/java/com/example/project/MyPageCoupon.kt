@@ -84,20 +84,26 @@ fun MypageCoupon(navController: NavHostController) {
             }, title = {
                 Text("Conseller")
             }, text = {
-                Text("정말 삭제 하시겠습니까?")
+                Text("쿠폰을 사용하셨나요?")
             }, confirmButton = {
-                Button(onClick = {
-                    viewModel.DeleteUserGifticon(ChoiceGifticonIdx)
-                    showDialog = false
-                    navController.navigate("MypageCoupon")
-                }) {
+                Button(
+                    onClick = {
+                        viewModel.DeleteUserGifticon(ChoiceGifticonIdx)
+                        showDialog = false
+                        navController.navigate("MypageCoupon")
+                    },
+                    colors = ButtonDefaults.buttonColors(BrandColor1),
+                ) {
                     Text("확인")
                 }
 
             }, dismissButton = {
-                Button(onClick = {
-                    showDialog = false
-                }) {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(BrandColor1),
+                ) {
                     Text("취소")
                 }
             })
@@ -105,11 +111,12 @@ fun MypageCoupon(navController: NavHostController) {
         if (filteredGift.isEmpty()) {
             showNothingGiftImage()
         } else filteredGift.forEach { gifticonData ->
-            ShowMyGifticon(
-                gifticonData = gifticonData,
+            ShowMyGifticon(gifticonData = gifticonData,
                 isSelected = false,
                 onClick = {
-                    navController.navigate("MyPageCouponDetail/${gifticonData.gifticonIdx}")
+                    if(gifticonData.gifticonStatus=="보관"){
+                        navController.navigate("MyPageCouponDetail/${gifticonData.gifticonIdx}")
+                    }
                 },
                 onDelete = { showDialog = true },
                 onSelectGifticonIdx = { ChoiceGifticonIdx = it },

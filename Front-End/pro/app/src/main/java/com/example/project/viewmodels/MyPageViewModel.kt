@@ -40,8 +40,8 @@ class MyPageViewModel @Inject constructor(
     val uploadProfileResponse: StateFlow<Boolean> get() = _UploadProfileResponse
 
     //기프티콘 사진 업로드
-    private val _UploadGifticonResponse = MutableStateFlow<Boolean>(false)
-    val uploadGifticonResponse: StateFlow<Boolean> get() = _UploadGifticonResponse
+    private val _UploadGifticonResponse = MutableStateFlow<Int>(0)
+    val uploadGifticonResponse: StateFlow<Int> get() = _UploadGifticonResponse
 
     //기프티콘 삭제 상태
     private val _DeleteGifticonResponse = MutableStateFlow<Boolean>(false)
@@ -89,6 +89,10 @@ class MyPageViewModel @Inject constructor(
 
     private val _GetMyGifticonInfo = MutableStateFlow(myGifticon(0, "","","","","","","",0,0,0))
     val getMyGifticonInfoResponse: StateFlow<myGifticon> get() = _GetMyGifticonInfo
+
+    fun initUploadState(){
+        _UploadGifticonResponse.value=0
+    }
     fun userDelete() {
         val userIdx = sharedPreferencesUtil.getUserId()
         viewModelScope.launch {
@@ -321,27 +325,56 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun gifticonUpload(
-        request: RequestBody, originalFile: MultipartBody.Part, cropFile: MultipartBody.Part
-    ) {
-        val userIdx = sharedPreferencesUtil.getUserId()
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                val response = service.uploadgifiticon(userIdx, request, originalFile, cropFile)
-                if (response.isSuccessful) {
-                    _UploadGifticonResponse.value = true
-                }
-            } catch (e: CustomException) {
-                _error.value = e.message
-            } catch (e: Exception) {
-                _error.value = e.localizedMessage
-            } finally {
-                _isLoading.value = false
+//    fun gifticonUpload(
+//        request: RequestBody, originalFile: MultipartBody.Part, cropFile: MultipartBody.Part
+//    ) {
+//        val userIdx = sharedPreferencesUtil.getUserId()
+//        viewModelScope.launch {
+//            _isLoading.value = true
+//            _error.value = null
+//            try {
+//                val response = service.uploadgifiticon(userIdx, request, originalFile, cropFile)
+//                if (response.isSuccessful) {
+//                    _UploadGifticonResponse.value = true
+//                }
+//            } catch (e: CustomException) {
+//                _error.value = e.message
+//            } catch (e: Exception) {
+//                _error.value = e.localizedMessage
+//            } finally {
+//                _isLoading.value = false
+//            }
+//        }
+//    }
+fun gifticonUpload(
+    request: RequestBody, originalFile: MultipartBody.Part, cropFile: MultipartBody.Part
+) {
+    val userIdx = sharedPreferencesUtil.getUserId()
+    viewModelScope.launch {
+        _isLoading.value = true
+        _error.value = null
+        try {
+            val response = service.uploadgifiticon(userIdx, request, originalFile, cropFile)
+            if (response.isSuccessful) {
+                _UploadGifticonResponse.value = 1
             }
+            else{
+                _UploadGifticonResponse.value = 2
+            }
+        } catch (e: CustomException) {
+            _UploadGifticonResponse.value = 2
+            Log.e("gifticonUpload", "CustomException: ${e.message}", e)  // Logging error
+            _error.value = e.message
+        } catch (e: Exception) {
+            _UploadGifticonResponse.value = 2
+            Log.e("gifticonUpload", "Exception: ${e.localizedMessage}", e)  // Logging error
+            _error.value = e.localizedMessage
+        } finally {
+            _isLoading.value = false
         }
     }
+}
+
 
 
     fun getMyInfo() {

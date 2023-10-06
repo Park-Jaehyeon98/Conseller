@@ -169,7 +169,7 @@ fun AuctionConfirmPage(navController: NavHostController, index: String?) {
 
                 // 구매자
                 Text(
-                    text = "구매자: ${confirmDetail.buyUserNickname}",
+                    text = "구매자: ${confirmDetail.buyUserName}",
                     fontSize = 18.sp,
                     modifier = Modifier.clickable(indication = rememberRipple(),  // Ripple 효과 추가
                         interactionSource = remember { MutableInteractionSource() }) {

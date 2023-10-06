@@ -1,5 +1,6 @@
 package com.example.project
 
+import SelectButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,6 +44,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.ui.theme.BrandColor1
@@ -53,15 +58,25 @@ fun TextLoginPage(navController: NavHostController) {
     val fireBaseViewModel: FireBaseViewModel = hiltViewModel()
     var loginText by remember { mutableStateOf(TextFieldValue("")) }
     var passwordText by remember { mutableStateOf(TextFieldValue("")) }
-
+    var trigger by remember { mutableStateOf(0) }
     // 상태 확인
-    val loginState by textLoginModel.idPwLoginState.observeAsState()
-    val ErrorState by textLoginModel.checkError.collectAsState()
-    LaunchedEffect(ErrorState){
-        if(ErrorState){
-            navController.navigate("TextLoginPage")
+    val error by textLoginModel.error.collectAsState()
+    val result by textLoginModel.loginState.collectAsState()
+
+//    val ErrorState by textLoginModel.checkError.collectAsState()
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(result){
+        if(result==1){
+            textLoginModel.initLoginState()
+            fireBaseViewModel.getFirebaseToken()
+            navController.navigate("Home")
+        }else if(result==2){
+            showConfirmDialog=true
+            textLoginModel.initLoginState()
         }
     }
+
     val onLoginClick = {
         val request = IdPwLoginRequest(
             userId = loginText.text,
@@ -76,14 +91,28 @@ fun TextLoginPage(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(13.dp))
-            // 로고용 이미지
-            Text(text = "CONSELLER", fontSize = 24.sp, fontWeight = FontWeight.Bold)
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(300.dp, 200.dp)
             )
+
+            if (showConfirmDialog) {
+                val errormessage=error!!
+                AlertDialog(onDismissRequest = {
+                    showConfirmDialog = false
+                }, title = {
+                    Text(text = "로그인이 실패하였습니다.")
+                }, text = {
+                    Text(errormessage, fontSize = 18.sp)
+                }, dismissButton = {
+                    SelectButton(text = "네", onClick = {
+                        showConfirmDialog = false
+                    })
+                }, confirmButton = {
+                })
+            }
 
             //아이디 입력창
             Row(
@@ -185,13 +214,6 @@ fun TextLoginPage(navController: NavHostController) {
                 )
             }
             Spacer(modifier = Modifier.height(60.dp))
-//            Button(
-//                onClick = {navController.navigate("Home") },
-//                Modifier.size(181.dp, 45.dp),
-//                colors = ButtonDefaults.buttonColors(BrandColor1)
-//            ) {
-//                Text("가짜 로그인", fontSize = 22.sp)
-//            }
             Button(
                 onClick = onLoginClick,
                 Modifier.size(181.dp, 45.dp),
@@ -206,26 +228,6 @@ fun TextLoginPage(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(BrandColor1)
             ) {
                 Text("회원가입", fontSize = 22.sp)
-            }
-//            Button(
-//                onClick = {textLoginModel.reSetPreference() },
-//                Modifier.size(181.dp, 45.dp),
-//                colors = ButtonDefaults.buttonColors(BrandColor1)
-//            ) {
-//                Text("토큰 리셋", fontSize = 22.sp)
-//            }
-            when (loginState) {
-                is ResponseState.Success -> {
-                    // 로그인 성공 시 Home으로 이동
-                    fireBaseViewModel.getFirebaseToken()
-                    navController.navigate("Home")
-                }
-                is ResponseState.Error -> {
-                   // 로그인 실패 에러 알림
-                    println((loginState as ResponseState.Error).message)
-                }
-
-                else -> { }
             }
 
         }

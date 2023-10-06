@@ -42,8 +42,7 @@ fun MypageDelete(navController: NavHostController) {
     var isDialogVisible by remember { mutableStateOf(false) }
     val deleteUserResponse by viewModel.deleteUserResponse.collectAsState()
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         // 레이아웃을 구성합니다.
         Column(
@@ -55,7 +54,12 @@ fun MypageDelete(navController: NavHostController) {
         ) {
             // 설명 텍스트
             Text(text = "회원탈퇴를 진행하시겠습니까?", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text(text = "회원탈퇴를 하게 되면 콘셀러의 서비스를 더 이상 이용할 수 없습니다.", fontSize = 16.sp, color = Color.Red, textAlign = TextAlign.Center)
+            Text(
+                text = "회원탈퇴를 하게 되면 콘셀러의 서비스를 더 이상 이용할 수 없습니다.",
+                fontSize = 16.sp,
+                color = Color.Red,
+                textAlign = TextAlign.Center
+            )
 
 
             // 탈퇴 문구 입력 필드
@@ -67,8 +71,7 @@ fun MypageDelete(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -90,16 +93,15 @@ fun MypageDelete(navController: NavHostController) {
 
             // 회원탈퇴 확인 대화상자
             if (isDialogVisible) {
-                AlertDialog(
-                    onDismissRequest = { isDialogVisible = false },
+                AlertDialog(onDismissRequest = { isDialogVisible = false },
                     title = { Text("회원탈퇴") },
                     text = { Text("정말로 탈퇴하시겠습니까?") },
                     confirmButton = {
                         TextButton(onClick = {
                             viewModel.userDelete()
-                            if(deleteUserResponse){
+                            if (deleteUserResponse) {
                                 navController.navigate("TextLoginPage")
-                            }else{
+                            } else {
                                 // 예외처리
                             }
                         }) {
@@ -113,8 +115,7 @@ fun MypageDelete(navController: NavHostController) {
                         }) {
                             Text("취소")
                         }
-                    }
-                )
+                    })
             }
         }
     }

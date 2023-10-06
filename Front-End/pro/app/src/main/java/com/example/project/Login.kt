@@ -57,8 +57,8 @@ fun LoginPage(navController: NavHostController, sharedPreferencesUtil: SharedPre
             navController.navigate("Home")
         }
         is AuthenticationState.ERROR -> {
-            val errorMessage = (authenticationState as AuthenticationState.ERROR).message
-            ShowAlertDialog(message = errorMessage)
+//            val errorMessage = (authenticationState as AuthenticationState.ERROR).message
+//            ShowAlertDialog(message = errorMessage)
         }
         is AuthenticationState.FAILURE -> {
             ShowAlertDialog(message = "패턴이 일치하지 않습니다. 다시 시도해주세요.")
@@ -121,7 +121,7 @@ fun PatternAuthentication(viewModel: BiometricViewModel) {
 fun NavigationButtons(navController: NavHostController) {
 
     SelectButton(
-        text = "아이디로 로그인 하기",
+        text = "일반 로그인",
         onClick = { navController.navigate("TextloginPage") }
     )
 }

@@ -83,7 +83,9 @@ fun MyPurchasePage(navController: NavHostController) {
 
     val scrollstate = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -145,7 +147,8 @@ fun SelectPurchaseBar(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val commontextsize = 18
@@ -233,6 +236,7 @@ fun ShowMyPurchase(
                 modifier = Modifier
                     .weight(0.18f)
                     .fillMaxWidth()
+                    .background(Color.White)
                     .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom

@@ -65,6 +65,7 @@ drawable store
 drawable support
 drawable uploadgiftcrop
 drawable uploadgiftdefault
+drawable used
 drawable user
 layout fragment_biometric_prompt_dialog
 mipmap ic_launcher

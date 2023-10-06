@@ -1,5 +1,6 @@
 package com.example.project
 
+import SelectButton
 import android.net.Uri
 import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -81,7 +83,7 @@ fun GifticonAddDetailPage(navController: NavHostController) {
     var selectImage by remember { mutableStateOf<Uri?>(null) }
     var selectedCategoryIndex by remember { mutableStateOf(-1) }
     var SendState by remember { mutableStateOf(false) }
-
+    val error by MyPageViewModel.error.collectAsState()
     val getOcrResult by OcrViewModel.uploadGifticonResponse.collectAsState()
 
     var gifticonBarcode by remember {
@@ -124,13 +126,18 @@ fun GifticonAddDetailPage(navController: NavHostController) {
             navController.navigate("MyGifticonAdd")
         }
     }
+    var showConfirmDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(UploadState) {
-        if (UploadState) {
+        if (UploadState==1) {
             currentPage++
+            MyPageViewModel.initUploadState()
+        }
+        if(UploadState==2){
+            showConfirmDialog=true
+            MyPageViewModel.initUploadState()
         }
     }
-
 
 
     LaunchedEffect(selectImage) { // selectImage의 변화를 감지
@@ -245,6 +252,21 @@ fun GifticonAddDetailPage(navController: NavHostController) {
             }
 
             3 -> {
+                if (showConfirmDialog) {
+                    val errormessage=error?:""
+                    AlertDialog(onDismissRequest = {
+                        showConfirmDialog = false
+                    }, title = {
+                        Text(text = "기프티콘 등록 실패")
+                    }, text = {
+                        Text(errormessage, fontSize = 18.sp)
+                    }, dismissButton = {
+                        SelectButton(text = "네", onClick = {
+                            showConfirmDialog = false
+                        })
+                    }, confirmButton = {
+                    })
+                }
                 GifticonCheck(imageView = selectImage)
                 Spacer(modifier = Modifier.height(10.dp))
                 CustomGiftTextField(label = "일련번호",
@@ -280,9 +302,12 @@ fun GifticonAddDetailPage(navController: NavHostController) {
             }
         }
 
-        if (currentUpdatedPage.value <4) {
+        if (currentUpdatedPage.value <3) {
             Spacer(modifier = Modifier.height(40.dp)) // 이 부분이 Column의 나머지 공간을 채웁니다.
             pagechanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
+        }else if(currentUpdatedPage.value==3 ){
+            Spacer(modifier = Modifier.height(40.dp))
+            backchanger(currentPage = currentPage, onSetPage = { newPage -> currentPage = newPage })
         }
     }
 }
@@ -639,12 +664,12 @@ fun ChoiceMainCategory(
                 val ConvenienceModifier5 = Modifier.border(
                     width = 3.dp,
                     shape = CircleShape,
-                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                    color = if (selectedSubCategoryIndex == 11) BrandColor1 else Color.Transparent
                 )
                 Column(
                     modifier = Modifier.clickable {
-                        onSubCategorySet(0)
-                        selectedSubCategoryIndex = 0
+                        onSubCategorySet(11)
+                        selectedSubCategoryIndex = 11
                     }, horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -709,12 +734,12 @@ fun ChoiceMainCategory(
                 val BakeryModifier3 = Modifier.border(
                     width = 3.dp,
                     shape = CircleShape,
-                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                    color = if (selectedSubCategoryIndex == 12) BrandColor1 else Color.Transparent
                 )
                 Column(
                     modifier = Modifier.clickable {
-                        onSubCategorySet(0)
-                        selectedSubCategoryIndex = 0
+                        onSubCategorySet(12)
+                        selectedSubCategoryIndex = 12
                     }, horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -760,12 +785,12 @@ fun ChoiceMainCategory(
                 val IceCreamModifier2 = Modifier.border(
                     width = 3.dp,
                     shape = CircleShape,
-                    color = if (selectedSubCategoryIndex == 0) BrandColor1 else Color.Transparent
+                    color = if (selectedSubCategoryIndex == 13) BrandColor1 else Color.Transparent
                 )
                 Column(
                     modifier = Modifier.clickable {
-                        onSubCategorySet(0)
-                        selectedSubCategoryIndex = 0
+                        onSubCategorySet(13)
+                        selectedSubCategoryIndex = 13
                     }, horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -1012,6 +1037,32 @@ fun pagechanger(
                 .height(50.dp)
         ) {
             Text(text = "다음", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+fun backchanger(
+    currentPage: Int,
+    onSetPage: (Int) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = {
+                if (currentPage - 1 >= -1) {
+                    onSetPage(currentPage - 1)
+                }
+            },
+            colors = ButtonDefaults.buttonColors(BrandColor1),
+            modifier = Modifier
+                .width(180.dp) // 버튼의 가로 크기 조절
+                .height(50.dp) // 버튼의 높이 조절
+        ) {
+            Text(text = "이전", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

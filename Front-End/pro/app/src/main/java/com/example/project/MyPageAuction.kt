@@ -67,9 +67,12 @@ fun MypageAuction(navController: NavHostController) {
     }
 
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(7.dp)
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
+
+        horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.spacedBy(7.dp)
+
     ) {
         SelectAuction(onSelectionChanged = { ChoiceStatus = it })
         Divider(color = Color.Gray, thickness = 1.dp)
@@ -101,7 +104,8 @@ fun MypageAuction(navController: NavHostController) {
                 }
             } else {
                 filteredAuctionBid.forEach { item ->
-                    ShowMyAuctionBid(image = item.auctionItemData.gifticonDataImageName,
+                    ShowMyAuctionBid(
+                        image = item.auctionItemData.gifticonDataImageName,
                         name = item.auctionItemData.gifticonName,
                         gifticonTime = item.auctionItemData.gifticonEndDate,
                         auctionTime = item.auctionItemData.auctionEndDate,
@@ -136,7 +140,8 @@ fun SelectAuction(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val commontextsize = 18
@@ -168,10 +173,12 @@ fun AuctionOption(
     onOptionClicked: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = {
-            onSelectionChanged(id)
-            onOptionClicked(id)
-        })
+        modifier = Modifier
+            .clickable(onClick = {
+                onSelectionChanged(id)
+                onOptionClicked(id)
+            })
+            .background(Color.White),
     ) {
         Text(
             text = text,
@@ -206,8 +213,7 @@ fun ShowMyAuction(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.7f)),
-            contentAlignment = Alignment.Center
+                .background(Color.White.copy(alpha = 0.7f)), contentAlignment = Alignment.Center
         ) {
             // 이미지
             AsyncImage(

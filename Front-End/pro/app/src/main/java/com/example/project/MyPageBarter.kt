@@ -66,7 +66,9 @@ fun MypageBarter(navController: NavHostController) {
 
 
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -123,7 +125,8 @@ fun SelectBarter(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
 
@@ -151,10 +154,12 @@ fun BarterOption(
     onOptionClicked: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = {
-            onSelectionChanged(id)  // 선택된 항목의 ID를 콜백으로 알림
-            onOptionClicked(id) // 여기에서 selectedOption 값을 변경
-        })
+        modifier = Modifier
+            .clickable(onClick = {
+                onSelectionChanged(id)  // 선택된 항목의 ID를 콜백으로 알림
+                onOptionClicked(id) // 여기에서 selectedOption 값을 변경
+            })
+            .background(Color.White),
     ) {
         Text(
             text = text,
@@ -190,8 +195,7 @@ fun ShowMyBarter(
             modifier = Modifier
                 .weight(0.7f)
                 .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.7f)),
-            contentAlignment = Alignment.Center
+                .background(Color.White.copy(alpha = 0.7f)), contentAlignment = Alignment.Center
         ) {
             // 이미지
             AsyncImage(
@@ -207,6 +211,7 @@ fun ShowMyBarter(
             modifier = Modifier
                 .weight(0.18f)
                 .fillMaxWidth()
+                .background(Color.White)
                 .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom

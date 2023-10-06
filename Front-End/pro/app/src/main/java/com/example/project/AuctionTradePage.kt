@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.project.viewmodels.AuctionViewModel
+import formattedNumber
 
 @Composable
 fun AuctionTradePage(index: String?, navController: NavHostController) {
@@ -119,6 +120,7 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                 )
             }
 
+
             Text(
                 text = "계좌번호 : ${tradeItems?.userAccount ?: "N/A"}",
                 fontWeight = FontWeight.Bold,
@@ -130,7 +132,14 @@ fun AuctionTradePage(index: String?, navController: NavHostController) {
                 fontSize = 20.sp
             )
             Text(
-                text = "거래가격 : ${auctionDetail?.upperPrice ?: "N/A"}",
+                text = "실명 : ${tradeItems?.userName ?: "N/A"}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            val price=auctionDetail?.upperPrice ?: "N/A"
+            val formatprice=formattedNumber(price.toString())
+            Text(
+                text = "거래가격 : ${formatprice}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )

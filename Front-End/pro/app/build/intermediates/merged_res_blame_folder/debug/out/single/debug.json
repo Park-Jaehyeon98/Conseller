@@ -132,6 +132,10 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-80:\\drawable\\email.png"
     },
     {
+        "merged": "com.example.project.app-merged_res-78:/drawable_used.png.flat",
+        "source": "com.example.project.app-main-80:/drawable/used.png"
+    },
+    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-78:\\drawable_snack.png.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-80:\\drawable\\snack.png"
     },
@@ -334,10 +338,6 @@
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-78:\\mipmap-xxhdpi_ic_main_foreground.webp.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-main-80:\\mipmap-xxhdpi\\ic_main_foreground.webp"
-    },
-    {
-        "merged": "com.example.project.app-merged_res-78:/drawable_alert.png.flat",
-        "source": "com.example.project.app-main-80:/drawable/alert.png"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.0\\com.example.project.app-merged_res-78:\\drawable_barterend.png.flat",

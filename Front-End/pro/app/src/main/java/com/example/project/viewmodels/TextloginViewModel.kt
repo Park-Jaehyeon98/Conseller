@@ -10,6 +10,7 @@ import com.example.project.api.LoginService
 import com.example.project.api.IdPwLoginRequest
 import com.example.project.api.IdPwLoginResponse
 import com.example.project.api.accessToken
+import com.example.project.di.CustomException
 import com.example.project.sharedpreferences.SharedPreferencesUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,14 +31,25 @@ class TextloginViewModel @Inject constructor(
     private val _idPwLoginState = MutableLiveData<ResponseState<IdPwLoginResponse>>()
     val idPwLoginState: LiveData<ResponseState<IdPwLoginResponse>> = _idPwLoginState
 
-
+    private val _loginState = MutableStateFlow(0)
+    val loginState: StateFlow<Int> = _loginState
     private val _getAccessToken = MutableStateFlow(accessToken(""))
     val getaccessToken: StateFlow<accessToken> get() = _getAccessToken
 
     private val _checkError = MutableStateFlow(false)
     val checkError: StateFlow<Boolean> get() = _checkError
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     fun getUserIdFromPreference(): Long {
         return sharedPreferencesUtil.getUserId()
+    }
+    fun initLoginState(){
+        _loginState.value=0
     }
     fun reSetPreference(){
         return sharedPreferencesUtil.resetPreferences()
@@ -68,48 +80,38 @@ class TextloginViewModel @Inject constructor(
     }
 
     fun loginWithIdPw(request: IdPwLoginRequest) {
-        viewModelScope.launch {
-            try {
-                Log.d("TextloginViewModel", "Starting ID/PW login")
-                val response = loginService.textLogin(request)
+    _isLoading.value = true
+    viewModelScope.launch {
+        _isLoading.value = true
+        _error.value = null
 
-                // Log the response data
-                Log.d("TextloginViewModel", "Response Code: ${response.code()}")
-                Log.d("TextloginViewModel", "Response Message: ${response.message()}")
-                Log.d("TextloginViewModel", "Response Headers: ${response.headers()}")
-                Log.d("TextloginViewModel", "Response Body: ${response.body()}")
+        try {
+            val response = loginService.textLogin(request)
+            if (response.isSuccessful) {
+                _loginState.value=1
+                response.body()?.let {
+                    Log.d("TextloginViewModel", "Login successful, saving user data")
+                    // SharedPreferences에 로그인 정보 저장
+                    sharedPreferencesUtil.setLoggedInStatus(true)
+                    sharedPreferencesUtil.setUserId(it.userIdx)
+                    sharedPreferencesUtil.setUserNickname(it.userNickname)
+                    sharedPreferencesUtil.setUserToken(it.accessToken)
 
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        Log.d("TextloginViewModel", "Login successful, saving user data")
-
-                        // SharedPreferences에 로그인 정보 저장
-                        sharedPreferencesUtil.setLoggedInStatus(true)
-                        sharedPreferencesUtil.setUserId(it.userIdx)
-                        sharedPreferencesUtil.setUserNickname(it.userNickname)
-                        sharedPreferencesUtil.setUserToken(it.accessToken)
-
-                        _idPwLoginState.value = ResponseState.Success(it)
-                    } ?: run {
-                        Log.d("TextloginViewModel", "Invalid response body")
-                        _idPwLoginState.value = ResponseState.Error("Invalid response body")
-                    }
-                } else {
-                    Log.d("TextloginViewModel", "ID/PW login failed with response code: ${response.code()}")
-                    _idPwLoginState.value = ResponseState.Error("ID/PW login failed")
-                    val token=getAccessToken()
-                    if(token){
-                        loginWithIdPw(request)
-                    }else{
-                        _idPwLoginState.value = ResponseState.Error("ID/PW login failed")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("TextloginViewModel", "Exception occurred during ID/PW login", e)
-                _idPwLoginState.value = ResponseState.Error(e.message ?: "Unknown error")
+                    _idPwLoginState.value = ResponseState.Success(it)}
+            }else{
+                _loginState.value=2
             }
+        } catch (e: CustomException) {
+            _loginState.value=2
+            _error.value = e.message
+        } catch (e: Exception) {
+            _loginState.value=2
+            _error.value = e.localizedMessage
+        } finally {
+            _isLoading.value = false
         }
     }
+}
 }
 
 

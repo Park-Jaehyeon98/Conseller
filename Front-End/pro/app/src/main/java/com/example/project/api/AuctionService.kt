@@ -208,6 +208,7 @@ data class AuctionTradeResponseDTO(
     val message: String,
     val userAccount: String,
     val userAccountBank: String,
+    val userName:String,
 )
 
 // 입금 완료 요청 DTO = Path형식
@@ -252,6 +253,7 @@ data class AuctionConfirmBuyPageResponseDTO(
     val buyUserNickname: String,
     val buyUserIdx: Long,
     val userName:String,
+    val buyUserName:String,
 )
 
 

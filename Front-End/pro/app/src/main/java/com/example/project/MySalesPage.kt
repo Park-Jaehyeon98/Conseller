@@ -85,7 +85,9 @@ fun MySalesPage(navController: NavHostController) {
 
     val scrollstate = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(scrollstate),
+        modifier = Modifier
+            .verticalScroll(scrollstate)
+            .background(Color.White),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -147,7 +149,8 @@ fun SelectSalesBar(onSelectionChanged: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.White),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val commontextsize = 18
@@ -175,10 +178,12 @@ fun SalesOption(
     onOptionClicked: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = {
-            onSelectionChanged(id)
-            onOptionClicked(id)  // 여기에 selectedOption 값을 변경하는 로직을 상위 Composable에게 위임
-        })
+        modifier = Modifier
+            .clickable(onClick = {
+                onSelectionChanged(id)
+                onOptionClicked(id)  // 여기에 selectedOption 값을 변경하는 로직을 상위 Composable에게 위임
+            })
+            .background(Color.White),
     ) {
         Text(
             text = text,
@@ -235,6 +240,7 @@ fun ShowMySales(
                 modifier = Modifier
                     .weight(0.18f)
                     .fillMaxWidth()
+                    .background(Color.White)
                     .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom

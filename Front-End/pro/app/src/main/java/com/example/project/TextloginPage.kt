@@ -223,6 +223,14 @@ fun TextLoginPage(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(24.dp))
             Button(
+                onClick = { navController.navigate("Login") },
+                Modifier.size(181.dp, 45.dp),
+                colors = ButtonDefaults.buttonColors(BrandColor1)
+            ) {
+                Text("패턴 로그인", fontSize = 22.sp)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
                 onClick = { navController.navigate("SignUp") },
                 Modifier.size(181.dp, 45.dp),
                 colors = ButtonDefaults.buttonColors(BrandColor1)

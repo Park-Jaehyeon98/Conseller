@@ -142,16 +142,22 @@ fun HomeLayout2(navController: NavHostController) {
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
             popularAuction.take(1).forEach { item ->
-                ShowMyAuction(
-                    image = item.gifticonDataImageName,
-                    name = item.gifticonName,
-                    gifticonTime = item.gifticonEndDate,
-                    auctionTime = item.gifticonEndDate,
-                    isDeposit = item.deposit,
-                    upperprice = item.upperPrice,
-                    nowprice = item.lowerPrice,
-                    onItemClick = {   navController.navigate("AuctionDetailPage/${item.auctionIdx}")}
-                )
+                if (item != null) {
+                    ShowMyAuction(
+                        image = item.gifticonDataImageName,
+                        name = item.gifticonName,
+                        gifticonTime = item.gifticonEndDate,
+                        auctionTime = item.gifticonEndDate,
+                        isDeposit = item.deposit,
+                        upperprice = item.upperPrice,
+                        nowprice = item.lowerPrice,
+                        onItemClick = {
+                            navController.navigate("AuctionDetailPage/${item.auctionIdx}")
+                        }
+                    )
+                } else {
+                    Text(text = "아직 경매 글이 없습니다")
+                }
             }
         }
     }
@@ -681,18 +687,22 @@ fun HomeLayout7(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Divider()
-            ShowMyBarter(
-                image = showPopular!!.gifticonDataImageName,
-                name = showPopular.gifticonName,
-                gifticonTime = showPopular.gifticonEndDate,
-                isDeposit = showPopular.isDeposit,
-                barterTime = showPopular.barterEndDate,
-                preper = showPopular.preper,
-                title = showPopular.barterName,
-                onItemClick = {
+            if (showPopular != null) {
+                ShowMyBarter(
+                    image = showPopular.gifticonDataImageName,
+                    name = showPopular.gifticonName,
+                    gifticonTime = showPopular.gifticonEndDate,
+                    isDeposit = showPopular.isDeposit,
+                    barterTime = showPopular.barterEndDate,
+                    preper = showPopular.preper,
+                    title = showPopular.barterName,
+                    onItemClick = {
                         navController.navigate("BarterDetailPage/${showPopular.barterIdx}")
-                }
-            )
+                    }
+                )
+            } else {
+                Text(text = "아직 인기 물물교환 글이 없습니다")
+            }
         }
     }
 }

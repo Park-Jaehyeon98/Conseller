@@ -29,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.time.LocalDateTime.now;
 
@@ -363,24 +360,27 @@ public class BarterServiceImpl implements BarterService{
     }
 
     @Override
-    public BarterItemData getPopularBarter() {
-        Long popularBarterIdx = (long) 0;
-        Integer barterRequestCount = 0;
+    public BarterPopularResponse getPopularBarter() {
 
-        List<Barter> barterList = barterRepository.findOngoingBarterList();
-        for(Barter barter : barterList) {
-            if(barter.getBarterRequestList().size() > barterRequestCount) {
-                barterRequestCount = barter.getBarterRequestList().size();
-                popularBarterIdx = barter.getBarterIdx();
-            }
+        BarterPopularResponse barterPopularResponse = new BarterPopularResponse();
+        List<BarterItemData> barterItemDataList = new ArrayList<>();
+
+
+        List<Barter> barterList = barterRepository.findAll();
+        if(barterList.size() > 1) {
+            barterList.sort((barter1, barter2)
+                    -> Integer.compare(barter1.getBarterRequestList().size(), barter2.getBarterRequestList().size()));
+            BarterItemData barter1 = BarterMapper.INSTANCE.toBarterItemData(barterList.get(0));
+            BarterItemData barter2 = BarterMapper.INSTANCE.toBarterItemData(barterList.get(1));
+            barterItemDataList.add(barter1);
+            barterItemDataList.add(barter2);
+        } else if(barterList.size() == 1) {
+            BarterItemData barter1 = BarterMapper.INSTANCE.toBarterItemData(barterList.get(0));
+            barterItemDataList.add(barter1);
         }
-
-        if(popularBarterIdx == 0) popularBarterIdx = (long)1;
-
-        Barter barter = barterRepository.findByBarterIdx(popularBarterIdx)
-                .orElseThrow(() -> new CustomException(CustomExceptionStatus.BARTER_INVALID));
+        barterPopularResponse.setItems(barterItemDataList);
 
 
-        return BarterMapper.INSTANCE.toBarterItemData(barter);
+        return barterPopularResponse;
     }
 }

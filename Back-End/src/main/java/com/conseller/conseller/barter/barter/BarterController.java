@@ -2,6 +2,7 @@ package com.conseller.conseller.barter.barter;
 
 import com.conseller.conseller.barter.barter.barterDto.request.*;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterPopularResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.CreateBarterResponse;
 import com.conseller.conseller.barter.barter.barterService.BarterService;
@@ -79,7 +80,7 @@ public class BarterController {
 
     // 인기 물물교환 전송
     @GetMapping("/popular")
-    public ResponseEntity<Object> getPopularBarter() {
+    public ResponseEntity<BarterPopularResponse> getPopularBarter() {
         return ResponseEntity.ok()
                 .body(barterService.getPopularBarter());
     }

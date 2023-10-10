@@ -22,4 +22,7 @@ public interface BarterRepository extends JpaRepository<Barter, Long> {
     @Query("select b from Barter b where b.barterStatus = '제안' or b.barterStatus = '교환 가능'")
     List<Barter> findOngoingBarterList();
 
+    @Query("SELECT b FROM Barter b ORDER BY b.barterCreatedDate ASC")
+    List<Barter> findAll();
+
 }

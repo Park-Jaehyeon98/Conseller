@@ -6,6 +6,7 @@ import com.conseller.conseller.barter.barter.barterDto.request.BarterFilterDto;
 import com.conseller.conseller.barter.barter.barterDto.request.BarterModifyRequestDto;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterDetailResponseDTO;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterItemData;
+import com.conseller.conseller.barter.barter.barterDto.response.BarterPopularResponse;
 import com.conseller.conseller.barter.barter.barterDto.response.BarterResponse;
 import com.conseller.conseller.entity.Barter;
 
@@ -32,5 +33,5 @@ public interface BarterService {
 
     List<Barter> getExpiredBarterList();
 
-    BarterItemData getPopularBarter();
+    BarterPopularResponse getPopularBarter();
 }
